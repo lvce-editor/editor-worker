@@ -16,4 +16,5 @@ export const ensure = async (fontName: string, fontUrl: string) => {
   FontState.setPending(fontName, promise)
   await promise
   FontState.removePending(fontName)
+  FontState.setLoaded(fontName)
 }
