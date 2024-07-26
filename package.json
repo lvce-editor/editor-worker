@@ -73,9 +73,7 @@
       ]
     }
   },
-  "dependencies": {
-    "@lvce-editor/assert": "^1.2.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/preset-typescript": "^7.24.7",
     "@lvce-editor/ipc": "^9.3.0",
@@ -89,7 +87,8 @@
     "prettier": "^3.3.3",
     "rollup": "^4.17.2",
     "ts-jest": "^29.2.3",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "@lvce-editor/assert": "^1.2.0"
   },
   "prettier": {
     "semi": false,
