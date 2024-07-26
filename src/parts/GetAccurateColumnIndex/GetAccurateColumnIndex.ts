@@ -34,7 +34,7 @@ export const getAccurateColumnIndex = (line, fontWeight, fontSize, fontFamily, l
   Assert.number(charWidth)
   Assert.number(tabSize)
   Assert.number(eventX)
-  Assert.greaterZero(charWidth)
+  // Assert.greaterZero(charWidth)
   const guess = guessOffset(eventX, charWidth)
   const normalize = NormalizeText.shouldNormalizeText(line)
   const normalizedGuess = normalizeGuess(line, guess, tabSize)

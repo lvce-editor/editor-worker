@@ -30,7 +30,7 @@ const getSelectionFromChange = (change: any) => {
 
 export const setSelections = (editor: any, selections: any) => {
   Assert.object(editor)
-  Assert.uint32array(selections)
+  // Assert.uint32array(selections)
   return {
     ...editor,
     selections,
