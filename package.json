@@ -71,9 +71,16 @@
           "useESM": true
         }
       ]
+    },
+    "collectCoverage": true,
+    "coverageThreshold": {
+      "global": {
+        "branches": 57,
+        "functions": 64,
+        "lines": 67
+      }
     }
   },
-  "dependencies": {},
   "devDependencies": {
     "@babel/preset-typescript": "^7.24.7",
     "@lvce-editor/ipc": "^9.3.0",
