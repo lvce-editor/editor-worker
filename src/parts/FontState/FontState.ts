@@ -1,28 +1,26 @@
-export const state = {
-  pending: Object.create(null),
-  loaded: Object.create(null),
-}
+const pending = Object.create(null)
+const loaded = Object.create(null)
 
 export const setPending = (id: any, promise: any) => {
-  state.pending[id] = promise
+  pending[id] = promise
 }
 
 export const getPending = (id: any) => {
-  return state.pending[id]
+  return pending[id]
 }
 
 export const hasPending = (id: any) => {
-  return id in state.pending
+  return id in pending
 }
 
 export const removePending = (id: any) => {
-  delete state.pending[id]
+  delete pending[id]
 }
 
 export const setLoaded = (id: any) => {
-  state.loaded[id] = true
+  loaded[id] = true
 }
 
 export const isLoaded = (id: any) => {
-  return state.loaded[id]
+  return loaded[id]
 }
