@@ -11,7 +11,7 @@ const preparePrettyError = (error: any) => {
 }
 
 const logError = (error: any) => {
-  console.error(error)
+  // handled in renderer worker
 }
 
 export const handleMessage = (event: any) => {
