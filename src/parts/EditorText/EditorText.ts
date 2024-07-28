@@ -3,8 +3,7 @@ import * as GetTokensViewport2 from '../GetTokensViewport2/GetTokensViewport2.ts
 import * as LoadTokenizers from '../LoadTokenizers/LoadTokenizers.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
-import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
-// @ts-ignore
+import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 
 // const getTokens = (editor) => {
 //   const tokens = []
@@ -304,9 +303,8 @@ const getLineInfosViewport = (
 ) => {
   const result = []
   const differences = []
-  const { lines, tokenizerId, decorations } = editor
-  const tokenizer = TokenizerMap.get(tokenizerId)
-  const { TokenMap } = tokenizer
+  const { lines, decorations, languageId } = editor
+  const tokenMap = TokenMaps.get(languageId)
   let offset = minLineOffset
   const tabSize = 2
   for (let i = minLineY; i < maxLineY; i++) {
@@ -317,7 +315,7 @@ const getLineInfosViewport = (
       tokens[i - minLineY],
       embeddedResults,
       decorations,
-      TokenMap,
+      tokenMap,
       offset,
       normalize,
       tabSize,
