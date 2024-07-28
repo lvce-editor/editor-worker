@@ -120,11 +120,11 @@ export const renderEditor = async (id: number) => {
   }
   const { oldState, newState } = instance
   const commands = []
+  Editors.set(id, newState, newState)
   for (const item of render) {
     if (!item.isEqual(oldState, newState)) {
       commands.push(await item.apply(oldState, newState))
     }
   }
-  Editors.set(id, newState, newState)
   return commands
 }
