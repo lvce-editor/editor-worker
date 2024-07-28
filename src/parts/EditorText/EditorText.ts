@@ -1,5 +1,5 @@
 import * as GetDecorationClassName from '../GetDecorationClassName/GetDecorationClassName.ts'
-import * as GetTokensViewport from '../GetTokensViewport/GetTokensViewport.ts'
+import * as GetTokensViewport2 from '../GetTokensViewport2/GetTokensViewport2.ts'
 import * as LoadTokenizers from '../LoadTokenizers/LoadTokenizers.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
@@ -335,7 +335,7 @@ const getLineInfosViewport = (
   }
 }
 
-export const getVisible = (editor: any) => {
+export const getVisible = async (editor: any) => {
   // console.log({ editor })
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
@@ -344,7 +344,7 @@ export const getVisible = (editor: any) => {
   // @ts-ignore
   const { minLineY, numberOfVisibleLines, lines, width, deltaX, fontWeight, fontSize, fontFamily, letterSpacing, charWidth } = editor
   const maxLineY = Math.min(minLineY + numberOfVisibleLines, lines.length)
-  const { tokens, tokenizersToLoad, embeddedResults } = GetTokensViewport.getTokensViewport(editor, minLineY, maxLineY)
+  const { tokens, tokenizersToLoad, embeddedResults } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY)
   const minLineOffset = TextDocument.offsetAtSync(editor, minLineY, 0)
   const averageCharWidth = charWidth
   const { result, differences } = getLineInfosViewport(

@@ -21,12 +21,12 @@ const renderLines = {
       oldState.width === newState.width
     )
   },
-  apply(oldState: any, newState: any) {
+  async apply(oldState: any, newState: any) {
     const incrementalEdits = GetIncrementalEdits.getIncrementalEdits(oldState, newState)
     if (incrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
     }
-    const { textInfos, differences } = EditorText.getVisible(newState)
+    const { textInfos, differences } = await EditorText.getVisible(newState)
     newState.differences = differences
     const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences)
     return [/* method */ 'setText', dom]
@@ -111,7 +111,7 @@ const renderGutterInfo = {
 
 export const render = [renderLines, renderSelections, renderScrollBarX, renderScrollBarY, renderFocus, renderDecorations, renderGutterInfo]
 
-export const renderEditor = (id: number) => {
+export const renderEditor = async (id: number) => {
   const instance = Editors.get(id)
   if (!instance) {
     return []
@@ -120,7 +120,7 @@ export const renderEditor = (id: number) => {
   const commands = []
   for (const item of render) {
     if (!item.isEqual(oldState, newState)) {
-      commands.push(item.apply(oldState, newState))
+      commands.push(await item.apply(oldState, newState))
     }
   }
   Editors.set(id, newState, newState)
