@@ -8,6 +8,7 @@ import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRo
 import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
+import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
 const renderLines = {
   isEqual(oldState: any, newState: any) {
@@ -26,7 +27,8 @@ const renderLines = {
     if (incrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
     }
-    const { textInfos, differences } = await EditorText.getVisible(newState)
+    const syncIncremental = SyncIncremental.getEnabled()
+    const { textInfos, differences } = await EditorText.getVisible(newState, syncIncremental)
     newState.differences = differences
     const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences)
     return [/* method */ 'setText', dom]

@@ -333,7 +333,7 @@ const getLineInfosViewport = (
   }
 }
 
-export const getVisible = async (editor: any) => {
+export const getVisible = async (editor: any, syncIncremental:boolean) => {
   // console.log({ editor })
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
@@ -342,7 +342,7 @@ export const getVisible = async (editor: any) => {
   // @ts-ignore
   const { minLineY, numberOfVisibleLines, lines, width, deltaX, fontWeight, fontSize, fontFamily, letterSpacing, charWidth } = editor
   const maxLineY = Math.min(minLineY + numberOfVisibleLines, lines.length)
-  const { tokens, tokenizersToLoad, embeddedResults } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY)
+  const { tokens, tokenizersToLoad, embeddedResults } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
   const minLineOffset = TextDocument.offsetAtSync(editor, minLineY, 0)
   const averageCharWidth = charWidth
   const { result, differences } = getLineInfosViewport(
