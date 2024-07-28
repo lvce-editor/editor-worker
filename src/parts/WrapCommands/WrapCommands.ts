@@ -10,7 +10,8 @@ const wrapCommand =
     const oldInstance = Editors.get(editorUid)
     const newEditor = await fn(oldInstance.newState, ...args)
     Editors.set(editorUid, oldInstance.newState, newEditor)
-    const commands = RenderEditor.renderEditor(editorUid)
+    // TODO if possible, rendering should be sync
+    const commands = await RenderEditor.renderEditor(editorUid)
     newEditor.commands = commands
     return newEditor
   }
