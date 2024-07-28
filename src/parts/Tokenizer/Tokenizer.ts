@@ -1,10 +1,15 @@
 import * as TokenizePlainText from '../TokenizePlainText/TokenizePlainText.ts'
 import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
+import * as SyntaxHighlightingState from '../SyntaxHighlightingState/SyntaxHighlightingState.ts'
+import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
 
 // TODO loadTokenizer should be invoked from renderer worker
 export const loadTokenizer = async (languageId: string, tokenizePath: string) => {
   if (!tokenizePath) {
     return
+  }
+  if (SyntaxHighlightingState.getEnabled()) {
+    return SyntaxHighlightingWorker.invoke('Tokenizer.load', languageId, tokenizePath)
   }
   try {
     // TODO check that tokenizer is valid
