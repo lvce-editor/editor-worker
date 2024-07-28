@@ -14,6 +14,7 @@ export const getTokensViewport2 = (editor: any, startLineIndex: any, endLineInde
       if (sentLines[id] === lines) {
         hasLinesToSend = false
         linesToSend = []
+      } else {
         sentLines[id] = lines
       }
       const slimEditor = {
