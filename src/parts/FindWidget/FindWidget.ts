@@ -1,9 +1,7 @@
 import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindMatchesCaseInsensitive.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
-
-const findWidgets = Object.create(null)
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
 export const getPosition = (uid: number) => {
   const editor = GetEditor.getEditor(uid)
