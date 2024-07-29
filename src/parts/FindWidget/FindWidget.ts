@@ -1,6 +1,7 @@
 import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindMatchesCaseInsensitive.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
 export const getPosition = (uid: number) => {
   const editor = GetEditor.getEditor(uid)
@@ -26,8 +27,8 @@ export const getPosition = (uid: number) => {
   }
 }
 
-export const loadContent = (editorUid: number) => {
-  const editor = GetEditor.getEditor(editorUid)
+export const loadContent = (editorId: number) => {
+  const editor = GetEditor.getEditor(editorId)
   const { selections, lines } = editor
   const startRowIndex = selections[0]
   const startColumnIndex = selections[1]
@@ -65,13 +66,15 @@ export const handleInput = (state: any, value: string) => {
   return refresh(state, value)
 }
 
-export const handleFocus = (state: any) => {
-  // Focus.setFocus(FocusKey.FindWidget)
+export const handleFocus = async (state: any) => {
+  const FindWidget = 16
+  await RendererWorker.invoke('Focus.setFocus', FindWidget)
   return state
 }
 
-export const handleBlur = (state: any) => {
-  // Focus.setFocus(FocusKey.Empty)
+export const handleBlur = async (state: any) => {
+  const Empty = 0
+  await RendererWorker.invoke('Focus.setFocus', Empty)
   return state
 }
 
@@ -89,7 +92,7 @@ export const focusIndex = async (state: any, index: number) => {
   // TODO set selections synchronously and render input match index,
   // input value and new selections at the same time
   // TODO
-  // await Command.execute('Editor.setSelections', newSelections)
+  await RendererWorker.invoke('Editor.setSelections', newSelections)
   return {
     ...state,
     matchIndex: index,
