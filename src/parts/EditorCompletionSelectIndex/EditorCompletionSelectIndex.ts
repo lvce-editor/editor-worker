@@ -1,4 +1,3 @@
-import * as Command from '../Command/Command.ts'
 import * as Completions from '../Completions/Completions.ts'
 import * as ReplaceRange from '../EditorCommand/EditorCommandReplaceRange.ts'
 import * as EditorCompletionState from '../EditorCompletionState/EditorCompletionState.ts'
