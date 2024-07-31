@@ -19,9 +19,7 @@ const getEdits = async (state: any, editor: any, completionItem: any) => {
   return changes
 }
 
-const select = async (state: any, completionItem: any) => {
-  const { uid } = state
-  const editor = GetEditor.getEditor(state.editorUid)
+const select = async (state: any, editor: any, completionItem: any) => {
   const changes = await getEdits(state, editor, completionItem)
   const index = editor.widgets
     .indexOf
@@ -37,7 +35,8 @@ const select = async (state: any, completionItem: any) => {
   return state
 }
 
-export const selectIndex = (state: any, index: number) => {
+export const selectIndex = (editorUid: number, state: any, index: number) => {
+  const editor = GetEditor.getEditor(editorUid)
   const { items } = state
   if (index === -1) {
     return state
@@ -47,5 +46,5 @@ export const selectIndex = (state: any, index: number) => {
   }
   const actualIndex = index
   const completionItem = items[actualIndex]
-  return select(state, completionItem)
+  return select(state, editor, completionItem)
 }

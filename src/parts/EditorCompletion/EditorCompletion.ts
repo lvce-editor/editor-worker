@@ -138,6 +138,7 @@ export const loadContent = async (editorUid: any, state: any) => {
     height,
     rowIndex,
     columnIndex,
+    editorUid,
   }
 }
 
