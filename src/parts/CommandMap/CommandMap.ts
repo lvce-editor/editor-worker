@@ -114,11 +114,13 @@ import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
+import * as ColorPickerRender from '../ColorPickerRender/ColorPickerRender.ts'
 
 export const commandMap = {
   'ColorPicker.handleSliderPointerDown': ColorPicker.handleSliderPointerDown,
   'ColorPicker.handleSliderPointerMove': ColorPicker.handleSliderPointerMove,
   'ColorPicker.loadContent': ColorPicker.loadContent,
+  'ColorPicker.render': ColorPickerRender.renderColorPicker,
   'Editor.addCursorAbove': AddCursorAbove.addCursorAbove,
   'Editor.addCursorBelow': AddCursorBelow.addCursorBelow,
   'Editor.applyEdit': EditorApplyEdit.applyEdit,
