@@ -31,7 +31,8 @@ const getWordAtOffset = (editor: any) => {
   return ''
 }
 
-export const handleEditorType = (state: any, editor: any, text: string) => {
+export const handleEditorType = (editorUid: number, state: any, text: string) => {
+  const editor = GetEditor.getEditor(editorUid)
   const { unfilteredItems, itemHeight, maxHeight } = state
   const rowIndex = editor.selections[0]
   const columnIndex = editor.selections[1]
@@ -57,7 +58,8 @@ export const handleEditorType = (state: any, editor: any, text: string) => {
   }
 }
 
-export const handleEditorDeleteLeft = (state: any, editor: any) => {
+export const handleEditorDeleteLeft = (editorUid: number, state: any) => {
+  const editor = GetEditor.getEditor(editorUid)
   const { unfilteredItems, itemHeight, maxHeight } = state
   const rowIndex = editor.selections[0]
   const columnIndex = editor.selections[1]
@@ -104,9 +106,9 @@ export const handleEditorClick = disposeWithEditor
 
 export const handleEditorBlur = disposeWithEditor
 
-export const loadContent = async (state: any, editorUid: number) => {
-  const { itemHeight, maxHeight } = state
+export const loadContent = async (editorUid: any, state: any) => {
   const editor = GetEditor.getEditor(editorUid)
+  const { itemHeight, maxHeight } = state
   const unfilteredItems = await Completions.getCompletions(editor)
   const wordAtOffset = getWordAtOffset(editor)
   const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)

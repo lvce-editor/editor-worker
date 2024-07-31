@@ -1,5 +1,6 @@
 import * as Assert from '../Assert/Assert.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import * as ExtensionHostCompletion from '../ExtensionHostCompletion/ExtensionHostCompletion.ts'
 
 // TODO possible to do this with events/state machine instead of promises -> enables canceling operations / concurrent calls
 export const getCompletions = async (editor: any) => {
@@ -8,7 +9,6 @@ export const getCompletions = async (editor: any) => {
   const columnIndex = selections[1]
   // Editor.sync(editor)
   const offset = await TextDocument.offsetAt(editor, rowIndex, columnIndex)
-  // @ts-ignore
   const completions = await ExtensionHostCompletion.executeCompletionProvider(editor, offset)
   return completions
 }
