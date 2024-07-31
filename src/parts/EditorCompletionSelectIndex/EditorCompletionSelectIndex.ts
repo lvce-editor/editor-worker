@@ -1,8 +1,8 @@
-import * as Command from '../Command/Command.ts'
 import * as Completions from '../Completions/Completions.ts'
 import * as ReplaceRange from '../EditorCommand/EditorCommandReplaceRange.ts'
 import * as EditorCompletionState from '../EditorCompletionState/EditorCompletionState.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
 const getEdits = async (state: any, editor: any, completionItem: any) => {
   // @ts-ignore
@@ -30,8 +30,8 @@ const select = async (state: any, editor: any, completionItem: any) => {
     editor.completionState = EditorCompletionState.None
     editor.completionUid = 0
   }
-  await Command.execute('Editor.applyEdit', changes)
-  // await Viewlet.dispose(uid)
+  await RendererWorker.invoke('Editor.applyEdit', changes)
+  await RendererWorker.invoke('Viewlet.dispose', state.uid)
   return state
 }
 
