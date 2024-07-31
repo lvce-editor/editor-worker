@@ -101,6 +101,9 @@ import * as EditorType from '../EditorCommand/EditorCommandType.ts'
 import * as EditorTypeWithAutoClosing from '../EditorCommand/EditorCommandTypeWithAutoClosing.ts'
 import * as EditorUndo from '../EditorCommand/EditorCommandUndo.ts'
 import * as Unindent from '../EditorCommand/EditorCommandUnindent.ts'
+import * as EditorCompletion from '../EditorCompletion/EditorCompletion.ts'
+import * as EditorCompletionSelectCurrent from '../EditorCompletionSelectCurrent/EditorCompletionSelectCurrent.ts'
+import * as EditorCompletionSelectIndex from '../EditorCompletionSelectIndex/EditorCompletionSelectIndex.ts'
 import * as FindWidget from '../FindWidget/FindWidget.ts'
 import * as Font from '../Font/Font.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
@@ -111,7 +114,6 @@ import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
-import * as EditorCompletion from '../EditorCompletion/EditorCompletion.ts'
 
 export const commandMap = {
   'ColorPicker.handleSliderPointerDown': ColorPicker.handleSliderPointerDown,
@@ -235,6 +237,14 @@ export const commandMap = {
   'Editor.typeWithAutoClosing': EditorTypeWithAutoClosing.typeWithAutoClosing,
   'Editor.undo': EditorUndo.undo,
   'Editor.unIndent': Unindent.editorUnindent,
+  'EditorCompletion.advance': EditorCompletion.advance,
+  'EditorCompletion.handleEditorBlur': EditorCompletion.handleEditorBlur,
+  'EditorCompletion.handleEditorClick': EditorCompletion.handleEditorClick,
+  'EditorCompletion.handleEditorDeleteLeft': EditorCompletion.handleEditorDeleteLeft,
+  'EditorCompletion.handleEditorType': EditorCompletion.handleEditorType,
+  'EditorCompletion.loadContent': EditorCompletion.loadContent,
+  'EditorCompletion.selectCurrent': EditorCompletionSelectCurrent.selectCurrent,
+  'EditorCompletion.selectIndex': EditorCompletionSelectIndex.selectIndex,
   'FindWidget.focusFirst': FindWidget.focusFirst,
   'FindWidget.focusIndex': FindWidget.focusIndex,
   'FindWidget.focusLast': FindWidget.focusLast,
@@ -245,12 +255,6 @@ export const commandMap = {
   'Font.ensure': Font.ensure,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
   'Initialize.initialize': Initialize.intialize,
-  'EditorCompletion.loadContent': EditorCompletion.loadContent,
-  'EditorCompletion.advance': EditorCompletion.advance,
-  'EditorCompletion.handleEditorClick': EditorCompletion.handleEditorClick,
-  'EditorCompletion.handleEditorBlur': EditorCompletion.handleEditorBlur,
-  'EditorCompletion.handleEditorDeleteLeft': EditorCompletion.handleEditorDeleteLeft,
-  'EditorCompletion.handleEditorType': EditorCompletion.handleEditorType,
 }
 
 WrapCommands.wrapCommands(commandMap)
