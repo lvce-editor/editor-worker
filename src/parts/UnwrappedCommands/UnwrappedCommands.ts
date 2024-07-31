@@ -27,4 +27,8 @@ export const keep = [
   'EditorCompletion.selectIndex',
   'ColorPicker.render',
   'Hover.render',
+  'Hover.loadContent',
+  'Hover.handleSashPointerDown',
+  'Hover.handleSashPointerMove',
+  'Hover.handleSashPointerUp',
 ]
