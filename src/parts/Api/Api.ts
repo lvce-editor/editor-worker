@@ -19,6 +19,6 @@ interface EventMap {
   'Editor.offsetAt': (textDocument: any, positionRowIndex: number, positionColumnIndex: number) => Promise<any>
 }
 
-export interface EditorWorker {
+export interface EditorWorkerApi {
   readonly invoke: <K extends keyof EventMap>(method: K, ...params: Parameters<EventMap[K]>) => Promise<any>
 }
