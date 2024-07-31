@@ -24,7 +24,7 @@ const renderOffsetX = {
   },
 }
 
-const renderColorPicker = {
+const renderColorPickerDom = {
   isEqual(oldState: ColorPickerState, newState: ColorPickerState) {
     return oldState.min === newState.min && oldState.max === newState.max
   },
@@ -34,4 +34,14 @@ const renderColorPicker = {
   },
 }
 
-export const render = [renderColorPicker, renderColor, renderOffsetX]
+export const render = [renderColorPickerDom, renderColor, renderOffsetX]
+
+export const renderColorPicker = async (oldState: any, newState: any) => {
+  const commands = []
+  for (const item of render) {
+    if (!item.isEqual(oldState, newState)) {
+      commands.push(item.apply(oldState, newState))
+    }
+  }
+  return commands
+}
