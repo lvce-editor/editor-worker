@@ -111,6 +111,7 @@ import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
+import * as EditorCompletion from '../EditorCompletion/EditorCompletion.ts'
 
 export const commandMap = {
   'ColorPicker.handleSliderPointerDown': ColorPicker.handleSliderPointerDown,
@@ -244,6 +245,12 @@ export const commandMap = {
   'Font.ensure': Font.ensure,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
   'Initialize.initialize': Initialize.intialize,
+  'EditorCompletion.loadContent': EditorCompletion.loadContent,
+  'EditorCompletion.advance': EditorCompletion.advance,
+  'EditorCompletion.handleEditorClick': EditorCompletion.handleEditorClick,
+  'EditorCompletion.handleEditorBlur': EditorCompletion.handleEditorBlur,
+  'EditorCompletion.handleEditorDeleteLeft': EditorCompletion.handleEditorDeleteLeft,
+  'EditorCompletion.handleEditorType': EditorCompletion.handleEditorType,
 }
 
 WrapCommands.wrapCommands(commandMap)
