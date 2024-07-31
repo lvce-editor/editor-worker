@@ -2,7 +2,6 @@ import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 
 export const loadContent = async (editorUid: number, state: any, position: any) => {
-  const editor = GetEditor.getEditor(editorUid)
   const hoverInfo = await GetHoverInfo.getEditorHoverInfo(editorUid, position)
   if (!hoverInfo) {
     return state
