@@ -115,6 +115,8 @@ import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
 import * as ColorPickerRender from '../ColorPickerRender/ColorPickerRender.ts'
+import * as EditorHover from '../EditorHover/EditorHover.ts'
+import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 
 export const commandMap = {
   'ColorPicker.handleSliderPointerDown': ColorPicker.handleSliderPointerDown,
@@ -256,6 +258,11 @@ export const commandMap = {
   'FindWidget.loadContent': FindWidget.loadContent,
   'Font.ensure': Font.ensure,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
+  'Hover.handleSashPointerDown': EditorHover.handleSashPointerDown,
+  'Hover.handleSashPointerMove': EditorHover.handleSashPointerMove,
+  'Hover.handleSashPointerUp': EditorHover.handleSashPointerUp,
+  'Hover.render': EditorHoverRender.renderHover,
+  'Hover.loadContent': EditorHover.loadContent,
   'Initialize.initialize': Initialize.intialize,
 }
 
