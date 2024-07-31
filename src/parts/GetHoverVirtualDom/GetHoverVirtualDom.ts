@@ -1,8 +1,8 @@
-import * as ClassNames from '../ClassNames/ClassNames.js'
-import * as GetLineInfosVirtualDom from '../GetLineInfosVirtualDom/GetLineInfosVirtualDom.js'
-import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.js'
-import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.js'
-import { text } from '../VirtualDomHelpers/VirtualDomHelpers.js'
+import * as ClassNames from '../ClassNames/ClassNames.ts'
+import * as GetLineInfosVirtualDom from '../GetLineInfosVirtualDom/GetLineInfosVirtualDom.ts'
+import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
+import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 const hoverProblemMessage = {
   type: VirtualDomElements.Span,
