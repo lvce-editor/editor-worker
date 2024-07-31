@@ -21,6 +21,7 @@ interface EventMap {
   'Hover.handleSashPointerDown': (state: any, eventX: number, eventY: number) => Promise<any>
   'Hover.handleSashPointerMove': (state: any, eventX: number, eventY: number) => Promise<any>
   'Hover.handleSashPointerUp': (state: any, eventX: number, eventY: number) => Promise<any>
+  'Hover.loadContent': (editorUid: number, state: any, position: any) => Promise<any>
   'Hover.render': (oldState: any, newState: any) => Promise<any>
 }
 
