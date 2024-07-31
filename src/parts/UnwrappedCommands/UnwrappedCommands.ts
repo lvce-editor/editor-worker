@@ -17,4 +17,12 @@ export const keep = [
   'Font.ensure',
   'Hover.getHoverInfo',
   'Initialize.initialize',
+  'EditorCompletion.advance',
+  'EditorCompletion.handleEditorBlur',
+  'EditorCompletion.handleEditorClick',
+  'EditorCompletion.handleEditorDeleteLeft',
+  'EditorCompletion.handleEditorType',
+  'EditorCompletion.loadContent',
+  'EditorCompletion.selectCurrent',
+  'EditorCompletion.selectIndex',
 ]
