@@ -26,4 +26,5 @@ export const keep = [
   'EditorCompletion.selectCurrent',
   'EditorCompletion.selectIndex',
   'ColorPicker.render',
+  'Hover.render',
 ]
