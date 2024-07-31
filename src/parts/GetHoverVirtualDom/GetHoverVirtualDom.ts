@@ -16,11 +16,11 @@ const hoverProblemDetail = {
   childCount: 1,
 }
 
-const getChildCount = (lineInfos, documentation, diagnostics) => {
+const getChildCount = (lineInfos: any, documentation: any, diagnostics: any) => {
   return lineInfos.length + documentation ? 1 : 0 + (diagnostics && diagnostics.length > 0) ? 1 : 0
 }
 
-export const getHoverVirtualDom = (lineInfos, documentation, diagnostics) => {
+export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnostics: any) => {
   const dom = []
   dom.push({
     type: VirtualDomElements.Div,
