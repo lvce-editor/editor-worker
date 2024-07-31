@@ -1,4 +1,3 @@
-import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 
 export const loadContent = async (editorUid: number, state: any, position: any) => {
