@@ -9,6 +9,7 @@ import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
 const renderLines = {
   isEqual(oldState: any, newState: any) {
@@ -80,6 +81,11 @@ const renderFocus = {
     return oldState.focused === newState.focused
   },
   apply(oldState: any, newState: any) {
+    // TODO avoid side effect
+    if (newState.focused) {
+      const FocusEditorText = 12
+      RendererWorker.invoke('Focus.setFocus', FocusEditorText)
+    }
     return [/* method */ 'setFocused', newState.focused]
   },
 }
