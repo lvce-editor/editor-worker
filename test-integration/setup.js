@@ -2,25 +2,29 @@ import { createWorker } from './createWorker.js'
 
 const workerPath = new URL('../dist/dist/editorWorkerMain.js', import.meta.url).toString()
 
+const handleMessage = (event) => {
+  const { data, target } = event
+  if (data.id) {
+    target.postMessage({
+      jsonrpc: '2.0',
+      id: data.id,
+      result: null,
+    })
+  }
+}
+
 export const setup = async () => {
   const commandMap = {
     'SendMessagePortToRendererProcess.sendMessagePortToRendererProcess'(port) {
+      port.addEventListener('message', handleMessage)
       port.postMessage('ready')
     },
     'SendMessagePortToSyntaxHighlightingWorker.sendMessagePortToSyntaxHighlightingWorker'(port) {
+      port.addEventListener('message', handleMessage)
       port.postMessage('ready')
     },
     'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker'(port) {
-      port.addEventListener('message', (x) => {
-        const { data } = x
-        if (data.id) {
-          port.postMessage({
-            jsonrpc: '2.0',
-            id: data.id,
-            result: null,
-          })
-        }
-      })
+      port.addEventListener('message', handleMessage)
       port.postMessage('ready')
     },
   }
