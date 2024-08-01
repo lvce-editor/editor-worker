@@ -1,6 +1,16 @@
 export const createWorkerIpc = async (workerPath) => {
   globalThis.WorkerGlobalScope = {}
 
+  globalThis.OffscreenCanvas = class {
+    getContext() {
+      return {
+        measureText() {
+          return 2
+        },
+      }
+    }
+  }
+
   const readyPromise = new Promise((resolve) => {
     globalThis.postMessage = (message) => {
       if (message === 'ready') {

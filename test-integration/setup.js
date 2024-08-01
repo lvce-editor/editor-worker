@@ -11,6 +11,16 @@ export const setup = async () => {
       port.postMessage('ready')
     },
     'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker'(port) {
+      port.addEventListener('message', (x) => {
+        const { data } = x
+        if (data.id) {
+          port.postMessage({
+            jsonrpc: '2.0',
+            id: data.id,
+            result: null,
+          })
+        }
+      })
       port.postMessage('ready')
     },
   }

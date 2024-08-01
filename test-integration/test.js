@@ -1,8 +1,8 @@
-import { setup } from './setup.js'
+import * as CreateEditor from './create-editor.test.js'
 
 const main = async () => {
-  const rpc = await setup()
-  rpc.dispose()
+  await CreateEditor.test()
+  process.exit(0)
 }
 
 main()
