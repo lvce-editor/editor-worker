@@ -8,8 +8,7 @@ import * as EditorPosition from './EditorCommandPosition.ts'
 
 // TODO first change cursor position, then run go to definition
 // cursor should appear at mousedown position immediately
-// @ts-ignore
-const handleSingleClickWithAlt = async (editor, position) => {
+const handleSingleClickWithAlt = async (editor: any, position: any) => {
   const { rowIndex, columnIndex } = position
   const newEditor = { ...editor, selections: new Uint32Array([rowIndex, columnIndex, rowIndex, columnIndex]) }
   // TODO rectangular selection with alt click,
@@ -18,8 +17,7 @@ const handleSingleClickWithAlt = async (editor, position) => {
   return newEditor2
 }
 
-// @ts-ignore
-const handleSingleClickWithCtrl = async (editor, position) => {
+const handleSingleClickWithCtrl = async (editor: any, position: any) => {
   const selections = editor.selections
   for (let i = 0; i < selections.length; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
@@ -48,8 +46,7 @@ const handleSingleClickWithCtrl = async (editor, position) => {
   return Editor.scheduleSelections(editor, newSelections)
 }
 
-// @ts-ignore
-const handleSingleClickDefault = (editor, position) => {
+const handleSingleClickDefault = (editor: any, position: any) => {
   EditorMoveSelectionAnchorState.setPosition(position)
   return {
     ...editor,
@@ -58,8 +55,7 @@ const handleSingleClickDefault = (editor, position) => {
   }
 }
 
-// @ts-ignore
-const getFn = (modifier) => {
+const getFn = (modifier: any) => {
   switch (modifier) {
     case ModifierKey.Alt:
       return handleSingleClickWithAlt
@@ -70,8 +66,7 @@ const getFn = (modifier) => {
   }
 }
 
-// @ts-ignore
-export const handleSingleClick = async (editor, modifier, x, y) => {
+export const handleSingleClick = async (editor: any, modifier: any, x: number, y: number) => {
   Assert.object(editor)
   Assert.number(modifier)
   Assert.number(x)
