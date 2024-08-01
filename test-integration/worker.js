@@ -31,10 +31,22 @@ const createWorkerIpc = async (workerPath) => {
   return _listener
 }
 
+export const createMessagePortIpc = async (listener, port) => {
+  listener({
+    data: {
+      method: 'initialize',
+      params: ['message-port', port],
+    },
+  })
+}
+
 const handleMessage = async (event) => {
   const { data, target } = event
   if (data.method === 'loadEditorWorker') {
-    await createWorkerIpc(...data.params)
+    const workerPath = data.params[0]
+    const port = data.params[1]
+    const listener = await createWorkerIpc(workerPath)
+    await createMessagePortIpc(listener, port)
   }
   console.log({ data })
   target.send({

@@ -1,24 +1,16 @@
 import * as JsonRpc from '@lvce-editor/json-rpc'
 
-export const createMessagePortIpc = async (listener, commandMap) => {
-  const { port1, port2 } = new MessageChannel()
-  listener({
-    data: {
-      method: 'initialize',
-      params: ['message-port', port1],
-    },
-  })
-
+export const createMessagePortIpc = async (port, commandMap) => {
   const ipc = {
     send(message) {
-      port2.postMessage(message)
+      port.postMessage(message)
     },
     dispose() {
-      port2.close()
+      port.close()
       process.exit(0)
     },
   }
-  port2.addEventListener('message', async (event) => {
+  port.addEventListener('message', async (event) => {
     const message = event.data
     if (message.method) {
       const fn = commandMap[message.method]
@@ -26,7 +18,7 @@ export const createMessagePortIpc = async (listener, commandMap) => {
         throw new Error(`command ${message.method} not found`)
       }
       const result = await fn(...message.params)
-      port2.postMessage({
+      port.postMessage({
         jsonrpc: '2.0',
         result,
         id: message.id,
