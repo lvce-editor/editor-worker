@@ -48,7 +48,6 @@ const handleMessage = async (event) => {
     const listener = await createWorkerIpc(workerPath)
     await createMessagePortIpc(listener, port)
   }
-  console.log({ data })
   target.send({
     jsonrpc: '2.0',
     result: null,
