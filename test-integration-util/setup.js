@@ -15,7 +15,6 @@ const getResult = (method, ...params) => {
 
 const handleMessage = (event) => {
   const { data, target } = event
-  console.log({ data })
   if (data.id) {
     const result = getResult(data.method, ...data.params)
     target.postMessage({

@@ -68,6 +68,5 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
     onPointerDown: DomEventListenerFunctions.HandleSashPointerDown,
   })
 
-  console.log({ dom })
   return dom
 }
