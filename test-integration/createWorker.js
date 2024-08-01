@@ -22,16 +22,21 @@ export const createWorker = async (workerPath) => {
     if (message === 'ready') {
       return
     }
+  }
+  port2.addEventListener('message', (event) => {
+    const message = event.data
     console.log({ message })
     JsonRpc.resolve(message.id, message)
-  }
+  })
   await import(workerPath)
   const ipc = {
     send(message) {
+      console.log({ message })
       port2.postMessage(message)
     },
   }
   await promise
+  console.log('finish first')
   return {
     invoke(method, ...params) {
       return JsonRpc.invoke(ipc, method, ...params)
