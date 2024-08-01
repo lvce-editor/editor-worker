@@ -18,7 +18,6 @@ const main = async () => {
   const syntaxHighlightingEnabled = true
   const syncIncremental = true
   await rpc.invoke('Initialize.initialize', syntaxHighlightingEnabled, syncIncremental)
-  console.log('finish initializing')
   rpc.dispose()
 }
 
