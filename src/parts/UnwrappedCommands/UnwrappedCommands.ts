@@ -9,6 +9,7 @@ export const keep = [
   'Editor.render',
   'ColorPicker.render',
   'Editor.getText',
+  'Editor.getSelections',
   'EditorCompletion.advance',
   'EditorCompletion.handleEditorBlur',
   'EditorCompletion.handleEditorClick',
