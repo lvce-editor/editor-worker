@@ -65,6 +65,7 @@ import * as MoveRectangleSelectionPx from '../EditorCommand/EditorCommandMoveRec
 import * as EditorMoveSelection from '../EditorCommand/EditorCommandMoveSelection.ts'
 import * as EditorMoveSelectionPx from '../EditorCommand/EditorCommandMoveSelectionPx.ts'
 import * as OpenFind from '../EditorCommand/EditorCommandOpenFind.ts'
+import * as GetText from '../GetText/GetText.ts'
 import * as OrganizeImports from '../EditorCommand/EditorCommandOrganizeImports.ts'
 import * as EditorPaste from '../EditorCommand/EditorCommandPaste.ts'
 import * as PasteText from '../EditorCommand/EditorCommandPasteText.ts'
@@ -165,6 +166,7 @@ export const commandMap = {
   'Editor.findAllReferences': FindAllReferences.findAllReferences,
   'Editor.format': EditorFormat.format,
   'Editor.getWordAt': GetWordAt.getWordAt,
+  'Editor.getText': GetText.getText,
   'Editor.getWordBefore': GetWordAt.getWordBefore,
   'Editor.goToDefinition': EditorGoToDefinition.goToDefinition,
   'Editor.goToTypeDefinition': EditorGoToTypeDefinition.goToTypeDefinition,
