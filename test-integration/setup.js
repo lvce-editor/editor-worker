@@ -1,6 +1,7 @@
+import { fileURLToPath } from 'url'
 import { createWorker } from './createWorker.js'
 
-const workerPath = new URL('../dist/dist/editorWorkerMain.js', import.meta.url).toString()
+const workerPath = fileURLToPath(new URL('../dist/dist/editorWorkerMain.js', import.meta.url).toString())
 
 const handleMessage = (event) => {
   const { data, target } = event
