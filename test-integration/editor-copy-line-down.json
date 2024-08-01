@@ -1,0 +1,35 @@
+[
+  {
+    "to": "editor-worker",
+    "method": "Editor.create",
+    "params": {
+      "id": 0,
+      "content": "abc",
+      "fontFamily": "",
+      "fontSize": 14,
+      "lineHeight": 20,
+      "fontWeight": 400,
+      "letterSpacing": 0.5,
+      "tabSize": 2,
+      "width": 100,
+      "isMonospaceFont": true,
+      "charWidth": 9
+    }
+  },
+  {
+    "to": "editor-worker",
+    "method": "Editor.cursorSet",
+    "params": [0, 0, 0]
+  },
+  {
+    "to": "editor-worker",
+    "method": "Editor.copyLineDown",
+    "params": [0]
+  },
+  {
+    "to": "editor-worker",
+    "method": "Editor.getText",
+    "params": [0],
+    "result": "abc\nabc"
+  }
+]

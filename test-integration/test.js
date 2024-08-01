@@ -13,7 +13,16 @@ const runTests = async (tests) => {
 }
 
 const main = async () => {
+<<<<<<< Updated upstream
   await runTests(tests)
+=======
+  console.time('editor')
+  await CreateEditor.test()
+  console.timeEnd('editor')
+  console.time('find')
+  await FindWidget.test()
+  console.timeEnd('find')
+>>>>>>> Stashed changes
   process.exit(0)
 }
 

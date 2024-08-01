@@ -1,0 +1,16 @@
+[
+  {
+    "to": "editor-worker",
+    "method": "FindWidget.focusIndex",
+    "params": {
+      "value": "",
+      "matches": [0, 0],
+      "matchIndex": 0
+    },
+    "result": {
+      "value": "",
+      "matches": [0, 0],
+      "matchIndex": 1
+    }
+  }
+]
