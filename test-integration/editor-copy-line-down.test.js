@@ -9,6 +9,10 @@ export const test = async (rpc) => {
     lineHeight: 20,
     fontWeight: 400,
     letterSpacing: 0.5,
+    tabSize: 2,
+    width: 100,
+    isMonospaceFont: true,
+    charWidth: 9,
   })
   await rpc.invoke('Editor.cursorSet', 0, 0, 0)
   await rpc.invoke('Editor.copyLineDown', 0)

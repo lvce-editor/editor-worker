@@ -7,7 +7,9 @@ const createWorkerIpc = async (workerPath) => {
     getContext() {
       return {
         measureText() {
-          return 2
+          return {
+            width: 2,
+          }
         },
       }
     }

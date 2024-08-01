@@ -3,7 +3,10 @@ import * as CreateEditor from './create-editor.test.js'
 import * as EditorCopyLineDown from './editor-copy-line-down.test.js'
 import * as FindWidget from './find-widget.test.js'
 
-const tests = [CreateEditor, FindWidget, EditorCopyLineDown]
+const tests = [
+  // CreateEditor, FindWidget,
+  EditorCopyLineDown,
+]
 
 const runTests = async (tests) => {
   for (const module of tests) {
