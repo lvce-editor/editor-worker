@@ -1,8 +1,6 @@
-import { setup } from './setup.js'
 import * as assert from 'node:assert'
 
-export const test = async () => {
-  const rpc = await setup()
+export const test = async (rpc) => {
   const state = {
     value: '',
     matches: new Uint32Array([0, 0]),

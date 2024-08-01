@@ -1,9 +1,18 @@
+import { setup } from '../test-integration-util/setup.js'
 import * as CreateEditor from './create-editor.test.js'
 import * as FindWidget from './find-widget.test.js'
 
+const tests = [CreateEditor, FindWidget]
+
+const runTests = async (tests) => {
+  for (const module of tests) {
+    const rpc = await setup()
+    await module.test(rpc)
+  }
+}
+
 const main = async () => {
-  await CreateEditor.test()
-  await FindWidget.test()
+  await runTests(tests)
   process.exit(0)
 }
 
