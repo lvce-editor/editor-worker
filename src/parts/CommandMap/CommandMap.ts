@@ -107,6 +107,7 @@ import * as EditorCompletionSelectCurrent from '../EditorCompletionSelectCurrent
 import * as EditorCompletionSelectIndex from '../EditorCompletionSelectIndex/EditorCompletionSelectIndex.ts'
 import * as FindWidget from '../FindWidget/FindWidget.ts'
 import * as Font from '../Font/Font.ts'
+import * as GetSelections from '../GetSelections/GetSelections.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
@@ -243,6 +244,7 @@ export const commandMap = {
   'Editor.typeWithAutoClosing': EditorTypeWithAutoClosing.typeWithAutoClosing,
   'Editor.undo': EditorUndo.undo,
   'Editor.unIndent': Unindent.editorUnindent,
+  'Editor.getSelections': GetSelections.getSelections,
   'EditorCompletion.advance': EditorCompletion.advance,
   'EditorCompletion.handleEditorBlur': EditorCompletion.handleEditorBlur,
   'EditorCompletion.handleEditorClick': EditorCompletion.handleEditorClick,
