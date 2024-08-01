@@ -244,7 +244,7 @@ export const commandMap = {
   'Editor.typeWithAutoClosing': EditorTypeWithAutoClosing.typeWithAutoClosing,
   'Editor.undo': EditorUndo.undo,
   'Editor.unIndent': Unindent.editorUnindent,
-  'Editor.getSelections': GetSelections.getText,
+  'Editor.getSelections': GetSelections.getSelections,
   'EditorCompletion.advance': EditorCompletion.advance,
   'EditorCompletion.handleEditorBlur': EditorCompletion.handleEditorBlur,
   'EditorCompletion.handleEditorClick': EditorCompletion.handleEditorClick,
