@@ -2,13 +2,19 @@ import { createWorker } from './createWorker.js'
 
 const workerPath = new URL('../dist/dist/editorWorkerMain.js', import.meta.url).toString()
 
+const getResult = (method, ...params) => {
+  return null
+}
+
 const handleMessage = (event) => {
   const { data, target } = event
+  console.log({ data })
   if (data.id) {
+    const result = getResult(data.method, ...data.params)
     target.postMessage({
       jsonrpc: '2.0',
       id: data.id,
-      result: null,
+      result,
     })
   }
 }
