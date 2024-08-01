@@ -75,6 +75,9 @@
         }
       ]
     },
+    "testMatch": [
+      "**/test/**"
+    ],
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
