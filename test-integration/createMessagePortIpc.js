@@ -11,7 +11,6 @@ export const createMessagePortIpc = async (listener, commandMap) => {
 
   const ipc = {
     send(message) {
-      console.log({ message })
       port2.postMessage(message)
     },
     dispose() {
@@ -21,7 +20,6 @@ export const createMessagePortIpc = async (listener, commandMap) => {
   }
   port2.addEventListener('message', async (event) => {
     const message = event.data
-    console.log({ message })
     if (message.method) {
       const fn = commandMap[message.method]
       if (!fn) {
