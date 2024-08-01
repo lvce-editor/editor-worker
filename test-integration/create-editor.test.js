@@ -1,7 +1,4 @@
-import { setup } from './setup.js'
-
-export const test = async () => {
-  const rpc = await setup()
+export const test = async (rpc) => {
   await rpc.invoke('Editor.create', {
     id: 0,
     content: '',
