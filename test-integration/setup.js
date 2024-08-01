@@ -27,6 +27,7 @@ export const setup = async () => {
       port.addEventListener('message', handleMessage)
       port.postMessage('ready')
     },
+    'Editor.setSelections'() {},
   }
   const rpc = await createWorker(workerPath, commandMap)
   const syntaxHighlightingEnabled = true
