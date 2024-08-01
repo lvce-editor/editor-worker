@@ -1,20 +1,24 @@
-export const createWorkerIpc = async (workerPath) => {
-  globalThis.WorkerGlobalScope = {}
+import { IpcParentWithNodeWorker } from '@lvce-editor/ipc'
+import * as JsonRpc from '@lvce-editor/json-rpc'
+import { fileURLToPath } from 'node:url'
+import { MessageChannel } from 'node:worker_threads'
 
-  const readyPromise = new Promise((resolve) => {
-    globalThis.postMessage = (message) => {
-      if (message === 'ready') {
-        resolve(undefined)
-      }
-    }
+export const createWorkerIpc = async (workerPath) => {
+  const workerUrl = fileURLToPath(new URL('./worker.js', import.meta.url))
+  const rawIpc = await IpcParentWithNodeWorker.create({
+    path: workerUrl,
+  })
+  const ipc = IpcParentWithNodeWorker.wrap(rawIpc)
+
+  ipc.on('message', (event) => {
+    const message = event.data
+    JsonRpc.resolve(message.id, message)
   })
 
-  let _listener = (data) => {}
-
-  globalThis.addEventListener = (type, listener, options) => {
-    _listener = listener
+  const { port1, port2 } = new MessageChannel()
+  await JsonRpc.invokeAndTransfer(ipc, [port1], 'loadEditorWorker', workerPath, port1)
+  return {
+    port: port2,
+    ipc,
   }
-  await import(workerPath)
-  await readyPromise
-  return _listener
 }
