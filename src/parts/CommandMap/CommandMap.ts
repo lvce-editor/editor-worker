@@ -114,6 +114,7 @@ import * as Initialize from '../Initialize/Initialize.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
+import * as EditorOpenCompletion from '../EditorCommand/EditorCommandOpenCompletion.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
 import * as ColorPickerRender from '../ColorPickerRender/ColorPickerRender.ts'
@@ -166,8 +167,8 @@ export const commandMap = {
   'Editor.deleteWordRight': DeleteWordRight.deleteWordRight,
   'Editor.findAllReferences': FindAllReferences.findAllReferences,
   'Editor.format': EditorFormat.format,
-  'Editor.getWordAt': GetWordAt.getWordAt,
   'Editor.getText': GetText.getText,
+  'Editor.getWordAt': GetWordAt.getWordAt,
   'Editor.getWordBefore': GetWordAt.getWordBefore,
   'Editor.goToDefinition': EditorGoToDefinition.goToDefinition,
   'Editor.goToTypeDefinition': EditorGoToTypeDefinition.goToTypeDefinition,
@@ -205,6 +206,7 @@ export const commandMap = {
   'Editor.moveSelection': EditorMoveSelection.editorMoveSelection,
   'Editor.moveSelectionPx': EditorMoveSelectionPx.moveSelectionPx,
   'Editor.offsetAt': TextDocument.offsetAt,
+  'Editor.openCompletion': EditorOpenCompletion.openCompletion,
   'Editor.openFind': OpenFind.openFind,
   'Editor.organizeImports': OrganizeImports.organizeImports,
   'Editor.paste': EditorPaste.paste,
