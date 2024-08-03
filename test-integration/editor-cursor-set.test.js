@@ -15,7 +15,6 @@ export const test = async (rpc) => {
     charWidth: 9,
   })
   await rpc.invoke('Editor.cursorSet', 0, 0, 1)
-  await rpc.invoke('Editor.cursorUp', 0)
   const selections = await rpc.invoke('Editor.getSelections', 0)
   assert.deepEqual(selections, new Uint32Array([0, 1, 0, 1]))
 }
