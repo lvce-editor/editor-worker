@@ -1,7 +1,6 @@
 import * as Assert from '../Assert/Assert.ts'
 
-// @ts-ignore
-export const clamp = (num, min, max) => {
+export const clamp = (num: number, min: number, max: number) => {
   Assert.number(num)
   Assert.number(min)
   Assert.number(max)
