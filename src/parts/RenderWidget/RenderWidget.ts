@@ -2,7 +2,12 @@ import * as EditorCompletionRender from '../EditorCompletionRender/EditorComplet
 
 const renderCompletion = (oldState: any, newState: any) => {
   const commands = EditorCompletionRender.renderCompletion(oldState, newState)
-  return commands
+  const wrappedCommands = []
+  const uid = newState.uid
+  for (const command of commands) {
+    wrappedCommands.push(['Viewlet.send', uid, ...command])
+  }
+  return wrappedCommands
 }
 
 const addWidgetCompletion = (widget: any) => {
@@ -13,9 +18,7 @@ const addWidgetCompletion = (widget: any) => {
   const uid = widget.newState.uid
   const allCommands: any[] = []
   allCommands.push(['Viewlet.create', id, uid])
-  for (const command of commands) {
-    allCommands.push(['Viewlet.send', uid, ...command])
-  }
+  allCommands.push(...commands)
   return allCommands
 }
 
