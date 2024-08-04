@@ -116,6 +116,7 @@ export const createEditor = async ({
     charWidth,
     uid: id,
     id,
+    widgets: [],
   }
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds(editor, x, y, width, height, 9)
