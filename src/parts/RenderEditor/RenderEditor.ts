@@ -155,11 +155,12 @@ const renderWidgets = {
     for (const addedWidget of addedWidgets) {
       const childCommands = RenderWidget.addWidget(addedWidget)
       if (childCommands.length > 0) {
-        addCommands.push(childCommands)
+        addCommands.push(...childCommands)
       }
     }
-    return []
+    return addCommands
   },
+  multiple: true,
 }
 
 export const render = [
@@ -184,7 +185,10 @@ export const renderEditor = async (id: number) => {
   for (const item of render) {
     if (!item.isEqual(oldState, newState)) {
       const result = await item.apply(oldState, newState)
-      if (result.length > 0) {
+      // @ts-ignore
+      if (item.multiple) {
+        commands.push(...result)
+      } else if (result.length > 0) {
         commands.push(result)
       }
     }

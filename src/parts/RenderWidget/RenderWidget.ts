@@ -10,7 +10,9 @@ const renderCompletion = (oldState: any, newState: any) => {
 const addWidgetCompletion = (widget: any) => {
   const commands = renderCompletion(widget.oldState, widget.newState)
   console.log({ commands })
-  return []
+  const id = 'EditorCompletion'
+  const allCommands = [['Viewlet.create', id], ...commands]
+  return allCommands
 }
 
 export const addWidget = (widget: any) => {
@@ -27,7 +29,7 @@ export const renderWidget = (widget: any) => {
   const { id } = widget
   switch (id) {
     case 'completion':
-      return renderCompletion
+      return renderCompletion(widget.oldState, widget.newState)
     default:
       throw new Error(`unsupported widget`)
   }
