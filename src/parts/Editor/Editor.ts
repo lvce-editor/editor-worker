@@ -1,9 +1,9 @@
+import * as ApplyWidgetChanges from '../ApplyWidgetChanges/ApplyWidgetChanges.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
-import * as Widgets from '../Widgets/Widgets.ts'
 import * as EditorScrolling from './EditorScrolling.ts'
 import * as EditorSelection from './EditorSelection.ts'
 
@@ -103,18 +103,7 @@ export const scheduleDocumentAndCursorsSelections = (editor: any, changes: any, 
     invalidStartIndex,
     autoClosingRanges,
   }
-  const widgets = editor.widgets || []
-  const newWidgets = widgets.map((widget: any) => {
-    const module = Widgets.getModule(widget.id)
-    if (changes.length === 1 && changes[0].origin === EditOrigin.EditorType && module.handleEditorType) {
-      const newState = module.handleEditorType(newEditor, widget.newState)
-      return {
-        ...widget,
-        newState,
-      }
-    }
-    return widget
-  })
+  const newWidgets = ApplyWidgetChanges.applyWidgetChanges(editor, changes)
   const newEditor2 = {
     ...newEditor,
     widgets: newWidgets,
