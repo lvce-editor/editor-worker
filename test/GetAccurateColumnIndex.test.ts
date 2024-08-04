@@ -4,7 +4,7 @@ beforeEach(() => {
   jest.resetAllMocks()
 })
 
-jest.unstable_mockModule('../src/parts/MeasureTextWidth/MeasureTextWidth.js', () => {
+jest.unstable_mockModule('../src/parts/MeasureTextWidth/MeasureTextWidth.ts', () => {
   return {
     measureTextWidth: jest.fn(() => {
       throw new Error('not implemented')
@@ -12,8 +12,8 @@ jest.unstable_mockModule('../src/parts/MeasureTextWidth/MeasureTextWidth.js', ()
   }
 })
 
-const GetAccurateColumnIndex = await import('../src/parts/GetAccurateColumnIndex/GetAccurateColumnIndex.js')
-const MeasureTextWidth = await import('../src/parts/MeasureTextWidth/MeasureTextWidth.js')
+const GetAccurateColumnIndex = await import('../src/parts/GetAccurateColumnIndex/GetAccurateColumnIndex.ts')
+const MeasureTextWidth = await import('../src/parts/MeasureTextWidth/MeasureTextWidth.ts')
 
 test('getAccurateColumnIndex - at start of line', () => {
   const line = ''
