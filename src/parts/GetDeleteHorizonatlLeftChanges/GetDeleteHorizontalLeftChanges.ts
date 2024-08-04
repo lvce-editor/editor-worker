@@ -7,8 +7,8 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 // @ts-ignore
 export const getChanges = (lines, selections, getDelta) => {
   const changes: any[] = []
-  // @ts-ignore
-  const deleteSelection = (selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn) => {
+  // TODO avoid closure
+  const deleteSelection = (selectionStartRow: any, selectionStartColumn: any, selectionEndRow: any, selectionEndColumn: any) => {
     const positionLeft = EditorGetPositionLeft.editorGetPositionLeft(selectionStartRow, selectionStartColumn, lines, getDelta)
     const selectionEnd = {
       rowIndex: selectionEndRow,
@@ -25,7 +25,7 @@ export const getChanges = (lines, selections, getDelta) => {
           end: selectionEnd,
         },
       ),
-      origin: EditOrigin.Delete,
+      origin: EditOrigin.DeleteLeft,
     })
   }
   EditorSelection.forEach(selections, deleteSelection)

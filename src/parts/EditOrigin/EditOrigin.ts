@@ -2,6 +2,7 @@
 export const CompositionUpdate = 'compositionUpdate'
 export const ContentEditableInput = 'contentEditableInput'
 export const Delete = 'delete'
+export const DeleteLeft = 'deleteLeft'
 export const DeleteHorizontalRight = 'deleteHorizontalRight'
 export const EditorCut = 'editorCut'
 export const EditorPasteText = 'editorPasteText'

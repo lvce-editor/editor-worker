@@ -103,7 +103,7 @@ export const scheduleDocumentAndCursorsSelections = (editor: any, changes: any, 
     invalidStartIndex,
     autoClosingRanges,
   }
-  const newWidgets = ApplyWidgetChanges.applyWidgetChanges(editor, changes)
+  const newWidgets = ApplyWidgetChanges.applyWidgetChanges(newEditor, changes)
   const newEditor2 = {
     ...newEditor,
     widgets: newWidgets,
