@@ -10,6 +10,13 @@ const getResult = (method, ...params) => {
       embeddedResults: [],
     }
   }
+  if (method === 'ExtensionHostCompletion.execute') {
+    return [
+      {
+        label: 'abc',
+      },
+    ]
+  }
   return null
 }
 
@@ -40,6 +47,8 @@ export const setup = async () => {
       port.postMessage('ready')
     },
     'Editor.setSelections'() {},
+    'ExtensionHostManagement.activateByEvent'() {},
+    'Focus.setAdditionalFocus'() {},
   }
   const rpc = await createWorker(workerPath, commandMap)
   const syntaxHighlightingEnabled = true
