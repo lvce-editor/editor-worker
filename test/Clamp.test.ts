@@ -5,5 +5,5 @@ test('clamp - lower bound', () => {
   const num = 5
   const min = 10
   const max = 20
-  expect(Clamp.clamp(num, min, max)).toBe(5)
+  expect(Clamp.clamp(num, min, max)).toBe(10)
 })
