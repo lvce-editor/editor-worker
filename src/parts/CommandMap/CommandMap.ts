@@ -106,6 +106,8 @@ import * as Unindent from '../EditorCommand/EditorCommandUnindent.ts'
 import * as EditorCompletion from '../EditorCompletion/EditorCompletion.ts'
 import * as EditorCompletionFocusFirst from '../EditorCompletionFocusFirst/EditorCompletionFocusFirst.ts'
 import * as EditorCompletionFocusIndex from '../EditorCompletionFocusIndex/EditorCompletionFocusIndex.ts'
+import * as EditorCompletionFocusNext from '../EditorCompletionFocusNext/EditorCompletionFocusNext.ts'
+import * as EditorCompletionFocusPrevious from '../EditorCompletionFocusPrevious/EditorCompletionFocusPrevious.ts'
 import * as EditorCompletionSelectCurrent from '../EditorCompletionSelectCurrent/EditorCompletionSelectCurrent.ts'
 import * as EditorCompletionSelectIndex from '../EditorCompletionSelectIndex/EditorCompletionSelectIndex.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
@@ -169,6 +171,7 @@ export const commandMap = {
   'Editor.deleteWordRight': DeleteWordRight.deleteWordRight,
   'Editor.findAllReferences': FindAllReferences.findAllReferences,
   'Editor.format': EditorFormat.format,
+  'Editor.getSelections': GetSelections.getSelections,
   'Editor.getText': GetText.getText,
   'Editor.getWordAt': GetWordAt.getWordAt,
   'Editor.getWordBefore': GetWordAt.getWordBefore,
@@ -248,8 +251,11 @@ export const commandMap = {
   'Editor.typeWithAutoClosing': EditorTypeWithAutoClosing.typeWithAutoClosing,
   'Editor.undo': EditorUndo.undo,
   'Editor.unIndent': Unindent.editorUnindent,
-  'Editor.getSelections': GetSelections.getSelections,
   'EditorCompletion.advance': EditorCompletion.advance,
+  'EditorCompletion.focusFirst': EditorCompletionFocusFirst.focusFirst,
+  'EditorCompletion.focusIndex': EditorCompletionFocusIndex.focusIndex,
+  'EditorCompletion.focusNext': EditorCompletionFocusNext.focusNext,
+  'EditorCompletion.focusPrevious': EditorCompletionFocusPrevious.focusPrevious,
   'EditorCompletion.handleEditorBlur': EditorCompletion.handleEditorBlur,
   'EditorCompletion.handleEditorClick': EditorCompletion.handleEditorClick,
   'EditorCompletion.handleEditorDeleteLeft': EditorCompletion.handleEditorDeleteLeft,
@@ -257,8 +263,6 @@ export const commandMap = {
   'EditorCompletion.loadContent': EditorCompletion.loadContent,
   'EditorCompletion.selectCurrent': EditorCompletionSelectCurrent.selectCurrent,
   'EditorCompletion.selectIndex': EditorCompletionSelectIndex.selectIndex,
-  'EditorCompletion.focusFirst': EditorCompletionFocusFirst.focusFirst,
-  'EditorCompletion.focusIndex': EditorCompletionFocusIndex.focusIndex,
   'FindWidget.focusFirst': FindWidget.focusFirst,
   'FindWidget.focusIndex': FindWidget.focusIndex,
   'FindWidget.focusLast': FindWidget.focusLast,
@@ -271,8 +275,8 @@ export const commandMap = {
   'Hover.handleSashPointerDown': EditorHover.handleSashPointerDown,
   'Hover.handleSashPointerMove': EditorHover.handleSashPointerMove,
   'Hover.handleSashPointerUp': EditorHover.handleSashPointerUp,
-  'Hover.render': EditorHoverRender.renderHover,
   'Hover.loadContent': EditorHover.loadContent,
+  'Hover.render': EditorHoverRender.renderHover,
   'Initialize.initialize': Initialize.intialize,
 }
 
