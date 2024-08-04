@@ -138,9 +138,9 @@ const renderWidgets = {
     }
     for (const oldWidget of oldWidgets) {
       if (oldWidget.id in newWidgetMap) {
-        changedWidgets.push(oldWidget.id)
+        changedWidgets.push(oldWidget)
       } else {
-        removedWidgets.push(oldWidget.id)
+        removedWidgets.push(oldWidget)
       }
     }
     for (const newWidget of newWidgets) {
@@ -150,7 +150,6 @@ const renderWidgets = {
         addedWidgets.push(newWidget)
       }
     }
-    console.log({ addedWidgets, changedWidgets, removedWidgets })
     const addCommands = []
     for (const addedWidget of addedWidgets) {
       const childCommands = RenderWidget.addWidget(addedWidget)
@@ -158,7 +157,15 @@ const renderWidgets = {
         addCommands.push(...childCommands)
       }
     }
-    return addCommands
+    const removeCommands = []
+    for (const removedWidget of removedWidgets) {
+      const childCommands = RenderWidget.removeWidget(removedWidget)
+      if (childCommands.length > 0) {
+        removeCommands.push(...childCommands)
+      }
+    }
+    const allCommands = [...addCommands]
+    return allCommands
   },
   multiple: true,
 }

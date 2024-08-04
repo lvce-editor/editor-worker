@@ -20,6 +20,10 @@ const getEdits = async (editor: any, completionItem: any) => {
   return changes
 }
 
+const isCompletion = (widget: any) => {
+  return widget.id === 'completion'
+}
+
 const select = async (editor: any, completionItem: any) => {
   const changes = await getEdits(editor, completionItem)
   const index = editor.widgets
@@ -35,7 +39,13 @@ const select = async (editor: any, completionItem: any) => {
   // TODO apply edit in editor worker instead of asking renderer worker
   await RendererWorker.invoke('Editor.applyEdit', changes)
   // await RendererWorker.invoke('Viewlet.dispose', state.uid)
-  return editor
+  const { widgets } = editor
+  const completionWidgetIndex = editor.widgets.findIndex(isCompletion)
+  const newWidgets = [...widgets.slice(0, completionWidgetIndex), ...widgets.slice(completionWidgetIndex + 1)]
+  return {
+    ...editor,
+    widgets: newWidgets,
+  }
 }
 
 export const selectIndex = (editor: any, index: number) => {

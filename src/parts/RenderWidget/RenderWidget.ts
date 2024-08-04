@@ -10,7 +10,7 @@ const addWidgetCompletion = (widget: any) => {
   const id = 'EditorCompletion'
   // TODO how to generate a unique integer id
   // that doesn't collide with ids created in renderer worker?
-  const uid = Math.random()
+  const uid = widget.newState.uid
   const allCommands: any[] = []
   allCommands.push(['Viewlet.create', id, uid])
   for (const command of commands) {
@@ -36,5 +36,20 @@ export const renderWidget = (widget: any) => {
       return renderCompletion(widget.oldState, widget.newState)
     default:
       throw new Error(`unsupported widget`)
+  }
+}
+
+const removeCompletion = (widget: any) => {
+  return [['Viewlet.send', widget.newState.uid, 'dispose']]
+}
+
+export const removeWidget = (widget: any) => {
+  console.log({ widget })
+  const { id } = widget
+  switch (id) {
+    case 'completion':
+      return removeCompletion(widget)
+    default:
+      throw new Error('unsupported widget')
   }
 }

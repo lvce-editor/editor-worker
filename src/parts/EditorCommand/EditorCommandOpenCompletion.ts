@@ -5,6 +5,7 @@ import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
 export const openCompletion = async (editor: any) => {
   const { widgets, uid } = editor
+  const completionUid = Math.random()
   const completionWidget = {
     id: 'completion',
     oldState: {
@@ -13,6 +14,7 @@ export const openCompletion = async (editor: any) => {
       maxHeight: 150,
       minLineY: 0,
       maxLineY: 0,
+      uid: completionUid,
     },
     newState: {
       items: [],
@@ -20,6 +22,7 @@ export const openCompletion = async (editor: any) => {
       maxHeight: 150,
       minLineY: 0,
       maxLineY: 10,
+      uid: completionUid,
     },
   }
   const newWidgets = [...widgets, completionWidget]
