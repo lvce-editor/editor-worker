@@ -13,7 +13,10 @@ const getResult = (method, ...params) => {
   if (method === 'ExtensionHostCompletion.execute') {
     return [
       {
-        label: 'abc',
+        label: 'abc 1',
+      },
+      {
+        label: 'abc 2',
       },
     ]
   }
