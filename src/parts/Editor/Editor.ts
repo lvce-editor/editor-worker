@@ -15,23 +15,19 @@ export const dispose = (id) => {
 }
 
 // TODO
-// @ts-ignore
-export const setDeltaYFixedValue = (editor, value) => {
+export const setDeltaYFixedValue = (editor: any, value: any) => {
   return EditorScrolling.setDeltaY(editor, value)
 }
 
-// @ts-ignore
-export const setDeltaY = (editor, value) => {
+export const setDeltaY = (editor: any, value: any) => {
   return setDeltaYFixedValue(editor, editor.deltaY + value)
 }
 
-// @ts-ignore
-const isAutoClosingChange = (change) => {
+const isAutoClosingChange = (change: any) => {
   return change.origin === EditOrigin.EditorTypeWithAutoClosing
 }
 
-// @ts-ignore
-const applyAutoClosingRangesEdit = (editor, changes) => {
+const applyAutoClosingRangesEdit = (editor: any, changes: any[]) => {
   const { autoClosingRanges = [] } = editor
   const newAutoClosingRanges: any[] = []
   const change = changes[0]
@@ -76,7 +72,6 @@ export const scheduleSelections = (editor: any, selectionEdits: any) => {
  * @param {Uint32Array|undefined} selectionChanges
  * @returns
  */
-// @ts-ignore
 export const scheduleDocumentAndCursorsSelections = (editor: any, changes: any, selectionChanges: any = undefined) => {
   Assert.object(editor)
   Assert.array(changes)
@@ -173,8 +168,7 @@ export const scheduleDocument = async (editor, changes) => {
   // ])
 }
 
-// @ts-ignore
-export const hasSelection = (editor) => {
+export const hasSelection = (editor: any) => {
   // TODO editor.selections should always be defined
   return editor.selections && editor.selections.length > 0
 }
