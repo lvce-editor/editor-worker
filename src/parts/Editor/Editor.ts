@@ -107,7 +107,7 @@ export const scheduleDocumentAndCursorsSelections = (editor: any, changes: any, 
   const newWidgets = widgets.map((widget: any) => {
     const module = Widgets.getModule(widget.id)
     if (changes.length === 1 && changes[0].origin === EditOrigin.EditorType && module.handleEditorType) {
-      const newState = module.handleEditorType(editor, widget.newState)
+      const newState = module.handleEditorType(newEditor, widget.newState)
       return {
         ...widget,
         newState,

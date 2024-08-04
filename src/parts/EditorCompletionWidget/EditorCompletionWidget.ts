@@ -36,15 +36,13 @@ export const handleEditorType = (editor: any, state: any) => {
   const rowIndex = selections[0]
   const columnIndex = selections[1]
   const x = EditorPosition.x(editor, rowIndex, columnIndex)
-  // @ts-ignore
-  const y = EditorPosition.y(editor, rowIndex, columnIndex)
+  const y = EditorPosition.y(editor, rowIndex)
   const wordAtOffset = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)
   const newMinLineY = 0
   const newMaxLineY = Math.min(items.length, 8)
   const height = GetListHeight.getListHeight(items.length, itemHeight, maxHeight)
   const finalDeltaY = items.length * itemHeight - height
-  console.log('editor type', state)
   return {
     ...state,
     items,
