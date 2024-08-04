@@ -1,4 +1,4 @@
-import * as GetCompletionItemsVirtualDom from '../GetCompletionItemsVirtualDom/GetCompletionItemsVirtualDom.js'
+import * as GetCompletionItemsVirtualDom from '../GetCompletionItemsVirtualDom/GetCompletionItemsVirtualDom.ts'
 import * as GetVisibleCompletionItems from '../GetVisibleCompletionItems/GetVisibleCompletionItems.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.js'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.js'
@@ -6,7 +6,7 @@ import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.js
 export const hasFunctionalRender = true
 
 const renderItems = {
-  isEqual(oldState, newState) {
+  isEqual(oldState: any, newState: any) {
     return (
       oldState.items === newState.items &&
       oldState.minLineY === newState.minLineY &&
@@ -14,7 +14,7 @@ const renderItems = {
       oldState.focusedIndex === newState.focusedIndex
     )
   },
-  apply(oldState, newState) {
+  apply(oldState: any, newState: any) {
     const visibleItems = GetVisibleCompletionItems.getVisibleItems(
       newState.items,
       newState.itemHeight,
@@ -29,7 +29,7 @@ const renderItems = {
 }
 
 const renderBounds = {
-  isEqual(oldState, newState) {
+  isEqual(oldState: any, newState: any) {
     return (
       oldState.items === newState.items &&
       oldState.minLineY === newState.minLineY &&
@@ -38,17 +38,17 @@ const renderBounds = {
       oldState.y === newState.y
     )
   },
-  apply(oldState, newState) {
+  apply(oldState: any, newState: any) {
     const { x, y, width, height } = newState
     return [/* method */ RenderMethod.SetBounds, /* x */ x, /* y */ y, /* width */ width, /* height */ height]
   },
 }
 
 const renderHeight = {
-  isEqual(oldState, newState) {
+  isEqual(oldState: any, newState: any) {
     return oldState.items.length === newState.items.length
   },
-  apply(oldState, newState) {
+  apply(oldState: any, newState: any) {
     const { itemHeight } = newState
     const contentHeight = newState.items.length * itemHeight
     return [/* method */ RenderMethod.SetContentHeight, /* contentHeight */ contentHeight]
@@ -56,16 +56,16 @@ const renderHeight = {
 }
 
 const renderNegativeMargin = {
-  isEqual(oldState, newState) {
+  isEqual(oldState: any, newState: any) {
     return oldState.deltaY === newState.deltaY
   },
-  apply(oldState, newState) {
+  apply(oldState: any, newState: any) {
     return [/* method */ RenderMethod.SetNegativeMargin, /* negativeMargin */ -newState.deltaY]
   },
 }
 
 const renderScrollBar = {
-  isEqual(oldState, newState) {
+  isEqual(oldState: any, newState: any) {
     return (
       oldState.negativeMargin === newState.negativeMargin &&
       oldState.deltaY === newState.deltaY &&
@@ -74,7 +74,7 @@ const renderScrollBar = {
       oldState.items.length === newState.items.length
     )
   },
-  apply(oldState, newState) {
+  apply(oldState: any, newState: any) {
     const total = newState.items.length
     const contentHeight = total * newState.itemHeight
     const scrollBarHeight = ScrollBarFunctions.getScrollBarSize(newState.height, contentHeight, newState.minimumSliderSize)
