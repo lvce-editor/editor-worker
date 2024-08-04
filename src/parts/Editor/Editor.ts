@@ -95,8 +95,6 @@ export const scheduleDocumentAndCursorsSelections = (editor: any, changes: any, 
   // TODO should push to undostack after rendering
   const autoClosingRanges = applyAutoClosingRangesEdit(editor, changes)
 
-  console.log({ changes })
-
   const newEditor = {
     ...partialNewEditor,
     lines: newLines,
