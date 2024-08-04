@@ -1,10 +1,7 @@
 import * as Assert from '../Assert/Assert.ts'
-import * as GetTextMeasureContext from '../GetTextMeasureContext/GetTextMeasureContext.ts'
 import * as GetFontString from '../GetFontString/GetFontString.ts'
-
-const getLetterSpacingString = (letterSpacing: number) => {
-  return `${letterSpacing}px`
-}
+import * as GetLetterSpacingString from '../GetLetterSpacingString/GetLetterSpacingString.ts'
+import * as GetTextMeasureContext from '../GetTextMeasureContext/GetTextMeasureContext.ts'
 
 export const measureTextWidth = (
   text: string,
@@ -27,7 +24,7 @@ export const measureTextWidth = (
   if (typeof letterSpacing !== 'number') {
     throw new TypeError('letterSpacing must be of type number')
   }
-  const letterSpacingString = getLetterSpacingString(letterSpacing)
+  const letterSpacingString = GetLetterSpacingString.getLetterSpacingString(letterSpacing)
   const fontString = GetFontString.getFontString(fontWeight, fontSize, fontFamily)
   const ctx = GetTextMeasureContext.getContext()
   // @ts-ignore
