@@ -8,7 +8,14 @@ const renderCompletion = (oldState: any, newState: any) => {
 const addWidgetCompletion = (widget: any) => {
   const commands = renderCompletion(widget.oldState, widget.newState)
   const id = 'EditorCompletion'
-  const allCommands = [['Viewlet.create', id], ...commands]
+  // TODO how to generate a unique integer id
+  // that doesn't collide with ids created in renderer worker?
+  const uid = Math.random()
+  const allCommands: any[] = []
+  allCommands.push(['Viewlet.create', id, uid])
+  for (const command of commands) {
+    allCommands.push(['Viewlet.send', uid, ...command])
+  }
   return allCommands
 }
 
