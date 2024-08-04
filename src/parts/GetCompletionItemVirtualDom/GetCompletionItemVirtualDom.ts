@@ -1,7 +1,7 @@
-import * as AriaRoles from '../AriaRoles/AriaRoles.js'
+import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as GetCompletionItemIconVirtualDom from '../GetCompletionItemIconVirtualDom/GetCompletionItemIconVirtualDom.ts'
-import * as GetHighlightedLabelDom from '../GetHighlightedLabelDom/GetHighlightedLabelDom.js'
+import * as GetHighlightedLabelDom from '../GetHighlightedLabelDom/GetHighlightedLabelDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export const getCompletionItemVirtualDom = (visibleItem: any) => {

@@ -1,4 +1,4 @@
-import * as GetVisibleCompletionItem from '../GetVisibleCompletionItem/GetVisibleCompletionItem.js'
+import * as GetVisibleCompletionItem from '../GetVisibleCompletionItem/GetVisibleCompletionItem.ts'
 
 export const getVisibleItems = (
   filteredItems: any[],

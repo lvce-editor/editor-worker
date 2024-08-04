@@ -1,9 +1,9 @@
-import * as EditorStrings from '../EditorStrings/EditorStrings.js'
+import * as EditorStrings from '../EditorStrings/EditorStrings.ts'
 import * as GetCompletionItemVirtualDom from '../GetCompletionItemVirtualDom/GetCompletionItemVirtualDom.ts'
-import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.js'
-import { text } from '../VirtualDomHelpers/VirtualDomHelpers.js'
+import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
-export const getCompletionItemsVirtualDom = (visibleItems:any[]) => {
+export const getCompletionItemsVirtualDom = (visibleItems: any[]) => {
   if (visibleItems.length === 0) {
     return [
       {

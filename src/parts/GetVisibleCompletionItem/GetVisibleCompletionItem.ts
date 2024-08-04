@@ -1,8 +1,8 @@
-import * as CompletionItemFlags from '../CompletionItemFlags/CompletionItemFlags.js'
-import * as EditorCompletionMap from '../EditorCompletionMap/EditorCompletionMap.js'
+import * as CompletionItemFlags from '../CompletionItemFlags/CompletionItemFlags.ts'
+import * as EditorCompletionMap from '../EditorCompletionMap/EditorCompletionMap.ts'
 import * as GetCompletionItemHighlights from '../GetCompletionItemHighlights/GetCompletionItemHighlights.ts'
 import * as EditorCompletionType from '../EditorCompletionType/EditorCompletionType.ts'
-// import * as IconTheme from '../IconTheme/IconTheme.js'
+// import * as IconTheme from '../IconTheme/IconTheme.ts'
 
 const getLabel = (item: any) => {
   return item.label

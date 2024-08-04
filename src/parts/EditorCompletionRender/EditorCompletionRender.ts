@@ -1,7 +1,7 @@
 import * as GetCompletionItemsVirtualDom from '../GetCompletionItemsVirtualDom/GetCompletionItemsVirtualDom.ts'
 import * as GetVisibleCompletionItems from '../GetVisibleCompletionItems/GetVisibleCompletionItems.ts'
-import * as RenderMethod from '../RenderMethod/RenderMethod.js'
-import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.js'
+import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
+import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 export const hasFunctionalRender = true
 
