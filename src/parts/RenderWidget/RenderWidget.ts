@@ -44,7 +44,6 @@ const removeCompletion = (widget: any) => {
 }
 
 export const removeWidget = (widget: any) => {
-  console.log({ widget })
   const { id } = widget
   switch (id) {
     case 'completion':
