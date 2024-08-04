@@ -139,6 +139,7 @@ export const loadContent = async (editorUid: any, state: any) => {
     rowIndex,
     columnIndex,
     editorUid,
+    width: 200,
   }
 }
 

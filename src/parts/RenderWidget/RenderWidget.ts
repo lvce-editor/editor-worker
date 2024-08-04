@@ -1,7 +1,15 @@
-const renderCompletion = () => {}
+import * as EditorCompletionRender from '../EditorCompletionRender/EditorCompletionRender.ts'
+
+const renderCompletion = (oldState: any, newState: any) => {
+  console.log({ oldState, newState })
+  const commands = EditorCompletionRender.renderCompletion(oldState, newState)
+  console.log({ commands })
+  return []
+}
 
 const addWidgetCompletion = (widget: any) => {
-  console.log({ widget })
+  const commands = renderCompletion(widget.oldState, widget.newState)
+  console.log({ commands })
   return []
 }
 

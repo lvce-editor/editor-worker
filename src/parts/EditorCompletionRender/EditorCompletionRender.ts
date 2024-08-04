@@ -89,3 +89,13 @@ const renderScrollBar = {
 }
 
 export const render = [renderItems, renderBounds, renderHeight, renderNegativeMargin, renderScrollBar]
+
+export const renderCompletion = (oldState: any, newState: any) => {
+  const commands = []
+  for (const item of render) {
+    if (!item.isEqual(oldState, newState)) {
+      commands.push(item.apply(oldState, newState))
+    }
+  }
+  return commands
+}
