@@ -164,7 +164,7 @@ const renderWidgets = {
         removeCommands.push(...childCommands)
       }
     }
-    const allCommands = [...addCommands]
+    const allCommands = [...addCommands, ...removeCommands]
     return allCommands
   },
   multiple: true,
