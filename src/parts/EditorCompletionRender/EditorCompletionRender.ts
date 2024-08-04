@@ -23,7 +23,6 @@ const renderItems = {
       newState.maxLineY,
       newState.focusedIndex,
     )
-    console.log({ visibleItems })
     const dom = GetCompletionItemsVirtualDom.getCompletionItemsVirtualDom(visibleItems)
     return ['setDom', dom]
   },
