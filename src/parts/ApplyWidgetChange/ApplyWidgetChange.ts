@@ -10,5 +10,12 @@ export const applyWidgetChange = (editor: any, widget: any, changes: any[]) => {
       newState,
     }
   }
+  if (changes.length === 1 && changes[0].origin === EditOrigin.DeleteLeft && module.handleEditorDeleteLeft) {
+    const newState = module.handleEditorDeleteLeft(editor, widget.newState)
+    return {
+      ...widget,
+      newState,
+    }
+  }
   return widget
 }
