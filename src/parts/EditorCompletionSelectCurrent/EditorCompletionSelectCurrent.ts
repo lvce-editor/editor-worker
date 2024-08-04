@@ -1,6 +1,8 @@
 import * as ViewletEditorCompletionSelectIndex from '../EditorCompletionSelectIndex/EditorCompletionSelectIndex.ts'
+import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
 
-export const selectCurrent = (editorUid: number, state: any) => {
-  const { focusedIndex } = state
-  return ViewletEditorCompletionSelectIndex.selectIndex(editorUid, state, focusedIndex)
+export const selectCurrent = (editor: any) => {
+  const child = GetCompletionState.getCompletionState(editor)
+  const { focusedIndex } = child
+  return ViewletEditorCompletionSelectIndex.selectIndex(editor, focusedIndex)
 }

@@ -1,10 +1,7 @@
-// @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
-// @ts-ignore
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 
-// @ts-ignore
-export const cancelSelection = (editor) => {
+export const cancelSelection = (editor: any) => {
   const selections = editor.selections
   if (selections.length === 4 && selections[0] === selections[2] && selections[1] === selections[3]) {
     return editor

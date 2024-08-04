@@ -138,9 +138,9 @@ const renderWidgets = {
     }
     for (const oldWidget of oldWidgets) {
       if (oldWidget.id in newWidgetMap) {
-        changedWidgets.push(oldWidget.id)
+        changedWidgets.push(oldWidget)
       } else {
-        removedWidgets.push(oldWidget.id)
+        removedWidgets.push(oldWidget)
       }
     }
     for (const newWidget of newWidgets) {
@@ -150,16 +150,24 @@ const renderWidgets = {
         addedWidgets.push(newWidget)
       }
     }
-    console.log({ addedWidgets, changedWidgets, removedWidgets })
     const addCommands = []
     for (const addedWidget of addedWidgets) {
       const childCommands = RenderWidget.addWidget(addedWidget)
       if (childCommands.length > 0) {
-        addCommands.push(childCommands)
+        addCommands.push(...childCommands)
       }
     }
-    return []
+    const removeCommands = []
+    for (const removedWidget of removedWidgets) {
+      const childCommands = RenderWidget.removeWidget(removedWidget)
+      if (childCommands.length > 0) {
+        removeCommands.push(...childCommands)
+      }
+    }
+    const allCommands = [...addCommands, ...removeCommands]
+    return allCommands
   },
+  multiple: true,
 }
 
 export const render = [
@@ -184,7 +192,10 @@ export const renderEditor = async (id: number) => {
   for (const item of render) {
     if (!item.isEqual(oldState, newState)) {
       const result = await item.apply(oldState, newState)
-      if (result.length > 0) {
+      // @ts-ignore
+      if (item.multiple) {
+        commands.push(...result)
+      } else if (result.length > 0) {
         commands.push(result)
       }
     }
