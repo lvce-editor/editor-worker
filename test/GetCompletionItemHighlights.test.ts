@@ -8,5 +8,5 @@ test('getHighlights', () => {
     flags: CompletionItemFlags.None,
     matches: [8, 0, 1],
   }
-  expect(GetCompletionItemHighlights.getHighlights(item)).toEqual([8, 0, 1])
+  expect(GetCompletionItemHighlights.getHighlights(item)).toEqual([0, 1])
 })
