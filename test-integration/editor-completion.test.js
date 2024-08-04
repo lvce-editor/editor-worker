@@ -15,15 +15,14 @@ export const test = async (rpc) => {
     charWidth: 9,
   })
   await rpc.invoke('Editor.cursorSet', 0, 0, 1)
-  await rpc.invoke('Editor.openCompletion', 0)
-  const { commands } = await rpc.invoke('EditorCompletion.focusNext', 0)
-  assert.strictEqual(commands[4][2], 'setDom')
-  assert.deepEqual(commands[4][3], [
+  const { commands } = await rpc.invoke('Editor.openCompletion', 0)
+  assert.strictEqual(commands[5][2], 'setDom')
+  assert.deepEqual(commands[5][3], [
     { type: 4, childCount: 2 },
     {
       type: 4,
       role: 'option',
-      className: 'EditorCompletionItem',
+      className: 'EditorCompletionItem EditorCompletionItemFocused',
       top: 0,
       childCount: 2,
     },
@@ -43,7 +42,7 @@ export const test = async (rpc) => {
     {
       type: 4,
       role: 'option',
-      className: 'EditorCompletionItem EditorCompletionItemFocused',
+      className: 'EditorCompletionItem',
       top: 20,
       childCount: 2,
     },
