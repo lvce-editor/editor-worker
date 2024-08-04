@@ -26,7 +26,7 @@ export const getVisibleIem = (item: any, itemHeight: number, leadingWord: any, i
     label: getLabel(item),
     symbolName: EditorCompletionMap.getSymbolName(item),
     top: i * itemHeight,
-    highlights: GetCompletionItemHighlights.getHighlights(item, leadingWord),
+    highlights: GetCompletionItemHighlights.getHighlights(item),
     focused: i === focusedIndex,
     deprecated: item.flags & CompletionItemFlags.Deprecated,
     fileIcon: getFileIcon(item),
