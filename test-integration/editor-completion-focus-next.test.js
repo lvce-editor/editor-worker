@@ -16,7 +16,29 @@ export const test = async (rpc) => {
   })
   await rpc.invoke('Editor.cursorSet', 0, 0, 1)
   await rpc.invoke('Editor.openCompletion', 0)
-  await rpc.invoke('EditorCompletion.focusNext', 0)
-  // const selections = await rpc.invoke('Editor.getSelections', 0)
-  // assert.deepEqual(selections, new Uint32Array([0, 0, 0, 0]))
+  const { commands } = await rpc.invoke('EditorCompletion.focusNext', 0)
+  assert.strictEqual(commands[4][2], 'setDom')
+  assert.deepEqual(commands[4][3], [
+    { type: 4, childCount: 1 },
+    {
+      type: 4,
+      role: 'option',
+      className: 'EditorCompletionItem',
+      top: 0,
+      childCount: 2,
+    },
+    {
+      type: 4,
+      className: 'ColoredMaskIcon SymbolDefault',
+      childCount: 0,
+    },
+    { type: 4, className: 'Label', childCount: 2 },
+    {
+      type: 8,
+      className: 'EditorCompletionItemHighlight',
+      childCount: 1,
+    },
+    { type: 12, text: 'a', childCount: 0 },
+    { type: 12, text: 'bc', childCount: 0 },
+  ])
 }
