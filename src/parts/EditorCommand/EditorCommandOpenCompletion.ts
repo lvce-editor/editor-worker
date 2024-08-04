@@ -10,11 +10,15 @@ export const openCompletion = async (editor: any) => {
       items: [],
       itemHeight: 20,
       maxHeight: 150,
+      minLineY: 0,
+      maxLineY: 0,
     },
     newState: {
       items: [],
       itemHeight: 20,
       maxHeight: 150,
+      minLineY: 0,
+      maxLineY: 10,
     },
   }
   const newWidgets = [...widgets, completionWidget]
