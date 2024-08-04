@@ -1,4 +1,5 @@
 import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
+import * as ColorPickerRender from '../ColorPickerRender/ColorPickerRender.ts'
 import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import * as AddCursorAbove from '../EditorCommand/EditorCommandAddCursorAbove.ts'
 import * as AddCursorBelow from '../EditorCommand/EditorCommandAddCursorBelow.ts'
@@ -64,8 +65,8 @@ import * as MoveRectangleSelection from '../EditorCommand/EditorCommandMoveRecta
 import * as MoveRectangleSelectionPx from '../EditorCommand/EditorCommandMoveRectangleSelectionPx.ts'
 import * as EditorMoveSelection from '../EditorCommand/EditorCommandMoveSelection.ts'
 import * as EditorMoveSelectionPx from '../EditorCommand/EditorCommandMoveSelectionPx.ts'
+import * as EditorOpenCompletion from '../EditorCommand/EditorCommandOpenCompletion.ts'
 import * as OpenFind from '../EditorCommand/EditorCommandOpenFind.ts'
-import * as GetText from '../GetText/GetText.ts'
 import * as OrganizeImports from '../EditorCommand/EditorCommandOrganizeImports.ts'
 import * as EditorPaste from '../EditorCommand/EditorCommandPaste.ts'
 import * as PasteText from '../EditorCommand/EditorCommandPasteText.ts'
@@ -103,23 +104,24 @@ import * as EditorTypeWithAutoClosing from '../EditorCommand/EditorCommandTypeWi
 import * as EditorUndo from '../EditorCommand/EditorCommandUndo.ts'
 import * as Unindent from '../EditorCommand/EditorCommandUnindent.ts'
 import * as EditorCompletion from '../EditorCompletion/EditorCompletion.ts'
+import * as EditorCompletionFocusFirst from '../EditorCompletionFocusFirst/EditorCompletionFocusFirst.ts'
+import * as EditorCompletionFocusIndex from '../EditorCompletionFocusIndex/EditorCompletionFocusIndex.ts'
 import * as EditorCompletionSelectCurrent from '../EditorCompletionSelectCurrent/EditorCompletionSelectCurrent.ts'
 import * as EditorCompletionSelectIndex from '../EditorCompletionSelectIndex/EditorCompletionSelectIndex.ts'
+import * as EditorHover from '../EditorHover/EditorHover.ts'
+import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 import * as FindWidget from '../FindWidget/FindWidget.ts'
 import * as Font from '../Font/Font.ts'
-import * as GetSelections from '../GetSelections/GetSelections.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
+import * as GetSelections from '../GetSelections/GetSelections.ts'
+import * as GetText from '../GetText/GetText.ts'
 import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
-import * as EditorOpenCompletion from '../EditorCommand/EditorCommandOpenCompletion.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
-import * as ColorPickerRender from '../ColorPickerRender/ColorPickerRender.ts'
-import * as EditorHover from '../EditorHover/EditorHover.ts'
-import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 
 export const commandMap = {
   'ColorPicker.handleSliderPointerDown': ColorPicker.handleSliderPointerDown,
@@ -255,6 +257,8 @@ export const commandMap = {
   'EditorCompletion.loadContent': EditorCompletion.loadContent,
   'EditorCompletion.selectCurrent': EditorCompletionSelectCurrent.selectCurrent,
   'EditorCompletion.selectIndex': EditorCompletionSelectIndex.selectIndex,
+  'EditorCompletion.focusFirst': EditorCompletionFocusFirst.focusFirst,
+  'EditorCompletion.focusIndex': EditorCompletionFocusIndex.focusIndex,
   'FindWidget.focusFirst': FindWidget.focusFirst,
   'FindWidget.focusIndex': FindWidget.focusIndex,
   'FindWidget.focusLast': FindWidget.focusLast,
