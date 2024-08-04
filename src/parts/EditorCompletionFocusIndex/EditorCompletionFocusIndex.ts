@@ -11,10 +11,14 @@ export const focusIndex = (editor: any, index: number) => {
   }
   const childIndex = editor.widgets.findIndex(isCompletion)
   // TODO scroll up/down if necessary
+  const childWidget = editor.widgets[childIndex]
   const newWidget = {
-    ...child,
-    focusedIndex: index,
-    focused: true,
+    ...childWidget,
+    newState: {
+      ...child,
+      focusedIndex: index,
+      focused: true,
+    },
   }
   const newWidgets = [...editor.widgets.slice(0, childIndex), newWidget, ...editor.widgets.slice(childIndex + 1)]
   return {
