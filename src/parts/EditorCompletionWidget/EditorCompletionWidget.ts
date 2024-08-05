@@ -65,7 +65,7 @@ export const handleEditorDeleteLeft = (editor: any, state: any) => {
   const y = EditorPosition.y(editor, rowIndex)
   const wordAtOffset = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   if (!wordAtOffset) {
-    return state
+    return undefined
   }
   const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)
   const newMaxLineY = Math.min(items.length, 8)
