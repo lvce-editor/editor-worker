@@ -5,9 +5,12 @@ export const applyWidgetChanges = (editor: any, changes: any) => {
   if (widgets.length === 0) {
     return widgets
   }
-  const newWidgets = widgets.map((widget: any) => {
+  const newWidgets = []
+  for (const widget of widgets) {
     const newWidget = ApplyWidgetChange.applyWidgetChange(editor, widget, changes)
-    return newWidget
-  })
+    if (newWidget.newState) {
+      newWidgets.push(newWidget)
+    }
+  }
   return newWidgets
 }
