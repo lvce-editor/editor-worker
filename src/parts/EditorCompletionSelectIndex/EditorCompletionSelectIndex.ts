@@ -3,6 +3,7 @@ import * as EditorCommandApplyEdit from '../EditorCommand/EditorCommandApplyEdit
 import * as ReplaceRange from '../EditorCommand/EditorCommandReplaceRange.ts'
 import * as EditorCompletionState from '../EditorCompletionState/EditorCompletionState.ts'
 import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const getEdits = async (editor: any, completionItem: any) => {
   const child = GetCompletionState.getCompletionState(editor)
@@ -21,7 +22,7 @@ const getEdits = async (editor: any, completionItem: any) => {
 }
 
 const isCompletion = (widget: any) => {
-  return widget.id === 'completion'
+  return widget.id === WidgetId.Completion
 }
 
 const select = async (editor: any, completionItem: any) => {

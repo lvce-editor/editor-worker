@@ -2,12 +2,13 @@ import * as EditorCompletion from '../EditorCompletion/EditorCompletion.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const openCompletion = async (editor: any) => {
   const { widgets, uid } = editor
   const completionUid = Math.random()
   const completionWidget = {
-    id: 'completion',
+    id: WidgetId.Completion,
     oldState: {
       items: [],
       itemHeight: 20,

@@ -1,7 +1,8 @@
 import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const isCompletion = (widget: any) => {
-  return widget.id === 'completion'
+  return widget.id === WidgetId.Completion
 }
 
 export const focusIndex = (editor: any, index: number) => {

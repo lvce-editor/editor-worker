@@ -1,5 +1,7 @@
+import * as WidgetId from '../WidgetId/WidgetId.ts'
+
 const isCompletion = (widget: any) => {
-  return widget.id === 'completion'
+  return widget.id === WidgetId.Completion
 }
 
 export const getCompletionState = (editor: any) => {
