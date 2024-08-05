@@ -1,7 +1,25 @@
-import { expect, test } from '@jest/globals'
+import { beforeEach, expect, test } from '@jest/globals'
 import * as ApplyWidgetChange from '../src/parts/ApplyWidgetChange/ApplyWidgetChange.ts'
 import * as EditOrigin from '../src/parts/EditOrigin/EditOrigin.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
+import * as WidgetModules from '../src/parts/WidgetModules/WidgetModules.ts'
+
+beforeEach(() => {
+  WidgetModules.register('test', {
+    handleEditorType(editor: any, state: any) {
+      return {
+        ...state,
+        updated: true,
+      }
+    },
+    handleEditorDeleteLeft(editor: any, state: any) {
+      return {
+        ...state,
+        updated: true,
+      }
+    },
+  })
+})
 
 test('applyWidgetChange - type', () => {
   const editor = {
@@ -13,12 +31,7 @@ test('applyWidgetChange - type', () => {
     selections: EditorSelection.fromRange(0, 0, 0, 4),
   }
   const widget = {
-    handleEditorType(editor: any, state: any) {
-      return {
-        ...state,
-        updated: true,
-      }
-    },
+    id: 'test',
     oldState: {
       updated: false,
     },
@@ -33,7 +46,7 @@ test('applyWidgetChange - type', () => {
       deleted: [],
     },
   ]
-  expect(ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).toEqual({
+  expect(ApplyWidgetChange.applyWidgetChange(editor, widget, changes).newState).toEqual({
     updated: true,
   })
 })
@@ -48,12 +61,7 @@ test('applyWidgetChange - deleteLeft', () => {
     selections: EditorSelection.fromRange(0, 0, 0, 4),
   }
   const widget = {
-    handleEditorDeleteLeft(editor: any, state: any) {
-      return {
-        ...state,
-        updated: true,
-      }
-    },
+    id: 'test',
     oldState: {
       updated: false,
     },
@@ -68,7 +76,7 @@ test('applyWidgetChange - deleteLeft', () => {
       deleted: ['a'],
     },
   ]
-  expect(ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).toEqual({
+  expect(ApplyWidgetChange.applyWidgetChange(editor, widget, changes).newState).toEqual({
     updated: true,
   })
 })
