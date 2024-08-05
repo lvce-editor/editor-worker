@@ -1,7 +1,7 @@
 import * as Completions from '../Completions/Completions.ts'
+import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as EditorPosition from '../EditorCommand/EditorCommandPosition.ts'
 import * as EditorShowMessage from '../EditorCommand/EditorCommandShowMessage.ts'
-import * as EditorCompletionState from '../EditorCompletionState/EditorCompletionState.ts'
 import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletionItems.ts'
 import * as GetFinalDeltaY from '../GetFinalDeltaY/GetFinalDeltaY.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
@@ -20,22 +20,6 @@ const getDisplayErrorMessage = (error: any) => {
   return message
 }
 
-const RE_WORD = /[\w\-]+$/
-
-// TODO use textdocument
-const getWordAtOffset = (editor: any) => {
-  const { lines, selections } = editor
-  const rowIndex = selections[0]
-  const columnIndex = selections[1]
-  const line = lines[rowIndex]
-  const part = line.slice(0, columnIndex)
-  const wordMatch = part.match(RE_WORD)
-  if (wordMatch) {
-    return wordMatch[0]
-  }
-  return ''
-}
-
 export const handleEditorType = (state: any) => {
   const { editorUid } = state
   const editor = getEditor(editorUid)
@@ -43,10 +27,9 @@ export const handleEditorType = (state: any) => {
   const rowIndex = editor.selections[0]
   const columnIndex = editor.selections[1]
   const x = EditorPosition.x(editor, rowIndex, columnIndex)
-  // @ts-ignore
-  const y = EditorPosition.y(editor, rowIndex, columnIndex)
-  const wordAtOffset = getWordAtOffset(editor)
-  const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)
+  const y = EditorPosition.y(editor, rowIndex)
+  const { word } = EditorCommandGetWordAt.getWordAt(editor, rowIndex, columnIndex)
+  const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, word)
   const newMinLineY = 0
   const newMaxLineY = Math.min(items.length, 8)
   const height = GetListHeight.getListHeight(items.length, itemHeight, maxHeight)
@@ -58,7 +41,7 @@ export const handleEditorType = (state: any) => {
     y,
     minLineY: newMinLineY,
     maxLineY: newMaxLineY,
-    leadingWord: wordAtOffset,
+    leadingWord: word,
     height,
     finalDeltaY,
   }
@@ -71,17 +54,15 @@ export const handleEditorDeleteLeft = (state: any) => {
   const rowIndex = editor.selections[0]
   const columnIndex = editor.selections[1]
   const x = EditorPosition.x(editor, rowIndex, columnIndex)
-  // @ts-ignore
-  const y = EditorPosition.y(editor, rowIndex, columnIndex)
-  const wordAtOffset = getWordAtOffset(editor)
-  if (!wordAtOffset) {
-    editor.completionState = EditorCompletionState.None
+  const y = EditorPosition.y(editor, rowIndex)
+  const { word } = EditorCommandGetWordAt.getWordAt(editor, rowIndex, columnIndex)
+  if (!word) {
     return {
       ...state,
       disposed: true,
     }
   }
-  const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)
+  const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, word)
   const newMaxLineY = Math.min(items.length, 8)
   const height = GetListHeight.getListHeight(items.length, itemHeight, maxHeight)
   return {
@@ -90,7 +71,7 @@ export const handleEditorDeleteLeft = (state: any) => {
     x,
     y,
     maxLineY: newMaxLineY,
-    leadingWord: wordAtOffset,
+    leadingWord: word,
     height,
   }
 }
@@ -98,10 +79,10 @@ export const handleEditorDeleteLeft = (state: any) => {
 export const loadContent = async (itemHeight: number, maxHeight: number, editorUid: number) => {
   const editor = getEditor(editorUid)
   const unfilteredItems = await Completions.getCompletions(editor)
-  const wordAtOffset = getWordAtOffset(editor)
-  const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)
   const rowIndex = editor.selections[0]
   const columnIndex = editor.selections[1]
+  const { word } = EditorCommandGetWordAt.getWordAt(editor, rowIndex, columnIndex)
+  const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, word)
   const x = EditorPosition.x(editor, rowIndex, columnIndex)
   // @ts-ignore
   const y = EditorPosition.y(editor, rowIndex, columnIndex)
@@ -121,7 +102,7 @@ export const loadContent = async (itemHeight: number, maxHeight: number, editorU
     maxLineY: newMaxLineY,
     focusedIndex: newFocusedIndex,
     finalDeltaY,
-    leadingWord: wordAtOffset,
+    leadingWord: word,
     height,
     rowIndex,
     columnIndex,
