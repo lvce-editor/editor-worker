@@ -41,7 +41,7 @@ test('applyWidgetChange - type', () => {
   }
   const changes = [
     {
-      type: EditOrigin.EditorType,
+      origin: EditOrigin.EditorType,
       inserted: ['a'],
       deleted: [],
     },
@@ -71,7 +71,7 @@ test('applyWidgetChange - deleteLeft', () => {
   }
   const changes = [
     {
-      type: EditOrigin.DeleteLeft,
+      origin: EditOrigin.DeleteLeft,
       inserted: [''],
       deleted: ['a'],
     },
