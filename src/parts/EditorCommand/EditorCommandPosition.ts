@@ -2,8 +2,7 @@ import * as Assert from '../Assert/Assert.ts'
 import * as Clamp from '../Clamp/Clamp.ts'
 import * as GetAccurateColumnIndex from '../GetAccurateColumnIndex/GetAccurateColumnIndex.ts'
 
-// @ts-ignore
-export const at = (editor, eventX, eventY) => {
+export const at = (editor: any, eventX: number, eventY: number) => {
   Assert.object(editor)
   Assert.number(eventX)
   Assert.number(eventY)
@@ -45,15 +44,13 @@ export const at = (editor, eventX, eventY) => {
  * @param {number} columnIndex
  * @returns
  */
-// @ts-ignore
-export const x = (editor, rowIndex, columnIndex) => {
+export const x = (editor: any, rowIndex: number, columnIndex: number) => {
   const { columnWidth, x } = editor
   const offsetX = columnIndex * columnWidth + x
   return offsetX
 }
 
-// @ts-ignore
-export const y = (editor, rowIndex) => {
+export const y = (editor: any, rowIndex: number) => {
   const { rowHeight, y } = editor
   const offsetY = (rowIndex + 1) * rowHeight + y
   return offsetY
