@@ -4,24 +4,12 @@ import * as CreateTable from '../CreateTable/CreateTable.ts'
 import * as EmptyMatches from '../EmptyMatches/EmptyMatches.ts'
 import * as GetCompletionItemScore from '../GetCompletionItemScore/GetCompletionItemScore.ts'
 import * as IsPatternInWord from '../IsPatternInWord/IsPatternInWord.ts'
-import * as PrintTable from '../PrintTable/PrintTable.ts'
 import * as TraceHighlights from '../TraceHighlights/TraceHighlights.ts'
 
 const gridSize = 128
 
 const table = CreateTable.createTable(gridSize)
 const arrows = CreateTable.createTable(gridSize)
-// @ts-ignore
-const diag = CreateTable.createTable(gridSize)
-
-// @ts-ignore
-const printTables = (pattern, patternStart, word, wordStart) => {
-  pattern = pattern.slice(patternStart)
-  word = word.slice(wordStart)
-  console.log(PrintTable.printTable(table, pattern, pattern.length, word, word.length))
-  console.log(PrintTable.printTable(arrows, pattern, pattern.length, word, word.length))
-  // console.log(printTable(_diag, pattern, pattern.length, word, word.length));
-}
 
 export const filterCompletionItem = (pattern: any, word: any) => {
   const patternLength = Math.min(pattern.length, gridSize - 1)
@@ -73,7 +61,6 @@ export const filterCompletionItem = (pattern: any, word: any) => {
   if (!strongMatch) {
     return EmptyMatches.EmptyMatches
   }
-  // printTables(pattern, 0, word, 0)
   const highlights = TraceHighlights.traceHighlights(table, arrows, patternLength, wordLength)
   return highlights
 }
