@@ -18,7 +18,5 @@ test('EditorCommandgetWordAt', () => {
   }
   const rowIndex = 0
   const columnIndex = 1
-  expect(EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)).toEqual({
-    word: 'a',
-  })
+  expect(EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)).toEqual('a')
 })
