@@ -22,8 +22,7 @@ export const readText = async () => {
   }
 }
 
-// @ts-ignore
-export const writeText = async (text) => {
+export const writeText = async (text: string) => {
   try {
     Assert.string(text)
     await RendererWorker.invoke('ClipBoard.writeText', /* text */ text)
