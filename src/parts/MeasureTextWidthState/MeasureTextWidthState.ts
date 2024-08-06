@@ -2,7 +2,7 @@ interface State {
   ctx: OffscreenCanvasRenderingContext2D | undefined
 }
 
-export const state: State = {
+const state: State = {
   ctx: undefined,
 }
 

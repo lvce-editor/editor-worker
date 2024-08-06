@@ -31,11 +31,3 @@ export const writeText = async (text) => {
     throw new VError(error, 'Failed to write text to clipboard')
   }
 }
-
-export const execCopy = async () => {
-  try {
-    return await RendererWorker.invoke('ClipBoard.execCopy')
-  } catch (error) {
-    throw new VError(error, 'Failed to copy selected text')
-  }
-}

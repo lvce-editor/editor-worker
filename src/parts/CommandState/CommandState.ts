@@ -1,9 +1,9 @@
-export const state = {
+const state = {
   commands: Object.create(null),
 }
 
 // @ts-ignore
-export const registerCommand = (key, fn) => {
+const registerCommand = (key, fn) => {
   state.commands[key] = fn
 }
 

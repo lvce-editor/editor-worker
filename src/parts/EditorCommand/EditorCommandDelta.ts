@@ -154,4 +154,4 @@ export const wordPartRight = (line, columnIndex) => {
 // wordPartRight('DEBUGEntry', 3) //?
 
 // @ts-ignore
-export const line = (line) => {}
+const line = (line) => {}

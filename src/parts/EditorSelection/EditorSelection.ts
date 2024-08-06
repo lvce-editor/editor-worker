@@ -1,4 +1,3 @@
-import * as Assert from '../Assert/Assert.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as GetX from '../GetX/GetX.ts'
 import * as Px from '../Px/Px.ts'
@@ -9,10 +8,6 @@ export const fromRange = (startRowIndex: number, startColumnIndex: number, endRo
 
 export const fromRanges = (...items: any[]) => {
   return new Uint32Array(items.flat(1))
-}
-
-export const fromPosition = (rowIndex: number, columnIndex: number) => {
-  return fromRange(rowIndex, columnIndex, rowIndex, columnIndex)
 }
 
 export const alloc = (length: number) => {
@@ -55,7 +50,7 @@ const isSelectionSingleLine = (selectionStartRow: number, selectionStartColumn: 
   return selectionStartRow === selectionEndRow
 }
 
-export const isEverySelection = (selections: any[], fn: any) => {
+const isEverySelection = (selections: any[], fn: any) => {
   for (let i = 0; i < selections.length; i += 4) {
     const selectionStartRow = selections[i]
     const selectionStartColumn = selections[i + 1]
@@ -100,53 +95,7 @@ export const push = (selections: any[], startRowIndex: number, startColumnIndex:
   return newSelections
 }
 
-const getSelectionFromChange = (change: any) => {
-  // @ts-ignore
-  const { start, inserted, end } = change
-  const startRowIndex = start.rowIndex
-  const startColumnIndex = start.columnIndex
-  const insertedLength = inserted.length
-  if (insertedLength === 1) {
-    const newPosition = {
-      rowIndex: startRowIndex + insertedLength - 1,
-      columnIndex: inserted.at(-1).length + startColumnIndex,
-    }
-    return {
-      start: newPosition,
-      end: newPosition,
-    }
-  }
-  const newPosition = {
-    rowIndex: startRowIndex + insertedLength - 1,
-    columnIndex: inserted.at(-1).length,
-  }
-  return {
-    start: newPosition,
-    end: newPosition,
-  }
-}
-
-export const setSelections = (editor: any, selections: any) => {
-  Assert.object(editor)
-  // Assert.uint32array(selections)
-  return {
-    ...editor,
-    selections,
-  }
-  // editor.selections = selections
-  // GlobalEventBus.emitEvent('editor.selectionChange', editor, selections)
-}
-
 // TODO maybe only accept sorted selection edits in the first place
-
-// TODO avoid allocating too many objects when creating new selection from changes
-export const applyEdit = (editor: any, changes: any) => {
-  Assert.object(editor)
-  Assert.array(changes)
-  const newSelections = from(changes, getSelectionFromChange)
-  // setSelections(editor, newSelections)
-  return newSelections
-}
 
 const emptyCursors: any[] = []
 
