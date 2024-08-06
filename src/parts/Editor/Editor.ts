@@ -7,14 +7,6 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as EditorScrolling from './EditorScrolling.ts'
 import * as EditorSelection from './EditorSelection.ts'
 
-// @ts-ignore
-export const create = (id, uri, languageId, content) => {}
-
-// @ts-ignore
-export const dispose = (id) => {
-  // delete state.editors[id]
-}
-
 // TODO
 export const setDeltaYFixedValue = (editor: any, value: any) => {
   return EditorScrolling.setDeltaY(editor, value)

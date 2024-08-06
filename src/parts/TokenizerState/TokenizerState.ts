@@ -1,4 +1,4 @@
-export const state = {
+const state = {
   tokenizers: Object.create(null),
   tokenizePaths: Object.create(null),
   listeners: [],

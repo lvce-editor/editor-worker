@@ -177,7 +177,7 @@ const renderWidgets = {
   multiple: true,
 }
 
-export const render = [
+const render = [
   renderLines,
   renderSelections,
   renderScrollBarX,

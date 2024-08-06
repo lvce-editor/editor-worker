@@ -11,10 +11,6 @@ export const fromRanges = (...items: any[]) => {
   return new Uint32Array(items.flat(1))
 }
 
-export const fromPosition = (rowIndex: number, columnIndex: number) => {
-  return fromRange(rowIndex, columnIndex, rowIndex, columnIndex)
-}
-
 export const alloc = (length: number) => {
   return new Uint32Array(length)
 }
@@ -55,7 +51,7 @@ const isSelectionSingleLine = (selectionStartRow: number, selectionStartColumn: 
   return selectionStartRow === selectionEndRow
 }
 
-export const isEverySelection = (selections: any[], fn: any) => {
+const isEverySelection = (selections: any[], fn: any) => {
   for (let i = 0; i < selections.length; i += 4) {
     const selectionStartRow = selections[i]
     const selectionStartColumn = selections[i + 1]
@@ -126,7 +122,7 @@ const getSelectionFromChange = (change: any) => {
   }
 }
 
-export const setSelections = (editor: any, selections: any) => {
+const setSelections = (editor: any, selections: any) => {
   Assert.object(editor)
   // Assert.uint32array(selections)
   return {
@@ -140,7 +136,7 @@ export const setSelections = (editor: any, selections: any) => {
 // TODO maybe only accept sorted selection edits in the first place
 
 // TODO avoid allocating too many objects when creating new selection from changes
-export const applyEdit = (editor: any, changes: any) => {
+const applyEdit = (editor: any, changes: any) => {
   Assert.object(editor)
   Assert.array(changes)
   const newSelections = from(changes, getSelectionFromChange)

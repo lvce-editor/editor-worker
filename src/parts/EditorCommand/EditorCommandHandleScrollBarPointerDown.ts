@@ -28,5 +28,3 @@ export const handleScrollBarPointerDown = (state, eventY) => {
     handleOffset,
   }
 }
-
-export const handleScrollBarVerticalPointerDown = handleScrollBarPointerDown

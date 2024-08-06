@@ -1,16 +1,6 @@
-import * as Assert from '../Assert/Assert.ts'
 import * as Arrays from '../Arrays/Arrays.ts'
-import * as SplitLines from '../SplitLines/SplitLines.ts'
+import * as Assert from '../Assert/Assert.ts'
 import * as JoinLines from '../JoinLines/JoinLines.ts'
-
-export const create = (text: string) => {
-  const lines = SplitLines.splitLines(text)
-  const state = {
-    lines,
-  }
-  // TODO send to shared process somehow
-  return state
-}
 
 // TODO have function for single edit (most common, avoid one array)
 export const applyEdits = (textDocument: any, changes: any[]) => {
@@ -78,7 +68,7 @@ export const getLine = (textDocument: any, index: number) => {
   return textDocument.lines[index]
 }
 
-export const getLineLength = (textDocument: any, index: number) => {
+const getLineLength = (textDocument: any, index: number) => {
   return textDocument.lines[index].length
 }
 

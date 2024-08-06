@@ -3,8 +3,6 @@ import * as GetVisibleCompletionItems from '../GetVisibleCompletionItems/GetVisi
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
-export const hasFunctionalRender = true
-
 const renderItems = {
   isEqual(oldState: any, newState: any) {
     return (
@@ -88,7 +86,7 @@ const renderScrollBar = {
   },
 }
 
-export const render = [renderItems, renderBounds, renderHeight, renderNegativeMargin, renderScrollBar]
+const render = [renderItems, renderBounds, renderHeight, renderNegativeMargin, renderScrollBar]
 
 export const renderCompletion = (oldState: any, newState: any) => {
   const commands = []

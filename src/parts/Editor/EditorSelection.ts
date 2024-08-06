@@ -83,7 +83,7 @@ const getSelectionArray = (visibleSelections) => {
 }
 
 // @ts-ignore
-export const getVisible = (editor) => {
+const getVisible = (editor) => {
   const visibleCursors: any[] = []
   const visibleSelections: any[] = []
   // // TODO binary search

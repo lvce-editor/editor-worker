@@ -4,7 +4,7 @@ import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 // import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
 
-export const state = {
+const state = {
   timeout: -1,
 }
 
@@ -54,7 +54,7 @@ export const showErrorMessage = (editor, rowIndex, columnIndex, message) => {
 }
 
 // @ts-ignore
-export const editorHideMessage = async (editor) => {
+const editorHideMessage = async (editor) => {
   clearTimeout(state.timeout)
   state.timeout = -1
   // await RendererProcess.invoke(/* Viewlet.send */ 'Viewlet.send', /* id */ editor.uid, /* method */ 'hideOverlayMessage')

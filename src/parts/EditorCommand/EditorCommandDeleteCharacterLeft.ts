@@ -5,5 +5,3 @@ export const deleteCharacterLeft = (editor: any) => {
   const newEditor = EditorDeleteHorizontalLeft.editorDeleteHorizontalLeft(editor, EditorDelta.characterLeft)
   return newEditor
 }
-
-export const deleteLeft = deleteCharacterLeft

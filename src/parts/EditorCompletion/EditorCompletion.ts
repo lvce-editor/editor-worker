@@ -88,7 +88,7 @@ export const handleEditorDeleteLeft = (editorUid: number, state: any) => {
   }
 }
 
-export const dispose = (state: any) => {
+const dispose = (state: any) => {
   return {
     ...state,
     disposed: true,
@@ -143,7 +143,7 @@ export const loadContent = async (editorUid: any, state: any) => {
   }
 }
 
-export const handleError = async (error: any, editorUid: number) => {
+const handleError = async (error: any, editorUid: number) => {
   const displayErrorMessage = getDisplayErrorMessage(error)
   const editor = GetEditor.getEditor(editorUid)
   await EditorShowMessage.editorShowMessage(
@@ -156,7 +156,7 @@ export const handleError = async (error: any, editorUid: number) => {
 }
 
 // @ts-ignore
-export const handleSelectionChange = (state, selectionChanges) => {}
+const handleSelectionChange = (state, selectionChanges) => {}
 
 export const advance = (state: any, word: string) => {
   const filteredItems = FilterCompletionItems.filterCompletionItems(state.items, word)

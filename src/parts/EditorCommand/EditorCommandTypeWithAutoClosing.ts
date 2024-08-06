@@ -7,10 +7,6 @@ import * as EditorTypeWithAutoClosingEndBracket from './EditorCommandTypeWithAut
 import * as EditorTypeWithAutoClosingQuote from './EditorCommandTypeWithAutoClosingQuote.ts'
 import * as EditorTypeWithAutoClosingTag from './EditorCommandTypeWithAutoClosingTag.ts'
 
-export const state = {
-  listeners: [],
-}
-
 // TODO implement typing command without brace completion -> brace completion should be independent module
 export const typeWithAutoClosing = async (editor: any, text: string) => {
   const { isAutoClosingBracketsEnabled, isAutoClosingQuotesEnabled, isAutoClosingTagsEnabled } = editor
