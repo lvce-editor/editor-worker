@@ -2,10 +2,6 @@ import * as GetColorPickerVirtualDom from '../GetColorPickerVirtualDom/GetColorP
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import type { ColorPickerState } from '../ColorPickerTypes/ColorPickerTypes.ts'
 
-export const hasFunctionalRender = true
-
-export const hasFunctionalRootRender = true
-
 const renderColor = {
   isEqual(oldState: ColorPickerState, newState: ColorPickerState) {
     return oldState.color === newState.color
@@ -34,7 +30,7 @@ const renderColorPickerDom = {
   },
 }
 
-export const render = [renderColorPickerDom, renderColor, renderOffsetX]
+const render = [renderColorPickerDom, renderColor, renderOffsetX]
 
 export const renderColorPicker = async (oldState: any, newState: any) => {
   const commands = []

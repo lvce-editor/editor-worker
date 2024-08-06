@@ -1,14 +1,14 @@
 // @ts-nocheck
 import * as PrettyError from '../PrettyError/PrettyError.ts'
 
-export const state = {
+const state = {
   /**
    * @type {string[]}
    */
   seenWarnings: [],
 }
 
-export const logError = async (error) => {
+const logError = async (error) => {
   const prettyError = await PrettyError.prepare(error)
   const prettyErrorString = PrettyError.print(prettyError)
   console.error(prettyErrorString)
@@ -25,7 +25,7 @@ export const handleError = async (error) => {
   }
 }
 
-export const warn = (...args) => {
+const warn = (...args) => {
   const stringified = JSON.stringify(args)
   if (state.seenWarnings.includes(stringified)) {
     return
@@ -37,7 +37,7 @@ export const warn = (...args) => {
 /**
  * @param {PromiseRejectionEvent} event
  */
-export const handleUnhandledRejection = async (event) => {
+const handleUnhandledRejection = async (event) => {
   try {
     event.preventDefault()
     await handleError(event.reason)
@@ -49,7 +49,7 @@ export const handleUnhandledRejection = async (event) => {
 /**
  * @param {ErrorEvent} event
  */
-export const handleUnhandledError = async (event) => {
+const handleUnhandledError = async (event) => {
   try {
     event.preventDefault()
     await handleError(event.error)

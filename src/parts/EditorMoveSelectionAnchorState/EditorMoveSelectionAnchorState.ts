@@ -1,4 +1,4 @@
-export const state = {
+const state = {
   position: {
     rowIndex: 0,
     columnIndex: 0,

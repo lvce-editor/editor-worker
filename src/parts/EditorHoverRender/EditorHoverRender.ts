@@ -1,10 +1,6 @@
 import * as GetHoverVirtualDom from '../GetHoverVirtualDom/GetHoverVirtualDom.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
-export const hasFunctionalRender = true
-
-export const hasFunctionalRootRender = true
-
 const renderHoverDom = {
   isEqual(oldState: any, newState: any) {
     return (
@@ -33,7 +29,7 @@ const renderBounds = {
   },
 }
 
-export const render = [renderHoverDom, renderBounds]
+const render = [renderHoverDom, renderBounds]
 
 export const renderHover = async (oldState: any, newState: any) => {
   const commands = []

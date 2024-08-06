@@ -1,7 +1,7 @@
 import * as FontState from '../FontState/FontState.ts'
 import * as LoadFont from '../LoadFont/LoadFont.ts'
 
-export const load = async (fontName: string, fontUrl: string) => {
+const load = async (fontName: string, fontUrl: string) => {
   return LoadFont.loadFont(fontName, fontUrl)
 }
 
