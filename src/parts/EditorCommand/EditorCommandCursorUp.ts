@@ -1,19 +1,16 @@
 import * as EditorCursorVertical from './EditorCommandCursorVertical.ts'
 
-// @ts-ignore
-const getEdgePosition = (editor) => {
+const getEdgePosition = (editor: any) => {
   return {
     rowIndex: 0,
     columnIndex: 0,
   }
 }
 
-// @ts-ignore
-const getPosition = (selection) => {
+const getPosition = (selection: any) => {
   return selection.start
 }
 
-// @ts-ignore
-export const cursorUp = (editor) => {
+export const cursorUp = (editor: any) => {
   return EditorCursorVertical.cursorVertical(editor, getPosition, getEdgePosition, -1)
 }
