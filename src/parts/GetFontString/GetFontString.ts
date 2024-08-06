@@ -1,4 +1,3 @@
-// @ts-ignore
-export const getFontString = (fontWeight, fontSize, fontFamily) => {
+export const getFontString = (fontWeight: number, fontSize: number, fontFamily: string): string => {
   return `${fontWeight} ${fontSize}px ${fontFamily}`
 }
