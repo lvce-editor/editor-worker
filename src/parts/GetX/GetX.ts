@@ -1,18 +1,10 @@
 import * as Assert from '../Assert/Assert.ts'
+import * as GetTabCount from '../GetTabCount/GetTabCount.ts'
 import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
 
 // TODO visible selections could also be uint16array
 // [top1, left1, width1, height1, top2, left2, width2, height2...]
-const getTabCount = (string: string) => {
-  let count = 0
-  for (const element of string) {
-    if (element === '\t') {
-      count++
-    }
-  }
-  return count
-}
 
 export const getX = (
   line: string,
@@ -26,7 +18,7 @@ export const getX = (
   halfCursorWidth: number,
   width: number,
   averageCharWidth: number,
-  difference = 0,
+  difference = 0
 ) => {
   if (!line) {
     return 0
@@ -47,7 +39,7 @@ export const getX = (
   }
   const normalize = NormalizeText.shouldNormalizeText(line)
   const normalizedLine = NormalizeText.normalizeText(line, normalize, tabSize)
-  const tabCount = getTabCount(line.slice(0, column))
+  const tabCount = GetTabCount.getTabCount(line.slice(0, column))
   const partialText = normalizedLine.slice(0, column + tabCount)
   return (
     MeasureTextWidth.measureTextWidth(partialText, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, averageCharWidth) -
