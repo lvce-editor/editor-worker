@@ -10,7 +10,7 @@ export const measureTextWidth = (
   fontFamily: string,
   letterSpacing: number,
   isMonoSpaceFont: boolean,
-  charWidth: number,
+  charWidth: number
 ) => {
   Assert.string(text)
   Assert.number(fontWeight)
