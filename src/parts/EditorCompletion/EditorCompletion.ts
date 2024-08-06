@@ -1,20 +1,10 @@
 import * as Completions from '../Completions/Completions.ts'
 import * as EditorPosition from '../EditorCommand/EditorCommandPosition.ts'
-import * as EditorShowMessage from '../EditorCommand/EditorCommandShowMessage.ts'
 import * as EditorCompletionState from '../EditorCompletionState/EditorCompletionState.ts'
 import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletionItems.ts'
+import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetFinalDeltaY from '../GetFinalDeltaY/GetFinalDeltaY.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
-import * as GetEditor from '../GetEditor/GetEditor.ts'
-
-const getDisplayErrorMessage = (error: any) => {
-  const message = `${error}`
-  const errorPrefix = 'Error: '
-  if (message.startsWith(errorPrefix)) {
-    return message.slice(errorPrefix.length)
-  }
-  return message
-}
 
 const RE_WORD = /[\w\-]+$/
 
@@ -141,18 +131,6 @@ export const loadContent = async (editorUid: any, state: any) => {
     editorUid,
     width: 200,
   }
-}
-
-const handleError = async (error: any, editorUid: number) => {
-  const displayErrorMessage = getDisplayErrorMessage(error)
-  const editor = GetEditor.getEditor(editorUid)
-  await EditorShowMessage.editorShowMessage(
-    /* editor */ editor,
-    /* rowIndex */ 0,
-    /* columnIndex */ 0,
-    /* message */ displayErrorMessage,
-    /* isError */ true,
-  )
 }
 
 // @ts-ignore

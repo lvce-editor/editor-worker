@@ -68,10 +68,6 @@ export const getLine = (textDocument: any, index: number) => {
   return textDocument.lines[index]
 }
 
-const getLineLength = (textDocument: any, index: number) => {
-  return textDocument.lines[index].length
-}
-
 export const getText = (state: any) => {
   return JoinLines.joinLines(state.lines)
 }
