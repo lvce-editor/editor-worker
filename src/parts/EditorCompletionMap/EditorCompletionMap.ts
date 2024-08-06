@@ -1,8 +1,8 @@
 import * as EditorCompletionType from '../EditorCompletionType/EditorCompletionType.ts'
 import * as SymbolName from '../SymbolName/SymbolName.ts'
 
-export const getSymbolName = (item: any) => {
-  switch (item.kind) {
+export const getSymbolName = (kind: number) => {
+  switch (kind) {
     case EditorCompletionType.Property:
       return SymbolName.SymbolProperty
     case EditorCompletionType.Value:
