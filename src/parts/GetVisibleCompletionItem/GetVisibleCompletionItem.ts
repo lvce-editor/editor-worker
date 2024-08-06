@@ -24,7 +24,7 @@ const getFileIcon = (item: any) => {
 export const getVisibleIem = (item: any, itemHeight: number, leadingWord: any, i: number, focusedIndex: number) => {
   return {
     label: getLabel(item),
-    symbolName: EditorCompletionMap.getSymbolName(item),
+    symbolName: EditorCompletionMap.getSymbolName(item.kind),
     top: i * itemHeight,
     highlights: GetCompletionItemHighlights.getHighlights(item),
     focused: i === focusedIndex,
