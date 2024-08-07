@@ -1,5 +1,5 @@
-import * as EditorCompletionType from '../EditorCompletionType/EditorCompletionType.ts'
 import * as Character from '../Character/Character.ts'
+import * as EditorCompletionType from '../EditorCompletionType/EditorCompletionType.ts'
 
 // TODO
 export const getCompletionFileIcon = (kind: number) => {
