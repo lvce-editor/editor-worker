@@ -1,9 +1,7 @@
 import * as Character from '../Character/Character.ts'
-// @ts-ignore
 import * as TextSegmenter from '../TextSegmenter/TextSegmenter.ts'
 
-// @ts-ignore
-export const characterLeft = (line, columnIndex) => {
+export const characterLeft = (line: string, columnIndex: number) => {
   if (!TextSegmenter.supported()) {
     return 1
   }
@@ -16,8 +14,7 @@ export const twoCharactersLeft = () => {
   return 2
 }
 
-// @ts-ignore
-export const characterRight = (line, columnIndex) => {
+export const characterRight = (line: string, columnIndex: number) => {
   if (!TextSegmenter.supported()) {
     return 1
   }
@@ -26,13 +23,11 @@ export const characterRight = (line, columnIndex) => {
   return next.segment.length
 }
 
-// @ts-ignore
-const isWhitespace = (char) => {
+const isWhitespace = (char: string) => {
   return char === Character.Space || char === Character.Tab
 }
 
-// @ts-ignore
-export const lineCharacterStart = (line, columnIndex) => {
+export const lineCharacterStart = (line: string, columnIndex: number) => {
   if (line.length === 0) {
     return 0
   }
@@ -44,13 +39,11 @@ export const lineCharacterStart = (line, columnIndex) => {
   return columnIndex
 }
 
-// @ts-ignore
-export const lineEnd = (line, columnIndex) => {
+export const lineEnd = (line: string, columnIndex: number) => {
   return line.length - columnIndex
 }
 
-// @ts-ignore
-const tryRegexArray = (partialLine, regexArray) => {
+const tryRegexArray = (partialLine: string, regexArray: RegExp[]) => {
   for (const regex of regexArray) {
     const match = partialLine.match(regex)
     if (match) {
@@ -77,8 +70,7 @@ const RE_WORD_RIGHT_1 = /^\s*[\u00C0-\u017F\w]+/i
 const RE_WORD_RIGHT_2 = /^[^a-zA-Z\d]+\w*/
 const RE_WORD_RIGHT = [RE_WORD_RIGHT_1, RE_WORD_RIGHT_2]
 
-// @ts-ignore
-export const wordRight = (line, columnIndex) => {
+export const wordRight = (line: string, columnIndex: number) => {
   const partialLine = line.slice(columnIndex)
   return tryRegexArray(partialLine, RE_WORD_RIGHT)
 }
@@ -104,8 +96,7 @@ const RE_PARTIAL_WORD_LEFT = [
   RE_PARTIAL_WORD_LEFT_9,
 ]
 
-// @ts-ignore
-export const wordPartLeft = (line, columnIndex) => {
+export const wordPartLeft = (line: string, columnIndex: number) => {
   const partialLine = line.slice(0, columnIndex)
   return tryRegexArray(partialLine, RE_PARTIAL_WORD_LEFT)
 }
@@ -138,8 +129,7 @@ const ARRAY_PARTIAL_WORD_RIGHT_2 = [
 
 const RE_UPPERCASE = /[A-Z]/
 
-// @ts-ignore
-export const wordPartRight = (line, columnIndex) => {
+export const wordPartRight = (line: string, columnIndex: number) => {
   const partialLine = line.slice(columnIndex)
   // line[columnIndex]//?
   if (RE_UPPERCASE.test(line[columnIndex - 1])) {
