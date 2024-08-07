@@ -1,10 +1,8 @@
-// @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
 
 // TODO handle virtual space
 
-// @ts-ignore
-const getNewSelectionsSingleLineWord = (lines, word) => {
+const getNewSelectionsSingleLineWord = (lines: string[], word: string) => {
   if (word.length === 0) {
     throw new Error('word length must be greater than zero')
   }
@@ -19,8 +17,7 @@ const getNewSelectionsSingleLineWord = (lines, word) => {
   return new Uint32Array(newSelections)
 }
 
-// @ts-ignore
-const isMultiLineMatch = (lines, rowIndex, wordParts) => {
+const isMultiLineMatch = (lines: string[], rowIndex: number, wordParts: any[]) => {
   let j = 0
   if (!lines[rowIndex + j].endsWith(wordParts[j])) {
     return false
@@ -42,13 +39,13 @@ const isMultiLineMatch = (lines, rowIndex, wordParts) => {
 
 // TODO this is very expensive, there might be a better algorithm for this
 // TODO if this matches the given selections, don't schedule selections/rerender
-// @ts-ignore
-const getAllOccurrencesMultiLine = (lines, wordParts) => {
+const getAllOccurrencesMultiLine = (lines: string[], wordParts: string[]) => {
   const newSelections: any[] = []
   for (let rowIndex = 0; rowIndex < lines.length - wordParts.length + 1; rowIndex) {
     lines
     rowIndex
     if (isMultiLineMatch(lines, rowIndex, wordParts)) {
+      // @ts-ignore
       newSelections.push(rowIndex, lines[rowIndex].length - wordParts[0].length, rowIndex + wordParts.length - 1, wordParts.at(-1).length)
       rowIndex += wordParts.length - 1
     } else {
@@ -61,13 +58,11 @@ const getAllOccurrencesMultiLine = (lines, wordParts) => {
 // TODO duplicate code with EditorSelectNextOccurrence
 const RE_ALPHA_NUMERIC = /[a-zA-Z\d]/
 
-// @ts-ignore
-const isAlphaNumeric = (char) => {
+const isAlphaNumeric = (char: string) => {
   return RE_ALPHA_NUMERIC.test(char)
 }
 
-// @ts-ignore
-const getWordStartIndex = (line, index) => {
+const getWordStartIndex = (line: string, index: number) => {
   for (let i = index - 1; i >= 0; i--) {
     if (!isAlphaNumeric(line[i])) {
       return i + 1
@@ -76,8 +71,7 @@ const getWordStartIndex = (line, index) => {
   return 0
 }
 
-// @ts-ignore
-const getWordEndIndex = (line, index) => {
+const getWordEndIndex = (line: string, index: number) => {
   for (let i = index; i < line.length; i++) {
     if (!isAlphaNumeric(line[i])) {
       return i
@@ -86,8 +80,7 @@ const getWordEndIndex = (line, index) => {
   return line.length - 1
 }
 
-// @ts-ignore
-const getWordMatchAtPosition = (lines, rowIndex, columnIndex) => {
+const getWordMatchAtPosition = (lines: string[], rowIndex: number, columnIndex: number) => {
   const line = lines[rowIndex]
   const start = getWordStartIndex(line, columnIndex)
   const end = getWordEndIndex(line, columnIndex)
@@ -99,8 +92,7 @@ const getWordMatchAtPosition = (lines, rowIndex, columnIndex) => {
   }
 }
 
-// @ts-ignore
-const getNewSelections = (lines, selections) => {
+const getNewSelections = (lines: string[], selections: any) => {
   if (selections.length < 4) {
     throw new Error('selections must have at least one entry')
   }
@@ -133,11 +125,9 @@ const getNewSelections = (lines, selections) => {
   return newSelections
 }
 
-// @ts-ignore
-export const selectAllOccurrences = (editor) => {
+export const selectAllOccurrences = (editor: any) => {
   // when there are no selections -> first selection is word -> find all selection that include word
-  const lines = editor.lines
-  const selections = editor.selections
+  const { lines, selections } = editor
   const newSelections = getNewSelections(lines, selections)
   return Editor.scheduleSelections(editor, newSelections)
 }
