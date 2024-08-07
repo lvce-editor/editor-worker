@@ -1,5 +1,6 @@
 import * as Editor from '../Editor/Editor.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
+import * as Character from '../Character/Character.ts'
 
 const getNewSelections = (lines: readonly string[], selections: any) => {
   const newSelections = new Uint32Array(selections.length)
@@ -12,11 +13,11 @@ const getNewSelections = (lines: readonly string[], selections: any) => {
       const line = lines[rowIndex]
       // @ts-ignore
       const quoteFound = false
-      while (startColumnIndex > 0 && line[startColumnIndex] !== '"') {
+      while (startColumnIndex > 0 && line[startColumnIndex] !== Character.DoubleQuote) {
         startColumnIndex--
       }
       startColumnIndex++
-      while (endColumnIndex < line.length && line[endColumnIndex] !== '"') {
+      while (endColumnIndex < line.length && line[endColumnIndex] !== Character.DoubleQuote) {
         endColumnIndex++
       }
       newSelections[i] = rowIndex
