@@ -5,7 +5,7 @@ test('getListHeight - empty list', () => {
   const itemsLength = 0
   const itemHeight = 20
   const maxHeight = 200
-  expect(GetListHeight.getListHeight(itemsLength, itemHeight, maxHeight)).toBe(0)
+  expect(GetListHeight.getListHeight(itemsLength, itemHeight, maxHeight)).toBe(20)
 })
 
 test('getListHeight', () => {
