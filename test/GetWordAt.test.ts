@@ -20,5 +20,5 @@ test('getWordAt - before and after match', () => {
 test('getWordBefore - no match', () => {
   const line = 'text-dec'
   const columnIndex = 0
-  expect(GetWordAt.getWordAt(line, columnIndex)).toBe('')
+  expect(GetWordAt.getWordBefore(line, columnIndex)).toBe('')
 })
