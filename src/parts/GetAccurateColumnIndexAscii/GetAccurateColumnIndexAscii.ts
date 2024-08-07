@@ -1,26 +1,16 @@
 import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 
 export const getAccurateColumnIndexAscii = (
-  // @ts-ignore
-  line,
-  // @ts-ignore
-  guess,
-  // @ts-ignore
-  averageCharWidth,
-  // @ts-ignore
-  eventX,
-  // @ts-ignore
-  fontWeight,
-  // @ts-ignore
-  fontSize,
-  // @ts-ignore
-  fontFamily,
-  // @ts-ignore
-  letterSpacing,
-  // @ts-ignore
-  isMonospaceFont,
-  // @ts-ignore
-  charWidth,
+  line: string,
+  guess: number,
+  averageCharWidth: number,
+  eventX: number,
+  fontWeight: number,
+  fontSize: number,
+  fontFamily: string,
+  letterSpacing: number,
+  isMonospaceFont: boolean,
+  charWidth: number
 ) => {
   for (let i = guess; i < line.length; i++) {
     const width = MeasureTextWidth.measureTextWidth(line.slice(0, i), fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth)
