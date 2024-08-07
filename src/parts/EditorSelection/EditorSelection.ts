@@ -1,5 +1,6 @@
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as GetX from '../GetX/GetX.ts'
+import * as GetY from '../GetY/GetY.ts'
 import * as Px from '../Px/Px.ts'
 
 export const fromRange = (startRowIndex: number, startColumnIndex: number, endRowIndex: number, endColumnIndex: number) => {
@@ -153,7 +154,7 @@ export const getVisible = (editor: any) => {
   for (let i = 0; i < selections.length; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn, reversed] = GetSelectionPairs.getSelectionPairs(
       selections,
-      i,
+      i
     )
     if (selectionEndRow < minLineY || selectionStartRow > maxLineY) {
       continue
@@ -173,14 +174,14 @@ export const getVisible = (editor: any) => {
       halfCursorWidth,
       width,
       averageCharWidth,
-      endLineDifference,
+      endLineDifference
     )
-    const endLineY = GetX.getY(selectionEndRow, minLineY, rowHeight)
+    const endLineY = GetY.getY(selectionEndRow, minLineY, rowHeight)
     if (isEmpty(selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn) && endLineEndX > 0) {
       visibleCursors.push(endLineEndX, endLineY)
       continue
     }
-    const startLineY = GetX.getY(selectionStartRow, minLineY, rowHeight)
+    const startLineY = GetY.getY(selectionStartRow, minLineY, rowHeight)
     const startLineYRelative = selectionStartRow - minLineY
     const startLineDifference = differences[startLineYRelative]
     if (selectionStartRow === selectionEndRow) {
@@ -196,7 +197,7 @@ export const getVisible = (editor: any) => {
         halfCursorWidth,
         width,
         averageCharWidth,
-        startLineDifference,
+        startLineDifference
       )
       if (reversed) {
         visibleCursors.push(startX, endLineY)
@@ -220,7 +221,7 @@ export const getVisible = (editor: any) => {
           halfCursorWidth,
           width,
           averageCharWidth,
-          startLineDifference,
+          startLineDifference
         )
         const startLineEndX = GetX.getX(
           startLine,
@@ -234,9 +235,9 @@ export const getVisible = (editor: any) => {
           halfCursorWidth,
           width,
           averageCharWidth,
-          startLineDifference,
+          startLineDifference
         )
-        const startLineStartY = GetX.getY(selectionStartRow, minLineY, rowHeight)
+        const startLineStartY = GetY.getY(selectionStartRow, minLineY, rowHeight)
         const selectionWidth = startLineEndX - startLineStartX
         if (reversed) {
           visibleCursors.push(startLineStartX, startLineStartY)
@@ -247,7 +248,7 @@ export const getVisible = (editor: any) => {
       const iMax = Math.min(selectionEndRow, maxLineY)
       for (let i = iMin; i < iMax; i++) {
         const currentLine = lines[i]
-        const currentLineY = GetX.getY(i, minLineY, rowHeight)
+        const currentLineY = GetY.getY(i, minLineY, rowHeight)
         const relativeLine = i - minLineY
         const difference = differences[relativeLine]
         const selectionWidth = GetX.getX(
@@ -262,7 +263,7 @@ export const getVisible = (editor: any) => {
           halfCursorWidth,
           width,
           averageCharWidth,
-          difference,
+          difference
         )
         visibleSelections.push(0, currentLineY, selectionWidth, rowHeight)
       }
