@@ -2,26 +2,14 @@ import { expect, test } from '@jest/globals'
 import * as EditorCopyLineUp from '../src/parts/EditorCommand/EditorCommandCopyLineUp.ts'
 import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
 
-test.skip('editorCopyLineUp', () => {
-  const cursor = {
-    rowIndex: 2,
-    columnIndex: 0,
-  }
+test.only('editorCopyLineUp', () => {
   const editor = {
     lines: ['line 1', 'line 2', 'line 3'],
-    cursor,
-    selections: [
-      {
-        start: cursor,
-        end: cursor,
-      },
-    ],
+    selections: new Uint32Array([2, 0, 2, 0]),
     tokenizer: TokenizePlainText,
+    undoStack: [],
   }
-  EditorCopyLineUp.copyLineUp(editor)
-  expect(editor.lines).toEqual(['line 1', 'line 2', 'line 3', 'line 3'])
-  expect(editor.cursor).toEqual({
-    rowIndex: 2,
-    columnIndex: 0,
-  })
+  const newEditor = EditorCopyLineUp.copyLineUp(editor)
+  expect(newEditor.lines).toEqual(['line 1', 'line 2', 'line 3', 'line 3'])
+  expect(newEditor.selections).toEqual(new Uint32Array([3, 0, 3, 0]))
 })

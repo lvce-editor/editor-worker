@@ -4,10 +4,9 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 // TODO handle multiline selection
 // TODO handle multiple cursors
 
-// @ts-ignore
-export const copyLineDown = (editor) => {
-  const { selections, primarySelectionIndex } = editor
-  const rowIndex = selections[primarySelectionIndex]
+export const copyLineDown = (editor: any) => {
+  const { selections } = editor
+  const rowIndex = selections[0]
   Assert.number(rowIndex)
   const position = {
     rowIndex,
@@ -15,10 +14,10 @@ export const copyLineDown = (editor) => {
   }
   const changes = [
     {
-      inserted: [TextDocument.getLine(editor, rowIndex), ''],
-      deleted: [''],
       start: position,
       end: position,
+      inserted: [TextDocument.getLine(editor, rowIndex), ''],
+      deleted: [''],
     },
   ]
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes)
