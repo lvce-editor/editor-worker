@@ -21,3 +21,13 @@ test('editorSelectInsideString - with selection', () => {
     selections: EditorSelection.fromRange(0, 0, 0, 1),
   })
 })
+
+test('editorSelectInsideString - partial string', () => {
+  const editor = {
+    lines: ['line 1"'],
+    selections: EditorSelection.fromRange(0, 1, 0, 1),
+  }
+  expect(EditorSelectInsideString.selectInsideString(editor)).toMatchObject({
+    selections: EditorSelection.fromRange(0, 1, 0, 6),
+  })
+})
