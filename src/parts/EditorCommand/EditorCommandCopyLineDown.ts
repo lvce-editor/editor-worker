@@ -5,8 +5,8 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 // TODO handle multiple cursors
 
 export const copyLineDown = (editor: any) => {
-  const { selections, primarySelectionIndex } = editor
-  const rowIndex = selections[primarySelectionIndex]
+  const { selections } = editor
+  const rowIndex = selections[0]
   Assert.number(rowIndex)
   const position = {
     rowIndex,
