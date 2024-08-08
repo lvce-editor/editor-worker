@@ -1,4 +1,5 @@
 import * as Editor from '../Editor/Editor.ts'
+import * as GetWordMatchAtPosition from '../GetWordMatchAtPosition/GetWordMatchAtPosition.ts'
 import * as IsAlphaNumeric from '../IsAlphaNumeric/IsAlphaNumeric.ts'
 
 // TODO handle virtual space
@@ -56,6 +57,7 @@ const getAllOccurrencesMultiLine = (lines: string[], wordParts: string[]) => {
   return new Uint32Array(newSelections)
 }
 
+<<<<<<< HEAD
 const getWordStartIndex = (line: string, index: number) => {
   for (let i = index - 1; i >= 0; i--) {
     if (!IsAlphaNumeric.isAlphaNumeric(line[i])) {
@@ -86,6 +88,8 @@ const getWordMatchAtPosition = (lines: string[], rowIndex: number, columnIndex: 
   }
 }
 
+=======
+>>>>>>> 6df37b882b42 (reuse code)
 const getNewSelections = (lines: string[], selections: any) => {
   if (selections.length < 4) {
     throw new Error('selections must have at least one entry')
@@ -97,7 +101,7 @@ const getNewSelections = (lines: string[], selections: any) => {
   const endColumnIndex = selections[firstSelectionIndex + 3]
   if (startRowIndex === endRowIndex) {
     if (startColumnIndex === endColumnIndex) {
-      const wordMatch = getWordMatchAtPosition(lines, endRowIndex, endColumnIndex)
+      const wordMatch = GetWordMatchAtPosition.getWordMatchAtPosition(lines, endRowIndex, endColumnIndex)
       if (wordMatch.start === wordMatch.end) {
         return selections
       }
