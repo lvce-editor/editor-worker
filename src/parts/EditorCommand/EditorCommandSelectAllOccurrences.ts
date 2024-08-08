@@ -1,4 +1,5 @@
 import * as Editor from '../Editor/Editor.ts'
+import * as IsAlphaNumeric from '../IsAlphaNumeric/IsAlphaNumeric.ts'
 
 // TODO handle virtual space
 
@@ -55,16 +56,9 @@ const getAllOccurrencesMultiLine = (lines: string[], wordParts: string[]) => {
   return new Uint32Array(newSelections)
 }
 
-// TODO duplicate code with EditorSelectNextOccurrence
-const RE_ALPHA_NUMERIC = /[a-zA-Z\d]/
-
-const isAlphaNumeric = (char: string) => {
-  return RE_ALPHA_NUMERIC.test(char)
-}
-
 const getWordStartIndex = (line: string, index: number) => {
   for (let i = index - 1; i >= 0; i--) {
-    if (!isAlphaNumeric(line[i])) {
+    if (!IsAlphaNumeric.isAlphaNumeric(line[i])) {
       return i + 1
     }
   }
@@ -73,7 +67,7 @@ const getWordStartIndex = (line: string, index: number) => {
 
 const getWordEndIndex = (line: string, index: number) => {
   for (let i = index; i < line.length; i++) {
-    if (!isAlphaNumeric(line[i])) {
+    if (!IsAlphaNumeric.isAlphaNumeric(line[i])) {
       return i
     }
   }

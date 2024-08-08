@@ -1,9 +1,7 @@
-// @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
-// @ts-ignore
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
-// @ts-ignore
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
+import * as IsAlphaNumeric from '../IsAlphaNumeric/IsAlphaNumeric.ts'
 // TODO handle virtual space
 
 // TODO editors behave differently when selecting next occurrence, for example:
@@ -24,13 +22,11 @@ import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 // - brackets (codemirror) selects position 3 and then selects position 1
 // - sublime selects next position 1, then next position 3
 
-// @ts-ignore
-const isBetween = (value, min, max) => {
+const isBetween = (value: number, min: number, max: number) => {
   return min <= value && value <= max
 }
 
-// @ts-ignore
-const getSelectionEditsSingleLineWord = (lines, selections) => {
+const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
   const lastSelectionIndex = selections.length - 4
   const rowIndex = selections[lastSelectionIndex]
   const lastSelectionStartColumnIndex = selections[lastSelectionIndex + 1]
@@ -131,35 +127,25 @@ const getSelectionEditsSingleLineWord = (lines, selections) => {
   return undefined
 }
 
-const RE_ALPHA_NUMERIC = /[a-zA-Z\d]/
-
-// @ts-ignore
-const isAlphaNumeric = (char) => {
-  return RE_ALPHA_NUMERIC.test(char)
-}
-
-// @ts-ignore
-const getWordStartIndex = (line, index) => {
+const getWordStartIndex = (line: string, index: number) => {
   for (let i = index - 1; i >= 0; i--) {
-    if (!isAlphaNumeric(line[i])) {
+    if (!IsAlphaNumeric.isAlphaNumeric(line[i])) {
       return i + 1
     }
   }
   return 0
 }
 
-// @ts-ignore
-const getWordEndIndex = (line, index) => {
+const getWordEndIndex = (line: string, index: number) => {
   for (let i = index; i < line.length; i++) {
-    if (!isAlphaNumeric(line[i])) {
+    if (!IsAlphaNumeric.isAlphaNumeric(line[i])) {
       return i
     }
   }
   return line.length - 1
 }
 
-// @ts-ignore
-const getWordMatchAtPosition = (lines, rowIndex, columnIndex) => {
+const getWordMatchAtPosition = (lines: string[], rowIndex: number, columnIndex: number) => {
   const line = lines[rowIndex]
   const index = columnIndex
   const start = getWordStartIndex(line, index)
@@ -172,8 +158,7 @@ const getWordMatchAtPosition = (lines, rowIndex, columnIndex) => {
   }
 }
 
-// @ts-ignore
-const getSelectNextOccurrenceResult = (editor) => {
+const getSelectNextOccurrenceResult = (editor: any) => {
   const lines = editor.lines
   const selections = editor.selections
   if (EditorSelection.isEverySelectionEmpty(selections)) {
@@ -208,14 +193,12 @@ const getSelectNextOccurrenceResult = (editor) => {
   return undefined
 }
 
-// @ts-ignore
-const isRangeInViewPort = (minLineY, maxLineY, startRowIndex, endRowIndex) => {
+const isRangeInViewPort = (minLineY: number, maxLineY: number, startRowIndex: number, endRowIndex: number) => {
   return startRowIndex >= minLineY && endRowIndex <= maxLineY
 }
 
 // TODO handle virtual space
-// @ts-ignore
-export const selectNextOccurrence = (editor) => {
+export const selectNextOccurrence = (editor: any) => {
   const result = getSelectNextOccurrenceResult(editor)
   if (!result) {
     return editor
@@ -229,6 +212,5 @@ export const selectNextOccurrence = (editor) => {
   }
   // TODO what is this magic number 5?
   // const deltaY = (revealRangeStartRowIndex - 5) * editor.rowHeight
-  // @ts-ignore
   return Editor.scheduleDocumentAndCursorsSelections(editor, [], selectionEdits)
 }
