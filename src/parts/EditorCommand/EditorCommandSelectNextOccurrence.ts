@@ -22,10 +22,6 @@ import * as IsAlphaNumeric from '../IsAlphaNumeric/IsAlphaNumeric.ts'
 // - brackets (codemirror) selects position 3 and then selects position 1
 // - sublime selects next position 1, then next position 3
 
-const isBetween = (value: number, min: number, max: number) => {
-  return min <= value && value <= max
-}
-
 const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
   const lastSelectionIndex = selections.length - 4
   const rowIndex = selections[lastSelectionIndex]
