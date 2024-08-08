@@ -1,5 +1,4 @@
-// @ts-ignore
-export const editorGetPositionRight = (position, lines, getDelta) => {
+export const editorGetPositionRight = (position: any, lines: string, getDelta: any) => {
   const rowIndex = position.rowIndex
   const columnIndex = position.columnIndex
   if (columnIndex >= lines[rowIndex].length) {
@@ -18,8 +17,7 @@ export const editorGetPositionRight = (position, lines, getDelta) => {
   }
 }
 
-// @ts-ignore
-export const moveToPositionRight = (selections, i, rowIndex, columnIndex, lines, getDelta) => {
+export const moveToPositionRight = (selections: any, i: number, rowIndex: number, columnIndex: number, lines: string, getDelta: any) => {
   if (rowIndex >= lines.length) {
     return
   }
