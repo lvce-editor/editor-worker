@@ -1,6 +1,5 @@
 import * as Editor from '../Editor/Editor.ts'
 import * as GetWordMatchAtPosition from '../GetWordMatchAtPosition/GetWordMatchAtPosition.ts'
-import * as IsAlphaNumeric from '../IsAlphaNumeric/IsAlphaNumeric.ts'
 
 // TODO handle virtual space
 
