@@ -2,7 +2,7 @@ import { expect, test } from '@jest/globals'
 import * as EditorCopyLineUp from '../src/parts/EditorCommand/EditorCommandCopyLineUp.ts'
 import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
 
-test.skip('editorCopyLineUp', () => {
+test('editorCopyLineUp', () => {
   const cursor = {
     rowIndex: 2,
     columnIndex: 0,
@@ -18,9 +18,9 @@ test.skip('editorCopyLineUp', () => {
     ],
     tokenizer: TokenizePlainText,
   }
-  EditorCopyLineUp.copyLineUp(editor)
-  expect(editor.lines).toEqual(['line 1', 'line 2', 'line 3', 'line 3'])
-  expect(editor.cursor).toEqual({
+  const newEditor = EditorCopyLineUp.copyLineUp(editor)
+  expect(newEditor.lines).toEqual(['line 1', 'line 2', 'line 3', 'line 3'])
+  expect(newEditor.cursor).toEqual({
     rowIndex: 2,
     columnIndex: 0,
   })
