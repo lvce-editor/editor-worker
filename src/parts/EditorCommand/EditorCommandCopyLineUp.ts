@@ -1,10 +1,7 @@
-// @ts-ignore
 import * as TextDocument from '../TextDocument/TextDocument.ts'
-// @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
 
-// @ts-ignore
-export const copyLineUp = (editor) => {
+export const copyLineUp = (editor: any) => {
   const { selections, primarySelectionIndex } = editor
   const rowIndex = selections[primarySelectionIndex]
   const position = {
