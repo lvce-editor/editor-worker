@@ -53,3 +53,13 @@ test('undo - deleted character', () => {
   const newEditor = EditorCommandUndo.undo(editor)
   expect(newEditor.lines).toEqual(['a'])
 })
+
+test('undo - empty undoStack', () => {
+  const editor = {
+    lines: [''],
+    selections: new Uint32Array([0, 0, 1, 1]),
+    undoStack: [],
+  }
+  const newEditor = EditorCommandUndo.undo(editor)
+  expect(newEditor).toBe(editor)
+})
