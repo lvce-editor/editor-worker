@@ -2,7 +2,7 @@ import * as Editor from '../Editor/Editor.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as EditorGetPositionRight from './EditorCommandGetPositionRight.ts'
 
-const getNewSelections = (selections: any, lines: string[], getDelta: any) => {
+const getNewSelections = (selections: any, lines: readonly string[], getDelta: any) => {
   const newSelections = new Uint32Array(selections.length)
   for (let i = 0; i < selections.length; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)

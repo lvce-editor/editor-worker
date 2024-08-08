@@ -17,7 +17,7 @@ export const editorGetPositionRight = (position: any, lines: string, getDelta: a
   }
 }
 
-export const moveToPositionRight = (selections: any, i: number, rowIndex: number, columnIndex: number, lines: string, getDelta: any) => {
+export const moveToPositionRight = (selections: any, i: number, rowIndex: number, columnIndex: number, lines: readonly string[], getDelta: any) => {
   if (rowIndex >= lines.length) {
     return
   }
