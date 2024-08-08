@@ -1,5 +1,6 @@
 import * as Editor from '../Editor/Editor.ts'
 import * as GetWordMatchAtPosition from '../GetWordMatchAtPosition/GetWordMatchAtPosition.ts'
+import * as IsMultiLineMatch from '../IsMultiLineMatch/IsMultiLineMatch.ts'
 
 // TODO handle virtual space
 
@@ -18,26 +19,6 @@ const getNewSelectionsSingleLineWord = (lines: string[], word: string) => {
   return new Uint32Array(newSelections)
 }
 
-const isMultiLineMatch = (lines: string[], rowIndex: number, wordParts: any[]) => {
-  let j = 0
-  if (!lines[rowIndex + j].endsWith(wordParts[j])) {
-    return false
-  }
-  while (++j < wordParts.length - 1) {
-    if (lines[rowIndex + j] !== wordParts[j]) {
-      return false
-    }
-  }
-  // j--
-  if (!lines[rowIndex + j].startsWith(wordParts[j])) {
-    lines[rowIndex + j] // ?
-    rowIndex + j // ?
-
-    return false
-  }
-  return true
-}
-
 // TODO this is very expensive, there might be a better algorithm for this
 // TODO if this matches the given selections, don't schedule selections/rerender
 const getAllOccurrencesMultiLine = (lines: string[], wordParts: string[]) => {
@@ -45,7 +26,7 @@ const getAllOccurrencesMultiLine = (lines: string[], wordParts: string[]) => {
   for (let rowIndex = 0; rowIndex < lines.length - wordParts.length + 1; rowIndex) {
     lines
     rowIndex
-    if (isMultiLineMatch(lines, rowIndex, wordParts)) {
+    if (IsMultiLineMatch.isMultiLineMatch(lines, rowIndex, wordParts)) {
       // @ts-ignore
       newSelections.push(rowIndex, lines[rowIndex].length - wordParts[0].length, rowIndex + wordParts.length - 1, wordParts.at(-1).length)
       rowIndex += wordParts.length - 1
