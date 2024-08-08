@@ -1,7 +1,7 @@
 import * as Editor from '../Editor/Editor.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
-import * as IsAlphaNumeric from '../IsAlphaNumeric/IsAlphaNumeric.ts'
+import * as GetWordMatchAtPosition from '../GetWordMatchAtPosition/GetWordMatchAtPosition.ts'
 // TODO handle virtual space
 
 // TODO editors behave differently when selecting next occurrence, for example:
@@ -123,37 +123,6 @@ const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
   return undefined
 }
 
-const getWordStartIndex = (line: string, index: number) => {
-  for (let i = index - 1; i >= 0; i--) {
-    if (!IsAlphaNumeric.isAlphaNumeric(line[i])) {
-      return i + 1
-    }
-  }
-  return 0
-}
-
-const getWordEndIndex = (line: string, index: number) => {
-  for (let i = index; i < line.length; i++) {
-    if (!IsAlphaNumeric.isAlphaNumeric(line[i])) {
-      return i
-    }
-  }
-  return line.length - 1
-}
-
-const getWordMatchAtPosition = (lines: string[], rowIndex: number, columnIndex: number) => {
-  const line = lines[rowIndex]
-  const index = columnIndex
-  const start = getWordStartIndex(line, index)
-  const end = getWordEndIndex(line, index)
-  const word = line.slice(start, end)
-  return {
-    start,
-    end,
-    word,
-  }
-}
-
 const getSelectNextOccurrenceResult = (editor: any) => {
   const lines = editor.lines
   const selections = editor.selections
@@ -162,7 +131,7 @@ const getSelectNextOccurrenceResult = (editor: any) => {
     for (let i = 0; i < selections.length; i += 4) {
       const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
 
-      const wordMatch = getWordMatchAtPosition(lines, selectionStartRow, selectionStartColumn)
+      const wordMatch = GetWordMatchAtPosition.getWordMatchAtPosition(lines, selectionStartRow, selectionStartColumn)
       wordMatch // ?
       if (wordMatch.start === wordMatch.end) {
         newSelections[i] = selectionStartRow
