@@ -18,6 +18,11 @@ test('noTypeDefinitionFound', () => {
   expect(EditorStrings.noTypeDefinitionFound()).toBe('No type definition found')
 })
 
+test('noTypeDefinitionFoundFor', () => {
+  const word = 'test'
+  expect(EditorStrings.noTypeDefinitionFoundFor(word)).toBe("No type definition found for 'test'")
+})
+
 test('noResults', () => {
   expect(EditorStrings.noResults()).toBe('No Results')
 })
