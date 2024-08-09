@@ -1,6 +1,4 @@
-// @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
-// @ts-ignore
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 
 export const state = {
@@ -8,14 +6,12 @@ export const state = {
   compositionText: '',
 }
 
-// @ts-ignore
-export const compositionStart = (editor, event) => {
+export const compositionStart = (editor: any, event: any) => {
   state.isComposing = true
   return editor
 }
 
-// @ts-ignore
-const getCompositionChanges = (selections, data) => {
+const getCompositionChanges = (selections: any, data: any) => {
   const changes: any[] = []
   for (let i = 0; i < selections.length; i += 4) {
     const selectionStartRow = selections[i]
@@ -40,16 +36,14 @@ const getCompositionChanges = (selections, data) => {
   return changes
 }
 
-// @ts-ignore
-export const compositionUpdate = (editor, data) => {
+export const compositionUpdate = (editor: any, data: any) => {
   const selections = editor.selections
   const changes = getCompositionChanges(selections, data)
   state.compositionText = data
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes)
 }
 
-// @ts-ignore
-export const compositionEnd = (editor, data) => {
+export const compositionEnd = (editor: any, data: any) => {
   const selections = editor.selections
   const changes = getCompositionChanges(selections, data)
   state.isComposing = false
