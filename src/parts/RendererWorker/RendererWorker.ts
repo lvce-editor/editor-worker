@@ -4,6 +4,6 @@ export const invoke = async (method: string, ...params: any[]) => {
   return Rpc.invoke(method, ...params)
 }
 
-export const invokeAndTransfer = async (transfer: any, method: string, ...params: any[]) => {
-  return Rpc.invokeAndTransfer(transfer, method, ...params)
+export const invokeAndTransfer = async (method: string, ...params: any[]) => {
+  return Rpc.invokeAndTransfer(method, ...params)
 }
