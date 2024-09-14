@@ -47,6 +47,7 @@ export const createMessagePortIpc = async (listener, port) => {
 }
 
 const handleMessage = async (event) => {
+  console.log(event)
   const { data, target } = event
   if (data.method === 'loadEditorWorker') {
     const workerPath = data.params[0]
