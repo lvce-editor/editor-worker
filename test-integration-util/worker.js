@@ -61,7 +61,7 @@ const main = async () => {
   const rawIpc = await IpcChildWithNodeWorker.listen()
   IpcChildWithNodeWorker.signal(rawIpc)
   const ipc = IpcChildWithNodeWorker.wrap(rawIpc)
-  ipc.on('message', handleMessage)
+  ipc.addEventListener('message', handleMessage)
 }
 
 main()

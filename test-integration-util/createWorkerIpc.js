@@ -10,7 +10,8 @@ export const createWorkerIpc = async (workerPath) => {
   })
   const ipc = IpcParentWithNodeWorker.wrap(rawIpc)
 
-  ipc.on('message', (event) => {
+  ipc.addEventListener('message', (event) => {
+    // @ts-ignore
     const message = event.data
     JsonRpc.resolve(message.id, message)
   })
