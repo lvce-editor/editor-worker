@@ -24,8 +24,7 @@ export const createWorkerIpc = async (workerPath) => {
 
   const ipc = await createIpc(workerUrl)
 
-  ipc.on('message', (event) => {
-    const message = event.data
+  ipc.addEventListener('message', (message) => {
     JsonRpc.resolve(message.id, message)
   })
 
