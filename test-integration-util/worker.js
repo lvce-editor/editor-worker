@@ -3,6 +3,7 @@ import { IpcChildWithNodeWorker } from '@lvce-editor/ipc'
 const createWorkerIpc = async (workerPath) => {
   globalThis.WorkerGlobalScope = {}
 
+  // @ts-ignore
   globalThis.OffscreenCanvas = class {
     getContext() {
       return {
@@ -59,9 +60,10 @@ const handleMessage = async (event) => {
 
 const main = async () => {
   const rawIpc = await IpcChildWithNodeWorker.listen()
+  // @ts-ignore
   IpcChildWithNodeWorker.signal(rawIpc)
   const ipc = IpcChildWithNodeWorker.wrap(rawIpc)
-  ipc.on('message', handleMessage)
+  ipc.addEventListener('message', handleMessage)
 }
 
 main()
