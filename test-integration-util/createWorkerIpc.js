@@ -17,7 +17,7 @@ export const createWorkerIpc = async (workerPath) => {
   })
 
   const { port1, port2 } = new MessageChannel()
-  await JsonRpc.invokeAndTransfer(ipc, [port1], 'loadEditorWorker', workerPath, port1)
+  await JsonRpc.invokeAndTransfer(ipc, 'loadEditorWorker', workerPath, port1)
   return {
     port: port2,
     ipc,
