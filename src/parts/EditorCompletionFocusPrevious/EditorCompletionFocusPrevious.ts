@@ -3,6 +3,9 @@ import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts
 
 export const focusPrevious = (editor: any) => {
   const child = GetCompletionState.getCompletionState(editor)
+  if (!child) {
+    return editor
+  }
   const previousIndex = child.focusedIndex - 1
   return EditorCompletionFocusIndex.focusIndex(editor, previousIndex)
 }
