@@ -119,6 +119,7 @@ import * as GetSelections from '../GetSelections/GetSelections.ts'
 import * as GetText from '../GetText/GetText.ts'
 import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
+import * as EditorCompletionToggleDetails from '../EditorCompletionToggleDetails/EditorCompletionToggleDetails.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
@@ -263,6 +264,7 @@ export const commandMap = {
   'EditorCompletion.loadContent': EditorCompletion.loadContent,
   'EditorCompletion.selectCurrent': EditorCompletionSelectCurrent.selectCurrent,
   'EditorCompletion.selectIndex': EditorCompletionSelectIndex.selectIndex,
+  'EditorCompletion.toggleDetails': EditorCompletionToggleDetails.toggleDetails,
   'FindWidget.focusFirst': FindWidget.focusFirst,
   'FindWidget.focusIndex': FindWidget.focusIndex,
   'FindWidget.focusLast': FindWidget.focusLast,
