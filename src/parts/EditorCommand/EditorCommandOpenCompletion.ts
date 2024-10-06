@@ -1,16 +1,17 @@
 import * as EditorCompletion from '../EditorCompletion/EditorCompletion.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
+import * as HasWidget from '../HasWidget/HasWidget.ts'
+import * as Id from '../Id/Id.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
-import * as HasWidget from '../HasWidget/HasWidget.ts'
 
 export const openCompletion = async (editor: any) => {
   const { widgets, uid } = editor
   if (HasWidget.hasWidget(widgets, WidgetId.Completion)) {
     return editor
   }
-  const completionUid = Math.random()
+  const completionUid = Id.create()
   const completionWidget = {
     id: WidgetId.Completion,
     oldState: {
