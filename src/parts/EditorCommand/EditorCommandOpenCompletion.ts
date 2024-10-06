@@ -1,3 +1,4 @@
+import type { CompletionWidget } from '../CompletionWidget/CompletionWidget.ts'
 import * as EditorCompletion from '../EditorCompletion/EditorCompletion.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
@@ -12,7 +13,7 @@ export const openCompletion = async (editor: any) => {
     return editor
   }
   const completionUid = Id.create()
-  const completionWidget = {
+  const completionWidget: CompletionWidget = {
     id: WidgetId.Completion,
     oldState: {
       items: [],
@@ -21,6 +22,7 @@ export const openCompletion = async (editor: any) => {
       minLineY: 0,
       maxLineY: 0,
       uid: completionUid,
+      focusedIndex: -1,
     },
     newState: {
       items: [],
@@ -29,6 +31,7 @@ export const openCompletion = async (editor: any) => {
       minLineY: 0,
       maxLineY: 10,
       uid: completionUid,
+      focusedIndex: -1,
     },
   }
   const newWidgets = [...widgets, completionWidget]

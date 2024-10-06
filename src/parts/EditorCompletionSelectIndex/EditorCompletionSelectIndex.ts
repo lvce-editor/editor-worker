@@ -51,7 +51,9 @@ const select = async (editor: any, completionItem: any) => {
 
 export const selectIndex = (editor: any, index: number) => {
   const child = GetCompletionState.getCompletionState(editor)
-
+  if (!child) {
+    return editor
+  }
   const { items } = child
   if (index === -1) {
     return editor
