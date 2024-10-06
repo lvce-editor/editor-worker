@@ -7,5 +7,8 @@ const isCompletion = (widget: any) => {
 export const getCompletionState = (editor: any) => {
   const { widgets } = editor
   const child = widgets.find(isCompletion)
+  if(!child){
+    return undefined
+  }
   return child.newState
 }
