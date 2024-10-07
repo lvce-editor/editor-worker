@@ -172,21 +172,13 @@ const renderWidgets = {
       }
     }
     const allCommands = [...addCommands, ...changeCommands, ...removeCommands]
+    console.log({ allCommands })
     return allCommands
   },
   multiple: true,
 }
 
-const render = [
-  renderLines,
-  renderSelections,
-  renderScrollBarX,
-  renderScrollBarY,
-  renderFocus,
-  renderDecorations,
-  renderGutterInfo,
-  renderWidgets,
-]
+const render = [renderLines, renderSelections, renderScrollBarX, renderScrollBarY, renderFocus, renderDecorations, renderGutterInfo, renderWidgets]
 
 export const renderEditor = async (id: number) => {
   const instance = Editors.get(id)

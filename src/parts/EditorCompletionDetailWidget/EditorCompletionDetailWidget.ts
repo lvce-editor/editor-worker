@@ -5,7 +5,11 @@ export const render = (oldState: any, newState: any) => {
   const wrappedCommands = []
   const uid = newState.uid
   for (const command of commands) {
-    wrappedCommands.push(['Viewlet.send', uid, ...command])
+    if (command[0] === 'Viewlet.setDom2') {
+      wrappedCommands.push(command)
+    } else {
+      wrappedCommands.push(['Viewlet.send', uid, ...command])
+    }
   }
   return wrappedCommands
 }
@@ -17,8 +21,9 @@ export const add = (widget: any) => {
   // that doesn't collide with ids created in renderer worker?
   const uid = widget.newState.uid
   const allCommands: any[] = []
-  allCommands.push(['Viewlet.create', id, uid])
+  allCommands.push(['Viewlet.createFunctionalRoot', id, uid])
   allCommands.push(...commands)
+  allCommands.push(['Viewlet.send', uid, 'appendWidget'])
   return allCommands
 }
 
