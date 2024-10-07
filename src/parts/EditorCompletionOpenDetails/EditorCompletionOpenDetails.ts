@@ -1,8 +1,13 @@
 import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
+import * as GetCompletionDetailState from '../GetCompletionDetailState/GetCompletionDetailState.ts'
 
 export const openDetails = (editor: any) => {
   const child = GetCompletionState.getCompletionState(editor)
   if (!child) {
+    return editor
+  }
+  const detailState = GetCompletionDetailState.getCompletionDetailState(editor)
+  if (detailState) {
     return editor
   }
   console.log('open details')
