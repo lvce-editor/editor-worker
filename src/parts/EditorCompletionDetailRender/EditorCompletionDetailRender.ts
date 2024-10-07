@@ -1,20 +1,13 @@
 import type { CompletionDetailState } from '../CompletionDetailState/CompletionDetailState.ts'
+import * as GetCompletionDetailVirtualDom from '../GetCompletionDetailVirtualDom/GetCompletionDetailVirtualDom.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
-import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
-import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 const renderContent = {
   isEqual(oldState: CompletionDetailState, newState: CompletionDetailState) {
     return oldState.content === newState.content
   },
   apply(oldState: CompletionDetailState, newState: CompletionDetailState) {
-    const dom: any[] = [
-      {
-        type: VirtualDomElements.Div,
-        childCount: 1,
-      },
-      text(newState.content),
-    ]
+    const dom: any[] = GetCompletionDetailVirtualDom.getCompletionDetailVirtualDom(newState.content)
     return ['setDom', dom]
   },
 }
