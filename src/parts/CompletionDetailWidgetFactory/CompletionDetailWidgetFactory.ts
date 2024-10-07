@@ -9,10 +9,18 @@ export const create = (): CompletionDetailWidget => {
     oldState: {
       content: '',
       uid: completionUid,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
     },
     newState: {
       content: '',
       uid: completionUid,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
     },
   }
   return completionWidget
