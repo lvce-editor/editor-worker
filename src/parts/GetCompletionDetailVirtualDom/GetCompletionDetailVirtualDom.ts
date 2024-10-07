@@ -1,11 +1,13 @@
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
+import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 export const getCompletionDetailVirtualDom = (content: string) => {
   const dom: any[] = [
     {
       type: VirtualDomElements.Div,
+      className: 'Viewlet EditorCompletionDetails',
       childCount: 2,
     },
     {
@@ -17,6 +19,7 @@ export const getCompletionDetailVirtualDom = (content: string) => {
     {
       type: VirtualDomElements.Div,
       className: ClassNames.CompletionDetailCloseButton,
+      onClick: DomEventListenerFunctions.HandleClose,
       childCount: 1,
     },
     {
