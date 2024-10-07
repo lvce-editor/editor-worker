@@ -17,6 +17,11 @@ export const getCompletionDetailVirtualDom = (content: string) => {
     {
       type: VirtualDomElements.Div,
       className: ClassNames.CompletionDetailCloseButton,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      className: `${ClassNames.MaskIcon} ${ClassNames.IconClose}`,
       childCount: 0,
     },
   ]
