@@ -9,6 +9,9 @@ interface EventMap {
   'EditorCompletion.loadContent': (editorUid: number, state: any) => Promise<any>
   'EditorCompletion.selectCurrent': (editorUid: number, state: any) => Promise<any>
   'EditorCompletion.selectIndex': (editorUid: number, state: any, index: number) => Promise<any>
+  'EditorCompletion.openDetails': (editorUid: number, state: any) => Promise<any>
+  'EditorCompletion.closeDetails': (editorUid: number, state: any) => Promise<any>
+  'EditorCompletion.toggleDetails': (editorUid: number, state: any) => Promise<any>
   'FindWidget.focusFirst': (state: any) => Promise<any>
   'FindWidget.focusIndex': (state: any, index: number) => Promise<any>
   'FindWidget.focusLast': (state: any) => Promise<any>
