@@ -5,7 +5,7 @@ import * as WidgetId from '../WidgetId/WidgetId.ts'
 export const create = (): CompletionDetailWidget => {
   const completionUid = Id.create()
   const completionWidget: CompletionDetailWidget = {
-    id: WidgetId.Completion,
+    id: WidgetId.CompletionDetail,
     oldState: {
       content: '',
       uid: completionUid,
