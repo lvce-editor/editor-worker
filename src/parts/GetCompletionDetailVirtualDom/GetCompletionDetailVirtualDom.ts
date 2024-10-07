@@ -1,4 +1,5 @@
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import * as ClassNames from '../ClassNames/ClassNames.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 export const getCompletionDetailVirtualDom = (content: string) => {
@@ -9,13 +10,13 @@ export const getCompletionDetailVirtualDom = (content: string) => {
     },
     {
       type: VirtualDomElements.Div,
-      className: 'CompletionDetailContent',
+      className: ClassNames.CompletionDetailContent,
       childCount: 1,
     },
     text(content),
     {
       type: VirtualDomElements.Div,
-      className: 'CompletionDetailCloseButton',
+      className: ClassNames.CompletionDetailCloseButton,
       childCount: 0,
     },
   ]
