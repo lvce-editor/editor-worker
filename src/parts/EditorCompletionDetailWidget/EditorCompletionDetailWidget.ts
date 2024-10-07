@@ -2,7 +2,6 @@ import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/E
 
 export const render = (oldState: any, newState: any) => {
   const commands: any[] = EditorCompletionDetailRender.renderFull(oldState, newState)
-  console.log({ commands })
   const wrappedCommands = []
   const uid = newState.uid
   for (const command of commands) {
