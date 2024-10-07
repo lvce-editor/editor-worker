@@ -172,7 +172,6 @@ const renderWidgets = {
       }
     }
     const allCommands = [...addCommands, ...changeCommands, ...removeCommands]
-    console.log({ allCommands })
     return allCommands
   },
   multiple: true,
