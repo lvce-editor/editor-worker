@@ -17,6 +17,10 @@ export const openDetails = (editor: any) => {
   const newestState: CompletionDetailState = {
     ...widget.newState,
     content: 'abc',
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
   }
 
   const latestWidgets = [
