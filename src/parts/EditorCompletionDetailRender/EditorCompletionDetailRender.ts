@@ -1,12 +1,13 @@
+import type { CompletionDetailState } from '../CompletionDetailState/CompletionDetailState.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 const renderContent = {
-  isEqual(oldState: any, newState: any) {
+  isEqual(oldState: CompletionDetailState, newState: CompletionDetailState) {
     return oldState.content === newState.content
   },
-  apply(oldState: any, newState: any) {
+  apply(oldState: CompletionDetailState, newState: CompletionDetailState) {
     const dom: any[] = [
       {
         type: VirtualDomElements.Div,
@@ -19,17 +20,17 @@ const renderContent = {
 }
 
 const renderBounds = {
-  isEqual(oldState: any, newState: any) {
+  isEqual(oldState: CompletionDetailState, newState: CompletionDetailState) {
     return oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height
   },
-  apply(oldState: any, newState: any) {
+  apply(oldState: CompletionDetailState, newState: CompletionDetailState) {
     const { x, y, width, height } = newState
     return [/* method */ RenderMethod.SetBounds, /* x */ x, /* y */ y, /* width */ width, /* height */ height]
   },
 }
 const render = [renderContent, renderBounds]
 
-export const renderFull = (oldState: any, newState: any) => {
+export const renderFull = (oldState: CompletionDetailState, newState: CompletionDetailState) => {
   const commands = []
   for (const item of render) {
     if (!item.isEqual(oldState, newState)) {
