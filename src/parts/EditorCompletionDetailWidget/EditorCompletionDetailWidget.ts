@@ -1,5 +1,8 @@
+import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/EditorCompletionDetailRender.ts'
+
 export const render = (oldState: any, newState: any) => {
-  const commands: any[] = []
+  const commands: any[] = EditorCompletionDetailRender.renderFull(oldState, newState)
+  console.log({ commands })
   const wrappedCommands = []
   const uid = newState.uid
   for (const command of commands) {
@@ -10,7 +13,7 @@ export const render = (oldState: any, newState: any) => {
 
 export const add = (widget: any) => {
   const commands = render(widget.oldState, widget.newState)
-  const id = 'EditorCompletionDetail'
+  const id = 'EditorCompletionDetails'
   // TODO how to generate a unique integer id
   // that doesn't collide with ids created in renderer worker?
   const uid = widget.newState.uid
