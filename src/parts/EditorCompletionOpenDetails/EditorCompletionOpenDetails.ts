@@ -14,11 +14,13 @@ export const openDetails = (editor: any) => {
   }
   const widget = CompletionDetailWidgetFactory.create()
 
+  console.log({ child })
+
   const newestState: CompletionDetailState = {
     ...widget.newState,
     content: 'abc',
-    x: 0,
-    y: 0,
+    x: child.x + child.width,
+    y: child.y,
     width: 100,
     height: 100,
   }

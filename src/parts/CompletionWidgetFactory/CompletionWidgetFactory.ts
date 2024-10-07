@@ -14,6 +14,10 @@ export const create = (): CompletionWidget => {
       maxLineY: 0,
       uid: completionUid,
       focusedIndex: -1,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
     },
     newState: {
       items: [],
@@ -23,6 +27,10 @@ export const create = (): CompletionWidget => {
       maxLineY: 10,
       uid: completionUid,
       focusedIndex: -1,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
     },
   }
   return completionWidget
