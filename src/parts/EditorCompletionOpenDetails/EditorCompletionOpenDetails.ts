@@ -14,8 +14,6 @@ export const openDetails = (editor: any) => {
   }
   const widget = CompletionDetailWidgetFactory.create()
 
-  console.log({ child })
-
   const newestState: CompletionDetailState = {
     ...widget.newState,
     content: 'abc',
