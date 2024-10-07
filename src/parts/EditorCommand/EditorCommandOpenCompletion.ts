@@ -1,9 +1,9 @@
 import type { CompletionWidget } from '../CompletionWidget/CompletionWidget.ts'
+import * as CompletionWidgetFactory from '../CompletionWidgetFactory/CompletionWidgetFactory.ts'
 import * as EditorCompletion from '../EditorCompletion/EditorCompletion.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as HasWidget from '../HasWidget/HasWidget.ts'
-import * as Id from '../Id/Id.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
@@ -12,28 +12,7 @@ export const openCompletion = async (editor: any) => {
   if (HasWidget.hasWidget(widgets, WidgetId.Completion)) {
     return editor
   }
-  const completionUid = Id.create()
-  const completionWidget: CompletionWidget = {
-    id: WidgetId.Completion,
-    oldState: {
-      items: [],
-      itemHeight: 20,
-      maxHeight: 150,
-      minLineY: 0,
-      maxLineY: 0,
-      uid: completionUid,
-      focusedIndex: -1,
-    },
-    newState: {
-      items: [],
-      itemHeight: 20,
-      maxHeight: 150,
-      minLineY: 0,
-      maxLineY: 10,
-      uid: completionUid,
-      focusedIndex: -1,
-    },
-  }
+  const completionWidget: CompletionWidget = CompletionWidgetFactory.create()
   const newWidgets = [...widgets, completionWidget]
   const newEditor = {
     ...editor,
