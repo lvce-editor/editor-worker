@@ -1,5 +1,6 @@
-import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
+import * as CompletionDetailWidgetFactory from '../CompletionDetailWidgetFactory/CompletionDetailWidgetFactory.ts'
 import * as GetCompletionDetailState from '../GetCompletionDetailState/GetCompletionDetailState.ts'
+import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
 
 export const openDetails = (editor: any) => {
   const child = GetCompletionState.getCompletionState(editor)
@@ -10,9 +11,20 @@ export const openDetails = (editor: any) => {
   if (detailState) {
     return editor
   }
-  console.log('open details')
-  // TODO when completion details are open, close them
-  // TODO when completion details are opening, close them
-  // TODO when completion details are closed, open them
-  return editor
+  const widget = CompletionDetailWidgetFactory.create()
+
+  const latestWidgets = [
+    ...editor.widgets,
+    {
+      ...widget,
+      newState: {
+        ...widget.newState,
+        content: 'abc',
+      },
+    },
+  ]
+  return {
+    ...editor,
+    widgets: latestWidgets,
+  }
 }
