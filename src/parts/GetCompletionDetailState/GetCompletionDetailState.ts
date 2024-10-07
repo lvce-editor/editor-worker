@@ -1,4 +1,4 @@
-import type { CompletionDetailState } from '../CompletionState/CompletionState.ts'
+import type { CompletionDetailState } from '../CompletionDetailState/CompletionDetailState.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const isCompletionDetail = (widget: any) => {
