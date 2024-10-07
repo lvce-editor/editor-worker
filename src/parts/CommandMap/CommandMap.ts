@@ -104,12 +104,15 @@ import * as EditorTypeWithAutoClosing from '../EditorCommand/EditorCommandTypeWi
 import * as EditorUndo from '../EditorCommand/EditorCommandUndo.ts'
 import * as Unindent from '../EditorCommand/EditorCommandUnindent.ts'
 import * as EditorCompletion from '../EditorCompletion/EditorCompletion.ts'
+import * as EditorCompletionCloseDetails from '../EditorCompletionCloseDetails/EditorCompletionCloseDetails.ts'
 import * as EditorCompletionFocusFirst from '../EditorCompletionFocusFirst/EditorCompletionFocusFirst.ts'
 import * as EditorCompletionFocusIndex from '../EditorCompletionFocusIndex/EditorCompletionFocusIndex.ts'
 import * as EditorCompletionFocusNext from '../EditorCompletionFocusNext/EditorCompletionFocusNext.ts'
 import * as EditorCompletionFocusPrevious from '../EditorCompletionFocusPrevious/EditorCompletionFocusPrevious.ts'
+import * as EditorCompletionOpenDetails from '../EditorCompletionOpenDetails/EditorCompletionOpenDetails.ts'
 import * as EditorCompletionSelectCurrent from '../EditorCompletionSelectCurrent/EditorCompletionSelectCurrent.ts'
 import * as EditorCompletionSelectIndex from '../EditorCompletionSelectIndex/EditorCompletionSelectIndex.ts'
+import * as EditorCompletionToggleDetails from '../EditorCompletionToggleDetails/EditorCompletionToggleDetails.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 import * as FindWidget from '../FindWidget/FindWidget.ts'
@@ -119,7 +122,6 @@ import * as GetSelections from '../GetSelections/GetSelections.ts'
 import * as GetText from '../GetText/GetText.ts'
 import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
-import * as EditorCompletionToggleDetails from '../EditorCompletionToggleDetails/EditorCompletionToggleDetails.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
@@ -253,6 +255,7 @@ export const commandMap = {
   'Editor.undo': EditorUndo.undo,
   'Editor.unIndent': Unindent.editorUnindent,
   'EditorCompletion.advance': EditorCompletion.advance,
+  'EditorCompletion.closeDetails': EditorCompletionCloseDetails.closeDetails,
   'EditorCompletion.focusFirst': EditorCompletionFocusFirst.focusFirst,
   'EditorCompletion.focusIndex': EditorCompletionFocusIndex.focusIndex,
   'EditorCompletion.focusNext': EditorCompletionFocusNext.focusNext,
@@ -262,6 +265,7 @@ export const commandMap = {
   'EditorCompletion.handleEditorDeleteLeft': EditorCompletion.handleEditorDeleteLeft,
   'EditorCompletion.handleEditorType': EditorCompletion.handleEditorType,
   'EditorCompletion.loadContent': EditorCompletion.loadContent,
+  'EditorCompletion.openDetails': EditorCompletionOpenDetails.openDetails,
   'EditorCompletion.selectCurrent': EditorCompletionSelectCurrent.selectCurrent,
   'EditorCompletion.selectIndex': EditorCompletionSelectIndex.selectIndex,
   'EditorCompletion.toggleDetails': EditorCompletionToggleDetails.toggleDetails,
