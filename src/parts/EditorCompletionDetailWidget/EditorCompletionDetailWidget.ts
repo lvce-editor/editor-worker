@@ -24,7 +24,6 @@ export const add = (widget: any) => {
   allCommands.push(['Viewlet.createFunctionalRoot', id, uid])
   allCommands.push(...commands)
   allCommands.push(['Viewlet.send', uid, 'appendWidget'])
-  console.log({ allCommands })
   return allCommands
 }
 
