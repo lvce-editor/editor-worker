@@ -66,6 +66,7 @@ import * as MoveRectangleSelectionPx from '../EditorCommand/EditorCommandMoveRec
 import * as EditorMoveSelection from '../EditorCommand/EditorCommandMoveSelection.ts'
 import * as EditorMoveSelectionPx from '../EditorCommand/EditorCommandMoveSelectionPx.ts'
 import * as EditorOpenCompletion from '../EditorCommand/EditorCommandOpenCompletion.ts'
+import * as EditorOpenColorPicker from '../EditorCommand/EditorCommandColorPicker.ts'
 import * as OpenFind from '../EditorCommand/EditorCommandOpenFind.ts'
 import * as OrganizeImports from '../EditorCommand/EditorCommandOrganizeImports.ts'
 import * as EditorPaste from '../EditorCommand/EditorCommandPaste.ts'
@@ -215,6 +216,7 @@ export const commandMap = {
   'Editor.moveSelectionPx': EditorMoveSelectionPx.moveSelectionPx,
   'Editor.offsetAt': TextDocument.offsetAt,
   'Editor.openCompletion': EditorOpenCompletion.openCompletion,
+  'Editor.openColorPicker': EditorOpenColorPicker.openColorPicker,
   'Editor.openFind': OpenFind.openFind,
   'Editor.organizeImports': OrganizeImports.organizeImports,
   'Editor.paste': EditorPaste.paste,
