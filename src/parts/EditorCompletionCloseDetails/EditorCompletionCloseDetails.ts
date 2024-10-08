@@ -1,13 +1,18 @@
-import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
+
+const isCompletionDetailWidget = (widget: any) => {
+  return widget.id === WidgetId.CompletionDetail
+}
 
 export const closeDetails = (editor: any) => {
-  const child = GetCompletionState.getCompletionState(editor)
-  if (!child) {
+  const { widgets } = editor
+  const index = widgets.findIndex(isCompletionDetailWidget)
+  if (index === -1) {
     return editor
   }
-  console.log('close details')
-  // TODO when completion details are open, close them
-  // TODO when completion details are opening, close them
-  // TODO when completion details are closed, open them
-  return editor
+  const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
+  return {
+    ...editor,
+    widgets: newWidgets,
+  }
 }
