@@ -1,6 +1,7 @@
+import type { CompletionDetailWidget } from '../CompletionDetailWidget/CompletionDetailWidget.ts'
 import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/EditorCompletionDetailRender.ts'
 
-export const render = (widget: any) => {
+export const render = (widget: CompletionDetailWidget) => {
   const commands: any[] = EditorCompletionDetailRender.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
   const uid = widget.newState.uid
@@ -14,7 +15,7 @@ export const render = (widget: any) => {
   return wrappedCommands
 }
 
-export const add = (widget: any) => {
+export const add = (widget: CompletionDetailWidget) => {
   const commands = render(widget)
   const id = 'EditorCompletionDetails'
   // TODO how to generate a unique integer id
