@@ -1,4 +1,4 @@
-import { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
+import type { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
 import * as EditorColorPickerRender from '../EditorColorPickerRender/EditorColorPickerRender.ts'
 
 export const render = (widget: ColorPickerWidget) => {
