@@ -2,6 +2,7 @@ import { CompletionDetailState } from '../CompletionDetailState/CompletionDetail
 import * as CompletionDetailWidgetFactory from '../CompletionDetailWidgetFactory/CompletionDetailWidgetFactory.ts'
 import * as GetCompletionDetailState from '../GetCompletionDetailState/GetCompletionDetailState.ts'
 import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
+import * as GetCompletionDetailBounds from '../GetCompletionDetailBounds/GetCompletionDetailBounds.ts'
 
 export const openDetails = (editor: any) => {
   const child = GetCompletionState.getCompletionState(editor)
@@ -17,10 +18,7 @@ export const openDetails = (editor: any) => {
   const newestState: CompletionDetailState = {
     ...widget.newState,
     content: 'abc',
-    x: child.x + child.width,
-    y: child.y,
-    width: 100,
-    height: 100,
+    ...GetCompletionDetailBounds.getCompletionDetailBounds(child),
   }
 
   const latestWidgets = [
