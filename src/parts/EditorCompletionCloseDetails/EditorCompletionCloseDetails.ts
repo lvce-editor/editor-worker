@@ -5,7 +5,7 @@ export const closeDetails = (editor: any) => {
   if (!child) {
     return editor
   }
-  console.log('open details')
+  console.log('close details')
   // TODO when completion details are open, close them
   // TODO when completion details are opening, close them
   // TODO when completion details are closed, open them
