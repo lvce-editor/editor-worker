@@ -48,6 +48,5 @@ export const renderFull = (oldState: ColorPickerState, newState: ColorPickerStat
       commands.push(item.apply(oldState, newState))
     }
   }
-  console.log({ commands })
   return commands
 }
