@@ -1,5 +1,5 @@
 import type { ColorPickerState } from '../ColorPickerState/ColorPickerState.ts'
-import * as GetCompletionDetailVirtualDom from '../GetCompletionDetailVirtualDom/GetCompletionDetailVirtualDom.ts'
+import * as GetColorPickerVirtualDom from '../GetColorPickerVirtualDom/GetColorPickerVirtualDom.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
 const renderContent = {
@@ -9,7 +9,7 @@ const renderContent = {
     )
   },
   apply(oldState: ColorPickerState, newState: ColorPickerState) {
-    const dom: any[] = GetCompletionDetailVirtualDom.getCompletionDetailVirtualDom(newState.content)
+    const dom: any[] = GetColorPickerVirtualDom.getColorPickerVirtualDom()
     return ['Viewlet.setDom2', newState.uid, dom]
   },
 }
