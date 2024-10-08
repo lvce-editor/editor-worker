@@ -8,6 +8,7 @@ export const openColorPicker = async (editor: any) => {
   if (HasWidget.hasWidget(widgets, WidgetId.ColorPicker)) {
     return editor
   }
+  console.log('open color picker')
   const colorPickerWidget: ColorPickerWidget = ColorPickerWidgetFactory.create()
   const newWidgets = [...widgets, colorPickerWidget]
   const newEditor = {

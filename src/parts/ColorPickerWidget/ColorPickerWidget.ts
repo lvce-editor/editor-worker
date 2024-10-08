@@ -1,4 +1,4 @@
-import { ColorPickerState } from '../ColorPickerState/ColorPickerState.ts'
+import type { ColorPickerState } from '../ColorPickerState/ColorPickerState.ts'
 
 export interface ColorPickerWidget {
   readonly id: number | string
