@@ -1,9 +1,9 @@
 import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/EditorCompletionDetailRender.ts'
 
-export const render = (oldState: any, newState: any) => {
-  const commands: any[] = EditorCompletionDetailRender.renderFull(oldState, newState)
+export const render = (widget: any) => {
+  const commands: any[] = EditorCompletionDetailRender.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
-  const uid = newState.uid
+  const uid = widget.newState.uid
   for (const command of commands) {
     if (command[0] === 'Viewlet.setDom2') {
       wrappedCommands.push(command)
@@ -15,7 +15,7 @@ export const render = (oldState: any, newState: any) => {
 }
 
 export const add = (widget: any) => {
-  const commands = render(widget.oldState, widget.newState)
+  const commands = render(widget)
   const id = 'EditorCompletionDetails'
   // TODO how to generate a unique integer id
   // that doesn't collide with ids created in renderer worker?
