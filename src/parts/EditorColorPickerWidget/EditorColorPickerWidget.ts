@@ -18,7 +18,7 @@ export const render = (oldState: ColorPickerState, newState: ColorPickerState) =
 
 export const add = (widget: ColorPickerWidget) => {
   const commands = render(widget.oldState, widget.newState)
-  const id = 'EditorColorPicker'
+  const id = 'ColorPicker'
   // TODO how to generate a unique integer id
   // that doesn't collide with ids created in renderer worker?
   const uid = widget.newState.uid
