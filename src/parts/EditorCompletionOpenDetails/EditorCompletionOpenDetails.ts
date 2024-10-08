@@ -15,10 +15,11 @@ export const openDetails = (editor: any) => {
   }
   const widget = CompletionDetailWidgetFactory.create()
 
+  const borderSize = 1
   const newestState: CompletionDetailState = {
     ...widget.newState,
     content: 'abc',
-    ...GetCompletionDetailBounds.getCompletionDetailBounds(child),
+    ...GetCompletionDetailBounds.getCompletionDetailBounds(child, borderSize),
   }
 
   const latestWidgets = [
