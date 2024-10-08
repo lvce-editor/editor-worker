@@ -1,6 +1,13 @@
 import * as Editors from '../Editors/Editors.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as UnwrappedCommands from '../UnwrappedCommands/UnwrappedCommands.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
+import * as WrapWidgetCommand from '../WrapWidgetCommand/WrapWidgetCommand.ts'
+
+const widgetCommands = {
+  'ColorPicker.handleSliderPointerDown': WidgetId.ColorPicker,
+  'ColorPicker.handleSliderPointerMove': WidgetId.ColorPicker,
+} as any
 
 // TODO wrap commands globally, not per editor
 // TODO only store editor state in editor worker, not in renderer worker also
@@ -21,6 +28,9 @@ export const wrapCommands = (commands: any) => {
     if (UnwrappedCommands.keep.includes(key)) {
       continue
     }
-    commands[key] = wrapCommand(value)
+    // TODO avoid wrapping functions twice
+    const innerWrappedWidgetId = widgetCommands[key]
+    const innerWrappedFn = innerWrappedWidgetId ? WrapWidgetCommand.wrapWidgetCommand(innerWrappedWidgetId, value) : value
+    commands[key] = wrapCommand(innerWrappedFn)
   }
 }
