@@ -17,49 +17,22 @@ export const test = async (rpc) => {
   await rpc.invoke('Editor.cursorSet', 0, 0, 1)
   await rpc.invoke('Editor.openCompletion', 0)
   const { commands } = await rpc.invoke('EditorCompletion.openDetails', 0)
-  console.log({ commands })
-  assert.strictEqual(commands[5][2], 'setDom')
-  assert.deepEqual(commands[5][3], [
-    { type: 4, childCount: 2 },
+  assert.strictEqual(commands[5][0], 'Viewlet.setDom2')
+  const dom = commands[5][2]
+  assert.deepEqual(dom, [
     {
       type: 4,
-      role: 'option',
-      className: 'EditorCompletionItem EditorCompletionItemFocused',
-      top: 0,
+      className: 'Viewlet EditorCompletionDetails',
       childCount: 2,
     },
+    { type: 4, className: 'CompletionDetailContent', childCount: 1 },
+    { type: 12, text: 'abc', childCount: 0 },
     {
       type: 4,
-      className: 'ColoredMaskIcon SymbolDefault',
-      childCount: 0,
-    },
-    { type: 4, className: 'Label', childCount: 2 },
-    {
-      type: 8,
-      className: 'EditorCompletionItemHighlight',
+      className: 'CompletionDetailCloseButton',
+      onClick: 'handleClose',
       childCount: 1,
     },
-    { type: 12, text: 'a', childCount: 0 },
-    { type: 12, text: 'bc 1', childCount: 0 },
-    {
-      type: 4,
-      role: 'option',
-      className: 'EditorCompletionItem',
-      top: 20,
-      childCount: 2,
-    },
-    {
-      type: 4,
-      className: 'ColoredMaskIcon SymbolDefault',
-      childCount: 0,
-    },
-    { type: 4, className: 'Label', childCount: 2 },
-    {
-      type: 8,
-      className: 'EditorCompletionItemHighlight',
-      childCount: 1,
-    },
-    { type: 12, text: 'a', childCount: 0 },
-    { type: 12, text: 'bc 2', childCount: 0 },
+    { type: 4, className: 'MaskIcon IconClose', childCount: 0 },
   ])
 }
