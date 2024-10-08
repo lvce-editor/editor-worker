@@ -22,9 +22,7 @@ const renderOffsetX = {
 
 const renderContent = {
   isEqual(oldState: ColorPickerState, newState: ColorPickerState) {
-    return (
-      oldState.color === newState.color && oldState.offsetX === newState.offsetX && oldState.min === newState.min && oldState.max === newState.max
-    )
+    return oldState.x === newState.x && oldState.y === newState.y && oldState.min === newState.min && oldState.max === newState.max
   },
   apply(oldState: ColorPickerState, newState: ColorPickerState) {
     const dom: any[] = GetColorPickerVirtualDom.getColorPickerVirtualDom()
