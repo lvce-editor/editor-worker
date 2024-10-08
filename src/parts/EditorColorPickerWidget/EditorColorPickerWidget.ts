@@ -1,6 +1,8 @@
+import { ColorPickerState } from '../ColorPickerState/ColorPickerState.ts'
+import { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
 import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/EditorCompletionDetailRender.ts'
 
-export const render = (oldState: any, newState: any) => {
+export const render = (oldState: ColorPickerState, newState: ColorPickerState) => {
   const commands: any[] = EditorCompletionDetailRender.renderFull(oldState, newState)
   const wrappedCommands = []
   const uid = newState.uid
@@ -14,7 +16,7 @@ export const render = (oldState: any, newState: any) => {
   return wrappedCommands
 }
 
-export const add = (widget: any) => {
+export const add = (widget: ColorPickerWidget) => {
   const commands = render(widget.oldState, widget.newState)
   const id = 'EditorColorPicker'
   // TODO how to generate a unique integer id
@@ -27,6 +29,6 @@ export const add = (widget: any) => {
   return allCommands
 }
 
-export const remove = (widget: any) => {
+export const remove = (widget: ColorPickerWidget) => {
   return [['Viewlet.send', widget.newState.uid, 'dispose']]
 }
