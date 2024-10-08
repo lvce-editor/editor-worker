@@ -1,12 +1,11 @@
-import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
+import * as EditorCompletionCloseDetails from '../EditorCompletionCloseDetails/EditorCompletionCloseDetails.ts'
+import * as EditorCompletionOpenDetails from '../EditorCompletionOpenDetails/EditorCompletionOpenDetails.ts'
+import * as GetCompletionDetailState from '../GetCompletionDetailState/GetCompletionDetailState.ts'
 
 export const toggleDetails = (editor: any) => {
-  const child = GetCompletionState.getCompletionState(editor)
+  const child = GetCompletionDetailState.getCompletionDetailState(editor)
   if (!child) {
-    return editor
+    return EditorCompletionOpenDetails.openDetails(editor)
   }
-  // TODO when completion details are open, close them
-  // TODO when completion details are opening, close them
-  // TODO when completion details are closed, open them
-  return editor
+  return EditorCompletionCloseDetails.closeDetails(editor)
 }
