@@ -1,4 +1,5 @@
 import * as Clamp from '../Clamp/Clamp.ts'
+import type { ColorPickerState } from '../ColorPickerState/ColorPickerState.ts'
 
 const getNewColor = (x: number, max: number) => {
   const percent = x / max
@@ -7,7 +8,7 @@ const getNewColor = (x: number, max: number) => {
   return newColor
 }
 
-export const loadContent = (state: any) => {
+export const loadContent = (state: ColorPickerState): ColorPickerState => {
   const max = 300
   const x = 20
   const color = getNewColor(x, max)
@@ -19,7 +20,7 @@ export const loadContent = (state: any) => {
   }
 }
 
-export const handleSliderPointerDown = (state: any, x: number, y: number) => {
+export const handleSliderPointerDown = (state: ColorPickerState, x: number, y: number): ColorPickerState => {
   const { min, max } = state
   const newX = Clamp.clamp(x, min, max)
   const newColor = getNewColor(newX, max)
@@ -30,7 +31,7 @@ export const handleSliderPointerDown = (state: any, x: number, y: number) => {
   }
 }
 
-export const handleSliderPointerMove = (state: any, x: number, y: number) => {
+export const handleSliderPointerMove = (state: ColorPickerState, x: number, y: number): ColorPickerState => {
   const { min, max } = state
   const newX = Clamp.clamp(x, min, max)
   const newColor = getNewColor(newX, max)

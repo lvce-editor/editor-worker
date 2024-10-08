@@ -1,13 +1,13 @@
+import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as EditorPosition from '../EditorCommand/EditorCommandPosition.ts'
 import * as EditorCompletionRender from '../EditorCompletionRender/EditorCompletionRender.ts'
 import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletionItems.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
-import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 
-export const render = (oldState: any, newState: any) => {
-  const commands = EditorCompletionRender.renderCompletion(oldState, newState)
+export const render = (widget: any) => {
+  const commands = EditorCompletionRender.renderCompletion(widget.oldState, widget.newState)
   const wrappedCommands = []
-  const uid = newState.uid
+  const uid = widget.newState.uid
   for (const command of commands) {
     wrappedCommands.push(['Viewlet.send', uid, ...command])
   }
@@ -15,7 +15,7 @@ export const render = (oldState: any, newState: any) => {
 }
 
 export const add = (widget: any) => {
-  const commands = render(widget.oldState, widget.newState)
+  const commands = render(widget)
   const id = 'EditorCompletion'
   // TODO how to generate a unique integer id
   // that doesn't collide with ids created in renderer worker?

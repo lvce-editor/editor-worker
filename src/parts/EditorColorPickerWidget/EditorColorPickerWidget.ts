@@ -1,8 +1,8 @@
-import type { CompletionDetailWidget } from '../CompletionDetailWidget/CompletionDetailWidget.ts'
-import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/EditorCompletionDetailRender.ts'
+import type { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
+import * as EditorColorPickerRender from '../EditorColorPickerRender/EditorColorPickerRender.ts'
 
-export const render = (widget: CompletionDetailWidget) => {
-  const commands: any[] = EditorCompletionDetailRender.renderFull(widget.oldState, widget.newState)
+export const render = (widget: ColorPickerWidget) => {
+  const commands: any[] = EditorColorPickerRender.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
   const uid = widget.newState.uid
   for (const command of commands) {
@@ -15,9 +15,9 @@ export const render = (widget: CompletionDetailWidget) => {
   return wrappedCommands
 }
 
-export const add = (widget: CompletionDetailWidget) => {
+export const add = (widget: ColorPickerWidget) => {
   const commands = render(widget)
-  const id = 'EditorCompletionDetails'
+  const id = 'ColorPicker'
   // TODO how to generate a unique integer id
   // that doesn't collide with ids created in renderer worker?
   const uid = widget.newState.uid
@@ -28,6 +28,6 @@ export const add = (widget: CompletionDetailWidget) => {
   return allCommands
 }
 
-export const remove = (widget: any) => {
+export const remove = (widget: ColorPickerWidget) => {
   return [['Viewlet.send', widget.newState.uid, 'dispose']]
 }
