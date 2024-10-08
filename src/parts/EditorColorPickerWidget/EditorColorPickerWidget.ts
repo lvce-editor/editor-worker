@@ -1,9 +1,9 @@
 import { ColorPickerState } from '../ColorPickerState/ColorPickerState.ts'
 import { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
-import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/EditorCompletionDetailRender.ts'
+import * as EditorColorPickerRender from '../EditorColorPickerRender/EditorColorPickerRender.ts'
 
 export const render = (oldState: ColorPickerState, newState: ColorPickerState) => {
-  const commands: any[] = EditorCompletionDetailRender.renderFull(oldState, newState)
+  const commands: any[] = EditorColorPickerRender.renderFull(oldState, newState)
   const wrappedCommands = []
   const uid = newState.uid
   for (const command of commands) {
