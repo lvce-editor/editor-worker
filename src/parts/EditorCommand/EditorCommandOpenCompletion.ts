@@ -6,7 +6,6 @@ import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as HasWidget from '../HasWidget/HasWidget.ts'
 import * as SetAdditionalFocus from '../SetAdditionalFocus/SetAdditionalFocus.ts'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const openCompletion = async (editor: any) => {
