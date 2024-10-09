@@ -1,9 +1,9 @@
 import * as FindStrings from '../FindStrings/FindStrings.ts'
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
-import * as GetFindWidgetVirtualDom from '../GetFindWidgetVirtualDom/GetFindWidgetVirtualDom.js'
-import * as GetMatchCountText from '../GetMatchCountText/GetMatchCountText.js'
-import * as Icon from '../Icon/Icon.js'
-import * as RenderMethod from '../RenderMethod/RenderMethod.js'
+import * as GetFindWidgetVirtualDom from '../GetFindWidgetVirtualDom/GetFindWidgetVirtualDom.ts'
+import * as GetMatchCountText from '../GetMatchCountText/GetMatchCountText.ts'
+import * as Icon from '../Icon/Icon.ts'
+import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
 export const hasFunctionalRender = true
 
