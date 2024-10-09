@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
 import * as RemoveWidget from '../src/parts/RemoveWidget/RemoveWidget.ts'
-import { Widget } from '../src/parts/Widget/Widget.ts'
+import type { Widget } from '../src/parts/Widget/Widget.ts'
 
 test('remove widget', () => {
   interface TestState {
