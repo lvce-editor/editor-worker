@@ -1,6 +1,7 @@
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import type { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
 import * as EditorColorPickerRender from '../EditorColorPickerRender/EditorColorPickerRender.ts'
+import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 
 export const render = (widget: ColorPickerWidget) => {
   const commands: any[] = EditorColorPickerRender.renderFull(widget.oldState, widget.newState)
@@ -20,6 +21,4 @@ export const add = (widget: ColorPickerWidget) => {
   return AddWidget.addWidget(widget, 'ColorPicker', render)
 }
 
-export const remove = (widget: ColorPickerWidget) => {
-  return [['Viewlet.send', widget.newState.uid, 'dispose']]
-}
+export const remove = RemoveWidget.removeWidget
