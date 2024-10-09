@@ -1,9 +1,9 @@
+import * as FindStrings from '../FindStrings/FindStrings.ts'
+import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
 import * as GetFindWidgetVirtualDom from '../GetFindWidgetVirtualDom/GetFindWidgetVirtualDom.js'
 import * as GetMatchCountText from '../GetMatchCountText/GetMatchCountText.js'
 import * as Icon from '../Icon/Icon.js'
 import * as RenderMethod from '../RenderMethod/RenderMethod.js'
-import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
-import * as ViewletFindWidgetStrings from './ViewletFindWidgetStrings.ts'
 
 export const hasFunctionalRender = true
 
@@ -29,17 +29,17 @@ const renderDetails = {
     const buttonsEnabled = newState.matchCount > 0
     const buttons = [
       {
-        label: ViewletFindWidgetStrings.previousMatch(),
+        label: FindStrings.previousMatch(),
         icon: Icon.ArrowUp,
         disabled: !buttonsEnabled,
       },
       {
-        label: ViewletFindWidgetStrings.nextMatch(),
+        label: FindStrings.nextMatch(),
         icon: Icon.ArrowDown,
         disabled: !buttonsEnabled,
       },
       {
-        label: ViewletFindWidgetStrings.close(),
+        label: FindStrings.close(),
         icon: Icon.Close,
         disabled: false,
       },
@@ -58,7 +58,7 @@ const renderDetails = {
 
 const getAriaLabel = (state: FindWidgetState) => {
   const { matchIndex, matchCount, value } = state
-  return ViewletFindWidgetStrings.matchesFoundFor(matchIndex, matchCount, value)
+  return FindStrings.matchesFoundFor(matchIndex, matchCount, value)
 }
 
 const renderAriaAnnouncement = {
