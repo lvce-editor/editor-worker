@@ -7,6 +7,7 @@ const UiStrings = {
   NoTypeDefinitionFound: 'No type definition found',
   NoTypeDefinitionFoundFor: "No type definition found for '{PH1}'",
   NoResults: 'No Results',
+  Replace: 'Replace',
 }
 
 export const goToDefinition = () => {
@@ -35,4 +36,8 @@ export const noTypeDefinitionFound = () => {
 
 export const noResults = () => {
   return I18nString.i18nString(UiStrings.NoResults)
+}
+
+export const replace = () => {
+  return I18nString.i18nString(UiStrings.Replace)
 }
