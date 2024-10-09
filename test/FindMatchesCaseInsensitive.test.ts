@@ -18,3 +18,9 @@ test('single match', () => {
   const searchValue = 'abc'
   expect(FindMatchesCaseInsensitive.findMatchesCaseInsensitive(lines, searchValue)).toEqual(new Uint32Array([0, 0]))
 })
+
+test('multiple matches', () => {
+  const lines: readonly string[] = ['abc', 'abc']
+  const searchValue = 'abc'
+  expect(FindMatchesCaseInsensitive.findMatchesCaseInsensitive(lines, searchValue)).toEqual(new Uint32Array([0, 0, 1, 0]))
+})
