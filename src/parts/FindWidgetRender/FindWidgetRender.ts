@@ -80,5 +80,5 @@ const renderAriaAnnouncement = {
 export const render = [renderAriaAnnouncement, renderDetails, renderValue]
 
 export const apply = (oldState: FindWidgetState, newState: FindWidgetState) => {
-  return RenderParts.renderParts(oldState, newState, render)
+  return RenderParts.renderParts(render, oldState, newState)
 }
