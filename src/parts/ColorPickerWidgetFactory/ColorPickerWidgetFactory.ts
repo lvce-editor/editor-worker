@@ -1,4 +1,4 @@
-import { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
+import type { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
 import * as Id from '../Id/Id.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
