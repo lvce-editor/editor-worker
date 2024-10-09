@@ -1,6 +1,7 @@
+import * as AddWidget from '../AddWidget/AddWidget.ts'
 import type { CompletionDetailWidget } from '../CompletionDetailWidget/CompletionDetailWidget.ts'
 import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/EditorCompletionDetailRender.ts'
-import * as AddWidget from '../AddWidget/AddWidget.ts'
+import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 
 export const render = (widget: CompletionDetailWidget) => {
   const commands: any[] = EditorCompletionDetailRender.renderFull(widget.oldState, widget.newState)
@@ -20,6 +21,4 @@ export const add = (widget: CompletionDetailWidget) => {
   return AddWidget.addWidget(widget, 'EditorCompletionDetails', render)
 }
 
-export const remove = (widget: any) => {
-  return [['Viewlet.send', widget.newState.uid, 'dispose']]
-}
+export const remove = RemoveWidget.removeWidget
