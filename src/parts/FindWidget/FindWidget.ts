@@ -1,4 +1,5 @@
 import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindMatchesCaseInsensitive.ts'
+import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
@@ -45,7 +46,7 @@ export const loadContent = (editorId: number) => {
   }
 }
 
-export const refresh = (state: any, value = state.value) => {
+export const refresh = (state: FindWidgetState, value = state.value): FindWidgetState => {
   // TODO get focused editor
   const { editorUid } = state
   // highlight locations that match value
@@ -62,24 +63,24 @@ export const refresh = (state: any, value = state.value) => {
   }
 }
 
-export const handleInput = (state: any, value: string) => {
+export const handleInput = (state: FindWidgetState, value: string): FindWidgetState => {
   return refresh(state, value)
 }
 
-export const handleFocus = async (state: any) => {
+export const handleFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
   const FindWidget = 16
   await RendererWorker.invoke('Focus.setFocus', FindWidget)
   return state
 }
 
-export const handleBlur = async (state: any) => {
+export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetState> => {
   const Empty = 0
   await RendererWorker.invoke('Focus.setFocus', Empty)
   return state
 }
 
 // TODO this function should be synchronous
-export const focusIndex = async (state: any, index: number) => {
+export const focusIndex = async (state: FindWidgetState, index: number): Promise<FindWidgetState> => {
   const { value, matches, matchIndex } = state
   if (index === matchIndex) {
     return state
@@ -99,16 +100,16 @@ export const focusIndex = async (state: any, index: number) => {
   }
 }
 
-export const focusFirst = (state: any) => {
+export const focusFirst = (state: FindWidgetState) => {
   return focusIndex(state, 0)
 }
 
-export const focusLast = (state: any) => {
+export const focusLast = (state: FindWidgetState) => {
   const { matchCount } = state
   return focusIndex(state, matchCount - 1)
 }
 
-export const focusNext = (state: any) => {
+export const focusNext = (state: FindWidgetState) => {
   const { matchIndex, matchCount } = state
   if (matchIndex === matchCount - 1) {
     return focusFirst(state)
@@ -116,7 +117,7 @@ export const focusNext = (state: any) => {
   return focusIndex(state, matchIndex + 1)
 }
 
-export const focusPrevious = (state: any) => {
+export const focusPrevious = (state: FindWidgetState) => {
   const { matchIndex } = state
   if (matchIndex === 0) {
     return focusLast(state)
@@ -124,7 +125,7 @@ export const focusPrevious = (state: any) => {
   return focusIndex(state, matchIndex - 1)
 }
 
-export const close = async (state: any) => {
+export const close = async (state: FindWidgetState) => {
   // TODO
   // await Viewlet.closeWidget(uid)
   return {
