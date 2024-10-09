@@ -2,29 +2,29 @@ import * as GetFindWidgetVirtualDom from '../GetFindWidgetVirtualDom/GetFindWidg
 import * as GetMatchCountText from '../GetMatchCountText/GetMatchCountText.js'
 import * as Icon from '../Icon/Icon.js'
 import * as RenderMethod from '../RenderMethod/RenderMethod.js'
-import type { FindState } from './ViewletFindTypes.ts'
+import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
 import * as ViewletFindWidgetStrings from './ViewletFindWidgetStrings.ts'
 
 export const hasFunctionalRender = true
 
 const renderValue = {
-  isEqual(oldState: FindState, newState: FindState) {
+  isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
     return oldState.value === newState.value
   },
-  apply(oldState: FindState, newState: FindState) {
+  apply(oldState: FindWidgetState, newState: FindWidgetState) {
     return [RenderMethod.SetValue, /* value */ newState.value]
   },
 }
 
 const renderDetails = {
-  isEqual(oldState: FindState, newState: FindState) {
+  isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
     return (
       oldState.matchIndex === newState.matchIndex &&
       oldState.matchCount === newState.matchCount &&
       oldState.replaceExpanded === newState.replaceExpanded
     )
   },
-  apply(oldState: FindState, newState: FindState) {
+  apply(oldState: FindWidgetState, newState: FindWidgetState) {
     const matchCountText = GetMatchCountText.getMatchCountText(newState.matchIndex, newState.matchCount)
     const buttonsEnabled = newState.matchCount > 0
     const buttons = [
@@ -56,13 +56,13 @@ const renderDetails = {
   },
 }
 
-const getAriaLabel = (state: FindState) => {
+const getAriaLabel = (state: FindWidgetState) => {
   const { matchIndex, matchCount, value } = state
   return ViewletFindWidgetStrings.matchesFoundFor(matchIndex, matchCount, value)
 }
 
 const renderAriaAnnouncement = {
-  isEqual(oldState: FindState, newState: FindState) {
+  isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
     return (
       oldState.ariaAnnouncement === newState.ariaAnnouncement &&
       oldState.matchIndex === newState.matchIndex &&
@@ -70,7 +70,7 @@ const renderAriaAnnouncement = {
       oldState.value === newState.value
     )
   },
-  apply(oldState: FindState, newState: FindState) {
+  apply(oldState: FindWidgetState, newState: FindWidgetState) {
     const ariaLabel = getAriaLabel(newState)
     return [/* Viewlet.invoke */ 'Viewlet.ariaAnnounce', /* text */ ariaLabel]
   },
