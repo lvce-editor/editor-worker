@@ -4,7 +4,7 @@ import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/E
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 
 export const render = (widget: CompletionDetailWidget) => {
-  const commands: any[] = EditorCompletionDetailRender.renderFull(widget.oldState, widget.newState)
+  const commands: readonly any[] = EditorCompletionDetailRender.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
   const uid = widget.newState.uid
   for (const command of commands) {

@@ -1,6 +1,7 @@
+import type { ColorPickerState } from '../ColorPickerTypes/ColorPickerTypes.ts'
 import * as GetColorPickerVirtualDom from '../GetColorPickerVirtualDom/GetColorPickerVirtualDom.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
-import type { ColorPickerState } from '../ColorPickerTypes/ColorPickerTypes.ts'
+import * as RenderParts from '../RenderParts/RenderParts.ts'
 
 const renderColor = {
   isEqual(oldState: ColorPickerState, newState: ColorPickerState) {
@@ -33,11 +34,5 @@ const renderColorPickerDom = {
 const render = [renderColorPickerDom, renderColor, renderOffsetX]
 
 export const renderColorPicker = async (oldState: any, newState: any) => {
-  const commands = []
-  for (const item of render) {
-    if (!item.isEqual(oldState, newState)) {
-      commands.push(item.apply(oldState, newState))
-    }
-  }
-  return commands
+  return RenderParts.renderParts(render, oldState, newState)
 }
