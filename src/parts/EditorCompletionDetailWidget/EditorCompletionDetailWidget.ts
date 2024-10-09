@@ -1,5 +1,6 @@
 import type { CompletionDetailWidget } from '../CompletionDetailWidget/CompletionDetailWidget.ts'
 import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/EditorCompletionDetailRender.ts'
+import * as AddWidget from '../AddWidget/AddWidget.ts'
 
 export const render = (widget: CompletionDetailWidget) => {
   const commands: any[] = EditorCompletionDetailRender.renderFull(widget.oldState, widget.newState)
@@ -16,16 +17,7 @@ export const render = (widget: CompletionDetailWidget) => {
 }
 
 export const add = (widget: CompletionDetailWidget) => {
-  const commands = render(widget)
-  const id = 'EditorCompletionDetails'
-  // TODO how to generate a unique integer id
-  // that doesn't collide with ids created in renderer worker?
-  const uid = widget.newState.uid
-  const allCommands: any[] = []
-  allCommands.push(['Viewlet.createFunctionalRoot', id, uid])
-  allCommands.push(...commands)
-  allCommands.push(['Viewlet.send', uid, 'appendWidget'])
-  return allCommands
+  return AddWidget.addWidget(widget, 'EditorCompletionDetails', render)
 }
 
 export const remove = (widget: any) => {
