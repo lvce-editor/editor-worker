@@ -68,6 +68,7 @@ import * as EditorMoveSelection from '../EditorCommand/EditorCommandMoveSelectio
 import * as EditorMoveSelectionPx from '../EditorCommand/EditorCommandMoveSelectionPx.ts'
 import * as EditorOpenCompletion from '../EditorCommand/EditorCommandOpenCompletion.ts'
 import * as OpenFind from '../EditorCommand/EditorCommandOpenFind.ts'
+import * as OpenFind2 from '../EditorCommand/EditorCommandOpenFind2.ts'
 import * as OrganizeImports from '../EditorCommand/EditorCommandOrganizeImports.ts'
 import * as EditorPaste from '../EditorCommand/EditorCommandPaste.ts'
 import * as PasteText from '../EditorCommand/EditorCommandPasteText.ts'
@@ -215,9 +216,10 @@ export const commandMap = {
   'Editor.moveSelection': EditorMoveSelection.editorMoveSelection,
   'Editor.moveSelectionPx': EditorMoveSelectionPx.moveSelectionPx,
   'Editor.offsetAt': TextDocument.offsetAt,
-  'Editor.openCompletion': EditorOpenCompletion.openCompletion,
   'Editor.openColorPicker': EditorOpenColorPicker.openColorPicker,
+  'Editor.openCompletion': EditorOpenCompletion.openCompletion,
   'Editor.openFind': OpenFind.openFind,
+  'Editor.openFind2': OpenFind2.openFind2,
   'Editor.organizeImports': OrganizeImports.organizeImports,
   'Editor.paste': EditorPaste.paste,
   'Editor.pasteText': PasteText.pasteText,
