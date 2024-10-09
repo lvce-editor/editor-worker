@@ -1,8 +1,7 @@
 import * as AddWidget from '../AddWidget/AddWidget.ts'
-import * as EditorColorPickerRender from '../EditorColorPickerRender/EditorColorPickerRender.ts'
+import * as FindWidgetRender from '../FindWidgetRender/FindWidgetRender.ts'
 import { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
-import * as FindWidgetRender from '../FindWidgetRender/FindWidgetRender.ts'
 
 export const render = (widget: IFindWidget) => {
   const commands: readonly any[] = FindWidgetRender.apply(widget.oldState, widget.newState)
