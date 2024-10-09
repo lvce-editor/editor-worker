@@ -3,6 +3,7 @@ import * as EditorPosition from '../EditorCommand/EditorCommandPosition.ts'
 import * as EditorCompletionRender from '../EditorCompletionRender/EditorCompletionRender.ts'
 import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletionItems.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
+import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 
 export const render = (widget: any) => {
   const commands = EditorCompletionRender.renderCompletion(widget.oldState, widget.newState)
@@ -26,9 +27,7 @@ export const add = (widget: any) => {
   return allCommands
 }
 
-export const remove = (widget: any) => {
-  return [['Viewlet.send', widget.newState.uid, 'dispose']]
-}
+export const remove = RemoveWidget.removeWidget
 
 export const handleEditorType = (editor: any, state: any) => {
   const { unfilteredItems, itemHeight, maxHeight } = state
