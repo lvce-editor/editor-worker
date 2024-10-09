@@ -1,8 +1,33 @@
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import type { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
+import * as ColorPickerWidgetFactory from '../ColorPickerWidgetFactory/ColorPickerWidgetFactory.ts'
+import * as FocusKey from '../FocusKey/FocusKey.ts'
+import * as HasWidget from '../HasWidget/HasWidget.ts'
+import * as SetAdditionalFocus from '../SetAdditionalFocus/SetAdditionalFocus.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
+import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 
-const FindWidget = 'FindWidget'
+export const openFind2 = async (editor: any) => {
+  const { widgets } = editor
+  if (HasWidget.hasWidget(widgets, WidgetId.Find)) {
+    return editor
+  }
+  const colorPickerWidget: ColorPickerWidget = ColorPickerWidgetFactory.create()
+  const newState = ColorPicker.loadContent(colorPickerWidget.newState)
+  const newWidget = {
+    ...colorPickerWidget,
+    newState,
+  }
+  const newWidgets = [...widgets, newWidget]
 
-export const openFind2 = async (state: any) => {
-  await RendererWorker.invoke('Viewlet.openWidget', FindWidget)
-  return state
+  // TODO avoid side effect, apply focus shift during render
+  await SetAdditionalFocus.setAdditionalFocus(FocusKey.ColorPicker)
+  const newEditor = {
+    ...editor,
+    widgets: newWidgets,
+  }
+  // TODO
+  return {
+    ...newEditor,
+  }
 }

@@ -2,3 +2,4 @@
 export const Completion = 'completion'
 export const CompletionDetail = 'completionDetail'
 export const ColorPicker = 'colorPicker'
+export const Find = 'find'
