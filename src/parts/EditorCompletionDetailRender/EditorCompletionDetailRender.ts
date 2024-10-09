@@ -1,6 +1,7 @@
 import type { CompletionDetailState } from '../CompletionDetailState/CompletionDetailState.ts'
 import * as GetCompletionDetailVirtualDom from '../GetCompletionDetailVirtualDom/GetCompletionDetailVirtualDom.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
+import * as RenderParts from '../RenderParts/RenderParts.ts'
 
 const renderContent = {
   isEqual(oldState: CompletionDetailState, newState: CompletionDetailState) {
@@ -24,11 +25,5 @@ const renderBounds = {
 const render = [renderContent, renderBounds]
 
 export const renderFull = (oldState: CompletionDetailState, newState: CompletionDetailState) => {
-  const commands = []
-  for (const item of render) {
-    if (!item.isEqual(oldState, newState)) {
-      commands.push(item.apply(oldState, newState))
-    }
-  }
-  return commands
+  return RenderParts.renderParts(render, oldState, newState)
 }
