@@ -1,7 +1,4 @@
 import type { CompletionDetailState } from '../CompletionDetailState/CompletionDetailState.ts'
+import type { Widget } from '../Widget/Widget.ts'
 
-export interface CompletionDetailWidget {
-  readonly id: number | string
-  readonly oldState: CompletionDetailState
-  readonly newState: CompletionDetailState
-}
+export interface CompletionDetailWidget extends Widget<CompletionDetailState> {}
