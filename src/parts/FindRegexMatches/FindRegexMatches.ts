@@ -1,4 +1,4 @@
-export const findRegexMatches = (lines: readonly string[], regex: RegExp) => {
+export const findRegexMatches = (lines: readonly string[], regex: RegExp): Uint32Array => {
   const { length } = lines
   const matches = []
   for (let i = 0; i < length; i++) {
