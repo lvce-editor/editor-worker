@@ -1,3 +1,4 @@
+import * as AddWidget from '../AddWidget/AddWidget.ts'
 import type { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
 import * as EditorColorPickerRender from '../EditorColorPickerRender/EditorColorPickerRender.ts'
 
@@ -16,16 +17,7 @@ export const render = (widget: ColorPickerWidget) => {
 }
 
 export const add = (widget: ColorPickerWidget) => {
-  const commands = render(widget)
-  const id = 'ColorPicker'
-  // TODO how to generate a unique integer id
-  // that doesn't collide with ids created in renderer worker?
-  const uid = widget.newState.uid
-  const allCommands: any[] = []
-  allCommands.push(['Viewlet.createFunctionalRoot', id, uid])
-  allCommands.push(...commands)
-  allCommands.push(['Viewlet.send', uid, 'appendWidget'])
-  return allCommands
+  return AddWidget.addWidget(widget, 'ColorPicker', render)
 }
 
 export const remove = (widget: ColorPickerWidget) => {
