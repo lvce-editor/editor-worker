@@ -2,6 +2,6 @@
 
 const RE_ESCAPE = /[\\\{\}\*\+\?\|\^\$\.\[\]\(\)]/g
 
-export const escapeRegExpCharacters = (value: string) => {
+export const escapeRegExpCharacters = (value: string): string => {
   return value.replaceAll(RE_ESCAPE, '\\$&')
 }
