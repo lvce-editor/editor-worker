@@ -4,6 +4,7 @@ import * as GetFindWidgetVirtualDom from '../GetFindWidgetVirtualDom/GetFindWidg
 import * as GetMatchCountText from '../GetMatchCountText/GetMatchCountText.ts'
 import * as Icon from '../Icon/Icon.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
+import * as RenderParts from '../RenderParts/RenderParts.ts'
 
 export const hasFunctionalRender = true
 
@@ -77,3 +78,7 @@ const renderAriaAnnouncement = {
 }
 
 export const render = [renderAriaAnnouncement, renderDetails, renderValue]
+
+export const apply = (oldState: FindWidgetState, newState: FindWidgetState) => {
+  return RenderParts.renderParts(render, oldState, newState)
+}
