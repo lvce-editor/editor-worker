@@ -19,6 +19,11 @@ export const create = (): IFindWidget => {
       matchWholeWord: false,
       replacement: '',
       editorUid: 0,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      focused: false,
     },
     newState: {
       value: '',
@@ -33,6 +38,11 @@ export const create = (): IFindWidget => {
       matchWholeWord: false,
       replacement: '',
       editorUid: 0,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      focused: true,
     },
   }
   return widget
