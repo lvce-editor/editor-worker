@@ -1,8 +1,5 @@
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
-
-const FindWidget = 'FindWidget'
+import * as OpenFind2 from './EditorCommandOpenFind2.ts'
 
 export const openFind = async (state: any) => {
-  await RendererWorker.invoke('Viewlet.openWidget', FindWidget)
-  return state
+  return OpenFind2.openFind2(state)
 }
