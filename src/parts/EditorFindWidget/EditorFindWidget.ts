@@ -9,7 +9,7 @@ export const render = (widget: IFindWidget) => {
   const uid = widget.newState.uid
   for (const command of commands) {
     if (command[0] === 'Viewlet.setDom2') {
-      wrappedCommands.push(command)
+      wrappedCommands.push([command[0], uid, ...command.slice(1)])
     } else {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
     }

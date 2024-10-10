@@ -6,8 +6,6 @@ import * as Icon from '../Icon/Icon.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderParts from '../RenderParts/RenderParts.ts'
 
-export const hasFunctionalRender = true
-
 const renderValue = {
   isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
     return oldState.value === newState.value

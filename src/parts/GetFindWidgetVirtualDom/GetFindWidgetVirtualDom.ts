@@ -37,7 +37,7 @@ export const getFindWidgetVirtualDom = (
   const dom = []
   dom.push({
     type: VirtualDomElements.Div,
-    className: 'Viewlet ViewletFind',
+    className: 'Viewlet ViewletFind ViewletFindWidget FindWidget',
     childCount: 2,
     role: AriaRoles.Group,
   })
