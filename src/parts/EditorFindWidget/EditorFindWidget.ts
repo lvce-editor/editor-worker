@@ -14,6 +14,7 @@ export const render = (widget: IFindWidget) => {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
     }
   }
+  console.log({ wrappedCommands })
   return wrappedCommands
 }
 
