@@ -1,5 +1,5 @@
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
-import { CompletionDetailState } from '../CompletionDetailState/CompletionDetailState.ts'
+import type { CompletionDetailState } from '../CompletionDetailState/CompletionDetailState.ts'
 import * as CompletionDetailWidgetFactory from '../CompletionDetailWidgetFactory/CompletionDetailWidgetFactory.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetCompletionDetailBounds from '../GetCompletionDetailBounds/GetCompletionDetailBounds.ts'
