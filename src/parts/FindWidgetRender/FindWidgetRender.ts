@@ -70,7 +70,7 @@ const renderFocus = {
     return oldState.focused === newState.focused
   },
   apply(oldState: FindWidgetState, newState: FindWidgetState) {
-    return ['setFocused', newState.focused]
+    return ['focus', newState.focused]
   },
 }
 // const getAriaLabel = (state: FindWidgetState) => {
