@@ -28,7 +28,6 @@ export const typeWithAutoClosing = async (editor: any, text: string) => {
     case Quote.DoubleQuote:
     case Quote.SingleQuote:
     case Quote.BackTick:
-      console.log({ auto: editor })
       if (isAutoClosingQuotesEnabled) {
         return EditorTypeWithAutoClosingQuote.typeWithAutoClosingQuote(editor, text)
       }
