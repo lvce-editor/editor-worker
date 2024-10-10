@@ -7,6 +7,10 @@ import * as WrapWidgetCommand from '../WrapWidgetCommand/WrapWidgetCommand.ts'
 const widgetCommands = {
   'ColorPicker.handleSliderPointerDown': WidgetId.ColorPicker,
   'ColorPicker.handleSliderPointerMove': WidgetId.ColorPicker,
+  'FindWidget.focusNext': WidgetId.Find,
+  'FindWidget.focusPrevious': WidgetId.Find,
+  'FindWidget.close': WidgetId.Find,
+  'FindWidget.focusIndex': WidgetId.Find,
 } as any
 
 // TODO wrap commands globally, not per editor
