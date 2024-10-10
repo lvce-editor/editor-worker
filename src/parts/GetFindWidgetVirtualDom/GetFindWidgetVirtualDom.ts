@@ -34,6 +34,11 @@ export const getFindWidgetVirtualDom = (
   useRegularExpression: any
 ) => {
   const dom = []
+  dom.push({
+    type: VirtualDomElements.Div,
+    className: 'Viewlet ViewletFind',
+    childCount: 2,
+  })
   dom.push(...GetSearchToggleButtonVirtualDom.getSearchToggleButtonVirtualDom(replaceExpanded, 'handleClick'))
   dom.push({
     type: VirtualDomElements.Div,
