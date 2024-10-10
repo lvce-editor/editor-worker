@@ -16,10 +16,11 @@ export const test = async (rpc) => {
     isMonospaceFont: true,
     charWidth: 9,
   })
-  await rpc.invoke('Editor.openFind2', id)
   await rpc.invoke('Editor.selectAll', id)
+  await rpc.invoke('Editor.cursorSet', id, 0, 0)
+  await rpc.invoke('Editor.openFind2', id)
   const response = await rpc.invoke('FindWidget.focusIndex', id, 0)
-  assert.deepEqual(response, {
+  assert.deepEqual(response.commands, {
     value: '',
     matches: new Uint32Array([0, 0]),
     matchIndex: 1,
