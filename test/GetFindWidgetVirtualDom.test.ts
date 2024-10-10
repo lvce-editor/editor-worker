@@ -36,6 +36,7 @@ test('getFindWidgetVirtualDom', () => {
     {
       childCount: 2,
       className: 'Viewlet ViewletFind',
+      role: 'group',
       type: 4,
     },
     {
