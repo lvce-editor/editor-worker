@@ -1,5 +1,6 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as EditorStrings from '../EditorStrings/EditorStrings.ts'
+import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
 import * as GetIconVirtualDom from '../GetIconVirtualDom/GetIconVirtualDom.ts'
 import * as GetSearchFieldVirtualDom from '../GetSearchFieldVirtualDom/GetSearchFieldVirtualDom.ts'
 import * as GetSearchToggleButtonVirtualDom from '../GetSearchToggleButtonVirtualDom/GetSearchToggleButtonVirtualDom.ts'
@@ -17,7 +18,7 @@ const getIconButtonVirtualDom = (iconButton: any) => {
       type: VirtualDomElements.Button,
       className,
       title: label,
-      ariaLaBel: label,
+      ariaLabel: label,
       childCount: 1,
       disabled: disabled ? true : undefined,
     },
@@ -38,6 +39,7 @@ export const getFindWidgetVirtualDom = (
     type: VirtualDomElements.Div,
     className: 'Viewlet ViewletFind',
     childCount: 2,
+    role: AriaRoles.Group,
   })
   dom.push(...GetSearchToggleButtonVirtualDom.getSearchToggleButtonVirtualDom(replaceExpanded, 'handleClick'))
   dom.push({
