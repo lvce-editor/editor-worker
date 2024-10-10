@@ -52,6 +52,7 @@ export const setup = async () => {
     'Editor.setSelections'() {},
     'ExtensionHostManagement.activateByEvent'() {},
     'Focus.setAdditionalFocus'() {},
+    'Viewlet.openWidget'() {},
   }
   const rpc = await createWorker(workerPath, commandMap)
   const syntaxHighlightingEnabled = true
