@@ -6,8 +6,6 @@ import * as Icon from '../Icon/Icon.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderParts from '../RenderParts/RenderParts.ts'
 
-export const hasFunctionalRender = true
-
 const renderValue = {
   isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
     return oldState.value === newState.value
@@ -57,6 +55,24 @@ const renderDetails = {
   },
 }
 
+const renderBounds = {
+  isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
+    return oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height
+  },
+  apply(oldState: FindWidgetState, newState: FindWidgetState) {
+    const { x, y, width, height } = newState
+    return [/* method */ RenderMethod.SetBounds, /* x */ x, /* y */ y, /* width */ width, /* height */ height]
+  },
+}
+
+const renderFocus = {
+  isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
+    return oldState.focused === newState.focused
+  },
+  apply(oldState: FindWidgetState, newState: FindWidgetState) {
+    return ['focus', newState.focused]
+  },
+}
 // const getAriaLabel = (state: FindWidgetState) => {
 //   const { matchIndex, matchCount, value } = state
 //   return FindStrings.matchesFoundFor(matchIndex, matchCount, value)
@@ -77,11 +93,7 @@ const renderDetails = {
 //   },
 // }
 
-export const render = [
-  // renderAriaAnnouncement,
-  renderDetails,
-  renderValue,
-]
+export const render = [renderDetails, renderBounds, renderValue, renderFocus]
 
 export const apply = (oldState: FindWidgetState, newState: FindWidgetState) => {
   return RenderParts.renderParts(render, oldState, newState)

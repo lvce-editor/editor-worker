@@ -8,13 +8,17 @@ import * as WidgetId from '../WidgetId/WidgetId.ts'
 export const openFind2 = async (editor: any) => {
   const newStateGenerator = async (state: FindWidgetState): Promise<FindWidgetState> => {
     const { value, matches, matchCount, matchIndex } = await FindWidgetFunctions.loadContent(editor.uid)
-
+    const { x, y, width, height } = FindWidgetFunctions.getPosition(editor)
     const latestState: FindWidgetState = {
       ...state,
       value,
       matches,
       matchCount,
       matchIndex,
+      x,
+      y,
+      width,
+      height,
     }
     return latestState
   }

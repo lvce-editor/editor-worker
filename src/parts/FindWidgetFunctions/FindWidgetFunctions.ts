@@ -4,16 +4,7 @@ import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
-export const getPosition = (uid: number) => {
-  const editor = GetEditor.getEditor(uid)
-  if (!editor) {
-    return {
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-    }
-  }
+export const getPosition = (editor: any) => {
   const width = 300
   const height = 30
   const paddingTop = 10
