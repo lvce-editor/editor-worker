@@ -13,7 +13,6 @@ export const create = (): CompletionDetailWidget => {
       y: 0,
       width: 0,
       height: 0,
-      editorUid: 0,
     },
     newState: {
       content: '',
@@ -22,7 +21,6 @@ export const create = (): CompletionDetailWidget => {
       y: 0,
       width: 0,
       height: 0,
-      editorUid: 0,
     },
   }
   return completionWidget
