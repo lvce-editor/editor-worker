@@ -1,8 +1,8 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as EditorStrings from '../EditorStrings/EditorStrings.ts'
-import * as GetIconVirtualDom from '../GetIconVirtualDom/GetIconVirtualDom.js'
-import * as GetSearchFieldVirtualDom from '../GetSearchFieldVirtualDom/GetSearchFieldVirtualDom.js'
-import * as GetSearchToggleButtonVirtualDom from '../GetSearchToggleButtonVirtualDom/GetSearchToggleButtonVirtualDom.js'
+import * as GetIconVirtualDom from '../GetIconVirtualDom/GetIconVirtualDom.ts'
+import * as GetSearchFieldVirtualDom from '../GetSearchFieldVirtualDom/GetSearchFieldVirtualDom.ts'
+import * as GetSearchToggleButtonVirtualDom from '../GetSearchToggleButtonVirtualDom/GetSearchToggleButtonVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
