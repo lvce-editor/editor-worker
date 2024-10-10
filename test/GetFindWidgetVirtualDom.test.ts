@@ -35,7 +35,7 @@ test('getFindWidgetVirtualDom', () => {
   expect(dom).toEqual([
     {
       childCount: 2,
-      className: 'Viewlet ViewletFind',
+      className: 'Viewlet ViewletFind ViewletFindWidget FindWidget',
       role: 'group',
       type: 4,
     },
