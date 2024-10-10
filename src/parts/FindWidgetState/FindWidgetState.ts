@@ -12,4 +12,8 @@ export interface FindWidgetState {
   readonly replacement: string
   readonly disposed?: boolean
   readonly editorUid: number
+  readonly x: number
+  readonly y: number
+  readonly width: number
+  readonly height: number
 }

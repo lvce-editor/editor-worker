@@ -55,6 +55,16 @@ const renderDetails = {
   },
 }
 
+const renderBounds = {
+  isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
+    return oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height
+  },
+  apply(oldState: FindWidgetState, newState: FindWidgetState) {
+    const { x, y, width, height } = newState
+    return [/* method */ RenderMethod.SetBounds, /* x */ x, /* y */ y, /* width */ width, /* height */ height]
+  },
+}
+
 // const getAriaLabel = (state: FindWidgetState) => {
 //   const { matchIndex, matchCount, value } = state
 //   return FindStrings.matchesFoundFor(matchIndex, matchCount, value)
