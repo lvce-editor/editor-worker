@@ -5,4 +5,5 @@ export interface CompletionDetailState {
   readonly y: number
   readonly width: number
   readonly height: number
+  readonly editorUid: number
 }
