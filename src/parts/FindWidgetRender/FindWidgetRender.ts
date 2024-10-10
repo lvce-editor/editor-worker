@@ -53,31 +53,35 @@ const renderDetails = {
       newState.matchWholeWord,
       newState.useRegularExpression
     )
-    return [/* method */ 'setDom', /* enabled */ dom]
+    return ['Viewlet.setDom2', dom]
   },
 }
 
-const getAriaLabel = (state: FindWidgetState) => {
-  const { matchIndex, matchCount, value } = state
-  return FindStrings.matchesFoundFor(matchIndex, matchCount, value)
-}
+// const getAriaLabel = (state: FindWidgetState) => {
+//   const { matchIndex, matchCount, value } = state
+//   return FindStrings.matchesFoundFor(matchIndex, matchCount, value)
+// }
 
-const renderAriaAnnouncement = {
-  isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
-    return (
-      oldState.ariaAnnouncement === newState.ariaAnnouncement &&
-      oldState.matchIndex === newState.matchIndex &&
-      oldState.matchCount === newState.matchCount &&
-      oldState.value === newState.value
-    )
-  },
-  apply(oldState: FindWidgetState, newState: FindWidgetState) {
-    const ariaLabel = getAriaLabel(newState)
-    return [/* Viewlet.invoke */ 'Viewlet.ariaAnnounce', /* text */ ariaLabel]
-  },
-}
+// const renderAriaAnnouncement = {
+//   isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
+//     return (
+//       oldState.ariaAnnouncement === newState.ariaAnnouncement &&
+//       oldState.matchIndex === newState.matchIndex &&
+//       oldState.matchCount === newState.matchCount &&
+//       oldState.value === newState.value
+//     )
+//   },
+//   apply(oldState: FindWidgetState, newState: FindWidgetState) {
+//     const ariaLabel = getAriaLabel(newState)
+//     return [/* Viewlet.invoke */ 'Viewlet.ariaAnnounce', /* text */ ariaLabel]
+//   },
+// }
 
-export const render = [renderAriaAnnouncement, renderDetails, renderValue]
+export const render = [
+  // renderAriaAnnouncement,
+  renderDetails,
+  renderValue,
+]
 
 export const apply = (oldState: FindWidgetState, newState: FindWidgetState) => {
   return RenderParts.renderParts(render, oldState, newState)
