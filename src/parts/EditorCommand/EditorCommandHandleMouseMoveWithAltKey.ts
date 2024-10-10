@@ -40,11 +40,6 @@ export const handleMouseMoveWithAltKey = async (editor, x, y) => {
     // const definitionRelativeY = definitionStartPosition.rowIndex - editor.minLineY
 
     const lineTokenMap = editor.lineCache[definitionStartPosition.rowIndex + 1]
-    console.log({ tokenMap: lineTokenMap })
-    console.log({
-      lineCache: editor.lineCache,
-      rowIndex: definitionStartPosition.rowIndex,
-    })
     if (!lineTokenMap) {
       return editor
     }
@@ -52,7 +47,6 @@ export const handleMouseMoveWithAltKey = async (editor, x, y) => {
     if (tokenIndex === -1) {
       return editor
     }
-    console.log({ token: tokenIndex })
     // .tokens
     // await RendererProcess.invoke(
     //   /* Viewlet.invoke */ 'Viewlet.send',
@@ -61,7 +55,6 @@ export const handleMouseMoveWithAltKey = async (editor, x, y) => {
     //   /* relativeY */ definitionRelativeY,
     //   /* tokenIndex */ tokenIndex,
     // )
-    console.log({ definition })
     return editor
   } catch (error) {
     // @ts-ignore

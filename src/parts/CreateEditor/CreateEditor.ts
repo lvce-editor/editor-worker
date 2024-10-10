@@ -126,7 +126,6 @@ export const createEditor = async ({
     ...newEditor3,
     focused: true,
   }
-  // console.log({ newEditor })
   EditorState.set(id, emptyEditor, newEditor4)
   await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, languageId, content)
 }
