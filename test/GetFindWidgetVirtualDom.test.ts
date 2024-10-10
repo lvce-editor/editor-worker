@@ -97,7 +97,7 @@ test('getFindWidgetVirtualDom', () => {
       type: 12,
     },
     {
-      ariaLaBel: 'Previous Match',
+      ariaLabel: 'Previous Match',
       childCount: 1,
       className: 'IconButton',
       disabled: undefined,
@@ -111,7 +111,7 @@ test('getFindWidgetVirtualDom', () => {
       type: 4,
     },
     {
-      ariaLaBel: 'Next Match',
+      ariaLabel: 'Next Match',
       childCount: 1,
       className: 'IconButton',
       disabled: undefined,
@@ -125,7 +125,7 @@ test('getFindWidgetVirtualDom', () => {
       type: 4,
     },
     {
-      ariaLaBel: 'Close',
+      ariaLabel: 'Close',
       childCount: 1,
       className: 'IconButton',
       disabled: undefined,
