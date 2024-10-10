@@ -23,6 +23,7 @@ export const create = (): IFindWidget => {
       y: 0,
       width: 0,
       height: 0,
+      focused: false,
     },
     newState: {
       value: '',
@@ -41,6 +42,7 @@ export const create = (): IFindWidget => {
       y: 0,
       width: 0,
       height: 0,
+      focused: true,
     },
   }
   return widget

@@ -16,4 +16,5 @@ export interface FindWidgetState {
   readonly y: number
   readonly width: number
   readonly height: number
+  readonly focused: boolean
 }

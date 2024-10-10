@@ -65,6 +65,14 @@ const renderBounds = {
   },
 }
 
+const renderFocus = {
+  isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
+    return oldState.focused === newState.focused
+  },
+  apply(oldState: FindWidgetState, newState: FindWidgetState) {
+    return ['setFocused', newState.focused]
+  },
+}
 // const getAriaLabel = (state: FindWidgetState) => {
 //   const { matchIndex, matchCount, value } = state
 //   return FindStrings.matchesFoundFor(matchIndex, matchCount, value)
@@ -85,11 +93,7 @@ const renderBounds = {
 //   },
 // }
 
-export const render = [
-  // renderAriaAnnouncement,
-  renderDetails,
-  renderValue,
-]
+export const render = [renderDetails, renderBounds, renderValue, renderFocus]
 
 export const apply = (oldState: FindWidgetState, newState: FindWidgetState) => {
   return RenderParts.renderParts(render, oldState, newState)
