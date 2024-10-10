@@ -33,6 +33,7 @@ export const getFindWidgetVirtualDom = (
   matchWholeWord: any,
   useRegularExpression: any
 ) => {
+  console.log({ matchCountText, replaceExpanded, buttons, matchCase, matchWholeWord, useRegularExpression })
   const dom = []
   dom.push({
     type: VirtualDomElements.Div,
