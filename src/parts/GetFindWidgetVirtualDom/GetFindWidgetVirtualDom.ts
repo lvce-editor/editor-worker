@@ -17,7 +17,7 @@ const getIconButtonVirtualDom = (iconButton: any) => {
       type: VirtualDomElements.Button,
       className,
       title: label,
-      ariaLaBel: label,
+      ariaLabel: label,
       childCount: 1,
       disabled: disabled ? true : undefined,
     },
