@@ -5,7 +5,7 @@ const id = 0
 export const test = async (rpc) => {
   await rpc.invoke('Editor.create', {
     id,
-    content: 'a',
+    content: 'abc',
     fontFamily: '',
     fontSize: 14,
     lineHeight: 20,
@@ -16,8 +16,8 @@ export const test = async (rpc) => {
     isMonospaceFont: true,
     charWidth: 9,
   })
-  await rpc.invoke('Editor.selectAll', id)
   await rpc.invoke('Editor.cursorSet', id, 0, 0)
+  await rpc.invoke('Editor.selectWord', id, 0, 0)
   await rpc.invoke('Editor.openFind2', id)
   const response = await rpc.invoke('FindWidget.focusIndex', id, 0)
   assert.deepEqual(response.commands, {
