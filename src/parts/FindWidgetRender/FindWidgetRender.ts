@@ -17,6 +17,7 @@ const renderValue = {
 
 const renderDetails = {
   isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
+    console.log('check')
     return (
       oldState.matchIndex === newState.matchIndex &&
       oldState.matchCount === newState.matchCount &&
@@ -51,6 +52,7 @@ const renderDetails = {
       newState.matchWholeWord,
       newState.useRegularExpression
     )
+    console.log({ dom })
     return ['Viewlet.setDom2', dom]
   },
 }
