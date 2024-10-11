@@ -71,7 +71,10 @@ export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetStat
 }
 
 export const toggleReplace = (state: FindWidgetState): FindWidgetState => {
-  return state
+  return {
+    ...state,
+    replaceExpanded: !state.replaceExpanded,
+  }
 }
 
 // TODO this function should be synchronous
