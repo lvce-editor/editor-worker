@@ -136,3 +136,10 @@ export const close = async (state: FindWidgetState) => {
     disposed: true,
   }
 }
+
+export const handleToggleReplaceFocus = (state: FindWidgetState): FindWidgetState => {
+  return {
+    ...state,
+    focus: 'replaceInput',
+  }
+}
