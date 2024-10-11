@@ -13,6 +13,7 @@ export const wrapWidgetCommand = (widgetId: string, fn: any) => {
       newState,
     }
     const newWidgets = [...editor.widgets.slice(0, childIndex), newWidget, ...editor.widgets.slice(childIndex + 1)]
+    console.log({ newWidgets, fn })
     return {
       ...editor,
       widgets: newWidgets,
