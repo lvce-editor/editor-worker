@@ -8,7 +8,8 @@ import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts
 export const getFindWidgetVirtualDom = (
   matchCountText: string,
   replaceExpanded: boolean,
-  buttons: any,
+  findButtons: any,
+  replaceButtons: any,
   matchCase: any,
   matchWholeWord: any,
   useRegularExpression: any
@@ -26,9 +27,9 @@ export const getFindWidgetVirtualDom = (
     className: ClassNames.FindWidgetRight,
     childCount: replaceExpanded ? 2 : 1,
   })
-  dom.push(...GetFindWidgetFindVirtualDom.getFindWidgetFindVirtualDom(matchCountText, buttons))
+  dom.push(...GetFindWidgetFindVirtualDom.getFindWidgetFindVirtualDom(matchCountText, findButtons))
   if (replaceExpanded) {
-    dom.push(...GetFindWidgetReplaceVirtualDom.getFindWidgetReplaceVirtualDom(replaceExpanded))
+    dom.push(...GetFindWidgetReplaceVirtualDom.getFindWidgetReplaceVirtualDom(replaceExpanded, replaceButtons))
   }
   return dom
 }

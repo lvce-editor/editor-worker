@@ -21,6 +21,7 @@ test('getFindWidgetVirtualDom', () => {
       disabled: false,
     },
   ]
+  const replaceButtons: any = []
   const matchCase = false
   const matchWholeWord = false
   const useRegularExpression = false
@@ -28,6 +29,7 @@ test('getFindWidgetVirtualDom', () => {
     matchCountText,
     replaceExpanded,
     buttons,
+    replaceButtons,
     matchCase,
     matchWholeWord,
     useRegularExpression

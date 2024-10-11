@@ -26,7 +26,7 @@ const renderDetails = {
   apply(oldState: FindWidgetState, newState: FindWidgetState) {
     const matchCountText = GetMatchCountText.getMatchCountText(newState.matchIndex, newState.matchCount)
     const buttonsEnabled = newState.matchCount > 0
-    const buttons = [
+    const findButtons = [
       {
         label: FindStrings.previousMatch(),
         icon: Icon.ArrowUp,
@@ -43,10 +43,23 @@ const renderDetails = {
         disabled: false,
       },
     ]
+    const replaceButtons = [
+      {
+        label: FindStrings.replace(),
+        icon: Icon.Replace,
+        disabled: !buttonsEnabled,
+      },
+      {
+        label: FindStrings.replaceAll(),
+        icon: Icon.ReplaceAll,
+        disabled: !buttonsEnabled,
+      },
+    ]
     const dom = GetFindWidgetVirtualDom.getFindWidgetVirtualDom(
       matchCountText,
       newState.replaceExpanded,
-      buttons,
+      findButtons,
+      replaceButtons,
       newState.matchCase,
       newState.matchWholeWord,
       newState.useRegularExpression
