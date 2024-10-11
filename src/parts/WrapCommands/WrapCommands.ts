@@ -28,7 +28,6 @@ const wrapCommand =
     Editors.set(editorUid, oldInstance.newState, newEditor)
     // TODO if possible, rendering should be sync
     const commands = await RenderEditor.renderEditor(editorUid)
-    console.log({ commands })
     newEditor.commands = commands
     return newEditor
   }
