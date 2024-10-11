@@ -71,9 +71,14 @@ export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetStat
 }
 
 export const toggleReplace = (state: FindWidgetState): FindWidgetState => {
+  const newExpanded = !state.replaceExpanded
+  const collapsedHeight = 30
+  const expandedHeight = 60
+  const newHeight = newExpanded ? expandedHeight : collapsedHeight
   return {
     ...state,
     replaceExpanded: !state.replaceExpanded,
+    height: newHeight,
   }
 }
 

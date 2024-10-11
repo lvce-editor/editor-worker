@@ -1,27 +1,8 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
-import * as GetIconVirtualDom from '../GetIconVirtualDom/GetIconVirtualDom.ts'
+import * as GetIconButtonVirtualDom from '../GetIconButtonVirtualDom/GetIconButtonVirtualDom.ts'
 import * as GetSearchFieldVirtualDom from '../GetSearchFieldVirtualDom/GetSearchFieldVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
-
-const getIconButtonVirtualDom = (iconButton: any) => {
-  const { label, icon, disabled } = iconButton
-  let className = ClassNames.IconButton
-  if (disabled) {
-    className += ' ' + ClassNames.IconButtonDisabled
-  }
-  return [
-    {
-      type: VirtualDomElements.Button,
-      className,
-      title: label,
-      ariaLabel: label,
-      childCount: 1,
-      disabled: disabled ? true : undefined,
-    },
-    GetIconVirtualDom.getIconVirtualDom(icon),
-  ]
-}
 
 export const getFindWidgetFindVirtualDom = (matchCountText: string, buttons: any) => {
   const dom = []
@@ -38,7 +19,7 @@ export const getFindWidgetFindVirtualDom = (matchCountText: string, buttons: any
       childCount: 1,
     },
     text(matchCountText),
-    ...buttons.flatMap(getIconButtonVirtualDom)
+    ...buttons.flatMap(GetIconButtonVirtualDom.getIconButtonVirtualDom)
   )
   return dom
 }
