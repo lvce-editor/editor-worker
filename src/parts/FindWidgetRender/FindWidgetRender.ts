@@ -46,7 +46,12 @@ const renderDetails = {
     const replaceButtons = [
       {
         label: FindStrings.replace(),
-        icon: Icon.SourceControl,
+        icon: Icon.Replace,
+        disabled: !buttonsEnabled,
+      },
+      {
+        label: FindStrings.replaceAll(),
+        icon: Icon.ReplaceAll,
         disabled: !buttonsEnabled,
       },
     ]

@@ -12,6 +12,7 @@ const UiStrings = {
   NextMatch: 'Next Match',
   Find: 'Find',
   Replace: 'Replace',
+  ReplaceAll: 'Replace All',
 }
 
 export const noResults = (): string => {
@@ -51,4 +52,8 @@ export const find = () => {
 
 export const replace = () => {
   return I18nString.i18nString(UiStrings.Replace)
+}
+
+export const replaceAll = () => {
+  return I18nString.i18nString(UiStrings.ReplaceAll)
 }
