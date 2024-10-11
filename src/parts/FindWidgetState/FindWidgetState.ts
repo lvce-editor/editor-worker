@@ -10,11 +10,12 @@ export interface FindWidgetState {
   readonly matchCase: boolean
   readonly matchWholeWord: boolean
   readonly replacement: string
-  readonly disposed?: boolean
+  readonly disposed?: boolean // TODO make field required
   readonly editorUid: number
   readonly x: number
   readonly y: number
   readonly width: number
   readonly height: number
   readonly focused: boolean
+  readonly focus?: string // TODO make field required
 }
