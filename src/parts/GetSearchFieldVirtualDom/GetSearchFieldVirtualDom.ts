@@ -38,13 +38,7 @@ export const getSearchFieldVirtualDom = (
     ...insideButtons.flatMap(GetSearchFieldButtonVirtualDom.getSearchFieldButtonVirtualDom),
   ]
   if (outsideButtons.length > 0) {
-    dom.unshift({
-      type: VirtualDomElements.Div,
-      className: ClassNames.SearchFieldContainer,
-      role: AriaRoles.None,
-      childCount: 1 + outsideButtons.length,
-    })
-    dom.push(...outsideButtons.flatMap(GetSearchFieldButtonVirtualDom.getSearchFieldButtonVirtualDom))
+    throw new Error('outsideButtons are deprecated')
   }
   return dom
 }
