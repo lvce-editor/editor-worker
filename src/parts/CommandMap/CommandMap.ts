@@ -281,6 +281,7 @@ export const commandMap = {
   'FindWidget.handleInput': FindWidget.handleInput,
   'FindWidget.handleFocus': FindWidget.handleFocus,
   'FindWidget.handleBlur': FindWidget.handleBlur,
+  'FindWidget.toggleReplace': FindWidget.toggleReplace,
   'FindWidget.close': FindWidget.close,
   'FindWidget.loadContent': FindWidget.loadContent,
   'Font.ensure': Font.ensure,

@@ -70,6 +70,10 @@ export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetStat
   return state
 }
 
+export const toggleReplace = (state: FindWidgetState): FindWidgetState => {
+  return state
+}
+
 // TODO this function should be synchronous
 export const focusIndex = async (state: FindWidgetState, index: number): Promise<FindWidgetState> => {
   const { value, matches, matchIndex } = state
