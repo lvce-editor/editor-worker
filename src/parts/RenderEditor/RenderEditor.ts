@@ -120,7 +120,6 @@ const renderGutterInfo = {
 
 const renderWidgets = {
   isEqual(oldState: any, newState: any) {
-    console.log('check widgets', oldState.widgets === newState.widgets)
     return oldState.widgets === newState.widgets
   },
   apply(oldState: any, newState: any) {
@@ -159,7 +158,6 @@ const renderWidgets = {
       }
     }
     const changeCommands: any[] = []
-    console.log({ changedWidgets })
     for (const changedWidget of changedWidgets) {
       const childCommands = RenderWidget.renderWidget(changedWidget)
       if (childCommands.length > 0) {
