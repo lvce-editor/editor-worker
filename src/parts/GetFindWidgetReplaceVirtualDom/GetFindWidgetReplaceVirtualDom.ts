@@ -1,28 +1,25 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
-import * as EditorStrings from '../EditorStrings/EditorStrings.ts'
-import * as GetSearchFieldVirtualDom from '../GetSearchFieldVirtualDom/GetSearchFieldVirtualDom.ts'
 import * as FindStrings from '../FindStrings/FindStrings.ts'
+import * as GetSearchFieldVirtualDom from '../GetSearchFieldVirtualDom/GetSearchFieldVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
-import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
-export const getFindWidgetReplaceVirtualDom = (replaceExpanded: boolean) => {
+export const getFindWidgetReplaceVirtualDom = (replaceExpanded: boolean, replaceButtons: any) => {
   const dom = []
   if (replaceExpanded) {
     dom.push(
       {
         type: VirtualDomElements.Div,
         className: ClassNames.FindWidgetReplace,
-        childCount: 2,
+        childCount: 1 + replaceButtons.length,
       },
       ...GetSearchFieldVirtualDom.getSearchFieldVirtualDom(
         'replace-value',
         FindStrings.replace(),
         'handleReplaceInput',
         [],
-        [],
+        replaceButtons,
         'handleReplaceFocus'
-      ),
-      text(EditorStrings.replace())
+      )
     )
   }
   return dom
