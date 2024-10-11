@@ -14,15 +14,13 @@ export const getFindWidgetReplaceVirtualDom = (replaceExpanded: boolean) => {
         className: ClassNames.FindWidgetReplace,
         childCount: 2,
       },
-      dom.push(
-        ...GetSearchFieldVirtualDom.getSearchFieldVirtualDom(
-          'replace-value',
-          FindStrings.replace(),
-          'handleReplaceInput',
-          [],
-          [],
-          'handleReplaceFocus'
-        )
+      ...GetSearchFieldVirtualDom.getSearchFieldVirtualDom(
+        'replace-value',
+        FindStrings.replace(),
+        'handleReplaceInput',
+        [],
+        [],
+        'handleReplaceFocus'
       ),
       text(EditorStrings.replace())
     )
