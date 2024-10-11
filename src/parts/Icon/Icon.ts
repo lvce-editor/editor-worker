@@ -1,5 +1,3 @@
-import * as AssetDir from '../AssetDir/AssetDir.ts'
-
 export const Add = 'Add'
 export const ArrowDown = 'ArrowDown'
 export const ArrowUp = 'ArrowUp'
