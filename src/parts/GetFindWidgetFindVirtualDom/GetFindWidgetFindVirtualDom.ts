@@ -1,4 +1,5 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
+import * as FindStrings from '../FindStrings/FindStrings.ts'
 import * as GetIconButtonVirtualDom from '../GetIconButtonVirtualDom/GetIconButtonVirtualDom.ts'
 import * as GetSearchFieldVirtualDom from '../GetSearchFieldVirtualDom/GetSearchFieldVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
@@ -11,7 +12,7 @@ export const getFindWidgetFindVirtualDom = (matchCountText: string, buttons: any
     className: ClassNames.FindWidgetFind,
     childCount: 5,
   })
-  dom.push(...GetSearchFieldVirtualDom.getSearchFieldVirtualDom('search-value', 'Find', 'handleInput', [], [], 'handleFocus'))
+  dom.push(...GetSearchFieldVirtualDom.getSearchFieldVirtualDom('search-value', FindStrings.find(), 'handleInput', [], [], 'handleFocus'))
   dom.push(
     {
       type: VirtualDomElements.Div,
