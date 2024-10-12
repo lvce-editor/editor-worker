@@ -147,6 +147,7 @@ export const handleToggleReplaceFocus = async (state: FindWidgetState): Promise<
 }
 
 export const handleReplaceFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
+  console.log('replace focus')
   await SetFocus.setFocus(FocusKey.FindWidgetReplace)
   return {
     ...state,
