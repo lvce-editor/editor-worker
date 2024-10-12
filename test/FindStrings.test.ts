@@ -17,3 +17,27 @@ test('matchesFoundFor', () => {
   const value = 'a'
   expect(FindStrings.matchesFoundFor(matchIndex, matchCount, value)).toBe('1 of 1 found for a')
 })
+
+test('previousMatch', () => {
+  expect(FindStrings.previousMatch()).toBe('Previous Match')
+})
+
+test('nextMatch', () => {
+  expect(FindStrings.nextMatch()).toBe('Next Match')
+})
+
+test('close', () => {
+  expect(FindStrings.close()).toBe('Close')
+})
+
+test('find', () => {
+  expect(FindStrings.find()).toBe('Find')
+})
+
+test('replace', () => {
+  expect(FindStrings.replace()).toBe('Replace')
+})
+
+test('replaceAll', () => {
+  expect(FindStrings.replaceAll()).toBe('Replace All')
+})
