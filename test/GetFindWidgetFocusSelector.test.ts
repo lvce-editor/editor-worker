@@ -28,12 +28,12 @@ test('close', () => {
 })
 
 test('focusPrevious', () => {
-  const focus = FocusKey.FocusFindWidgetFocusPrevious
+  const focus = FocusKey.FocusFindWidgetPreviousMatchButton
   expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="FocusPrevious"]')
 })
 
 test('focusNext', () => {
-  const focus = FocusKey.FocusFindWidgetFocusNext
+  const focus = FocusKey.FocusFindWidgetNextMatchButton
   expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="FocusNext"]')
 })
 
