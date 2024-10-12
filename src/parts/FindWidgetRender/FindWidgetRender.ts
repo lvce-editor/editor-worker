@@ -88,9 +88,9 @@ const renderBounds = {
 const getKey = (focus: string): string => {
   switch (focus) {
     case 'find':
-      return `[name="find"]`
+      return `[name="search-value"]`
     case 'replace':
-      return '[name="replace"]'
+      return '[name="replace-value"]'
     case 'toggleReplace':
       return `[name="toggleReplace"]`
     default:
