@@ -23,7 +23,7 @@ test('previousMatch', () => {
 })
 
 test('nextMatch', () => {
-  expect(FindStrings.previousMatch()).toBe('Next Match')
+  expect(FindStrings.nextMatch()).toBe('Next Match')
 })
 
 test('close', () => {
