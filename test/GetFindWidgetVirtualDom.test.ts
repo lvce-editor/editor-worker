@@ -52,6 +52,7 @@ test('getFindWidgetVirtualDom', () => {
       className: 'IconButton SearchToggleButton ',
       'data-command': 'toggleReplace',
       onClick: 'handleClickToggleReplace',
+      onFocus: 'handleToggleReplaceFocus',
       title: 'Toggle Replace',
       type: 1,
     },
