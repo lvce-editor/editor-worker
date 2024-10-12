@@ -151,3 +151,13 @@ export const handleReplaceFocus = (state: FindWidgetState): FindWidgetState => {
     focus: 'replaceInput',
   }
 }
+
+export const focusReplace = (state: FindWidgetState): FindWidgetState => {
+  // TODO
+  return state
+}
+
+export const focusFind = (state: FindWidgetState): FindWidgetState => {
+  // TODO
+  return state
+}
