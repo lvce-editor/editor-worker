@@ -12,7 +12,7 @@ export const getFindWidgetFocusSelector = (focus: number): string => {
     case FocusKey.FindWidgetClose:
       return `[name="close"]`
     case FocusKey.FindWidgetToggleReplace:
-      return `[name="toggleReplace"]`
+      return `[name="ToggleReplace"]`
     default:
       return ''
   }

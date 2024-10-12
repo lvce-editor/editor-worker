@@ -14,7 +14,7 @@ test('replace', () => {
 
 test('toggleReplace', () => {
   const focus = FocusKey.FindWidgetToggleReplace
-  expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="toggleReplace"]')
+  expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="ToggleReplace"]')
 })
 
 test('replaceAll', () => {
