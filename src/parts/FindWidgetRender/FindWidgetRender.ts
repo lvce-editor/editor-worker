@@ -88,6 +88,7 @@ const renderFocus = {
     return oldState.focused === newState.focused
   },
   apply(oldState: FindWidgetState, newState: FindWidgetState) {
+    console.log('render focus', newState.focus)
     return ['focus', newState.focused]
   },
 }
