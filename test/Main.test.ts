@@ -12,8 +12,8 @@ const Main = await import('../src/parts/Main/Main.ts')
 const Listen = await import('../src/parts/Listen/Listen.ts')
 const RegisterWidgets = await import('../src/parts/RegisterWidgets/RegisterWidgets.ts')
 
-test('main', () => {
-  Main.main()
+test('main', async () => {
+  await Main.main()
   expect(Listen.listen).toHaveBeenCalledTimes(1)
   expect(RegisterWidgets.registerWidgets).toHaveBeenCalledTimes(1)
 })
