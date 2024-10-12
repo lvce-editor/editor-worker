@@ -18,5 +18,5 @@ export interface FindWidgetState {
   readonly height: number
   readonly focused: boolean
   readonly focusSource: number
-  readonly focus?: string // TODO make field required
+  readonly focus: number
 }

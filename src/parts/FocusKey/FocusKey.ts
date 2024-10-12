@@ -8,3 +8,4 @@ export const FindWidgetReplace = 43
 export const FindWidgetRegex = 44
 export const FindWidgetMatchCase = 45
 export const FindWidgetReplaceAll = 46
+export const FindWidgetClose = 47

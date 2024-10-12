@@ -26,6 +26,7 @@ export const create = (): IFindWidget => {
       height: 0,
       focused: false,
       focusSource: FocusSource.Unknown,
+      focus: 0,
     },
     newState: {
       value: '',
@@ -46,6 +47,7 @@ export const create = (): IFindWidget => {
       height: 0,
       focused: true,
       focusSource: FocusSource.Unknown,
+      focus: 0,
     },
   }
   return widget

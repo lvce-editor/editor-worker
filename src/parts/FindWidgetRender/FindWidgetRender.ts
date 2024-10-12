@@ -4,6 +4,7 @@ import * as GetFindWidgetVirtualDom from '../GetFindWidgetVirtualDom/GetFindWidg
 import * as GetMatchCountText from '../GetMatchCountText/GetMatchCountText.ts'
 import * as Icon from '../Icon/Icon.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
+import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as RenderParts from '../RenderParts/RenderParts.ts'
 
 const renderValue = {
@@ -85,14 +86,18 @@ const renderBounds = {
 
 // TODO always focus element by name
 // TODO use numeric key
-const getKey = (focus: string): string => {
+const getKey = (focus: number): string => {
   switch (focus) {
-    case 'find':
+    case FocusKey.FindWidget:
       return `[name="search-value"]`
-    case 'replace':
+    case FocusKey.FindWidgetReplace:
       return '[name="replace-value"]'
-    case 'toggleReplace':
+    case FocusKey.FindWidgetReplace:
       return `[name="toggleReplace"]`
+    case FocusKey.FindWidgetReplaceAll:
+      return `[name="replaceAll"]`
+    case FocusKey.FindWidgetClose:
+      return `[name="close"]`
     default:
       return ''
   }
@@ -103,7 +108,7 @@ const renderFocus = {
     return oldState.focused === newState.focused && oldState.focus === newState.focus && oldState.focusSource === newState.focusSource
   },
   apply(oldState: FindWidgetState, newState: FindWidgetState) {
-    const key = getKey(newState.focus || '')
+    const key = getKey(newState.focus)
     return ['focus', key, newState.focusSource]
   },
 }
