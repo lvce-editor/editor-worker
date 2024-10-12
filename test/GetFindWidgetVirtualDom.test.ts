@@ -139,13 +139,13 @@ test('getFindWidgetVirtualDom', () => {
       disabled: undefined,
       title: 'Close',
       type: 1,
+      onClick: 'handleClickClose',
     },
     {
       childCount: 0,
       className: 'MaskIcon MaskIconClose',
       role: 'none',
       type: 4,
-      onClick: 'handleClickClose',
     },
   ])
 })
