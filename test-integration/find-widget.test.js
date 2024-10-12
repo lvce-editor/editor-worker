@@ -37,6 +37,7 @@ export const test = async (rpc) => {
       childCount: 1,
       'data-command': 'toggleReplace',
       onClick: 'handleClickToggleReplace',
+      onFocus: 'handleFocusToggleReplace',
     },
     {
       type: 4,
