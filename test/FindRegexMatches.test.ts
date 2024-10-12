@@ -3,7 +3,7 @@ import * as FindRegexMatches from '../src/parts/FindRegexMatches/FindRegexMatche
 
 test('empty lines', () => {
   const lines: readonly string[] = []
-  const regex = new RegExp('')
+  const regex = new RegExp('', 'g')
   expect(FindRegexMatches.findRegexMatches(lines, regex)).toEqual(new Uint32Array([]))
 })
 
