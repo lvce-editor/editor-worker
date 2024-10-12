@@ -22,7 +22,7 @@ export const openFind2 = async (editor: any) => {
       height,
       editorUid: editor.uid || editor.id,
       focusSource: FocusSource.Script,
-      focus: 'find',
+      focus: FocusKey.FindWidget,
     }
     return latestState
   }
