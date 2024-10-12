@@ -1,0 +1,8 @@
+export const SearchValue = 'search-value'
+export const ReplaceValue = 'replace-value'
+export const ReplaceAll = 'ReplaceAll'
+export const Close = 'Close'
+export const ToggleReplace = 'ToggleReplace'
+export const FocusNext = 'FocusNext'
+export const FocusPrevious = 'FocusPrevious'
+export const Replace = 'Replace'

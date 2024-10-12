@@ -27,6 +27,16 @@ test('close', () => {
   expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="Close"]')
 })
 
+test('focusPrevious', () => {
+  const focus = FocusKey.FindWidgetFocusPrevious
+  expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="FocusPrevious"]')
+})
+
+test('focusNext', () => {
+  const focus = FocusKey.FindWidgetFocusNext
+  expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="FocusNext"]')
+})
+
 test('other', () => {
   const focus = FocusKey.Empty
   expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('')

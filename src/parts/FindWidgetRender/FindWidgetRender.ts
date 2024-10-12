@@ -1,9 +1,8 @@
-import * as FindStrings from '../FindStrings/FindStrings.ts'
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
+import * as GetFindWidgetButtons from '../GetFindWidgedButtons/GetFindWidgetButtons.ts'
 import * as GetFindWidgetFocusSelector from '../GetFindWidgetFocusSelector/GetFindWidgetFocusSelector.ts'
 import * as GetFindWidgetVirtualDom from '../GetFindWidgetVirtualDom/GetFindWidgetVirtualDom.ts'
 import * as GetMatchCountText from '../GetMatchCountText/GetMatchCountText.ts'
-import * as Icon from '../Icon/Icon.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderParts from '../RenderParts/RenderParts.ts'
 
@@ -27,45 +26,7 @@ const renderDetails = {
   apply(oldState: FindWidgetState, newState: FindWidgetState) {
     const matchCountText = GetMatchCountText.getMatchCountText(newState.matchIndex, newState.matchCount)
     const buttonsEnabled = newState.matchCount > 0
-    const findButtons = [
-      {
-        label: FindStrings.previousMatch(),
-        icon: Icon.ArrowUp,
-        disabled: !buttonsEnabled,
-        onClick: 'handleClickPreviousMatch',
-        name: 'FocusPrevious',
-      },
-      {
-        label: FindStrings.nextMatch(),
-        icon: Icon.ArrowDown,
-        disabled: !buttonsEnabled,
-        onClick: 'handleClickNextMatch',
-        name: 'FocusNext',
-      },
-      {
-        label: FindStrings.close(),
-        icon: Icon.Close,
-        disabled: false,
-        onClick: 'handleClickClose',
-        name: 'Close',
-      },
-    ]
-    const replaceButtons = [
-      {
-        label: FindStrings.replace(),
-        icon: Icon.Replace,
-        disabled: !buttonsEnabled,
-        onClick: 'handleClickReplace',
-        name: 'Replace',
-      },
-      {
-        label: FindStrings.replaceAll(),
-        icon: Icon.ReplaceAll,
-        disabled: !buttonsEnabled,
-        onClick: 'handleClickReplaceAll',
-        name: 'ReplaceAll',
-      },
-    ]
+    const { findButtons, replaceButtons } = GetFindWidgetButtons.getFindWidgetButtons(buttonsEnabled)
     const dom = GetFindWidgetVirtualDom.getFindWidgetVirtualDom(
       matchCountText,
       newState.replaceExpanded,
