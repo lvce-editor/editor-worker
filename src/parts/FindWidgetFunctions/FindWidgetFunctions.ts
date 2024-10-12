@@ -62,9 +62,14 @@ export const handleInput = (state: FindWidgetState, value: string): FindWidgetSt
 }
 
 export const handleFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  console.log('normal focus')
+  if (state.focus === 'find') {
+    return state
+  }
   await SetFocus.setFocus(FocusKey.FindWidget)
-  return state
+  return {
+    ...state,
+    focus: 'find',
+  }
 }
 
 export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetState> => {
@@ -145,6 +150,9 @@ export const close = async (state: FindWidgetState) => {
 }
 
 export const handleToggleReplaceFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
+  if (state.focus === 'toggleReplace') {
+    return state
+  }
   await SetFocus.setFocus(FocusKey.FindWidgetToggleReplace)
   return {
     ...state,
@@ -153,6 +161,9 @@ export const handleToggleReplaceFocus = async (state: FindWidgetState): Promise<
 }
 
 export const handleReplaceFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
+  if (state.focus === 'replaceInput') {
+    return state
+  }
   console.log('replace focus')
   await SetFocus.setFocus(FocusKey.FindWidgetReplace)
   return {
