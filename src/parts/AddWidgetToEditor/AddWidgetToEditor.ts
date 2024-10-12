@@ -1,5 +1,6 @@
 import * as HasWidget from '../HasWidget/HasWidget.ts'
 import * as SetAdditionalFocus from '../SetAdditionalFocus/SetAdditionalFocus.ts'
+import * as SetFocus from '../SetFocus/SetFocus.ts'
 import type { Widget } from '../Widget/Widget.ts'
 
 export const addWidgetToEditor = async <K, T extends Widget<K>>(
@@ -7,7 +8,8 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
   focusKey: number,
   editor: any,
   factory: () => T,
-  newStateGenerator: (state: K) => K | Promise<K>
+  newStateGenerator: (state: K) => K | Promise<K>,
+  fullFocus?: boolean
 ): Promise<any> => {
   const { widgets } = editor
   if (HasWidget.hasWidget(widgets, widgetId)) {
@@ -21,7 +23,11 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
   }
   const newWidgets = [...widgets, latestWidget]
   // TODO avoid side effect, apply focus shift during render
-  await SetAdditionalFocus.setAdditionalFocus(focusKey)
+  if (fullFocus) {
+    await SetFocus.setFocus(focusKey)
+  } else {
+    await SetAdditionalFocus.setAdditionalFocus(focusKey)
+  }
   const newEditor = {
     ...editor,
     widgets: newWidgets,
