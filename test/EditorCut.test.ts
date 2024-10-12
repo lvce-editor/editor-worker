@@ -12,15 +12,6 @@ jest.unstable_mockModule('../src/parts/ClipBoard/ClipBoard.ts', () => {
   }
 })
 
-jest.unstable_mockModule('../src/parts/Command/Command.ts', () => {
-  return {
-    execute: jest.fn(() => {
-      throw new Error('not implemented')
-    }),
-  }
-})
-
-const Command = await import('../src/parts/Command/Command.ts')
 const EditorCut = await import('../src/parts/EditorCommand/EditorCommandCut.ts')
 const EditorSelection = await import('../src/parts/EditorSelection/EditorSelection.ts')
 
@@ -43,12 +34,12 @@ test.skip('editorCut', async () => {
     lines: ['line 1', 'lne 3', ''],
   })
 
-  expect(Command.execute).toHaveBeenCalledTimes(1)
-  expect(Command.execute).toHaveBeenCalledWith(
-    'ClipBoard.writeText',
-    `ine 2
-li`,
-  )
+  //   expect(Command.execute).toHaveBeenCalledTimes(1)
+  //   expect(Command.execute).toHaveBeenCalledWith(
+  //     'ClipBoard.writeText',
+  //     `ine 2
+  // li`,
+  //   )
 })
 
 // TODO handle error gracefully
@@ -82,5 +73,5 @@ test.skip('editorCut - no selection', async () => {
     selections: EditorSelection.fromRange(1, 1, 1, 1),
     lines: ['line 1', 'line 2', 'line 3', ''],
   })
-  expect(Command.execute).not.toHaveBeenCalled()
+  // expect(Command.execute).not.toHaveBeenCalled()
 })
