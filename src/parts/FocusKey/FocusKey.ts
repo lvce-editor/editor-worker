@@ -10,3 +10,5 @@ export const FindWidgetMatchCase = 45
 export const FindWidgetReplaceButton = 46
 export const FindWidgetReplaceAllButton = 47
 export const FindWidgetCloseButton = 48
+export const FindWidgetFocusNext = 49
+export const FindWidgetFocusPrevious = 50

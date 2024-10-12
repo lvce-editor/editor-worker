@@ -211,6 +211,7 @@ export const handleReplaceAllFocus = async (state: FindWidgetState): Promise<Fin
 }
 
 export const focusReplaceButton = async (state: FindWidgetState): Promise<FindWidgetState> => {
+  console.log('focus replace button')
   if (state.focus === FocusKey.FindWidgetReplaceButton) {
     return state
   }
