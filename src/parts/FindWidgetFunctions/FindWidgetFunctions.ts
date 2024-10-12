@@ -165,7 +165,6 @@ export const handleReplaceFocus = async (state: FindWidgetState): Promise<FindWi
   if (state.focus === 'replaceInput') {
     return state
   }
-  console.log('replace focus')
   await SetFocus.setFocus(FocusKey.FindWidgetReplace)
   return {
     ...state,
@@ -198,7 +197,6 @@ export const handleReplaceInput = (state: FindWidgetState): FindWidgetState => {
 }
 
 export const focusToggleReplace = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  console.log('focus toggle replace')
   await SetFocus.setFocus(FocusKey.FindWidgetToggleReplace)
   return {
     ...state,
