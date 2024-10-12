@@ -13,7 +13,7 @@ export const getFindWidgetFocusSelector = (focus: number): string => {
     case FocusKey.FindWidgetCloseButton:
       return `[name="${Names.Close}"]`
     case FocusKey.FindWidgetToggleReplace:
-      return `[name="${Names.ReplaceAll}"]`
+      return `[name="${Names.ToggleReplace}"]`
     case FocusKey.FindWidgetFocusNext:
       return `[name="${Names.FocusNext}"]`
     case FocusKey.FindWidgetFocusPrevious:
