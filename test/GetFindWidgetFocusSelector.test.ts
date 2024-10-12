@@ -8,32 +8,32 @@ test('find', () => {
 })
 
 test('replace', () => {
-  const focus = FocusKey.FindWidgetReplace
+  const focus = FocusKey.FocusFindWidgetReplace
   expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="replace-value"]')
 })
 
 test('toggleReplace', () => {
-  const focus = FocusKey.FindWidgetToggleReplace
+  const focus = FocusKey.FocusFindWidgetToggleReplace
   expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="ToggleReplace"]')
 })
 
 test('replaceAll', () => {
-  const focus = FocusKey.FindWidgetReplaceAllButton
+  const focus = FocusKey.FocusFindWidgetReplaceAllButton
   expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="ReplaceAll"]')
 })
 
 test('close', () => {
-  const focus = FocusKey.FindWidgetCloseButton
+  const focus = FocusKey.FocusFindWidgetCloseButton
   expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="Close"]')
 })
 
 test('focusPrevious', () => {
-  const focus = FocusKey.FindWidgetFocusPrevious
+  const focus = FocusKey.FocusFindWidgetFocusPrevious
   expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="FocusPrevious"]')
 })
 
 test('focusNext', () => {
-  const focus = FocusKey.FindWidgetFocusNext
+  const focus = FocusKey.FocusFindWidgetFocusNext
   expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="FocusNext"]')
 })
 
