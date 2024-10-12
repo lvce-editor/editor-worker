@@ -34,6 +34,7 @@ export const loadContent = (editorId: number) => {
     matches,
     matchIndex: 0,
     matchCount,
+    editorUid: editor.uid,
   }
 }
 
