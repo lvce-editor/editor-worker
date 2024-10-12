@@ -35,7 +35,7 @@ export const test = async (rpc) => {
       ariaExpanded: false,
       childCount: 1,
       'data-command': 'toggleReplace',
-      onClick: 'handleClick',
+      onClick: 'handleClickToggleReplace',
     },
     {
       type: 4,
@@ -67,6 +67,7 @@ export const test = async (rpc) => {
       ariaLabel: 'Previous Match',
       childCount: 1,
       disabled: undefined,
+      onClick: 'handleClickPreviousMatch',
     },
     {
       type: 4,
@@ -81,6 +82,7 @@ export const test = async (rpc) => {
       ariaLabel: 'Next Match',
       childCount: 1,
       disabled: undefined,
+      onClick: 'handleClickNextMatch',
     },
     {
       type: 4,
@@ -95,6 +97,7 @@ export const test = async (rpc) => {
       ariaLabel: 'Close',
       childCount: 1,
       disabled: undefined,
+      onClick: 'handleClickClose',
     },
     {
       type: 4,

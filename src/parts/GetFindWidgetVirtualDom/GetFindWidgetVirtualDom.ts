@@ -21,7 +21,7 @@ export const getFindWidgetVirtualDom = (
     childCount: 2,
     role: AriaRoles.Group,
   })
-  dom.push(...GetSearchToggleButtonVirtualDom.getSearchToggleButtonVirtualDom(replaceExpanded, 'handleClick'))
+  dom.push(...GetSearchToggleButtonVirtualDom.getSearchToggleButtonVirtualDom(replaceExpanded, 'handleClickToggleReplace'))
   dom.push({
     type: VirtualDomElements.Div,
     className: ClassNames.FindWidgetRight,

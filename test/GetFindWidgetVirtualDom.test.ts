@@ -9,16 +9,19 @@ test('getFindWidgetVirtualDom', () => {
       label: 'Previous Match',
       icon: 'ArrowUp',
       disabled: false,
+      onClick: 'handleClickPreviousMatch',
     },
     {
       label: 'Next Match',
       icon: 'ArrowDown',
       disabled: false,
+      onClick: 'handleClickNextMatch',
     },
     {
       label: 'Close',
       icon: 'Close',
       disabled: false,
+      onClick: 'handleClickClose',
     },
   ]
   const replaceButtons: any = []
@@ -47,7 +50,7 @@ test('getFindWidgetVirtualDom', () => {
       childCount: 1,
       className: 'IconButton SearchToggleButton ',
       'data-command': 'toggleReplace',
-      onClick: 'handleClick',
+      onClick: 'handleClickToggleReplace',
       title: 'Toggle Replace',
       type: 1,
     },
@@ -106,6 +109,7 @@ test('getFindWidgetVirtualDom', () => {
       disabled: undefined,
       title: 'Previous Match',
       type: 1,
+      onClick: 'handleClickPreviousMatch',
     },
     {
       childCount: 0,
@@ -120,6 +124,7 @@ test('getFindWidgetVirtualDom', () => {
       disabled: undefined,
       title: 'Next Match',
       type: 1,
+      onClick: 'handleClickNextMatch',
     },
     {
       childCount: 0,
@@ -134,6 +139,7 @@ test('getFindWidgetVirtualDom', () => {
       disabled: undefined,
       title: 'Close',
       type: 1,
+      onClick: 'handleClickClose',
     },
     {
       childCount: 0,
