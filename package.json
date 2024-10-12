@@ -115,5 +115,8 @@
     ],
     "ext": "ts,js",
     "exec": "node scripts/build.js"
+  },
+  "dependencies": {
+    "@lvce-editor/command": "^1.1.0"
   }
 }
