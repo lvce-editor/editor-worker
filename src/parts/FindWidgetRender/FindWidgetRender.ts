@@ -83,13 +83,28 @@ const renderBounds = {
   },
 }
 
+// TODO always focus element by name
+// TODO use numeric key
+const getKey = (focus: string): string => {
+  switch (focus) {
+    case 'find':
+      return `[name="find"]`
+    case 'replace':
+      return '[name="replace"]'
+    case 'toggleReplace':
+      return `[name="toggleReplace"]`
+    default:
+      return ''
+  }
+}
+
 const renderFocus = {
   isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
     return oldState.focused === newState.focused && oldState.focus === newState.focus && oldState.focusSource === newState.focusSource
   },
   apply(oldState: FindWidgetState, newState: FindWidgetState) {
-    console.log('render focus', newState.focus, newState.focusSource)
-    return ['focus', newState.focused]
+    const key = getKey(newState.focus || '')
+    return ['focus', key, newState.focusSource]
   },
 }
 // const getAriaLabel = (state: FindWidgetState) => {

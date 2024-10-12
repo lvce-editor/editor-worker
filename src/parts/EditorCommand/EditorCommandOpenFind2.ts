@@ -3,6 +3,7 @@ import * as FindWidgetFactory from '../FindWidgetFactory/FindWidgetFactory.ts'
 import * as FindWidgetFunctions from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
+import * as FocusSource from '../FocusSource/FocusSource.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const openFind2 = async (editor: any) => {
@@ -20,6 +21,8 @@ export const openFind2 = async (editor: any) => {
       width,
       height,
       editorUid: editor.uid || editor.id,
+      focusSource: FocusSource.Script,
+      focus: 'find',
     }
     return latestState
   }
