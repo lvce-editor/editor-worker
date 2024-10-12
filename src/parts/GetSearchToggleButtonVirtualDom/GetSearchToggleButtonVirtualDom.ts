@@ -12,6 +12,7 @@ export const getSearchToggleButtonVirtualDom = (replaceExpanded: boolean, onClic
       childCount: 1,
       'data-command': 'toggleReplace',
       onClick,
+      onFocus: 'handleToggleReplaceFocus',
     },
     {
       type: VirtualDomElements.Div,
