@@ -17,6 +17,9 @@ const widgetCommands = {
   'FindWidget.handleFocus': WidgetId.Find,
   'FindWidget.handleBlur': WidgetId.Find,
   'FindWidget.handleToggleReplaceFocus': WidgetId.Find,
+  'FindWidget.handleInput': WidgetId.Find,
+  'FindWidget.handleReplaceInput': WidgetId.Find,
+  'FindWidget.handleReplaceFocus': WidgetId.Find,
 } as any
 
 // TODO wrap commands globally, not per editor

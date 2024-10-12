@@ -19,6 +19,7 @@ export const openFind2 = async (editor: any) => {
       y,
       width,
       height,
+      editorUid: editor.uid || editor.id,
     }
     return latestState
   }
