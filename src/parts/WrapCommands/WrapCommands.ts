@@ -21,6 +21,7 @@ const widgetCommands = {
   'FindWidget.handleReplaceInput': WidgetId.Find,
   'FindWidget.handleReplaceFocus': WidgetId.Find,
   'FindWidget.focusFind': WidgetId.Find,
+  'FindWidget.focusToggleReplace': WidgetId.Find,
   'FindWidget.focusReplace': WidgetId.Find,
 } as any
 

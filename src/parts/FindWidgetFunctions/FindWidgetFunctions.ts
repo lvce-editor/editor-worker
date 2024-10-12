@@ -168,3 +168,8 @@ export const handleReplaceInput = (state: FindWidgetState): FindWidgetState => {
   // TODO
   return state
 }
+
+export const focusToggleReplace = async (state: FindWidgetState): Promise<FindWidgetState> => {
+  await SetFocus.setFocus(FocusKey.FindWidgetToggleReplace)
+  return state
+}
