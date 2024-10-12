@@ -62,6 +62,7 @@ export const handleInput = (state: FindWidgetState, value: string): FindWidgetSt
 }
 
 export const handleFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
+  console.log('normal focus')
   await SetFocus.setFocus(FocusKey.FindWidget)
   return state
 }
@@ -71,11 +72,16 @@ export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetStat
   return state
 }
 
-export const toggleReplace = (state: FindWidgetState): FindWidgetState => {
-  const newExpanded = !state.replaceExpanded
+const getHeight = (replaceExpanded: boolean) => {
   const collapsedHeight = 30
   const expandedHeight = 60
-  const newHeight = newExpanded ? expandedHeight : collapsedHeight
+  const newHeight = replaceExpanded ? expandedHeight : collapsedHeight
+  return newHeight
+}
+
+export const toggleReplace = (state: FindWidgetState): FindWidgetState => {
+  const newExpanded = !state.replaceExpanded
+  const newHeight = getHeight(newExpanded)
   return {
     ...state,
     replaceExpanded: !state.replaceExpanded,
