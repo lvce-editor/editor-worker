@@ -1,3 +1,4 @@
+import * as FocusSource from '../FocusSource/FocusSource.ts'
 import * as Id from '../Id/Id.ts'
 import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
@@ -24,6 +25,7 @@ export const create = (): IFindWidget => {
       width: 0,
       height: 0,
       focused: false,
+      focusSource: FocusSource.Unknown,
     },
     newState: {
       value: '',
@@ -43,6 +45,7 @@ export const create = (): IFindWidget => {
       width: 0,
       height: 0,
       focused: true,
+      focusSource: FocusSource.Unknown,
     },
   }
   return widget
