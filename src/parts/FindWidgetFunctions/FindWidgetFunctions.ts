@@ -63,7 +63,7 @@ export const handleInput = (state: FindWidgetState, value: string): FindWidgetSt
 }
 
 export const handleFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  if (state.focus === 'find') {
+  if (state.focus === FocusKey.FindWidget) {
     console.log('no change')
     return state
   }
@@ -71,7 +71,7 @@ export const handleFocus = async (state: FindWidgetState): Promise<FindWidgetSta
   await SetFocus.setFocus(FocusKey.FindWidget)
   return {
     ...state,
-    focus: 'find',
+    focus: FocusKey.FindWidget,
   }
 }
 
@@ -153,25 +153,25 @@ export const close = async (state: FindWidgetState) => {
 }
 
 export const handleToggleReplaceFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  if (state.focus === 'toggleReplace') {
+  if (state.focus === FocusKey.FindWidgetToggleReplace) {
     return state
   }
   await SetFocus.setFocus(FocusKey.FindWidgetToggleReplace)
   return {
     ...state,
-    focus: 'toggleReplace',
+    focus: FocusKey.FindWidgetToggleReplace,
   }
 }
 
 export const handleReplaceFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
   console.log('replace input focus')
-  if (state.focus === 'replaceInput') {
+  if (state.focus === FocusKey.FindWidgetReplace) {
     return state
   }
   await SetFocus.setFocus(FocusKey.FindWidgetReplace)
   return {
     ...state,
-    focus: 'replaceInput',
+    focus: FocusKey.FindWidgetReplace,
     focusSource: FocusSource.User,
   }
 }
@@ -180,7 +180,7 @@ export const focusReplace = (state: FindWidgetState): FindWidgetState => {
   // TODO
   return {
     ...state,
-    focus: 'replace',
+    focus: FocusKey.FindWidgetReplace,
     focusSource: FocusSource.Script,
   }
 }
@@ -189,7 +189,7 @@ export const focusFind = (state: FindWidgetState): FindWidgetState => {
   // TODO
   return {
     ...state,
-    focus: 'find',
+    focus: FocusKey.FindWidget,
     focusSource: FocusSource.Script,
   }
 }
@@ -203,18 +203,18 @@ export const focusToggleReplace = async (state: FindWidgetState): Promise<FindWi
   await SetFocus.setFocus(FocusKey.FindWidgetToggleReplace)
   return {
     ...state,
-    focus: 'toggleReplace',
+    focus: FocusKey.FindWidgetToggleReplace,
     focusSource: FocusSource.Script,
   }
 }
 
 export const handleReplaceAllFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  if (state.focus === 'replaceAll') {
+  if (state.focus === FocusKey.FindWidgetReplaceAll) {
     return state
   }
   await SetFocus.setFocus(FocusKey.FindWidgetReplaceAll)
   return {
     ...state,
-    focus: 'replaceAll',
+    focus: FocusKey.FindWidgetReplaceAll,
   }
 }
