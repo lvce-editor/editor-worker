@@ -1,8 +1,10 @@
 import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindMatchesCaseInsensitive.ts'
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
+import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import * as SetFocus from '../SetFocus/SetFocus.ts'
 
 export const getPosition = (editor: any) => {
   const width = 300
@@ -60,14 +62,12 @@ export const handleInput = (state: FindWidgetState, value: string): FindWidgetSt
 }
 
 export const handleFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  const FindWidget = 16
-  await RendererWorker.invoke('Focus.setFocus', FindWidget)
+  await SetFocus.setFocus(FocusKey.FindWidget)
   return state
 }
 
 export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  const Empty = 0
-  await RendererWorker.invoke('Focus.setFocus', Empty)
+  await SetFocus.setFocus(FocusKey.Empty)
   return state
 }
 
@@ -138,14 +138,16 @@ export const close = async (state: FindWidgetState) => {
   }
 }
 
-export const handleToggleReplaceFocus = (state: FindWidgetState): FindWidgetState => {
+export const handleToggleReplaceFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
+  await SetFocus.setFocus(FocusKey.FindWidgetToggleReplace)
   return {
     ...state,
     focus: 'toggleReplace',
   }
 }
 
-export const handleReplaceFocus = (state: FindWidgetState): FindWidgetState => {
+export const handleReplaceFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
+  await SetFocus.setFocus(FocusKey.FindWidgetReplace)
   return {
     ...state,
     focus: 'replaceInput',
