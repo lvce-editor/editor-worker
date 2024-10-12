@@ -28,5 +28,11 @@ test('two matches in one line', () => {
 test('three matches in one line', () => {
   const lines: readonly string[] = ['a a a']
   const regex = new RegExp('a', 'g')
-  expect(FindRegexMatches.findRegexMatches(lines, regex)).toEqual(new Uint32Array([0, 0]))
+  expect(FindRegexMatches.findRegexMatches(lines, regex)).toEqual(new Uint32Array([0, 0, 0, 2, 0, 4]))
+})
+
+test('matches in multiple lines', () => {
+  const lines: readonly string[] = ['a', 'a']
+  const regex = new RegExp('a', 'g')
+  expect(FindRegexMatches.findRegexMatches(lines, regex)).toEqual(new Uint32Array([0, 0, 1, 0]))
 })
