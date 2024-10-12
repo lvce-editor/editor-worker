@@ -31,16 +31,19 @@ const renderDetails = {
         label: FindStrings.previousMatch(),
         icon: Icon.ArrowUp,
         disabled: !buttonsEnabled,
+        onClick: 'handlehandleClickPreviousMatch',
       },
       {
         label: FindStrings.nextMatch(),
         icon: Icon.ArrowDown,
         disabled: !buttonsEnabled,
+        onClick: 'handleClickNextMatch',
       },
       {
         label: FindStrings.close(),
         icon: Icon.Close,
         disabled: false,
+        onClick: 'handleClickClose',
       },
     ]
     const replaceButtons = [
@@ -48,11 +51,13 @@ const renderDetails = {
         label: FindStrings.replace(),
         icon: Icon.Replace,
         disabled: !buttonsEnabled,
+        onClick: 'handleClickReplace',
       },
       {
         label: FindStrings.replaceAll(),
         icon: Icon.ReplaceAll,
         disabled: !buttonsEnabled,
+        onClick: 'handleClickReplaceAll',
       },
     ]
     const dom = GetFindWidgetVirtualDom.getFindWidgetVirtualDom(

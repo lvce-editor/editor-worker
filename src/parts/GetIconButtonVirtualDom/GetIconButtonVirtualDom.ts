@@ -16,6 +16,7 @@ export const getIconButtonVirtualDom = (iconButton: any) => {
       ariaLabel: label,
       childCount: 1,
       disabled: disabled ? true : undefined,
+      onClick: iconButton.onClick,
     },
     GetIconVirtualDom.getIconVirtualDom(icon),
   ]
