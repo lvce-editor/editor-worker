@@ -31,7 +31,7 @@ const renderDetails = {
         label: FindStrings.previousMatch(),
         icon: Icon.ArrowUp,
         disabled: !buttonsEnabled,
-        onClick: 'handlehandleClickPreviousMatch',
+        onClick: 'handleClickPreviousMatch',
       },
       {
         label: FindStrings.nextMatch(),
