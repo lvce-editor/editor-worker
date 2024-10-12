@@ -70,6 +70,7 @@ export const test = async (rpc) => {
       childCount: 1,
       disabled: undefined,
       onClick: 'handleClickPreviousMatch',
+      name: 'FocusPrevious',
     },
     {
       type: 4,
@@ -85,6 +86,7 @@ export const test = async (rpc) => {
       childCount: 1,
       disabled: undefined,
       onClick: 'handleClickNextMatch',
+      name: 'FocusNext',
     },
     {
       type: 4,
@@ -100,6 +102,7 @@ export const test = async (rpc) => {
       childCount: 1,
       disabled: undefined,
       onClick: 'handleClickClose',
+      name: 'Close',
     },
     {
       type: 4,

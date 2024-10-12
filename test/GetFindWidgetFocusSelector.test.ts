@@ -18,13 +18,13 @@ test('toggleReplace', () => {
 })
 
 test('replaceAll', () => {
-  const focus = FocusKey.FindWidgetReplaceAll
-  expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="replaceAll"]')
+  const focus = FocusKey.FindWidgetReplaceAllButton
+  expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="ReplaceAll"]')
 })
 
 test('close', () => {
-  const focus = FocusKey.FindWidgetClose
-  expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="close"]')
+  const focus = FocusKey.FindWidgetCloseButton
+  expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="Close"]')
 })
 
 test('other', () => {

@@ -26,5 +26,6 @@ export const openFind2 = async (editor: any) => {
     }
     return latestState
   }
-  return AddWidgetToEditor.addWidgetToEditor(WidgetId.Find, FocusKey.FindWidget, editor, FindWidgetFactory.create, newStateGenerator)
+  const fullFocus = true
+  return AddWidgetToEditor.addWidgetToEditor(WidgetId.Find, FocusKey.FindWidget, editor, FindWidgetFactory.create, newStateGenerator, fullFocus)
 }

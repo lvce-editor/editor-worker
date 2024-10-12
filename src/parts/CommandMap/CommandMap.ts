@@ -291,6 +291,8 @@ export const commandMap = {
   'FindWidget.toggleReplace': FindWidget.toggleReplace,
   'FindWidget.handleToggleReplaceFocus': FindWidget.handleToggleReplaceFocus,
   'FindWidget.handleReplaceAllFocus': FindWidget.handleReplaceAllFocus,
+  'FindWidget.focusReplaceButton': FindWidget.focusReplaceButton,
+  'FindWidget.focusReplaceAllButton': FindWidget.focusReplaceAllButton,
   'Font.ensure': Font.ensure,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
   'Hover.handleSashPointerDown': EditorHover.handleSashPointerDown,

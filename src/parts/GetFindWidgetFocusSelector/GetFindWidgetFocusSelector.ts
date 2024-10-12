@@ -7,12 +7,16 @@ export const getFindWidgetFocusSelector = (focus: number): string => {
       return `[name="search-value"]`
     case FocusKey.FindWidgetReplace:
       return '[name="replace-value"]'
-    case FocusKey.FindWidgetReplaceAll:
-      return `[name="replaceAll"]`
-    case FocusKey.FindWidgetClose:
-      return `[name="close"]`
+    case FocusKey.FindWidgetReplaceAllButton:
+      return `[name="ReplaceAll"]`
+    case FocusKey.FindWidgetCloseButton:
+      return `[name="Close"]`
     case FocusKey.FindWidgetToggleReplace:
       return `[name="ToggleReplace"]`
+    case FocusKey.FindWidgetFocusNext:
+      return `[name="FocusNext"]`
+    case FocusKey.FindWidgetFocusPrevious:
+      return `[name="FocusPrevious"]`
     default:
       return ''
   }
