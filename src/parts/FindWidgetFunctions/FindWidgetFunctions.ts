@@ -1,11 +1,12 @@
 import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindMatchesCaseInsensitive.ts'
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
+import * as FocusSource from '../FocusSource/FocusSource.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
+import * as GetFindWidgetHeight from '../GetFindWidgetHeight/GetFindWidgetHeight.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
-import * as FocusSource from '../FocusSource/FocusSource.ts'
 
 export const getPosition = (editor: any) => {
   const width = 300
@@ -80,16 +81,9 @@ export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetStat
   return state
 }
 
-const getHeight = (replaceExpanded: boolean) => {
-  const collapsedHeight = 30
-  const expandedHeight = 60
-  const newHeight = replaceExpanded ? expandedHeight : collapsedHeight
-  return newHeight
-}
-
 export const toggleReplace = (state: FindWidgetState): FindWidgetState => {
   const newExpanded = !state.replaceExpanded
-  const newHeight = getHeight(newExpanded)
+  const newHeight = GetFindWidgetHeight.getFindWidgetHeight(newExpanded)
   return {
     ...state,
     replaceExpanded: !state.replaceExpanded,
