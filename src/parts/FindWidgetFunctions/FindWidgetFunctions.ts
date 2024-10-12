@@ -205,9 +205,9 @@ export const focusReplaceAllButton = (state: FindWidgetState): Promise<FindWidge
 }
 
 export const focusPreviousMatchButton = (state: FindWidgetState): Promise<FindWidgetState> => {
-  return SetFindWidgetFocus.setFindWidgetFocus(state, FocusKey.FocusFindWidgetFocusPrevious)
+  return SetFindWidgetFocus.setFindWidgetFocus(state, FocusKey.FocusFindWidgetPreviousMatchButton)
 }
 
 export const focusNextMatchButton = (state: FindWidgetState): Promise<FindWidgetState> => {
-  return SetFindWidgetFocus.setFindWidgetFocus(state, FocusKey.FocusFindWidgetFocusNext)
+  return SetFindWidgetFocus.setFindWidgetFocus(state, FocusKey.FocusFindWidgetNextMatchButton)
 }
