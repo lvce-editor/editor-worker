@@ -91,12 +91,10 @@ const renderBounds = {
 
 const renderFocus = {
   isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
-    console.log('same', oldState.focus, newState.focus)
     return oldState.focused === newState.focused && oldState.focus === newState.focus && oldState.focusSource === newState.focusSource
   },
   apply(oldState: FindWidgetState, newState: FindWidgetState) {
     const key = GetFindWidgetFocusSelector.getFindWidgetFocusSelector(newState.focus)
-    console.log({ key })
     return ['focus', key, newState.focusSource]
   },
 }
