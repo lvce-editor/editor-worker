@@ -8,6 +8,7 @@ export const getSearchToggleButtonVirtualDom = (replaceExpanded: boolean, onClic
       title: 'Toggle Replace',
       ariaLabel: 'Toggle Replace',
       ariaExpanded: replaceExpanded,
+      name: 'ToggleReplace',
       childCount: 1,
       'data-command': 'toggleReplace',
       onClick,

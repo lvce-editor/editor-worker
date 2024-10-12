@@ -5,6 +5,7 @@ import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
+import * as FocusSource from '../FocusSource/FocusSource.ts'
 
 export const getPosition = (editor: any) => {
   const width = 300
@@ -62,8 +63,14 @@ export const handleInput = (state: FindWidgetState, value: string): FindWidgetSt
 }
 
 export const handleFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
+  if (state.focus === 'find') {
+    return state
+  }
   await SetFocus.setFocus(FocusKey.FindWidget)
-  return state
+  return {
+    ...state,
+    focus: 'find',
+  }
 }
 
 export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetState> => {
@@ -71,11 +78,16 @@ export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetStat
   return state
 }
 
-export const toggleReplace = (state: FindWidgetState): FindWidgetState => {
-  const newExpanded = !state.replaceExpanded
+const getHeight = (replaceExpanded: boolean) => {
   const collapsedHeight = 30
   const expandedHeight = 60
-  const newHeight = newExpanded ? expandedHeight : collapsedHeight
+  const newHeight = replaceExpanded ? expandedHeight : collapsedHeight
+  return newHeight
+}
+
+export const toggleReplace = (state: FindWidgetState): FindWidgetState => {
+  const newExpanded = !state.replaceExpanded
+  const newHeight = getHeight(newExpanded)
   return {
     ...state,
     replaceExpanded: !state.replaceExpanded,
@@ -139,6 +151,9 @@ export const close = async (state: FindWidgetState) => {
 }
 
 export const handleToggleReplaceFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
+  if (state.focus === 'toggleReplace') {
+    return state
+  }
   await SetFocus.setFocus(FocusKey.FindWidgetToggleReplace)
   return {
     ...state,
@@ -147,21 +162,33 @@ export const handleToggleReplaceFocus = async (state: FindWidgetState): Promise<
 }
 
 export const handleReplaceFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
+  if (state.focus === 'replaceInput') {
+    return state
+  }
   await SetFocus.setFocus(FocusKey.FindWidgetReplace)
   return {
     ...state,
     focus: 'replaceInput',
+    focusSource: FocusSource.User,
   }
 }
 
 export const focusReplace = (state: FindWidgetState): FindWidgetState => {
   // TODO
-  return state
+  return {
+    ...state,
+    focus: 'replace',
+    focusSource: FocusSource.Script,
+  }
 }
 
 export const focusFind = (state: FindWidgetState): FindWidgetState => {
   // TODO
-  return state
+  return {
+    ...state,
+    focus: 'find',
+    focusSource: FocusSource.Script,
+  }
 }
 
 export const handleReplaceInput = (state: FindWidgetState): FindWidgetState => {
@@ -171,5 +198,9 @@ export const handleReplaceInput = (state: FindWidgetState): FindWidgetState => {
 
 export const focusToggleReplace = async (state: FindWidgetState): Promise<FindWidgetState> => {
   await SetFocus.setFocus(FocusKey.FindWidgetToggleReplace)
-  return state
+  return {
+    ...state,
+    focus: 'toggleReplace',
+    focusSource: FocusSource.Script,
+  }
 }

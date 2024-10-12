@@ -31,6 +31,7 @@ export const test = async (rpc) => {
       type: 1,
       className: 'IconButton SearchToggleButton ',
       title: 'Toggle Replace',
+      name: 'ToggleReplace',
       ariaLabel: 'Toggle Replace',
       ariaExpanded: false,
       childCount: 1,

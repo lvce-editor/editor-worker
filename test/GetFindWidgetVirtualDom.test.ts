@@ -48,6 +48,7 @@ test('getFindWidgetVirtualDom', () => {
       ariaExpanded: false,
       ariaLabel: 'Toggle Replace',
       childCount: 1,
+      name: 'ToggleReplace',
       className: 'IconButton SearchToggleButton ',
       'data-command': 'toggleReplace',
       onClick: 'handleClickToggleReplace',
