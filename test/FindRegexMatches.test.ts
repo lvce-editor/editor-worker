@@ -7,20 +7,26 @@ test('empty lines', () => {
   expect(FindRegexMatches.findRegexMatches(lines, regex)).toEqual(new Uint32Array([]))
 })
 
-test.only('match in one line', () => {
+test('non global regex', () => {
   const lines: readonly string[] = ['a']
   const regex = new RegExp('a')
+  expect(() => FindRegexMatches.findRegexMatches(lines, regex)).toThrow(new Error('regex must be global'))
+})
+
+test('match in one line', () => {
+  const lines: readonly string[] = ['a']
+  const regex = new RegExp('a', 'g')
   expect(FindRegexMatches.findRegexMatches(lines, regex)).toEqual(new Uint32Array([0, 0]))
 })
 
 test('two matches in one line', () => {
   const lines: readonly string[] = ['a a']
-  const regex = new RegExp('a')
+  const regex = new RegExp('a', 'g')
   expect(FindRegexMatches.findRegexMatches(lines, regex)).toEqual(new Uint32Array([0, 0]))
 })
 
 test('three matches in one line', () => {
   const lines: readonly string[] = ['a a a']
-  const regex = new RegExp('a')
+  const regex = new RegExp('a', 'g')
   expect(FindRegexMatches.findRegexMatches(lines, regex)).toEqual(new Uint32Array([0, 0]))
 })
