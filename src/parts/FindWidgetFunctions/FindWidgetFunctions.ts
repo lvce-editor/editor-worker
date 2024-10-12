@@ -5,6 +5,7 @@ import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
+import * as FocusSource from '../FocusSource/FocusSource.ts'
 
 export const getPosition = (editor: any) => {
   const width = 300
@@ -169,17 +170,26 @@ export const handleReplaceFocus = async (state: FindWidgetState): Promise<FindWi
   return {
     ...state,
     focus: 'replaceInput',
+    focusSource: FocusSource.User,
   }
 }
 
 export const focusReplace = (state: FindWidgetState): FindWidgetState => {
   // TODO
-  return state
+  return {
+    ...state,
+    focus: 'replace',
+    focusSource: FocusSource.Script,
+  }
 }
 
 export const focusFind = (state: FindWidgetState): FindWidgetState => {
   // TODO
-  return state
+  return {
+    ...state,
+    focus: 'find',
+    focusSource: FocusSource.Script,
+  }
 }
 
 export const handleReplaceInput = (state: FindWidgetState): FindWidgetState => {
@@ -190,5 +200,9 @@ export const handleReplaceInput = (state: FindWidgetState): FindWidgetState => {
 export const focusToggleReplace = async (state: FindWidgetState): Promise<FindWidgetState> => {
   console.log('focus toggle replace')
   await SetFocus.setFocus(FocusKey.FindWidgetToggleReplace)
-  return state
+  return {
+    ...state,
+    focus: 'toggleReplace',
+    focusSource: FocusSource.Script,
+  }
 }
