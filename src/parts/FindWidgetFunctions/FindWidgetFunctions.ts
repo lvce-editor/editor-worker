@@ -5,21 +5,6 @@ import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
 
-export const getPosition = (editor: any) => {
-  const width = 300
-  const height = 30
-  const paddingTop = 10
-  const paddingRight = 20
-  const x = editor.x + editor.width - width - paddingRight
-  const y = editor.y + paddingTop
-  return {
-    y,
-    x,
-    width,
-    height,
-  }
-}
-
 export const loadContent = (editorId: number) => {
   const editor = GetEditor.getEditor(editorId)
   const { selections, lines } = editor
