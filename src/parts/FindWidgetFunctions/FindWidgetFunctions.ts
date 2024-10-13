@@ -6,7 +6,6 @@ import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetFindWidgetHeight from '../GetFindWidgetHeight/GetFindWidgetHeight.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
-import * as SetFindWidgetFocus from '../SetFindWidgetFocus/SetFindWidgetFocus.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
 
 export const getPosition = (editor: any) => {
@@ -168,10 +167,6 @@ export const handleReplaceFocus = async (state: FindWidgetState): Promise<FindWi
   }
 }
 
-export const focusReplace = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  return SetFindWidgetFocus.setFindWidgetFocus(state, FocusKey.FocusFindWidgetReplace)
-}
-
 export const handleReplaceInput = (state: FindWidgetState): FindWidgetState => {
   // TODO
   return state
@@ -188,13 +183,11 @@ export const handleReplaceAllFocus = async (state: FindWidgetState): Promise<Fin
   }
 }
 
-export const focusReplaceButton = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  return SetFindWidgetFocus.setFindWidgetFocus(state, FocusKey.FocusFindWidgetReplaceButton)
-}
-
 export * from '../FindWidgetFocusCloseButton/FindWidgetFocusCloseButton.ts'
 export * from '../FindWidgetFocusFind/FindWidgetFocusFind.ts'
 export * from '../FindWidgetFocusNextMatchButton/FindWidgetFocusNextMatchButton.ts'
 export * from '../FindWidgetFocusPreviousMatchButton/FindWidgetFocusPreviousMatchButton.ts'
+export * from '../FindWidgetFocusReplace/FindWidgetFocusReplace.ts'
 export * from '../FindWidgetFocusReplaceAllButton/FindWidgetFocusReplaceAllButton.ts'
+export * from '../FindWidgetFocusReplaceButton/FindWidgetFocusReplaceButton.ts'
 export * from '../FindWidgetFocusToggleReplaceButton/FindWidgetFocusToggleReplaceButton.ts'
