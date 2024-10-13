@@ -5,6 +5,7 @@ import * as GetFindWidgetVirtualDom from '../GetFindWidgetVirtualDom/GetFindWidg
 import * as GetMatchCountText from '../GetMatchCountText/GetMatchCountText.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderParts from '../RenderParts/RenderParts.ts'
+import * as SetFocus from '../SetFocus/SetFocus.ts'
 
 const renderValue = {
   isEqual(oldState: FindWidgetState, newState: FindWidgetState) {
@@ -82,5 +83,9 @@ const renderFocus = {
 export const render = [renderDetails, renderBounds, renderValue, renderFocus]
 
 export const apply = (oldState: FindWidgetState, newState: FindWidgetState) => {
+  // TODO avoid side effect
+  if (oldState.focus !== newState.focus) {
+    SetFocus.setFocus(newState.focus)
+  }
   return RenderParts.renderParts(render, oldState, newState)
 }
