@@ -1,7 +1,7 @@
+import * as FuzzySearch from '@lvce-editor/fuzzy-search'
 import * as Character from '../Character/Character.ts'
-import * as EmptyMatches from '../EmptyMatches/EmptyMatches.ts'
-import * as FilterCompletionItem from '../FilterCompletionItem/FilterCompletionItem.ts'
 import * as CompletionItemFlags from '../CompletionItemFlags/CompletionItemFlags.ts'
+import * as EmptyMatches from '../EmptyMatches/EmptyMatches.ts'
 
 const addEmptyMatch = (item: any) => {
   return {
@@ -18,8 +18,8 @@ export const filterCompletionItems = (completionItems: any, word: string) => {
   const deprecated = []
   for (const completionItem of completionItems) {
     const { label, flags } = completionItem
-    const result = FilterCompletionItem.filterCompletionItem(word, label)
-    if (result !== EmptyMatches.EmptyMatches) {
+    const result = FuzzySearch.fuzzySearch(word, label)
+    if (result.length > 0) {
       if (flags & CompletionItemFlags.Deprecated) {
         // TODO avoid mutation
         completionItem.matches = EmptyMatches.EmptyMatches
