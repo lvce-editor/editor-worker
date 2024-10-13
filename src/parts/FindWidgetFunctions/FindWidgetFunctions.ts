@@ -62,17 +62,6 @@ export const handleInput = (state: FindWidgetState, value: string): FindWidgetSt
   return refresh(state, value)
 }
 
-export const handleFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  if (state.focus === FocusKey.FindWidget) {
-    return state
-  }
-  await SetFocus.setFocus(FocusKey.FindWidget)
-  return {
-    ...state,
-    focus: FocusKey.FindWidget,
-  }
-}
-
 export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetState> => {
   await SetFocus.setFocus(FocusKey.Empty)
   return state
@@ -169,3 +158,4 @@ export * from '../FindWidgetFocusReplaceButton/FindWidgetFocusReplaceButton.ts'
 export * from '../FindWidgetFocusToggleReplaceButton/FindWidgetFocusToggleReplaceButton.ts'
 export * from '../FindWidgetHandleReplaceAllFocus/FindWidgetHandleReplaceAllFocus.ts'
 export * from '../FindWidgetHandleReplaceFocus/FindWidgetHandleReplaceFocus.ts'
+export * from '../HandleFindWidgetFocus/HandleFindWidgetFocus.ts'
