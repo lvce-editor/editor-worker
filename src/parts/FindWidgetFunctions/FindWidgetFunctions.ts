@@ -200,10 +200,7 @@ export const focusReplaceButton = async (state: FindWidgetState): Promise<FindWi
   return SetFindWidgetFocus.setFindWidgetFocus(state, FocusKey.FocusFindWidgetReplaceButton)
 }
 
-export const focusReplaceAllButton = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  return SetFindWidgetFocus.setFindWidgetFocus(state, FocusKey.FocusFindWidgetReplaceAllButton)
-}
-
-export * from '../FindWidgetFocusNextMatchButton/FindWidgetFocusNextMatchButton.ts'
 export * from '../FindWidgetFocusCloseButton/FindWidgetFocusCloseButton.ts'
+export * from '../FindWidgetFocusNextMatchButton/FindWidgetFocusNextMatchButton.ts'
 export * from '../FindWidgetFocusPreviousMatchButton/FindWidgetFocusPreviousMatchButton.ts'
+export * from '../FindWidgetFocusReplaceAllButton/FindWidgetFocusReplaceAllButton.ts'
