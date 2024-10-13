@@ -2,7 +2,6 @@ import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindM
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
-import * as GetFindWidgetHeight from '../GetFindWidgetHeight/GetFindWidgetHeight.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
 
@@ -77,16 +76,6 @@ export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetStat
   return state
 }
 
-export const toggleReplace = (state: FindWidgetState): FindWidgetState => {
-  const newExpanded = !state.replaceExpanded
-  const newHeight = GetFindWidgetHeight.getFindWidgetHeight(newExpanded)
-  return {
-    ...state,
-    replaceExpanded: !state.replaceExpanded,
-    height: newHeight,
-  }
-}
-
 export const close = async (state: FindWidgetState) => {
   // TODO
   // await Viewlet.closeWidget(uid)
@@ -123,3 +112,4 @@ export * from '../FindWidgetFocusReplaceButton/FindWidgetFocusReplaceButton.ts'
 export * from '../FindWidgetFocusToggleReplaceButton/FindWidgetFocusToggleReplaceButton.ts'
 export * from '../FindWidgetHandleReplaceAllFocus/FindWidgetHandleReplaceAllFocus.ts'
 export * from '../FindWidgetHandleReplaceFocus/FindWidgetHandleReplaceFocus.ts'
+export * from '../FindWidgetToggleReplace/FindWidgetToggleReplace.ts'
