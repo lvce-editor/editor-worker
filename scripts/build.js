@@ -63,6 +63,9 @@ delete packageJson.scripts
 delete packageJson.devDependencies
 delete packageJson.prettier
 delete packageJson.jest
+delete packageJson.xo
+delete packageJson.directories
+delete packageJson.nodemonConfig
 packageJson.version = version
 packageJson.main = 'dist/editorWorkerMain.js'
 
