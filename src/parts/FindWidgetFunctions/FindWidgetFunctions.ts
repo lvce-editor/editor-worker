@@ -181,10 +181,6 @@ export const handleReplaceInput = (state: FindWidgetState): FindWidgetState => {
   return state
 }
 
-export const focusToggleReplace = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  return SetFindWidgetFocus.setFindWidgetFocus(state, FocusKey.FocusFindWidgetToggleReplace)
-}
-
 export const handleReplaceAllFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
   if (state.focus === FocusKey.FocusFindWidgetReplaceAllButton) {
     return state
@@ -204,3 +200,4 @@ export * from '../FindWidgetFocusCloseButton/FindWidgetFocusCloseButton.ts'
 export * from '../FindWidgetFocusNextMatchButton/FindWidgetFocusNextMatchButton.ts'
 export * from '../FindWidgetFocusPreviousMatchButton/FindWidgetFocusPreviousMatchButton.ts'
 export * from '../FindWidgetFocusReplaceAllButton/FindWidgetFocusReplaceAllButton.ts'
+export * from '../FindWidgetFocusToggleReplaceButton/FindWidgetFocusToggleReplaceButton.ts'
