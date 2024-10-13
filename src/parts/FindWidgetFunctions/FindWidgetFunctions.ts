@@ -72,11 +72,6 @@ export const handleFocus = async (state: FindWidgetState): Promise<FindWidgetSta
   }
 }
 
-export const handleBlur = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  await SetFocus.setFocus(FocusKey.Empty)
-  return state
-}
-
 // TODO this function should be synchronous
 export const focusIndex = async (state: FindWidgetState, index: number): Promise<FindWidgetState> => {
   const { value, matches, matchIndex } = state
@@ -156,6 +151,7 @@ export * from '../FindWidgetFocusReplace/FindWidgetFocusReplace.ts'
 export * from '../FindWidgetFocusReplaceAllButton/FindWidgetFocusReplaceAllButton.ts'
 export * from '../FindWidgetFocusReplaceButton/FindWidgetFocusReplaceButton.ts'
 export * from '../FindWidgetFocusToggleReplaceButton/FindWidgetFocusToggleReplaceButton.ts'
+export * from '../FindWidgetHandleBlur/FindWidgetHandleBlur.ts'
 export * from '../FindWidgetHandleReplaceAllFocus/FindWidgetHandleReplaceAllFocus.ts'
 export * from '../FindWidgetHandleReplaceFocus/FindWidgetHandleReplaceFocus.ts'
 export * from '../FindWidgetToggleReplace/FindWidgetToggleReplace.ts'
