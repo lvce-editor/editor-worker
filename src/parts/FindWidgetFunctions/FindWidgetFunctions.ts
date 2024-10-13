@@ -1,7 +1,6 @@
 import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindMatchesCaseInsensitive.ts'
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
-import * as FocusSource from '../FocusSource/FocusSource.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetFindWidgetHeight from '../GetFindWidgetHeight/GetFindWidgetHeight.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
@@ -155,18 +154,6 @@ export const handleToggleReplaceFocus = async (state: FindWidgetState): Promise<
   }
 }
 
-export const handleReplaceFocus = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  if (state.focus === FocusKey.FocusFindWidgetReplace) {
-    return state
-  }
-  await SetFocus.setFocus(FocusKey.FocusFindWidgetReplace)
-  return {
-    ...state,
-    focus: FocusKey.FocusFindWidgetReplace,
-    focusSource: FocusSource.User,
-  }
-}
-
 export const handleReplaceInput = (state: FindWidgetState): FindWidgetState => {
   // TODO
   return state
@@ -181,3 +168,4 @@ export * from '../FindWidgetFocusReplaceAllButton/FindWidgetFocusReplaceAllButto
 export * from '../FindWidgetFocusReplaceButton/FindWidgetFocusReplaceButton.ts'
 export * from '../FindWidgetFocusToggleReplaceButton/FindWidgetFocusToggleReplaceButton.ts'
 export * from '../FindWIdgetHandleReplaceAllFocus/FindWIdgetHandleReplaceAllFocus.ts'
+export * from '../FindWIdgetHandleReplaceFocus/FindWIdgetHandleReplaceFocus.ts'
