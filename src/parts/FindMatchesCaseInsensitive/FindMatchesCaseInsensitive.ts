@@ -1,7 +1,7 @@
 import * as GetSearchRegex from '../GetSearchRegex/GetSearchRegex.ts'
 import * as FindRegexMatches from '../FindRegexMatches/FindRegexMatches.ts'
 
-export const findMatchesCaseInsensitive = (lines: readonly string[], searchString: string) => {
+export const findMatchesCaseInsensitive = (lines: readonly string[], searchString: string): Uint32Array => {
   if (searchString.length === 0) {
     return new Uint32Array([])
   }
