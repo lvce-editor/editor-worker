@@ -212,6 +212,4 @@ export const focusNextMatchButton = async (state: FindWidgetState): Promise<Find
   return SetFindWidgetFocus.setFindWidgetFocus(state, FocusKey.FocusFindWidgetNextMatchButton)
 }
 
-export const focusCloseButton = async (state: FindWidgetState): Promise<FindWidgetState> => {
-  return SetFindWidgetFocus.setFindWidgetFocus(state, FocusKey.FocusFindWidgetCloseButton)
-}
+export * from '../FindWidgetFocusCloseButton/FindWidgetFocusCloseButton.ts'
