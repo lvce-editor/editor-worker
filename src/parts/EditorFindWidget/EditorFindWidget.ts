@@ -31,6 +31,6 @@ export const Commands = {
   'FindWidget.focusIndex': FindWidgetFunctions.focusIndex,
   'FindWidget.focusLast': FindWidgetFunctions.focusLast,
   'FindWidget.toggleReplace': FindWidgetFunctions.toggleReplace,
-  'FindWidget.handleFocus': FindWidgetFunctions.handleFocus,
+  'FindWidget.handleFocus': FindWidgetFunctions.focusFind,
   'FindWidget.handleBlur': FindWidgetFunctions.handleBlur,
 }
