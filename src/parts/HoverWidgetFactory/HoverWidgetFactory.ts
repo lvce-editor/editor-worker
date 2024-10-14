@@ -1,32 +1,26 @@
-import type { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
+import type { HoverWidget } from '../HoverWidget/HoverWidget.ts'
 import * as Id from '../Id/Id.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
-export const create = (): ColorPickerWidget => {
-  const completionUid = Id.create()
-  const widget: ColorPickerWidget = {
-    id: WidgetId.ColorPicker,
+export const create = (): HoverWidget => {
+  const uid = Id.create()
+  const widget: HoverWidget = {
+    id: WidgetId.Hover,
     oldState: {
-      color: '',
-      offsetX: 0,
-      min: 0,
-      max: 0,
-      uid: completionUid,
+      uid: uid,
       x: 0,
       y: 0,
       width: 0,
       height: 0,
+      content: '',
     },
     newState: {
-      color: '',
-      offsetX: 0,
-      min: 0,
-      max: 0,
-      uid: completionUid,
+      uid: uid,
       x: 0,
       y: 0,
       width: 0,
       height: 0,
+      content: '',
     },
   }
   return widget

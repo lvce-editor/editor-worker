@@ -31,6 +31,7 @@ import * as DeleteCharacterLeft from '../EditorCommand/EditorCommandDeleteCharac
 import * as DeleteCharacterRight from '../EditorCommand/EditorCommandDeleteCharacterRight.ts'
 import * as DeleteHorizontalRight from '../EditorCommand/EditorCommandDeleteHorizontalRight.ts'
 import * as DeleteWordLeft from '../EditorCommand/EditorCommandDeleteWordLeft.ts'
+import * as EditorCommandShowHover2 from '../EditorCommand/EditorCommandShowHover2.ts'
 import * as DeleteWordPartLeft from '../EditorCommand/EditorCommandDeleteWordPartLeft.ts'
 import * as DeleteWordPartRight from '../EditorCommand/EditorCommandDeleteWordPartRight.ts'
 import * as DeleteWordRight from '../EditorCommand/EditorCommandDeleteWordRight.ts'
@@ -248,6 +249,7 @@ export const commandMap = {
   'Editor.setLanguageId': SetLanguageId.setLanguageId,
   'Editor.setSelections': SetSelections.setSelections,
   'Editor.showHover': EditorShowHover.showHover,
+  'Editor.showHover2': EditorCommandShowHover2.showHover2,
   'Editor.showSourceActions': EditorShowSourceActions.showSourceActions,
   'Editor.sortLinesAscending': SortLinesAscending.sortLinesAscending,
   'Editor.tabCompletion': EditorTabCompletion.tabCompletion,
@@ -274,6 +276,7 @@ export const commandMap = {
   'EditorCompletion.selectIndex': EditorCompletionSelectIndex.selectIndex,
   'EditorCompletion.toggleDetails': EditorCompletionToggleDetails.toggleDetails,
   'FindWidget.close': FindWidget.close,
+  'FindWidget.focusCloseButton': FindWidget.focusCloseButton,
   'FindWidget.focusFind': FindWidget.focusFind,
   'FindWidget.focusFirst': FindWidget.focusFirst,
   'FindWidget.focusIndex': FindWidget.focusIndex,
@@ -295,7 +298,6 @@ export const commandMap = {
   'FindWidget.handleToggleReplaceFocus': FindWidget.handleToggleReplaceFocus,
   'FindWidget.loadContent': FindWidget.loadContent,
   'FindWidget.toggleReplace': FindWidget.toggleReplace,
-  'FindWidget.focusCloseButton': FindWidget.focusCloseButton,
   'Font.ensure': Font.ensure,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
   'Hover.handleSashPointerDown': EditorHover.handleSashPointerDown,
