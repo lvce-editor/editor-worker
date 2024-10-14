@@ -18,7 +18,7 @@ export const render = (widget: HoverWidget): readonly any[] => {
 }
 
 export const add = (widget: HoverWidget): readonly any[] => {
-  return AddWidget.addWidget(widget, 'HoverWidget', render)
+  return AddWidget.addWidget(widget, 'EditorHoverWidget', render)
 }
 
 export const remove = RemoveWidget.removeWidget
