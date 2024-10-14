@@ -16,7 +16,11 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
     return editor
   }
   const widget = factory()
+  // @ts-ignore
+  widget.newState.editorUid = editor.uid
   const newState = await newStateGenerator(widget.newState)
+  // @ts-ignore
+  newState.editorUid = editor.uid
   const latestWidget = {
     ...widget,
     newState,

@@ -13,6 +13,10 @@ export const create = (): HoverWidget => {
       width: 0,
       height: 0,
       content: '',
+      diagnostics: [],
+      documentation: '',
+      editorUid: 0,
+      lineInfos: [],
     },
     newState: {
       uid: uid,
@@ -21,6 +25,10 @@ export const create = (): HoverWidget => {
       width: 0,
       height: 0,
       content: '',
+      diagnostics: [],
+      documentation: '',
+      editorUid: 0,
+      lineInfos: [],
     },
   }
   return widget

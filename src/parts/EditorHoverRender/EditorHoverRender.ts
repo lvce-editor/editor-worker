@@ -31,7 +31,7 @@ const renderBounds = {
 
 const render = [renderHoverDom, renderBounds]
 
-export const renderHover = async (oldState: any, newState: any) => {
+export const renderHover = (oldState: any, newState: any) => {
   const commands = []
   for (const item of render) {
     if (!item.isEqual(oldState, newState)) {

@@ -2,6 +2,7 @@ import * as EditorColorPickerWidget from '../EditorColorPickerWidget/EditorColor
 import * as EditorCompletionDetailWidget from '../EditorCompletionDetailWidget/EditorCompletionDetailWidget.ts'
 import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorCompletionWidget.ts'
 import * as EditorFindWidget from '../EditorFindWidget/EditorFindWidget.ts'
+import * as EditorHoverWidget from '../EditorHoverWidget/EditorHoverWidget.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 import * as WidgetRegistry from '../WidgetRegistry/WidgetRegistry.ts'
 
@@ -10,4 +11,5 @@ export const registerWidgets = () => {
   WidgetRegistry.set(WidgetId.Completion, EditorCompletionWidget)
   WidgetRegistry.set(WidgetId.CompletionDetail, EditorCompletionDetailWidget)
   WidgetRegistry.set(WidgetId.Find, EditorFindWidget)
+  WidgetRegistry.set(WidgetId.Hover, EditorHoverWidget)
 }
