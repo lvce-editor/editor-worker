@@ -3,10 +3,10 @@ import * as FocusKey from '../FocusKey/FocusKey.ts'
 import type { HoverState } from '../HoverState/HoverState.ts'
 import * as HoverWidgetFactory from '../HoverWidgetFactory/HoverWidgetFactory.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
+import * as LoadHoverContent from '../LoadHoverContent/LoadHoverContent.ts'
 
 const newStateGenerator = (state: HoverState): HoverState => {
-  // TODO load content
-  return state
+  return LoadHoverContent.loadHoverContent(state)
 }
 
 export const showHover2 = async (editor: any) => {
