@@ -3,7 +3,7 @@ import type { HoverState } from '../HoverState/HoverState.ts'
 
 export const loadHoverContent = async (state: HoverState): Promise<HoverState> => {
   // TODO
-  const position = {}
+  const position = undefined
   const hoverInfo = await GetHoverInfo.getEditorHoverInfo(state.editorUid, position)
   if (!hoverInfo) {
     return state

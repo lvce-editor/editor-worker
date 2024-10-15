@@ -1,9 +1,10 @@
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
-import { HoverWidget } from '../HoverWidget/HoverWidget.ts'
+import type { HoverWidget } from '../HoverWidget/HoverWidget.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
+import type { WidgetLifeCycleFunction } from '../WidgetLifeCycleFunction/WidgetLifeCycleFunction.ts'
 
-export const render = (widget: HoverWidget): readonly any[] => {
+export const render: WidgetLifeCycleFunction<HoverWidget> = (widget) => {
   const commands: readonly any[] = EditorHoverRender.renderHover(widget.oldState, widget.newState)
   const wrappedCommands = []
   const uid = widget.newState.uid
@@ -17,8 +18,8 @@ export const render = (widget: HoverWidget): readonly any[] => {
   return wrappedCommands
 }
 
-export const add = (widget: HoverWidget): readonly any[] => {
-  return AddWidget.addWidget(widget, 'HoverWidget', render)
+export const add: WidgetLifeCycleFunction<HoverWidget> = (widget) => {
+  return AddWidget.addWidget(widget, 'EditorHover', render)
 }
 
 export const remove = RemoveWidget.removeWidget
