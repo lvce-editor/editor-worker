@@ -1,6 +1,6 @@
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
-import { HoverWidget } from '../HoverWidget/HoverWidget.ts'
+import type { HoverWidget } from '../HoverWidget/HoverWidget.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 
 export const render = (widget: HoverWidget): readonly any[] => {
@@ -18,7 +18,7 @@ export const render = (widget: HoverWidget): readonly any[] => {
 }
 
 export const add = (widget: HoverWidget): readonly any[] => {
-  return AddWidget.addWidget(widget, 'EditorHoverWidget', render)
+  return AddWidget.addWidget(widget, 'EditorHover', render)
 }
 
 export const remove = RemoveWidget.removeWidget
