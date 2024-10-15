@@ -1,37 +1,33 @@
 import * as GetHoverVirtualDom from '../GetHoverVirtualDom/GetHoverVirtualDom.ts'
+import type { HoverState } from '../HoverState/HoverState.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
 const renderHoverDom = {
-  isEqual(oldState: any, newState: any) {
+  isEqual(oldState: HoverState, newState: HoverState) {
     return (
-      oldState.lineInfos === newState.lineInfos &&
-      oldState.documentation === newState.documentation &&
-      oldState.minLineY === newState.minLineY &&
-      oldState.maxLineY === newState.maxLineY &&
-      oldState.diagnostics === newState.diagnostics
+      oldState.lineInfos === newState.lineInfos && oldState.documentation === newState.documentation && oldState.diagnostics === newState.diagnostics
     )
   },
-  apply(oldState: any, newState: any) {
+  apply(oldState: HoverState, newState: HoverState) {
     const dom = GetHoverVirtualDom.getHoverVirtualDom(newState.lineInfos, newState.documentation, newState.diagnostics)
     return [/* method */ 'Viewlet.setDom2', dom]
   },
 }
 
 const renderBounds = {
-  isEqual(oldState: any, newState: any) {
-    return oldState.x === newState.x && oldState.y === newState.y && oldState.resizedWidth === newState.resizedWidth
+  isEqual(oldState: HoverState, newState: HoverState) {
+    return oldState.x === newState.x && oldState.y === newState.y
   },
-  apply(oldState: any, newState: any) {
-    // @ts-ignore
-    const { x, y, width, height, resizedWidth, uid } = newState
-    console.log('apply')
-    return [RenderMethod.SetBounds, x, y, resizedWidth, height]
+  apply(oldState: HoverState, newState: HoverState) {
+    const { x, y, height } = newState
+    const renderWidth = 200
+    return [RenderMethod.SetBounds, x, y, renderWidth, height]
   },
 }
 
 const render = [renderHoverDom, renderBounds]
 
-export const renderHover = (oldState: any, newState: any) => {
+export const renderHover = (oldState: HoverState, newState: HoverState) => {
   const commands = []
   for (const item of render) {
     if (!item.isEqual(oldState, newState)) {
