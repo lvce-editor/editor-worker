@@ -93,7 +93,7 @@
     "@lvce-editor/command": "^1.1.0",
     "@lvce-editor/fuzzy-search": "^1.0.0",
     "@lvce-editor/ipc": "^11.0.1",
-    "@lvce-editor/json-rpc": "^4.1.0",
+    "@lvce-editor/json-rpc": "^4.2.0",
     "@lvce-editor/verror": "^1.4.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^15.3.0",
