@@ -7,6 +7,7 @@ import * as EditorBlur from '../EditorCommand/EditorCommandBlur.ts'
 import * as EditorBraceCompletion from '../EditorCommand/EditorCommandBraceCompletion.ts'
 import * as CancelSelection from '../EditorCommand/EditorCommandCancelSelection.ts'
 import * as EditorCloseCompletion from '../EditorCommand/EditorCommandCloseCompletion.ts'
+import * as EditorCommandCloseSourceAction from '../EditorCommand/EditorCommandCloseSourceAction.ts'
 import * as EditorOpenColorPicker from '../EditorCommand/EditorCommandColorPicker.ts'
 import * as Composition from '../EditorCommand/EditorCommandComposition.ts'
 import * as Copy from '../EditorCommand/EditorCommandCopy.ts'
@@ -141,6 +142,7 @@ export const commandMap = {
   'Editor.braceCompletion': EditorBraceCompletion.braceCompletion,
   'Editor.cancelSelection': CancelSelection.cancelSelection,
   'Editor.closeCompletion': EditorCloseCompletion.closeCompletion,
+  'Editor.closeSourceAction': EditorCommandCloseSourceAction.closeSourceAction,
   'Editor.compositionEnd': Composition.compositionEnd,
   'Editor.compositionStart': Composition.compositionStart,
   'Editor.compositionUpdate': Composition.compositionUpdate,
