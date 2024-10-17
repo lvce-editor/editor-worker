@@ -1,6 +1,5 @@
 import * as GetSourceActionsVirtualDom from '../GetSourceActionsVirtualDom/GetSourceActionsVirtualDom.ts'
 import * as GetVisibleSourceActions from '../GetVisibleSourceActions/GetVisibleSourceActions.ts'
-import * as RenderParts from '../RenderParts/RenderParts.ts'
 import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 
 const renderSourceActions = {
@@ -26,5 +25,11 @@ const renderBounds = {
 const render = [renderSourceActions, renderBounds]
 
 export const doRender = (oldState: SourceActionState, newState: SourceActionState) => {
-  return RenderParts.renderParts(render, oldState, newState)
+  const commands = []
+  for (const item of render) {
+    if (!item.isEqual(oldState, newState)) {
+      commands.push(item.apply(oldState, newState))
+    }
+  }
+  return commands
 }

@@ -1,5 +1,4 @@
 import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
-import * as ColorPickerRender from '../ColorPickerRender/ColorPickerRender.ts'
 import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import * as AddCursorAbove from '../EditorCommand/EditorCommandAddCursorAbove.ts'
 import * as AddCursorBelow from '../EditorCommand/EditorCommandAddCursorBelow.ts'
@@ -136,7 +135,6 @@ export const commandMap = {
   'ColorPicker.handleSliderPointerDown': ColorPicker.handleSliderPointerDown,
   'ColorPicker.handleSliderPointerMove': ColorPicker.handleSliderPointerMove,
   'ColorPicker.loadContent': ColorPicker.loadContent,
-  'ColorPicker.render': ColorPickerRender.renderColorPicker,
   'Editor.addCursorAbove': AddCursorAbove.addCursorAbove,
   'Editor.addCursorBelow': AddCursorBelow.addCursorBelow,
   'Editor.applyEdit': EditorApplyEdit.applyEdit,
