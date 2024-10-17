@@ -15,7 +15,6 @@ export const render: WidgetLifeCycleFunction<SourceActionWidget> = (widget) => {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
     }
   }
-  console.log({ commands, wrappedCommands })
   return wrappedCommands
 }
 
