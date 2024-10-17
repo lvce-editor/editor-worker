@@ -1,6 +1,6 @@
-import * as GetSourceActionsVirtualDom from '../GetSourceActionsVirtualDom/GetSourceActionsVirtualDom.js'
-import * as GetVisibleSourceActions from '../GetVisibleSourceActions/GetVisibleSourceActions.js'
-import * as RenderParts from '../RenderParts/RenderParts.js'
+import * as GetSourceActionsVirtualDom from '../GetSourceActionsVirtualDom/GetSourceActionsVirtualDom.ts'
+import * as GetVisibleSourceActions from '../GetVisibleSourceActions/GetVisibleSourceActions.ts'
+import * as RenderParts from '../RenderParts/RenderParts.ts'
 import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 
 const renderSourceActions = {
