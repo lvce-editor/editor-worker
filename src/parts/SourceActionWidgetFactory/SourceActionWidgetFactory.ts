@@ -14,6 +14,7 @@ export const create = (): SourceActionWidget => {
       height: 0,
       focusedIndex: 0,
       sourceActions: [],
+      maxHeight: 0,
     },
     newState: {
       uid: completionUid,
@@ -23,6 +24,7 @@ export const create = (): SourceActionWidget => {
       height: 0,
       focusedIndex: 0,
       sourceActions: [],
+      maxHeight: 0,
     },
   }
   return widget
