@@ -1,15 +1,7 @@
-import * as EditorStrings from '../EditorStrings/EditorStrings.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
+// TODO maybe ask extension host worker instead
 export const getEditorSourceActions = async () => {
-  const sourceActions = [
-    {
-      name: EditorStrings.organizeImports(),
-      command: 'Editor.organizeImports',
-    },
-    {
-      name: EditorStrings.sortImports(),
-      command: 'Editor.sortImports',
-    },
-  ]
+  const sourceActions = await RendererWorker.invoke('GetEditorSourceActions.getEditorSourceActions')
   return sourceActions
 }
