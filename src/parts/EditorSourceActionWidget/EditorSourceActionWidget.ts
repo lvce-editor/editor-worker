@@ -15,11 +15,12 @@ export const render: WidgetLifeCycleFunction<SourceActionWidget> = (widget) => {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
     }
   }
+  console.log({ wrappedCommands })
   return wrappedCommands
 }
 
 export const add = (widget: SourceActionWidget) => {
-  return AddWidget.addWidget(widget, 'ColorPicker', render)
+  return AddWidget.addWidget(widget, 'EditorSourceActions', render)
 }
 
 export const remove = RemoveWidget.removeWidget
