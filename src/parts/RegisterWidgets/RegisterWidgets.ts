@@ -2,8 +2,8 @@ import * as EditorColorPickerWidget from '../EditorColorPickerWidget/EditorColor
 import * as EditorCompletionDetailWidget from '../EditorCompletionDetailWidget/EditorCompletionDetailWidget.ts'
 import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorCompletionWidget.ts'
 import * as EditorFindWidget from '../EditorFindWidget/EditorFindWidget.ts'
-import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
 import * as EditorHoverWidget from '../EditorHoverWidget/EditorHoverWidget.ts'
+import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 import * as WidgetRegistry from '../WidgetRegistry/WidgetRegistry.ts'
 
