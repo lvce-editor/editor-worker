@@ -31,7 +31,6 @@ import * as DeleteCharacterLeft from '../EditorCommand/EditorCommandDeleteCharac
 import * as DeleteCharacterRight from '../EditorCommand/EditorCommandDeleteCharacterRight.ts'
 import * as DeleteHorizontalRight from '../EditorCommand/EditorCommandDeleteHorizontalRight.ts'
 import * as DeleteWordLeft from '../EditorCommand/EditorCommandDeleteWordLeft.ts'
-import * as EditorCommandShowHover2 from '../EditorCommand/EditorCommandShowHover2.ts'
 import * as DeleteWordPartLeft from '../EditorCommand/EditorCommandDeleteWordPartLeft.ts'
 import * as DeleteWordPartRight from '../EditorCommand/EditorCommandDeleteWordPartRight.ts'
 import * as DeleteWordRight from '../EditorCommand/EditorCommandDeleteWordRight.ts'
@@ -96,7 +95,9 @@ import * as SetDelta from '../EditorCommand/EditorCommandSetDelta.ts'
 import * as SetLanguageId from '../EditorCommand/EditorCommandSetLanguageId.ts'
 import * as SetSelections from '../EditorCommand/EditorCommandSetSelections.ts'
 import * as EditorShowHover from '../EditorCommand/EditorCommandShowHover.ts'
+import * as EditorCommandShowHover2 from '../EditorCommand/EditorCommandShowHover2.ts'
 import * as EditorShowSourceActions from '../EditorCommand/EditorCommandShowSourceActions.ts'
+import * as EditorShowSourceActions2 from '../EditorCommand/EditorCommandShowSourceActions2.ts'
 import * as SortLinesAscending from '../EditorCommand/EditorCommandSortLinesAscending.ts'
 import * as EditorTabCompletion from '../EditorCommand/EditorCommandTabCompletion.ts'
 import * as EditorToggleBlockComment from '../EditorCommand/EditorCommandToggleBlockComment.ts'
@@ -251,6 +252,7 @@ export const commandMap = {
   'Editor.showHover': EditorShowHover.showHover,
   'Editor.showHover2': EditorCommandShowHover2.showHover2,
   'Editor.showSourceActions': EditorShowSourceActions.showSourceActions,
+  'Editor.showSourceActions2': EditorShowSourceActions2.showSourceActions,
   'Editor.sortLinesAscending': SortLinesAscending.sortLinesAscending,
   'Editor.tabCompletion': EditorTabCompletion.tabCompletion,
   'Editor.toggleBlockComment': EditorToggleBlockComment.toggleBlockComment,
