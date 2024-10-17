@@ -9,7 +9,7 @@ const renderSourceActions = {
   apply(oldStatem: SourceActionState, newState: SourceActionState) {
     const visible = GetVisibleSourceActions.getVisibleSourceActions(newState.sourceActions, newState.focusedIndex)
     const dom = GetSourceActionsVirtualDom.getSourceActionsVirtualDom(visible)
-    return ['Viewlet.setDom2', dom]
+    return ['Viewlet.setDom2', newState.uid, dom]
   },
 }
 
@@ -18,7 +18,7 @@ const renderBounds = {
     return oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height
   },
   apply(oldState: SourceActionState, newState: SourceActionState) {
-    return ['setBounds', newState.x, newState.y]
+    return ['setBounds', newState.x, newState.y, newState.width, newState.height]
   },
 }
 
