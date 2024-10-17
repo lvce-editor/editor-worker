@@ -1,5 +1,6 @@
 import * as GetSourceActionsVirtualDom from '../GetSourceActionsVirtualDom/GetSourceActionsVirtualDom.js'
 import * as GetVisibleSourceActions from '../GetVisibleSourceActions/GetVisibleSourceActions.js'
+import * as RenderParts from '../RenderParts/RenderParts.js'
 import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 
 const renderSourceActions = {
@@ -22,4 +23,8 @@ const renderBounds = {
   },
 }
 
-export const render = [renderSourceActions, renderBounds]
+const render = [renderSourceActions, renderBounds]
+
+export const doRender = (oldState: SourceActionState, newState: SourceActionState) => {
+  return RenderParts.renderParts(render, oldState, newState)
+}
