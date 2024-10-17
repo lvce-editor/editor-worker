@@ -26,3 +26,15 @@ test('noTypeDefinitionFoundFor', () => {
 test('noResults', () => {
   expect(EditorStrings.noResults()).toBe('No Results')
 })
+
+test('sourceAction', () => {
+  expect(EditorStrings.sourceAction()).toBe('Source Action')
+})
+
+test('sortImports', () => {
+  expect(EditorStrings.sortImports()).toBe('Sort Imports')
+})
+
+test('organizeImports', () => {
+  expect(EditorStrings.organizeImports()).toBe('Organize Imports')
+})

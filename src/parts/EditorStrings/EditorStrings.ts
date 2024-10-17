@@ -9,6 +9,8 @@ const UiStrings = {
   NoResults: 'No Results',
   Replace: 'Replace',
   SourceAction: 'Source Action',
+  OrganizeImports: 'Organize Imports',
+  SortImports: 'Sort Imports',
 }
 
 export const goToDefinition = () => {
@@ -45,4 +47,12 @@ export const replace = () => {
 
 export const sourceAction = () => {
   return I18nString.i18nString(UiStrings.SourceAction)
+}
+
+export const organizeImports = () => {
+  return I18nString.i18nString(UiStrings.OrganizeImports)
+}
+
+export const sortImports = () => {
+  return I18nString.i18nString(UiStrings.SortImports)
 }
