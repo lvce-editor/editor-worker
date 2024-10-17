@@ -5,4 +5,5 @@ export interface SourceActionState {
   readonly y: number
   readonly width: number
   readonly height: number
+  readonly uid: number
 }
