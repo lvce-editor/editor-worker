@@ -8,6 +8,7 @@ const UiStrings = {
   NoTypeDefinitionFoundFor: "No type definition found for '{PH1}'",
   NoResults: 'No Results',
   Replace: 'Replace',
+  SourceAction: 'Source Action',
 }
 
 export const goToDefinition = () => {
@@ -40,4 +41,8 @@ export const noResults = () => {
 
 export const replace = () => {
   return I18nString.i18nString(UiStrings.Replace)
+}
+
+export const sourceAction = () => {
+  return I18nString.i18nString(UiStrings.SourceAction)
 }
