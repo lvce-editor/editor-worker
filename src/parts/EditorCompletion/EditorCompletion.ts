@@ -96,7 +96,7 @@ export const handleEditorClick = disposeWithEditor
 
 export const handleEditorBlur = disposeWithEditor
 
-export const loadContent = async (editorUid: any, state: any) => {
+export const loadContent = async (editorUid: number, state: any) => {
   const editor = GetEditor.getEditor(editorUid)
   const { itemHeight, maxHeight } = state
   const unfilteredItems = await Completions.getCompletions(editor)
