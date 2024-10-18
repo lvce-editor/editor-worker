@@ -117,6 +117,7 @@ import * as EditorCompletionOpenDetails from '../EditorCompletionOpenDetails/Edi
 import * as EditorCompletionSelectCurrent from '../EditorCompletionSelectCurrent/EditorCompletionSelectCurrent.ts'
 import * as EditorCompletionSelectIndex from '../EditorCompletionSelectIndex/EditorCompletionSelectIndex.ts'
 import * as EditorCompletionToggleDetails from '../EditorCompletionToggleDetails/EditorCompletionToggleDetails.ts'
+import * as EditorCommandCloseFind from '../EditorCommand/EditorCommandCloseFind.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
@@ -143,6 +144,7 @@ export const commandMap = {
   'Editor.cancelSelection': CancelSelection.cancelSelection,
   'Editor.closeCompletion': EditorCloseCompletion.closeCompletion,
   'Editor.closeSourceAction': EditorCommandCloseSourceAction.closeSourceAction,
+  'Editor.closeFind': EditorCommandCloseFind.closeFind,
   'Editor.compositionEnd': Composition.compositionEnd,
   'Editor.compositionStart': Composition.compositionStart,
   'Editor.compositionUpdate': Composition.compositionUpdate,

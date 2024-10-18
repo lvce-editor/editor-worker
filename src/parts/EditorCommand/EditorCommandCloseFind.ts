@@ -1,10 +1,18 @@
-// @ts-ignore
-import * as Viewlet from '../Viewlet/Viewlet.ts'
-// @ts-ignore
-import * as ViewletModuleId from '../ViewletModuleId/ViewletModuleId.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
 
-// @ts-ignore
-export const closeFind = async (state) => {
-  await Viewlet.closeWidget(ViewletModuleId.FindWidget)
-  return state
+const isMatchingWidget = (widget: any) => {
+  return widget.id === WidgetId.Find
+}
+
+export const closeFind = (editor: any) => {
+  const { widgets } = editor
+  const index = widgets.findIndex(isMatchingWidget)
+  if (index === -1) {
+    return editor
+  }
+  const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
+  return {
+    ...editor,
+    widgets: newWidgets,
+  }
 }
