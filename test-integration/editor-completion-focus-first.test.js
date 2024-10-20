@@ -20,7 +20,6 @@ export const test = async (rpc) => {
   await rpc.invoke('Editor.openCompletion', id)
   await rpc.invoke('EditorCompletion.focusIndex', id, 1)
   const { commands } = await rpc.invoke('EditorCompletion.focusFirst', id)
-  console.log({ commands })
   assert.strictEqual(commands[4][2], 'setDom')
   assert.deepEqual(commands[4][3], [
     { type: 4, childCount: 2 },
