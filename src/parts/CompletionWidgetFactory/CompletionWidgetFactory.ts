@@ -20,6 +20,7 @@ export const create = (): CompletionWidget => {
       height: 0,
       deltaY: 0,
       finalDeltaY: 0,
+      focused:false,
       headerHeight: 0,
     },
     newState: {
@@ -37,6 +38,7 @@ export const create = (): CompletionWidget => {
       deltaY: 0,
       finalDeltaY: 0,
       headerHeight: 0,
+      focused:false
     },
   }
   return completionWidget
