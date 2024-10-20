@@ -7,6 +7,7 @@ import * as EditorBlur from '../EditorCommand/EditorCommandBlur.ts'
 import * as EditorBraceCompletion from '../EditorCommand/EditorCommandBraceCompletion.ts'
 import * as CancelSelection from '../EditorCommand/EditorCommandCancelSelection.ts'
 import * as EditorCloseCompletion from '../EditorCommand/EditorCommandCloseCompletion.ts'
+import * as EditorCommandCloseFind from '../EditorCommand/EditorCommandCloseFind.ts'
 import * as EditorCommandCloseSourceAction from '../EditorCommand/EditorCommandCloseSourceAction.ts'
 import * as EditorOpenColorPicker from '../EditorCommand/EditorCommandColorPicker.ts'
 import * as Composition from '../EditorCommand/EditorCommandComposition.ts'
@@ -113,11 +114,11 @@ import * as EditorCompletionFocusFirst from '../EditorCompletionFocusFirst/Edito
 import * as EditorCompletionFocusIndex from '../EditorCompletionFocusIndex/EditorCompletionFocusIndex.ts'
 import * as EditorCompletionFocusNext from '../EditorCompletionFocusNext/EditorCompletionFocusNext.ts'
 import * as EditorCompletionFocusPrevious from '../EditorCompletionFocusPrevious/EditorCompletionFocusPrevious.ts'
+import * as EditorCompletionHandleWheel from '../EditorCompletionHandleWheel/EditorCompletionHandleWheel.ts'
 import * as EditorCompletionOpenDetails from '../EditorCompletionOpenDetails/EditorCompletionOpenDetails.ts'
 import * as EditorCompletionSelectCurrent from '../EditorCompletionSelectCurrent/EditorCompletionSelectCurrent.ts'
 import * as EditorCompletionSelectIndex from '../EditorCompletionSelectIndex/EditorCompletionSelectIndex.ts'
 import * as EditorCompletionToggleDetails from '../EditorCompletionToggleDetails/EditorCompletionToggleDetails.ts'
-import * as EditorCommandCloseFind from '../EditorCommand/EditorCommandCloseFind.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
@@ -143,8 +144,8 @@ export const commandMap = {
   'Editor.braceCompletion': EditorBraceCompletion.braceCompletion,
   'Editor.cancelSelection': CancelSelection.cancelSelection,
   'Editor.closeCompletion': EditorCloseCompletion.closeCompletion,
-  'Editor.closeSourceAction': EditorCommandCloseSourceAction.closeSourceAction,
   'Editor.closeFind': EditorCommandCloseFind.closeFind,
+  'Editor.closeSourceAction': EditorCommandCloseSourceAction.closeSourceAction,
   'Editor.compositionEnd': Composition.compositionEnd,
   'Editor.compositionStart': Composition.compositionStart,
   'Editor.compositionUpdate': Composition.compositionUpdate,
@@ -274,6 +275,7 @@ export const commandMap = {
   'EditorCompletion.handleEditorClick': EditorCompletion.handleEditorClick,
   'EditorCompletion.handleEditorDeleteLeft': EditorCompletion.handleEditorDeleteLeft,
   'EditorCompletion.handleEditorType': EditorCompletion.handleEditorType,
+  'EditorCompletion.handleWheel': EditorCompletionHandleWheel.handelWheel,
   'EditorCompletion.loadContent': EditorCompletion.loadContent,
   'EditorCompletion.openDetails': EditorCompletionOpenDetails.openDetails,
   'EditorCompletion.selectCurrent': EditorCompletionSelectCurrent.selectCurrent,
