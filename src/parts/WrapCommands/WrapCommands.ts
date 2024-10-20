@@ -33,7 +33,7 @@ const widgetCommands = {
 
   // TODO
   // 'EditorCompletion.focusFirst': WidgetId.Completion,
-  // 'EditorCompletion.focusNext': WidgetId.Completion,
+  'EditorCompletion.focusNext': WidgetId.Completion,
   // 'EditorCompletion.focusPrevious': WidgetId.Completion,
   // 'EditorCompletion.focusLast': WidgetId.Completion,
 } as any
