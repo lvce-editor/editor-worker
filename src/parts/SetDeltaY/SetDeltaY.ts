@@ -3,7 +3,7 @@ import * as Clamp from '../Clamp/Clamp.js'
 import * as GetNumberOfVisibleItems from '../GetNumberOfVisibleItems/GetNumberOfVisibleItems.js'
 import type { VirtualListState } from '../VirtualListState/VirtualListState.ts'
 
-export const setDeltaY = <T>(state: VirtualListState<T>, value: number): VirtualListState<T> => {
+export const setDeltaY = <K, T extends VirtualListState<K>>(state: T, value: number): T => {
   Assert.object(state)
   Assert.number(value)
   const { itemHeight, finalDeltaY, deltaY, height, headerHeight } = state
