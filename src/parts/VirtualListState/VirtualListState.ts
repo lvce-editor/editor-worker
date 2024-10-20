@@ -1,4 +1,6 @@
-export interface VirtualListState<T> {
+import type { Rectangle } from '../Rectangle/Rectangle.ts'
+
+export interface VirtualListState<T> extends Rectangle {
   readonly itemHeight: number
   readonly items: readonly T[]
   readonly height: number
