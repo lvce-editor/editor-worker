@@ -1,4 +1,4 @@
-import { CompletionWidget } from '../CompletionWidget/CompletionWidget.ts'
+import type { CompletionWidget } from '../CompletionWidget/CompletionWidget.ts'
 import * as Id from '../Id/Id.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
@@ -20,7 +20,7 @@ export const create = (): CompletionWidget => {
       height: 0,
       deltaY: 0,
       finalDeltaY: 0,
-      focused:false,
+      focused: false,
       headerHeight: 0,
     },
     newState: {
@@ -38,7 +38,7 @@ export const create = (): CompletionWidget => {
       deltaY: 0,
       finalDeltaY: 0,
       headerHeight: 0,
-      focused:false
+      focused: false,
     },
   }
   return completionWidget
