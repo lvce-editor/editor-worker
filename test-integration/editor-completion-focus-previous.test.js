@@ -26,7 +26,7 @@ export const test = async (rpc) => {
     {
       type: 4,
       role: 'option',
-      className: 'EditorCompletionItem',
+      className: 'EditorCompletionItem EditorCompletionItemFocused',
       top: 0,
       childCount: 2,
     },
