@@ -16,22 +16,17 @@ export const test = async (rpc) => {
     isMonospaceFont: true,
     charWidth: 9,
   })
-  // TODO
-  if (Math) {
-    return
-  }
   await rpc.invoke('Editor.cursorSet', id, 0, 1)
   await rpc.invoke('Editor.openCompletion', id)
   await rpc.invoke('EditorCompletion.focusIndex', id, 1)
   const { commands } = await rpc.invoke('EditorCompletion.focusPrevious', id)
-  console.log({ commands })
   assert.strictEqual(commands[4][2], 'setDom')
   assert.deepEqual(commands[4][3], [
     { type: 4, childCount: 2 },
     {
       type: 4,
       role: 'option',
-      className: 'EditorCompletionItem',
+      className: 'EditorCompletionItem EditorCompletionItemFocused',
       top: 0,
       childCount: 2,
     },
@@ -51,7 +46,7 @@ export const test = async (rpc) => {
     {
       type: 4,
       role: 'option',
-      className: 'EditorCompletionItem EditorCompletionItemFocused',
+      className: 'EditorCompletionItem',
       top: 20,
       childCount: 2,
     },
