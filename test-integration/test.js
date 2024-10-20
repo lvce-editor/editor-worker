@@ -6,8 +6,15 @@ import { setup } from '../test-integration-util/setup.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
+const only = [
+  // 'editor-completion-focus-previous.test.js'
+]
+
 const runTests = async (dirents) => {
   for (const dirent of dirents) {
+    if (only.length > 0 && !only.includes(dirent)) {
+      continue
+    }
     const absolutePath = join(__dirname, dirent)
     const absoluteUri = pathToFileURL(absolutePath).toString()
     const module = await import(absoluteUri)
