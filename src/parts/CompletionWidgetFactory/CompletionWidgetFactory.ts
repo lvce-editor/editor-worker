@@ -18,6 +18,9 @@ export const create = (): CompletionWidget => {
       y: 0,
       width: 0,
       height: 0,
+      deltaY: 0,
+      finalDeltaY: 0,
+      headerHeight: 0,
     },
     newState: {
       items: [],
@@ -31,6 +34,9 @@ export const create = (): CompletionWidget => {
       y: 0,
       width: 0,
       height: 0,
+      deltaY: 0,
+      finalDeltaY: 0,
+      headerHeight: 0,
     },
   }
   return completionWidget
