@@ -1,8 +1,6 @@
-export interface HoverState {
-  readonly x: number
-  readonly y: number
-  readonly width: number
-  readonly height: number
+import type { Rectangle } from '../Rectangle/Rectangle.ts'
+
+export interface HoverState extends Rectangle {
   readonly uid: number
   readonly content: string
   readonly editorUid: number

@@ -28,6 +28,14 @@ const widgetCommands = {
   'FindWidget.focusNextMatchButton': WidgetId.Find,
   'FindWidget.focusPreviousMatchButton': WidgetId.Find,
   'FindWidget.focusCloseButton': WidgetId.Find,
+
+  'EditorCompletion.handleWheel': WidgetId.Completion,
+
+  // TODO
+  // 'EditorCompletion.focusFirst': WidgetId.Completion,
+  // 'EditorCompletion.focusNext': WidgetId.Completion,
+  // 'EditorCompletion.focusPrevious': WidgetId.Completion,
+  // 'EditorCompletion.focusLast': WidgetId.Completion,
 } as any
 
 // TODO wrap commands globally, not per editor
