@@ -80,7 +80,7 @@ const renderFocus = {
 //   },
 // }
 
-export const render = [renderDetails, renderBounds, renderValue, renderFocus]
+const render = [renderDetails, renderBounds, renderValue, renderFocus]
 
 export const apply = (oldState: FindWidgetState, newState: FindWidgetState) => {
   // TODO avoid side effect
