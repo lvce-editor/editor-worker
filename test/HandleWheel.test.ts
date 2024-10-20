@@ -13,6 +13,9 @@ test('handleWheel - scroll down', () => {
     height: 124,
     deltaY: 0,
     finalDeltaY: 3 * 62 - 124,
+    x: 0,
+    y: 0,
+    width: 0,
   }
   expect(HandleWheel.handleWheel(state, WheelEventType.DomDeltaPixel, 62)).toMatchObject({
     minLineY: 1,
@@ -22,6 +25,9 @@ test('handleWheel - scroll down', () => {
 
 test('handleWheel - scroll up', () => {
   const state: VirtualListState<number> = {
+    x: 0,
+    y: 0,
+    width: 0,
     headerHeight: 0,
     minLineY: 0,
     maxLineY: 0,
