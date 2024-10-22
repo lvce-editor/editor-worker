@@ -1,5 +1,4 @@
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
-import * as EditorPosition from '../EditorCommand/EditorCommandPosition.ts'
 import * as EditorCompletionRender from '../EditorCompletionRender/EditorCompletionRender.ts'
 import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletionItems.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
