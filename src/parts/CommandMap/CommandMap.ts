@@ -122,6 +122,7 @@ import * as EditorCompletionToggleDetails from '../EditorCompletionToggleDetails
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
+import * as FindWidgetReplaceAll from '../FindWidgetReplaceAll/FindWidgetReplaceAll.ts'
 import * as Font from '../Font/Font.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetSelections from '../GetSelections/GetSelections.ts'
@@ -304,6 +305,7 @@ export const commandMap = {
   'FindWidget.handleToggleReplaceFocus': FindWidget.handleToggleReplaceFocus,
   'FindWidget.loadContent': FindWidget.loadContent,
   'FindWidget.toggleReplace': FindWidget.toggleReplace,
+  'FindWidget.replaceAll': FindWidgetReplaceAll.replaceAll,
   'Font.ensure': Font.ensure,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
   'Hover.handleSashPointerDown': EditorHover.handleSashPointerDown,
