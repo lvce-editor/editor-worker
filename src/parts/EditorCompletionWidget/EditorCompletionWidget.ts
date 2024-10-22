@@ -54,11 +54,7 @@ export const handleEditorType = (editor: any, state: any) => {
 
 export const handleEditorDeleteLeft = (editor: any, state: any) => {
   const { unfilteredItems, itemHeight, maxHeight } = state
-  const { selections } = editor
-  const rowIndex = selections[0]
-  const columnIndex = selections[1]
-  const x = EditorPosition.x(editor, rowIndex, columnIndex)
-  const y = EditorPosition.y(editor, rowIndex)
+  const { x, y, rowIndex, columnIndex } = GetPositionAtCursor.getPositionAtCursor(editor)
   const wordAtOffset = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   if (!wordAtOffset) {
     return undefined
