@@ -4,7 +4,7 @@ import * as FindWidgetReplaceAll from '../src/parts/FindWidgetReplaceAll/FindWid
 import type { FindWidgetState } from '../src/parts/FindWidgetState/FindWidgetState.ts'
 import * as WidgetId from '../src/parts/WidgetId/WidgetId.ts'
 
-test.only('replaceAll - single replacement', async () => {
+test('replaceAll - single replacement', async () => {
   const { oldState } = FindWidgetFactory.create()
   const state: FindWidgetState = {
     ...oldState,
