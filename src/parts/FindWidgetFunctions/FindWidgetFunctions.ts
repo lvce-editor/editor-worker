@@ -24,27 +24,6 @@ export const loadContent = (editorId: number) => {
   }
 }
 
-export const refresh = (state: FindWidgetState, value = state.value): FindWidgetState => {
-  // TODO get focused editor
-  const { editorUid } = state
-  // highlight locations that match value
-  const editor = GetEditor.getEditor(editorUid)
-  const { lines } = editor
-  const matches = FindMatchesCaseInsensitive.findMatchesCaseInsensitive(lines, value)
-  const matchCount = GetMatchCount.getMatchCount(matches)
-  return {
-    ...state,
-    matches,
-    matchIndex: 0,
-    matchCount,
-    value,
-  }
-}
-
-export const handleInput = (state: FindWidgetState, value: string): FindWidgetState => {
-  return refresh(state, value)
-}
-
 export const close = async (state: FindWidgetState) => {
   // TODO
   // await Viewlet.closeWidget(uid)
@@ -82,7 +61,9 @@ export * from '../FindWidgetFocusReplaceAllButton/FindWidgetFocusReplaceAllButto
 export * from '../FindWidgetFocusReplaceButton/FindWidgetFocusReplaceButton.ts'
 export * from '../FindWidgetFocusToggleReplaceButton/FindWidgetFocusToggleReplaceButton.ts'
 export * from '../FindWidgetHandleBlur/FindWidgetHandleBlur.ts'
+export * from '../FindWidgetHandleInput/FindWidgetHandleInput.ts'
 export * from '../FindWidgetHandleReplaceAllFocus/FindWidgetHandleReplaceAllFocus.ts'
 export * from '../FindWidgetHandleReplaceFocus/FindWidgetHandleReplaceFocus.ts'
+export * from '../FindWidgetRefresh/FindWidgetRefresh.ts'
 export * from '../FindWidgetToggleReplace/FindWidgetToggleReplace.ts'
 export * from '../HandleFindWidgetFocus/HandleFindWidgetFocus.ts'
