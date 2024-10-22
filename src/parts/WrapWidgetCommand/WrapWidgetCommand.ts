@@ -1,3 +1,5 @@
+import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
+
 export const wrapWidgetCommand = (widgetId: string, fn: any) => {
   const isWidget = (widget: any) => {
     return widget.id === widgetId
@@ -7,16 +9,8 @@ export const wrapWidgetCommand = (widgetId: string, fn: any) => {
     // TODO scroll up/down if necessary
     const childWidget = editor.widgets[childIndex]
     const newState = await fn(childWidget.newState, ...args)
-    const newWidget = {
-      ...childWidget,
-      oldState: childWidget.newState,
-      newState,
-    }
-    const newWidgets = [...editor.widgets.slice(0, childIndex), newWidget, ...editor.widgets.slice(childIndex + 1)]
-    return {
-      ...editor,
-      widgets: newWidgets,
-    }
+    const newEditor = UpdateWidget.updateWidget(editor, widgetId, newState)
+    return newEditor
   }
   return wrapped
 }
