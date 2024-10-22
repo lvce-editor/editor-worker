@@ -4,13 +4,14 @@ import * as FindWidgetReplaceAll from '../src/parts/FindWidgetReplaceAll/FindWid
 import type { FindWidgetState } from '../src/parts/FindWidgetState/FindWidgetState.ts'
 import * as WidgetId from '../src/parts/WidgetId/WidgetId.ts'
 
-test('replaceAll - single replacement', () => {
+test.only('replaceAll - single replacement', async () => {
   const { oldState } = FindWidgetFactory.create()
   const state: FindWidgetState = {
     ...oldState,
     replaceExpanded: true,
     matches: new Uint32Array([0, 0]),
-    value: 'b',
+    value: 'a',
+    replacement: 'b',
   }
   const editor = {
     lines: ['a'],
@@ -21,18 +22,20 @@ test('replaceAll - single replacement', () => {
         id: WidgetId.Find,
       },
     ],
+    undoStack: [],
   }
-  const newEditor = FindWidgetReplaceAll.replaceAll(editor)
+  const newEditor = await FindWidgetReplaceAll.replaceAll(editor)
   expect(newEditor.lines).toEqual(['b'])
 })
 
-test('replaceAll - two replacements in one line', () => {
+test('replaceAll - two replacements in one line', async () => {
   const { oldState } = FindWidgetFactory.create()
   const state: FindWidgetState = {
     ...oldState,
     replaceExpanded: true,
     matches: new Uint32Array([0, 0]),
-    value: 'b',
+    value: 'a',
+    replacement: 'b',
   }
   const editor = {
     lines: ['aa'],
@@ -43,18 +46,20 @@ test('replaceAll - two replacements in one line', () => {
         id: WidgetId.Find,
       },
     ],
+    undoStack: [],
   }
-  const newEditor = FindWidgetReplaceAll.replaceAll(editor)
+  const newEditor = await FindWidgetReplaceAll.replaceAll(editor)
   expect(newEditor.lines).toEqual(['bb'])
 })
 
-test('replaceAll - two replacements in two lines', () => {
+test('replaceAll - two replacements in two lines', async () => {
   const { oldState } = FindWidgetFactory.create()
   const state: FindWidgetState = {
     ...oldState,
     replaceExpanded: true,
     matches: new Uint32Array([0, 0]),
-    value: 'b',
+    value: 'a',
+    replacement: 'b',
   }
   const editor = {
     lines: ['a', 'a'],
@@ -65,7 +70,8 @@ test('replaceAll - two replacements in two lines', () => {
         id: WidgetId.Find,
       },
     ],
+    undoStack: [],
   }
-  const newEditor = FindWidgetReplaceAll.replaceAll(editor)
+  const newEditor = await FindWidgetReplaceAll.replaceAll(editor)
   expect(newEditor.lines).toEqual(['b', 'b'])
 })

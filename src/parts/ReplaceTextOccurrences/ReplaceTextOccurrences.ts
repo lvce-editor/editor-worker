@@ -11,5 +11,5 @@ export const replaceTextOccurrences = (editor: any, matches: Uint32Array, oldVal
     const endColumnIndex = matches[i] + oldValueLength
     ranges.push(startRowIndex, startColumnIndex, endRowIndex, endColumnIndex)
   }
-  return ReplaceRanges.replaceRange(editor, ranges, newValue, EditOrigin.ReplaceAll)
+  return ReplaceRanges.replaceRange(editor, ranges, [newValue], EditOrigin.ReplaceAll)
 }

@@ -59,7 +59,7 @@ export const scheduleSelections = (editor: any, selectionEdits: any) => {
 }
 
 /**
- *
+ * TODO make this synchronous maybe?
  * @param {any} editor
  * @param {any[]} changes
  * @param {Uint32Array|undefined} selectionChanges
