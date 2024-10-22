@@ -1,5 +1,5 @@
-import * as WidgetModules from '../WidgetModules/WidgetModules.ts'
+import * as WidgetRegistry from '../WidgetRegistry/WidgetRegistry.ts'
 
 export const getModule = (id: string) => {
-  return WidgetModules.get(id)
+  return WidgetRegistry.get(id)
 }

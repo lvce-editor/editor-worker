@@ -22,3 +22,9 @@ export const add = (widget: CompletionDetailWidget) => {
 }
 
 export const remove = RemoveWidget.removeWidget
+
+export const handleEditorType = (editor: any, state: any) => {
+  return {
+    ...state,
+  }
+}
