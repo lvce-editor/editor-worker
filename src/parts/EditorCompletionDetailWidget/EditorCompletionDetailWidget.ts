@@ -1,6 +1,8 @@
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import type { CompletionDetailWidget } from '../CompletionDetailWidget/CompletionDetailWidget.ts'
 import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/EditorCompletionDetailRender.ts'
+import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
+import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 
 export const render = (widget: CompletionDetailWidget) => {
@@ -22,3 +24,16 @@ export const add = (widget: CompletionDetailWidget) => {
 }
 
 export const remove = RemoveWidget.removeWidget
+
+export const handleEditorType = (editor: any, state: any) => {
+  const completionState = GetCompletionState.getCompletionState(editor)
+  if (!completionState) {
+    return editor
+  }
+  const { x } = GetPositionAtCursor.getPositionAtCursor(editor)
+  const detailX = x + completionState.width
+  return {
+    ...state,
+    x: detailX,
+  }
+}

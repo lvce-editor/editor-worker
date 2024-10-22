@@ -3,6 +3,7 @@ import * as EditorPosition from '../EditorCommand/EditorCommandPosition.ts'
 import * as EditorCompletionRender from '../EditorCompletionRender/EditorCompletionRender.ts'
 import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletionItems.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
+import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 
 export const render = (widget: any) => {
@@ -31,11 +32,7 @@ export const remove = RemoveWidget.removeWidget
 
 export const handleEditorType = (editor: any, state: any) => {
   const { unfilteredItems, itemHeight, maxHeight } = state
-  const { selections } = editor
-  const rowIndex = selections[0]
-  const columnIndex = selections[1]
-  const x = EditorPosition.x(editor, rowIndex, columnIndex)
-  const y = EditorPosition.y(editor, rowIndex)
+  const { x, y, rowIndex, columnIndex } = GetPositionAtCursor.getPositionAtCursor(editor)
   const wordAtOffset = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)
   const newMinLineY = 0

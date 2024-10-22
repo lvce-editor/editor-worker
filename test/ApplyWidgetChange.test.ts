@@ -2,10 +2,10 @@ import { beforeEach, expect, test } from '@jest/globals'
 import * as ApplyWidgetChange from '../src/parts/ApplyWidgetChange/ApplyWidgetChange.ts'
 import * as EditOrigin from '../src/parts/EditOrigin/EditOrigin.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
-import * as WidgetModules from '../src/parts/WidgetModules/WidgetModules.ts'
+import * as WidgetRegistry from '../src/parts/WidgetRegistry/WidgetRegistry.ts'
 
 beforeEach(() => {
-  WidgetModules.register('test', {
+  WidgetRegistry.set('test', {
     handleEditorType(editor: any, state: any) {
       return {
         ...state,
