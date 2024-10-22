@@ -1,5 +1,11 @@
-import { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
+import * as GetFindState from '../GetFindState/GetFindState.ts'
 
-export const replaceAll = (state: FindWidgetState): FindWidgetState => {
+export const replaceAll = (editor: any): any => {
+  const state = GetFindState.getFindState(editor)
+  if (!state) {
+    return editor
+  }
+  const { matches } = state
+  console.log({ matches })
   return state
 }
