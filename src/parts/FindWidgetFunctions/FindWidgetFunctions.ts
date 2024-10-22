@@ -65,9 +65,11 @@ export const handleToggleReplaceFocus = async (state: FindWidgetState): Promise<
   }
 }
 
-export const handleReplaceInput = (state: FindWidgetState): FindWidgetState => {
-  // TODO
-  return state
+export const handleReplaceInput = (state: FindWidgetState, value: string): FindWidgetState => {
+  return {
+    ...state,
+    replacement: value,
+  }
 }
 
 export * from '../FindWidgetFocusCloseButton/FindWidgetFocusCloseButton.ts'
