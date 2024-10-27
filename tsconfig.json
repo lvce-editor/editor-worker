@@ -1,5 +1,18 @@
 {
   "files": [],
   "include": [],
-  "references": [{ "path": "./packages/editor-worker" }, { "path": "./packages/build" }]
+  "references": [
+    {
+      "path": "./packages/editor-worker"
+    },
+    {
+      "path": "./packages/build"
+    },
+    {
+      "path": "./packages/test-integration"
+    },
+    {
+      "path": "./packages/test-integration-util"
+    }
+  ]
 }

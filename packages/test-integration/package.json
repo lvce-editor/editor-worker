@@ -9,5 +9,8 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.8.1"
+  }
 }
