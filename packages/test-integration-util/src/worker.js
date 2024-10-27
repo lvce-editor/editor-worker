@@ -1,6 +1,7 @@
 import { IpcChildWithNodeWorker } from '@lvce-editor/ipc'
 
 const createWorkerIpc = async (workerPath) => {
+  // @ts-ignore`
   globalThis.WorkerGlobalScope = {}
 
   // @ts-ignore

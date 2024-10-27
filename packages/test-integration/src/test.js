@@ -2,7 +2,12 @@ import { readdir } from 'fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { pathToFileURL } from 'url'
-import { setup } from '../../test-integration-util/src/setup.js'
+
+const uri = '../../test-integration-util/src/setup.js'
+
+const module = await import(uri)
+
+const { setup } = module
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
