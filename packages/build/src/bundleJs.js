@@ -1,9 +1,12 @@
-import { nodeResolve } from '@rollup/plugin-node-resolve'
-import { babel } from '@rollup/plugin-babel'
 import pluginTypeScript from '@babel/preset-typescript'
+import { babel } from '@rollup/plugin-babel'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
+import { dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { join } from 'path'
 import { rollup } from 'rollup'
 
+const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = join(__dirname, '..', '..', '..')
 
 /**
