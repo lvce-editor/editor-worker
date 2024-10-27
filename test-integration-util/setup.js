@@ -43,22 +43,23 @@ const handleMessage = (event) => {
 }
 
 const createWrappedRpc = (rpc) => {
-  rpc.create = (...params) => {
+  rpc.Editor ||= {}
+  rpc.Editor.create = (...params) => {
     return rpc.invoke('Editor.create', ...params)
   }
-  rpc.cursorSet = (...params) => {
+  rpc.Editor.cursorSet = (...params) => {
     return rpc.invoke('Editor.cursorSet', ...params)
   }
-  rpc.handleTab = (...params) => {
+  rpc.Editor.handleTab = (...params) => {
     return rpc.invoke('Editor.handleTab', ...params)
   }
-  rpc.openCompletion = (...params) => {
+  rpc.Editor.openCompletion = (...params) => {
     return rpc.invoke('Editor.openCompletion', ...params)
   }
-  rpc.selectWord = (...params) => {
+  rpc.Editor.selectWord = (...params) => {
     return rpc.invoke('Editor.selectWord', ...params)
   }
-  rpc.openFind2 = (...params) => {
+  rpc.Editor.openFind2 = (...params) => {
     return rpc.invoke('Editor.openFind2', ...params)
   }
   rpc.EditorCompletion ||= {}
@@ -66,7 +67,13 @@ const createWrappedRpc = (rpc) => {
     return rpc.invoke('EditorCompletion.openDetails', ...params)
   }
   rpc.EditorCompletion.closeDetails = (...params) => {
-    return rpc.invoke('EditorCompletion.closeDetails')
+    return rpc.invoke('EditorCompletion.closeDetails', ...params)
+  }
+  rpc.EditorCompletion.focusIndex = (...params) => {
+    return rpc.invoke('EditorCompletion.focusIndex', ...params)
+  }
+  rpc.EditorCompletion.focusFirst = (...params) => {
+    return rpc.invoke('EditorCompletion.focusFirst', ...params)
   }
   return rpc
 }
