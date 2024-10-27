@@ -1,13 +1,11 @@
 {
-  "name": "server",
-  "version": "1.0.0",
+  "name": "@lvce-editor/editor-worker-server",
+  "version": "0.0.0-dev",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "description": "",
   "dependencies": {
     "@lvce-editor/server": "^0.37.6"
