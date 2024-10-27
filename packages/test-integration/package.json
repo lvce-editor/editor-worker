@@ -1,0 +1,11 @@
+{
+  "name": "test-integration",
+  "version": "0.0.0-dev",
+  "type": "module",
+  "main": "create-editor.test.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "description": ""
+}
