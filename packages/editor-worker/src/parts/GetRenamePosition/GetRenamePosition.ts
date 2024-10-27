@@ -1,10 +1,12 @@
+import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
+
 export const getRenamePosition = (editor: any) => {
   const width = 300
   const height = 30
   const paddingTop = 10
-  const paddingRight = 20
-  const x = editor.x + editor.width - width - paddingRight
-  const y = editor.y + paddingTop
+  const cursor = GetPositionAtCursor.getPositionAtCursor(editor)
+  const x = cursor.x
+  const y = cursor.y + paddingTop
   return {
     y,
     x,
