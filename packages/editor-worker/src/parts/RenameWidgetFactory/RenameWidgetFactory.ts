@@ -12,6 +12,10 @@ export const create = (): RenameWidget => {
       oldValue: '',
       newValue: '',
       focused: false,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
     },
     newState: {
       uid: completionUid,
@@ -19,6 +23,10 @@ export const create = (): RenameWidget => {
       oldValue: '',
       newValue: '',
       focused: false,
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
     },
   }
   return renameWidget
