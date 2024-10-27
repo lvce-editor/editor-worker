@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 
-export const test = async (rpc) => {
-  await rpc.invoke('Editor.create', {
+export const test = async ({ Editor, EditorCompletion }) => {
+  await Editor.create({
     id: 0,
     content: 'a',
     fontFamily: '',
@@ -14,9 +14,9 @@ export const test = async (rpc) => {
     isMonospaceFont: true,
     charWidth: 9,
   })
-  await rpc.invoke('Editor.cursorSet', 0, 0, 1)
-  await rpc.invoke('Editor.openCompletion', 0)
-  const { commands } = await rpc.invoke('EditorCompletion.openDetails', 0)
+  await Editor.cursorSet(0, 0, 1)
+  await Editor.openCompletion(0)
+  const { commands } = await EditorCompletion.openDetails(0)
   assert.strictEqual(commands[5][0], 'Viewlet.setDom2')
   const dom = commands[5][2]
   assert.deepEqual(dom, [
