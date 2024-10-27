@@ -5,6 +5,7 @@ import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletio
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetFinalDeltaY from '../GetFinalDeltaY/GetFinalDeltaY.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
+import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 
 const RE_WORD = /[\w\-]+$/
 
@@ -102,11 +103,7 @@ export const loadContent = async (editorUid: number, state: any) => {
   const unfilteredItems = await Completions.getCompletions(editor)
   const wordAtOffset = getWordAtOffset(editor)
   const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)
-  const rowIndex = editor.selections[0]
-  const columnIndex = editor.selections[1]
-  const x = EditorPosition.x(editor, rowIndex, columnIndex)
-  // @ts-ignore
-  const y = EditorPosition.y(editor, rowIndex, columnIndex)
+  const { rowIndex, columnIndex, x, y } = GetPositionAtCursor.getPositionAtCursor(editor)
   const newMaxLineY = Math.min(items.length, 8)
   editor.widgets = editor.widgets || []
   // editor.widgets.push(ViewletModuleId.EditorCompletion)
