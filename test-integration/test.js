@@ -18,6 +18,9 @@ const runTests = async (dirents) => {
     const absolutePath = join(__dirname, dirent)
     const absoluteUri = pathToFileURL(absolutePath).toString()
     const module = await import(absoluteUri)
+    if (module.skip) {
+      continue
+    }
     const rpc = await setup()
     await module.test(rpc)
   }

@@ -20,6 +20,13 @@ const getResult = (method, ...params) => {
       },
     ]
   }
+  if (method === 'ExtensionHostTabCompletion.execute') {
+    return {
+      deleted: 6,
+      inserted: '<button>$0</button>',
+      type: 2,
+    }
+  }
   return null
 }
 
