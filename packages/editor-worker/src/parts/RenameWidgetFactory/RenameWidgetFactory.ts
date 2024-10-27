@@ -7,7 +7,6 @@ export const create = (): RenameWidget => {
   const renameWidget: RenameWidget = {
     id: WidgetId.Completion,
     oldState: {
-      maxHeight: 150,
       uid: completionUid,
       focusedIndex: -1,
       oldValue: '',
@@ -15,7 +14,6 @@ export const create = (): RenameWidget => {
       focused: false,
     },
     newState: {
-      maxHeight: 150,
       uid: completionUid,
       focusedIndex: -1,
       oldValue: '',
