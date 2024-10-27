@@ -6,7 +6,7 @@ import pluginTypeScript from '@babel/preset-typescript'
  * @type {import('rollup').RollupOptions}
  */
 const options = {
-  input: 'src/editorWorkerMain.ts',
+  input: 'packages/editor-worker/src/editorWorkerMain.ts',
   preserveEntrySignatures: 'strict',
   treeshake: {
     propertyReadSideEffects: false,

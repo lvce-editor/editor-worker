@@ -2,7 +2,9 @@
   "name": "test-integration-util",
   "type": "module",
   "version": "1.0.0",
-  "scripts": {},
+  "scripts": {
+    "test:integration": "node src/test.js"
+  },
   "keywords": [],
   "author": "",
   "license": "MIT",
