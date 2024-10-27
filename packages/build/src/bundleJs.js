@@ -39,5 +39,5 @@ const options = {
 
 export const bundleJs = async () => {
   const input = await rollup(options)
-  await input.write(options)
+  await input.write(options.output)
 }
