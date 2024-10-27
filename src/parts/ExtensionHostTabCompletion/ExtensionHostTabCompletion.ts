@@ -1,5 +1,5 @@
-import * as ExtensionHostActivationEvent from '../ExtensionHostActivationEvent/ExtensionHostActivationEvent.js'
-import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.js'
+import * as ExtensionHostActivationEvent from '../ExtensionHostActivationEvent/ExtensionHostActivationEvent.ts'
+import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostEditor from '../ExtensionHostEditor/ExtensionHostEditor.ts'
 
 const combineResults = (results: any) => {
