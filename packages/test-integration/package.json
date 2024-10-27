@@ -3,7 +3,9 @@
   "version": "0.0.0-dev",
   "type": "module",
   "main": "create-editor.test.js",
-  "scripts": {},
+  "scripts": {
+    "test:integration": "node src/test.js"
+  },
   "keywords": [],
   "author": "",
   "license": "MIT",
