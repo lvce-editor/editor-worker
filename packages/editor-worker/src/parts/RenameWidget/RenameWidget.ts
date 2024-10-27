@@ -1,4 +1,4 @@
-import type { CompletionState } from '../CompletionState/CompletionState.ts'
+import type { RenameState } from '../RenameState/RenameState.ts'
 import type { Widget } from '../Widget/Widget.ts'
 
-export interface CompletionWidget extends Widget<CompletionState> {}
+export interface RenameWidget extends Widget<RenameState> {}
