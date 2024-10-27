@@ -128,6 +128,7 @@ import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetSelections from '../GetSelections/GetSelections.ts'
 import * as GetText from '../GetText/GetText.ts'
 import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
+import * as HandleTab from '../HandleTab/HandleTab.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
@@ -141,6 +142,7 @@ export const commandMap = {
   'ColorPicker.loadContent': ColorPicker.loadContent,
   'Editor.addCursorAbove': AddCursorAbove.addCursorAbove,
   'Editor.addCursorBelow': AddCursorBelow.addCursorBelow,
+  'Editor.handleTab': HandleTab.handleTab,
   'Editor.applyEdit': EditorApplyEdit.applyEdit,
   'Editor.braceCompletion': EditorBraceCompletion.braceCompletion,
   'Editor.cancelSelection': CancelSelection.cancelSelection,
