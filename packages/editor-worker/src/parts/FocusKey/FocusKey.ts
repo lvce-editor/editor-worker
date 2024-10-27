@@ -14,3 +14,4 @@ export const FocusFindWidgetNextMatchButton = 49
 export const FocusFindWidgetPreviousMatchButton = 50
 export const FocusEditorHover = 51
 export const SourceActions = 38
+export const Rename = 999

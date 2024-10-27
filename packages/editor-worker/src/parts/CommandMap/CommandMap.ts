@@ -70,6 +70,7 @@ import * as EditorMoveSelectionPx from '../EditorCommand/EditorCommandMoveSelect
 import * as EditorOpenCompletion from '../EditorCommand/EditorCommandOpenCompletion.ts'
 import * as OpenFind from '../EditorCommand/EditorCommandOpenFind.ts'
 import * as OpenFind2 from '../EditorCommand/EditorCommandOpenFind2.ts'
+import * as EditorCommandOpenRename from '../EditorCommand/EditorCommandOpenRename.ts'
 import * as OrganizeImports from '../EditorCommand/EditorCommandOrganizeImports.ts'
 import * as EditorPaste from '../EditorCommand/EditorCommandPaste.ts'
 import * as PasteText from '../EditorCommand/EditorCommandPasteText.ts'
@@ -142,7 +143,6 @@ export const commandMap = {
   'ColorPicker.loadContent': ColorPicker.loadContent,
   'Editor.addCursorAbove': AddCursorAbove.addCursorAbove,
   'Editor.addCursorBelow': AddCursorBelow.addCursorBelow,
-  'Editor.handleTab': HandleTab.handleTab,
   'Editor.applyEdit': EditorApplyEdit.applyEdit,
   'Editor.braceCompletion': EditorBraceCompletion.braceCompletion,
   'Editor.cancelSelection': CancelSelection.cancelSelection,
@@ -210,6 +210,7 @@ export const commandMap = {
   'Editor.handleScrollBarVerticalPointerDown': HandleScrollBarPointerDown.handleScrollBarPointerDown,
   'Editor.handleScrollBarVerticalPointerMove': EditorCommandHandleScrollBarMove.handleScrollBarVerticalPointerMove,
   'Editor.handleSingleClick': HandleSingleClick.handleSingleClick,
+  'Editor.handleTab': HandleTab.handleTab,
   'Editor.handleTouchEnd': HandleTouchEnd.handleTouchEnd,
   'Editor.handleTouchMove': HandleTouchMove.handleTouchMove,
   'Editor.handleTouchStart': HandleTouchStart.handleTouchStart,
@@ -228,6 +229,7 @@ export const commandMap = {
   'Editor.openCompletion': EditorOpenCompletion.openCompletion,
   'Editor.openFind': OpenFind.openFind,
   'Editor.openFind2': OpenFind2.openFind2,
+  'Editor.openRename': EditorCommandOpenRename.openRename,
   'Editor.organizeImports': OrganizeImports.organizeImports,
   'Editor.paste': EditorPaste.paste,
   'Editor.pasteText': PasteText.pasteText,
@@ -306,8 +308,8 @@ export const commandMap = {
   'FindWidget.handleReplaceInput': FindWidget.handleReplaceInput,
   'FindWidget.handleToggleReplaceFocus': FindWidget.handleToggleReplaceFocus,
   'FindWidget.loadContent': FindWidget.loadContent,
-  'FindWidget.toggleReplace': FindWidget.toggleReplace,
   'FindWidget.replaceAll': FindWidgetReplaceAll.replaceAll,
+  'FindWidget.toggleReplace': FindWidget.toggleReplace,
   'Font.ensure': Font.ensure,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
   'Hover.handleSashPointerDown': EditorHover.handleSashPointerDown,
