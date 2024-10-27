@@ -42,6 +42,35 @@ const handleMessage = (event) => {
   }
 }
 
+const createWrappedRpc = (rpc) => {
+  rpc.create = (...params) => {
+    return rpc.invoke('Editor.create', ...params)
+  }
+  rpc.cursorSet = (...params) => {
+    return rpc.invoke('Editor.cursorSet', ...params)
+  }
+  rpc.handleTab = (...params) => {
+    return rpc.invoke('Editor.handleTab', ...params)
+  }
+  rpc.openCompletion = (...params) => {
+    return rpc.invoke('Editor.openCompletion', ...params)
+  }
+  rpc.selectWord = (...params) => {
+    return rpc.invoke('Editor.selectWord', ...params)
+  }
+  rpc.openFind2 = (...params) => {
+    return rpc.invoke('Editor.openFind2', ...params)
+  }
+  rpc.EditorCompletion ||= {}
+  rpc.EditorCompletion.openDetails = (...params) => {
+    return rpc.invoke('EditorCompletion.openDetails', ...params)
+  }
+  rpc.EditorCompletion.closeDetails = (...params) => {
+    return rpc.invoke('EditorCompletion.closeDetails')
+  }
+  return rpc
+}
+
 export const setup = async () => {
   const commandMap = {
     'SendMessagePortToRendererProcess.sendMessagePortToRendererProcess'(port) {
@@ -66,5 +95,6 @@ export const setup = async () => {
   const syntaxHighlightingEnabled = true
   const syncIncremental = true
   await rpc.invoke('Initialize.initialize', syntaxHighlightingEnabled, syncIncremental)
-  return rpc
+  const wrapped = createWrappedRpc(rpc)
+  return wrapped
 }
