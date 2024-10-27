@@ -1,3 +1,4 @@
+import * as ApplyTabCompletion from '../ApplyTabCompletion/ApplyTabCompletion.ts'
 import * as TabCompletion from '../TabCompletion/TabCompletion.ts'
 
 export const handleTab = async (editor: any) => {
@@ -6,8 +7,5 @@ export const handleTab = async (editor: any) => {
     // TODO enter tab or two spaces
     return editor
   }
-
-  // TODO apply tab completion
-  console.log({ result })
-  return editor
+  return ApplyTabCompletion.applyTabCompletion(editor)
 }
