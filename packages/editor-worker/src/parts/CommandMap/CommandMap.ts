@@ -8,6 +8,7 @@ import * as EditorBraceCompletion from '../EditorCommand/EditorCommandBraceCompl
 import * as CancelSelection from '../EditorCommand/EditorCommandCancelSelection.ts'
 import * as EditorCloseCompletion from '../EditorCommand/EditorCommandCloseCompletion.ts'
 import * as EditorCommandCloseFind from '../EditorCommand/EditorCommandCloseFind.ts'
+import * as CloseRename from '../EditorCommand/EditorCommandCloseRename.ts'
 import * as EditorCommandCloseSourceAction from '../EditorCommand/EditorCommandCloseSourceAction.ts'
 import * as EditorOpenColorPicker from '../EditorCommand/EditorCommandColorPicker.ts'
 import * as Composition from '../EditorCommand/EditorCommandComposition.ts'
@@ -148,6 +149,7 @@ export const commandMap = {
   'Editor.cancelSelection': CancelSelection.cancelSelection,
   'Editor.closeCompletion': EditorCloseCompletion.closeCompletion,
   'Editor.closeFind': EditorCommandCloseFind.closeFind,
+  'Editor.closeRename': CloseRename.closeRename,
   'Editor.closeSourceAction': EditorCommandCloseSourceAction.closeSourceAction,
   'Editor.compositionEnd': Composition.compositionEnd,
   'Editor.compositionStart': Composition.compositionStart,
