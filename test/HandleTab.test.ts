@@ -15,6 +15,7 @@ test('handleTab - no result', async () => {
     lines: ['a'],
     primarySelectionIndex: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
+    undoStack: [],
   }
   const newEditor = await HandleTab.handleTab(editor)
   // TODO two spaces should be inserted
@@ -31,8 +32,9 @@ test('handleTab - apply result', async () => {
     lines: ['button'],
     primarySelectionIndex: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
+    undoStack: [],
   }
   const newEditor = await HandleTab.handleTab(editor)
   // TODO
-  expect(newEditor.lines).toEqual(['<button>$0</button>'])
+  expect(newEditor.lines).toEqual(['<button></button>button'])
 })

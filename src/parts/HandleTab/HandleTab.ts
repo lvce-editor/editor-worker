@@ -7,5 +7,5 @@ export const handleTab = async (editor: any) => {
     // TODO enter tab or two spaces
     return editor
   }
-  return ApplyTabCompletion.applyTabCompletion(editor)
+  return ApplyTabCompletion.applyTabCompletion(editor, result)
 }
