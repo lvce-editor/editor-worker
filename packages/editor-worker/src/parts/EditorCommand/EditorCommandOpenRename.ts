@@ -22,6 +22,7 @@ export const openRename = async (editor: any) => {
       y,
       width,
       height,
+      oldValue: word,
       newValue: word,
     }
     return latestState
