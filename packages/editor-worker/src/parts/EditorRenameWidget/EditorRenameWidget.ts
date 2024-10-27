@@ -1,10 +1,10 @@
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
-import * as RenderRename from '../RenderRename/RenderRename.ts'
 import type { RenameWidget } from '../RenameWidget/RenameWidget.ts'
+import * as RenderRename from '../RenderRename/RenderRename.ts'
 
 export const render = (widget: RenameWidget) => {
-  const commands: readonly any[] = RenderRename.renderRename(widget.newState)
+  const commands: readonly any[] = RenderRename.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
   const uid = widget.newState.uid
   for (const command of commands) {

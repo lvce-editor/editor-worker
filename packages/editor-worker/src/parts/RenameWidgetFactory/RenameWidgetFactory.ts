@@ -5,7 +5,7 @@ import * as WidgetId from '../WidgetId/WidgetId.ts'
 export const create = (): RenameWidget => {
   const completionUid = Id.create()
   const renameWidget: RenameWidget = {
-    id: WidgetId.Completion,
+    id: WidgetId.Rename,
     oldState: {
       uid: completionUid,
       focusedIndex: -1,

@@ -1,16 +1,16 @@
 import { expect, test } from '@jest/globals'
-import * as RenderRename from '../src/parts/RenderRename/RenderRename.ts'
-import * as RenameWidgetFactory from '../src/parts/RenameWidgetFactory/RenameWidgetFactory.ts'
+import * as GetRenameVirtualDom from '../src/parts/GetRenameVirtualDom/GetRenameVirtualDom.ts'
 import type { RenameState } from '../src/parts/RenameState/RenameState.ts'
+import * as RenameWidgetFactory from '../src/parts/RenameWidgetFactory/RenameWidgetFactory.ts'
 
-test('renderRename', () => {
+test('getRenameVirtualDom', () => {
   const widget = RenameWidgetFactory.create()
   const state: RenameState = {
     ...widget.newState,
     oldValue: 'a',
     newValue: 'b',
   }
-  expect(RenderRename.renderRename(state)).toEqual([
+  expect(GetRenameVirtualDom.getRenameVirtualDom(state)).toEqual([
     {
       childCount: 1,
       className: 'Viewlet EditorRename',
