@@ -1,24 +1,20 @@
 {
-  "name": "@lvce-editor/editor-worker",
+  "name": "@lvce-editor/editor-worker-monorepo",
   "version": "0.0.0-dev",
   "description": "",
-  "main": "src/editorWorkerMain.ts",
+  "main": "",
   "type": "module",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "postinstall": "lerna bootstrap --ci",
     "lint": "npx xo .",
-    "test": "node --unhandled-rejections=warn --experimental-vm-modules ./node_modules/jest/bin/jest.js --detectOpenHandles --forceExit",
-    "test:watch": "node --unhandled-rejections=warn --experimental-vm-modules ./node_modules/jest/bin/jest.js --watch",
-    "test:integration": "node packages/test-integration/src/test.js",
+    "test": "lerna run test",
+    "test:integration": "lerna run test:integration",
     "type-check": "tsc",
-    "build:watch": "esbuild --format=esm --bundle --watch src/editorWorkerMain.ts --outfile=dist/dist/editorWorkerMain.js",
+    "build:watch": "esbuild --format=esm --bundle --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=dist/dist/editorWorkerMain.js",
     "build": "node scripts/build.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Lvce Editor",
   "license": "MIT",
   "xo": {
     "rules": {

@@ -1,7 +1,0 @@
-export const SetBounds = 'setBounds'
-export const SetColor = 'setColor'
-export const SetContentHeight = 'setContentHeight'
-export const SetNegativeMargin = 'setNegativeMargin'
-export const SetOffsetX = 'setOffsetX'
-export const SetScrollBar = 'setScrollBar'
-export const SetValue = 'setValue'
