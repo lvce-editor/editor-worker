@@ -1,11 +1,13 @@
 import * as TabCompletion from '../TabCompletion/TabCompletion.ts'
 
 export const handleTab = async (editor: any) => {
-  // TODO
-  // 1. if completion is open, insert completion item
-  // 2. try to execute tab completion provider
-  // 3. enter tab or two spaces
   const result = await TabCompletion.getTabCompletion(editor)
+  if (!result) {
+    // TODO enter tab or two spaces
+    return editor
+  }
+
+  // TODO apply tab completion
   console.log({ result })
   return editor
 }
