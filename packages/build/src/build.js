@@ -1,7 +1,8 @@
-import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
-import path, { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { execa } from 'execa'
+import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { bundleJs } from './bundleJs.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = join(__dirname, '..', '..', '..')
@@ -53,7 +54,7 @@ const getVersion = async () => {
 await rm(dist, { recursive: true, force: true })
 await mkdir(dist, { recursive: true })
 
-await execa(`npx`, ['rollup', '-c'])
+await bundleJs()
 
 const version = await getVersion()
 
