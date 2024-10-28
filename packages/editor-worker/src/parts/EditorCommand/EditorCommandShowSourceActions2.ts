@@ -6,9 +6,8 @@ import * as SourceActionWidgetFactory from '../SourceActionWidgetFactory/SourceA
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const showSourceActions = async (editor: any) => {
-  const uid = editor.uid
   const newStateGenerator = (state: SourceActionState): Promise<SourceActionState> => {
-    return LoadSourceActions.loadSourceActions(uid, state)
+    return LoadSourceActions.loadSourceActions(editor, state)
   }
   return AddWidgetToEditor.addWidgetToEditor(
     WidgetId.SourceAction,
