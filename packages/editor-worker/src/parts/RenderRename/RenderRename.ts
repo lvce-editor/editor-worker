@@ -23,7 +23,16 @@ const renderBounds = {
   },
 }
 
-const render = [renderContent, renderBounds]
+const renderFocus = {
+  isEqual(oldState: RenameState, newState: RenameState) {
+    return oldState.focused === newState.focused
+  },
+  apply(oldState: RenameState, newState: RenameState) {
+    return [/* method */ 'Viewlet.focusSelector', newState.uid, '.RenameInputBox']
+  },
+}
+
+const render = [renderContent, renderBounds, renderFocus]
 
 export const renderFull = (oldState: RenameState, newState: RenameState) => {
   return RenderParts.renderParts(render, oldState, newState)

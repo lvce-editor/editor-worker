@@ -10,7 +10,9 @@ export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Wid
   allCommands.push(['Viewlet.createFunctionalRoot', id, uid])
   allCommands.push(...commands)
   allCommands.push(['Viewlet.send', uid, 'appendWidget'])
-  const focusCommandIndex = allCommands.findIndex((command) => command[2] === 'focus')
+  const focusCommandIndex = allCommands.findIndex((command) => {
+    return command[2] === 'focus' || command[0] === 'Viewlet.focusSelector'
+  })
   // TODO have separate rendering functions, e.g.
   // 1. renderDom
   // 2. renderAriaAnnouncement
