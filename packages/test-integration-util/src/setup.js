@@ -62,6 +62,12 @@ const createWrappedRpc = (rpc) => {
   rpc.Editor.openFind2 = (...params) => {
     return rpc.invoke('Editor.openFind2', ...params)
   }
+  rpc.Editor.openRename = (...params) => {
+    return rpc.invoke('Editor.openRename', ...params)
+  }
+  rpc.Editor.closeRename = (...params) => {
+    return rpc.invoke('Editor.closeRename', ...params)
+  }
   rpc.EditorCompletion ||= {}
   rpc.EditorCompletion.openDetails = (...params) => {
     return rpc.invoke('EditorCompletion.openDetails', ...params)
