@@ -10,6 +10,8 @@ export const render = (widget: RenameWidget) => {
   for (const command of commands) {
     if (command[0] === 'Viewlet.setDom2') {
       wrappedCommands.push(command)
+    } else if (command[0] === 'Viewlet.focusSelector') {
+      wrappedCommands.push(command)
     } else {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
     }

@@ -22,7 +22,7 @@ export const create = (): RenameWidget => {
       focusedIndex: -1,
       oldValue: '',
       newValue: '',
-      focused: false,
+      focused: true,
       x: 0,
       y: 0,
       width: 0,
