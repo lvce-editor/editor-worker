@@ -8,7 +8,7 @@
     "postinstall": "lerna bootstrap --ci",
     "lint": "npx xo .",
     "test": "lerna run test",
-    "type-check": "tsc",
+    "type-check": "tsc -b",
     "build:watch": "./packages/build/node_modules/.bin/esbuild --format=esm --bundle --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=dist/dist/editorWorkerMain.js",
     "build": "node scripts/build.js"
   },

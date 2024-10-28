@@ -28,5 +28,12 @@ export const openRename = async (editor: any) => {
     return latestState
   }
   const fullFocus = true
-  return AddWidgetToEditor.addWidgetToEditor(WidgetId.Rename, FocusKey.Rename, editor, RenameWidgetFactory.create, newStateGenerator, fullFocus)
+  return AddWidgetToEditor.addWidgetToEditor(
+    WidgetId.Rename,
+    FocusKey.FocusEditorRename,
+    editor,
+    RenameWidgetFactory.create,
+    newStateGenerator,
+    fullFocus
+  )
 }
