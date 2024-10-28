@@ -13,6 +13,7 @@ export const getRenameVirtualDom = (state: RenameState): readonly any[] => {
       className: 'InputBox RenameInputBox',
       value: state.newValue,
       childCount: 0,
+      onBlur: 'handleBlur',
     },
   ]
 }
