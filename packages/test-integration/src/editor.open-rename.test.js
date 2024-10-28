@@ -1,10 +1,9 @@
 import * as assert from 'assert'
 
 const id = 0
-export const skip = true
 
-export const test = async (rpc) => {
-  await rpc.invoke('Editor.create', {
+export const test = async ({ Editor }) => {
+  await Editor.create({
     id,
     content: 'abc',
     fontFamily: '',
@@ -17,9 +16,17 @@ export const test = async (rpc) => {
     isMonospaceFont: true,
     charWidth: 9,
   })
-  await rpc.invoke('Editor.cursorSet', id, 0, 3)
-  const commands = await rpc.invoke('Editor.openRename', id)
-  // TODO check commands
-  console.log({ commands })
-  assert.equal(1, 1)
+  await Editor.cursorSet(id, 0, 3)
+  const { commands } = await Editor.openRename(id)
+  assert.equal(commands[5][0], 'Viewlet.setDom2')
+  assert.deepEqual(commands[5][2], [
+    { type: 4, className: 'Viewlet EditorRename', childCount: 1 },
+    {
+      type: 6,
+      className: 'InputBox RenameInputBox',
+      value: 'abc',
+      childCount: 0,
+      onBlur: 'handleBlur',
+    },
+  ])
 }
