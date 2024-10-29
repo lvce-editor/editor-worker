@@ -1,28 +1,13 @@
-const state = {
-  blurListeners: [],
-}
+import * as FocusKey from '../FocusKey/FocusKey.ts'
 
-export const handleBlur = (editor: any) => {
-  // for (const listener of state.blurListeners) {
-  //   listener(editor)
-  // }
-  // TODO save on blur
-  // Command.execute(/* Main.save */ 89)
+export const handleBlur = (editor: any): any => {
+  if (editor.focusKey !== FocusKey.Empty) {
+    return editor
+  }
   const newEditor = {
     ...editor,
     focused: false,
+    focusKey: FocusKey.Empty,
   }
   return newEditor
-}
-
-// @ts-ignore
-const registerListener = (fn) => {
-  // @ts-ignore
-  state.blurListeners.push(fn)
-}
-
-// @ts-ignore
-const removeListener = (fn) => {
-  // @ts-ignore
-  state.blurListeners.splice(state.blurListeners.indexOf(fn), 1)
 }
