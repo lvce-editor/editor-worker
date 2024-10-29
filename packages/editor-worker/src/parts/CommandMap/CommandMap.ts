@@ -123,6 +123,7 @@ import * as EditorCompletionToggleDetails from '../EditorCompletionToggleDetails
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 import * as EditorRenameHandleBlur from '../EditorRenameHandleBlur/EditorRenameHandleBlur.ts'
+import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as FindWidgetReplaceAll from '../FindWidgetReplaceAll/FindWidgetReplaceAll.ts'
 import * as Font from '../Font/Font.ts'
@@ -289,6 +290,7 @@ export const commandMap = {
   'EditorCompletion.selectIndex': EditorCompletionSelectIndex.selectIndex,
   'EditorCompletion.toggleDetails': EditorCompletionToggleDetails.toggleDetails,
   'EditorRename.handleBlur': EditorRenameHandleBlur.handleBlur,
+  'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
   'FindWidget.close': FindWidget.close,
   'FindWidget.focusCloseButton': FindWidget.focusCloseButton,
   'FindWidget.focusFind': FindWidget.focusFind,
