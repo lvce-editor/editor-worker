@@ -96,6 +96,10 @@ const createWrappedRpc = (rpc) => {
   rpc.EditorCompletion.focusFirst = (...params) => {
     return rpc.invoke('EditorCompletion.focusFirst', ...params)
   }
+  rpc.EditorSourceActions ||= {}
+  rpc.EditorSourceActions.focusNext = (...params) => {
+    return rpc.invoke('EditorSourceActions.focusNext', ...params)
+  }
   return rpc
 }
 
