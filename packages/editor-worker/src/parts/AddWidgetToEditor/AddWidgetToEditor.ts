@@ -32,10 +32,12 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
   } else {
     await SetAdditionalFocus.setAdditionalFocus(focusKey)
   }
+  const newFocus = fullFocus ? false : true
   const newEditor = {
     ...editor,
     widgets: newWidgets,
     focusKey,
+    focused: newFocus,
   }
   return newEditor
 }
