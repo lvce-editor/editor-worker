@@ -74,6 +74,9 @@ const createWrappedRpc = (rpc) => {
   rpc.Editor.deleteCharacterRight = (...params) => {
     return rpc.invoke('Editor.deleteCharacterRight', ...params)
   }
+  rpc.Editor.showSourceActions = (...params) => {
+    return rpc.invoke('Editor.showSourceActions', ...params)
+  }
   rpc.Editor.getSelections = (...params) => {
     return rpc.invoke('Editor.getSelections', ...params)
   }
