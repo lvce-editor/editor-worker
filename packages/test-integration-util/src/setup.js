@@ -74,6 +74,9 @@ const createWrappedRpc = (rpc) => {
   rpc.Editor.deleteCharacterRight = (...params) => {
     return rpc.invoke('Editor.deleteCharacterRight', ...params)
   }
+  rpc.Editor.showSourceActions = (...params) => {
+    return rpc.invoke('Editor.showSourceActions', ...params)
+  }
   rpc.Editor.getSelections = (...params) => {
     return rpc.invoke('Editor.getSelections', ...params)
   }
@@ -96,6 +99,10 @@ const createWrappedRpc = (rpc) => {
   rpc.EditorCompletion.focusFirst = (...params) => {
     return rpc.invoke('EditorCompletion.focusFirst', ...params)
   }
+  rpc.EditorSourceActions ||= {}
+  rpc.EditorSourceActions.focusNext = (...params) => {
+    return rpc.invoke('EditorSourceActions.focusNext', ...params)
+  }
   return rpc
 }
 
@@ -115,6 +122,9 @@ export const setup = async () => {
     },
     'Editor.setSelections'() {},
     'ExtensionHostManagement.activateByEvent'() {},
+    'GetEditorSourceActions.getEditorSourceActions'() {
+      return []
+    },
     'Focus.setAdditionalFocus'() {},
     'Focus.setFocus'() {},
     'Viewlet.openWidget'() {},
