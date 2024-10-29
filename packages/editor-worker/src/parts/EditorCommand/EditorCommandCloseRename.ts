@@ -14,6 +14,7 @@ export const closeRename = (editor: any) => {
   const newWidgets = [...widgets.slice(0, renameWidgetIndex), ...widgets.slice(renameWidgetIndex + 1)]
   return {
     ...editor,
+    focused: true,
     widgets: newWidgets,
   }
 }

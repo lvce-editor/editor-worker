@@ -35,6 +35,7 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
   const newEditor = {
     ...editor,
     widgets: newWidgets,
+    focusKey,
   }
   return newEditor
 }

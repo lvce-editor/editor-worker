@@ -5,6 +5,7 @@ import * as EditorState from '../Editors/Editors.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
+import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 
 const emptyEditor = {
@@ -117,6 +118,7 @@ export const createEditor = async ({
     uid: id,
     id,
     widgets: [],
+    focusKey: FocusKey.Empty,
   }
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds(editor, x, y, width, height, 9)
