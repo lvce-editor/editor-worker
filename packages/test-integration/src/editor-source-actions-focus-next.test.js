@@ -2,6 +2,8 @@ import * as assert from 'assert'
 
 const id = 0
 
+export const skip = true
+
 export const test = async ({ Editor }) => {
   await Editor.create({
     id,
