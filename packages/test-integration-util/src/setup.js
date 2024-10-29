@@ -77,6 +77,9 @@ const createWrappedRpc = (rpc) => {
   rpc.Editor.getSelections = (...params) => {
     return rpc.invoke('Editor.getSelections', ...params)
   }
+  rpc.Editor.deleteWordLeft = (...params) => {
+    return rpc.invoke('Editor.deleteWordLeft', ...params)
+  }
   rpc.Editor.getText = (...params) => {
     return rpc.invoke('Editor.getText', ...params)
   }
