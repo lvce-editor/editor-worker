@@ -3,6 +3,7 @@ import * as EditorCommandApplyEdit from '../EditorCommand/EditorCommandApplyEdit
 import * as ReplaceRange from '../EditorCommand/EditorCommandReplaceRange.ts'
 import * as EditorCompletionState from '../EditorCompletionState/EditorCompletionState.ts'
 import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
+import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const getEdits = async (editor: any, completionItem: any) => {
@@ -21,10 +22,6 @@ const getEdits = async (editor: any, completionItem: any) => {
   return changes
 }
 
-const isCompletion = (widget: any) => {
-  return widget.id === WidgetId.Completion
-}
-
 const select = async (editor: any, completionItem: any) => {
   const changes = await getEdits(editor, completionItem)
   const index = editor.widgets
@@ -40,8 +37,7 @@ const select = async (editor: any, completionItem: any) => {
   // TODO apply edit in editor worker instead of asking renderer worker
   // await RendererWorker.invoke('Viewlet.dispose', state.uid)
   const { widgets } = editor
-  const completionWidgetIndex = editor.widgets.findIndex(isCompletion)
-  const newWidgets = [...widgets.slice(0, completionWidgetIndex), ...widgets.slice(completionWidgetIndex + 1)]
+  const newWidgets = RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.Completion)
   const intermediateEditor = await EditorCommandApplyEdit.applyEdit(editor, changes)
   return {
     ...intermediateEditor,

@@ -1,3 +1,4 @@
+import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const isCompletionWidget = (widget: any) => {
@@ -10,7 +11,7 @@ export const closeCompletion = (editor: any) => {
   if (completionWidgetIndex === -1) {
     return editor
   }
-  const newWidgets = [...widgets.slice(0, completionWidgetIndex), ...widgets.slice(completionWidgetIndex + 1)]
+  const newWidgets = RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.Completion)
   return {
     ...editor,
     widgets: newWidgets,

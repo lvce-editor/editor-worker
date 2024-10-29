@@ -1,4 +1,5 @@
 import * as WidgetId from '../WidgetId/WidgetId.ts'
+import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 
 // TODO duplicate code
 const isRenameWidget = (widget: any) => {
@@ -11,7 +12,7 @@ export const closeRename = (editor: any) => {
   if (renameWidgetIndex === -1) {
     return editor
   }
-  const newWidgets = [...widgets.slice(0, renameWidgetIndex), ...widgets.slice(renameWidgetIndex + 1)]
+  const newWidgets = RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.Rename)
   return {
     ...editor,
     focused: true,
