@@ -19,5 +19,5 @@ export const test = async ({ Editor, EditorRename }) => {
   await Editor.cursorSet(id, 0, 3)
   await Editor.openRename(id)
   const { commands } = await Editor.closeRename(id)
-  assert.equal(commands[4][2], 'dispose')
+  assert.equal(commands[5][2], 'dispose')
 }

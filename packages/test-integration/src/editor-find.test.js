@@ -18,7 +18,7 @@ export const test = async (rpc) => {
   })
   await rpc.invoke('Editor.cursorSet', id, 0, 1)
   const { commands } = await rpc.invoke('Editor.openFind', id)
-  assert.deepEqual(commands[5][2], [
+  assert.deepEqual(commands[6][2], [
     {
       type: 4,
       className: 'Viewlet ViewletFind ViewletFindWidget FindWidget',
