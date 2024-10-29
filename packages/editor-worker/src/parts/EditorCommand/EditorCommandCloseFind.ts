@@ -1,4 +1,5 @@
 import * as WidgetId from '../WidgetId/WidgetId.ts'
+import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 
 const isMatchingWidget = (widget: any) => {
   return widget.id === WidgetId.Find
@@ -10,7 +11,7 @@ export const closeFind = (editor: any) => {
   if (index === -1) {
     return editor
   }
-  const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
+  const newWidgets = RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.Find)
   return {
     ...editor,
     widgets: newWidgets,
