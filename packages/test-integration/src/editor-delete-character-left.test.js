@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 
-export const test = async (rpc) => {
-  await rpc.invoke('Editor.create', {
+export const test = async ({ Editor }) => {
+  await Editor.create({
     id: 0,
     content: 'abc',
     fontFamily: '',
@@ -14,10 +14,10 @@ export const test = async (rpc) => {
     isMonospaceFont: true,
     charWidth: 9,
   })
-  await rpc.invoke('Editor.cursorSet', 0, 0, 1)
-  await rpc.invoke('Editor.deleteCharacterLeft', 0)
-  const selections = await rpc.invoke('Editor.getSelections', 0)
+  await Editor.cursorSet(0, 0, 1)
+  await Editor.deleteCharacterLeft(0)
+  const selections = await Editor.getSelections(0)
   assert.deepEqual(selections, new Uint32Array([0, 0, 0, 0]))
-  const text = await rpc.invoke('Editor.getText', 0)
+  const text = await Editor.getText(0)
   assert.deepEqual(text, 'bc')
 }

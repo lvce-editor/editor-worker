@@ -68,6 +68,18 @@ const createWrappedRpc = (rpc) => {
   rpc.Editor.closeRename = (...params) => {
     return rpc.invoke('Editor.closeRename', ...params)
   }
+  rpc.Editor.deleteCharacterLeft = (...params) => {
+    return rpc.invoke('Editor.deleteCharacterLeft', ...params)
+  }
+  rpc.Editor.deleteCharacterRight = (...params) => {
+    return rpc.invoke('Editor.deleteCharacterRight', ...params)
+  }
+  rpc.Editor.getSelections = (...params) => {
+    return rpc.invoke('Editor.getSelections', ...params)
+  }
+  rpc.Editor.getText = (...params) => {
+    return rpc.invoke('Editor.getText', ...params)
+  }
   rpc.EditorCompletion ||= {}
   rpc.EditorCompletion.openDetails = (...params) => {
     return rpc.invoke('EditorCompletion.openDetails', ...params)
