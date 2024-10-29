@@ -122,6 +122,9 @@ export const setup = async () => {
     },
     'Editor.setSelections'() {},
     'ExtensionHostManagement.activateByEvent'() {},
+    'GetEditorSourceActions.getEditorSourceActions'() {
+      return []
+    },
     'Focus.setAdditionalFocus'() {},
     'Focus.setFocus'() {},
     'Viewlet.openWidget'() {},
