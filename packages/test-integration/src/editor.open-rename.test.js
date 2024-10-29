@@ -18,8 +18,8 @@ export const test = async ({ Editor }) => {
   })
   await Editor.cursorSet(id, 0, 3)
   const { commands } = await Editor.openRename(id)
-  assert.equal(commands[5][0], 'Viewlet.setDom2')
-  assert.deepEqual(commands[5][2], [
+  assert.equal(commands[6][0], 'Viewlet.setDom2')
+  assert.deepEqual(commands[6][2], [
     { type: 4, className: 'Viewlet EditorRename', childCount: 1 },
     {
       type: 6,

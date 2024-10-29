@@ -19,8 +19,8 @@ export const test = async (rpc) => {
   await rpc.invoke('Editor.cursorSet', id, 0, 0)
   await rpc.invoke('Editor.selectWord', id, 0, 0)
   const response = await rpc.invoke('Editor.openFind2', id)
-  assert.strictEqual(response.commands[4][0], 'Viewlet.createFunctionalRoot')
-  assert.deepEqual(response.commands[5][2], [
+  assert.strictEqual(response.commands[5][0], 'Viewlet.createFunctionalRoot')
+  assert.deepEqual(response.commands[6][2], [
     {
       type: 4,
       className: 'Viewlet ViewletFind ViewletFindWidget FindWidget',
