@@ -1,13 +1,14 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as FindStrings from '../FindStrings/FindStrings.ts'
+import type { FindWidgetButton } from '../FindWidgetButton/FindWidgetButton.ts'
 import * as GetFindMatchCountClassName from '../GetFindMatchCountClassName/GetFindMatchCountClassName.ts'
 import * as GetIconButtonVirtualDom from '../GetIconButtonVirtualDom/GetIconButtonVirtualDom.ts'
 import * as GetSearchFieldVirtualDom from '../GetSearchFieldVirtualDom/GetSearchFieldVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
-export const getFindWidgetFindVirtualDom = (matchCountText: string, buttons: any, matchCount: number, value: string) => {
+export const getFindWidgetFindVirtualDom = (matchCountText: string, buttons: readonly FindWidgetButton[], matchCount: number, value: string) => {
   const dom = []
   dom.push({
     type: VirtualDomElements.Div,
