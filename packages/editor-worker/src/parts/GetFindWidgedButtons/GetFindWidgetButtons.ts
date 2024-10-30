@@ -5,19 +5,19 @@ import type { FindWidgetButtons } from '../FindWidgetButtons/FindWidgetButtons.t
 import * as Icon from '../Icon/Icon.ts'
 import * as Names from '../Names/Names.ts'
 
-export const getFindWidgetButtons = (buttonsEnabled: boolean): FindWidgetButtons => {
+export const getFindWidgetButtons = (findButtonsEnabled: boolean, replaceButtonsEnabled: boolean): FindWidgetButtons => {
   const findButtons: readonly FindWidgetButton[] = [
     {
       label: FindStrings.previousMatch(),
       icon: Icon.ArrowUp,
-      disabled: !buttonsEnabled,
+      disabled: !findButtonsEnabled,
       onClick: DomEventListenerFunctions.HandleClickPreviousMatch,
       name: Names.FocusPrevious,
     },
     {
       label: FindStrings.nextMatch(),
       icon: Icon.ArrowDown,
-      disabled: !buttonsEnabled,
+      disabled: !findButtonsEnabled,
       onClick: DomEventListenerFunctions.HandleClickNextMatch,
       name: Names.FocusNext,
     },
@@ -33,14 +33,14 @@ export const getFindWidgetButtons = (buttonsEnabled: boolean): FindWidgetButtons
     {
       label: FindStrings.replace(),
       icon: Icon.Replace,
-      disabled: !buttonsEnabled,
+      disabled: !replaceButtonsEnabled,
       onClick: DomEventListenerFunctions.HandleClickReplace,
       name: Names.Replace,
     },
     {
       label: FindStrings.replaceAll(),
       icon: Icon.ReplaceAll,
-      disabled: !buttonsEnabled,
+      disabled: !replaceButtonsEnabled,
       onClick: DomEventListenerFunctions.HandleClickReplaceAll,
       name: Names.ReplaceAll,
     },
