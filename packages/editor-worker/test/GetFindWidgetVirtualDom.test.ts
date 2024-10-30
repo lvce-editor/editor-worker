@@ -1,30 +1,34 @@
 import { expect, test } from '@jest/globals'
 import * as GetFindWidgetVirtualDom from '../src/parts/GetFindWidgetVirtualDom/GetFindWidgetVirtualDom.ts'
+import { FindWidgetButton } from '../src/parts/FindWidgetButton/FindWidgetButton.ts'
 
 test('getFindWidgetVirtualDom', () => {
   const matchCountText = '1 of 3'
   const replaceExpanded = false
-  const buttons = [
+  const buttons: readonly FindWidgetButton[] = [
     {
       label: 'Previous Match',
       icon: 'ArrowUp',
       disabled: false,
       onClick: 'handleClickPreviousMatch',
+      name: 'PreviousMatch',
     },
     {
       label: 'Next Match',
       icon: 'ArrowDown',
       disabled: false,
       onClick: 'handleClickNextMatch',
+      name: 'NextMatch',
     },
     {
       label: 'Close',
       icon: 'Close',
       disabled: false,
       onClick: 'handleClickClose',
+      name: 'Close',
     },
   ]
-  const replaceButtons: any = []
+  const replaceButtons: readonly FindWidgetButton[] = []
   const matchCase = false
   const matchWholeWord = false
   const useRegularExpression = false
@@ -116,6 +120,7 @@ test('getFindWidgetVirtualDom', () => {
       title: 'Previous Match',
       type: 1,
       onClick: 'handleClickPreviousMatch',
+      name: 'PreviousMatch',
     },
     {
       childCount: 0,
@@ -131,6 +136,7 @@ test('getFindWidgetVirtualDom', () => {
       title: 'Next Match',
       type: 1,
       onClick: 'handleClickNextMatch',
+      name: 'NextMatch',
     },
     {
       childCount: 0,
@@ -146,6 +152,7 @@ test('getFindWidgetVirtualDom', () => {
       title: 'Close',
       type: 1,
       onClick: 'handleClickClose',
+      name: 'Close',
     },
     {
       childCount: 0,

@@ -1,5 +1,6 @@
 import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
+import type { FindWidgetButton } from '../FindWidgetButton/FindWidgetButton.ts'
 import * as GetFindWidgetFindVirtualDom from '../GetFindWidgetFindVirtualDom/GetFindWidgetFindVirtualDom.ts'
 import * as GetFindWidgetReplaceVirtualDom from '../GetFindWidgetReplaceVirtualDom/GetFindWidgetReplaceVirtualDom.ts'
 import * as GetSearchToggleButtonVirtualDom from '../GetSearchToggleButtonVirtualDom/GetSearchToggleButtonVirtualDom.ts'
@@ -8,8 +9,8 @@ import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts
 export const getFindWidgetVirtualDom = (
   matchCountText: string,
   replaceExpanded: boolean,
-  findButtons: any,
-  replaceButtons: any,
+  findButtons: readonly FindWidgetButton[],
+  replaceButtons: readonly FindWidgetButton[],
   matchCase: any,
   matchWholeWord: any,
   useRegularExpression: any,

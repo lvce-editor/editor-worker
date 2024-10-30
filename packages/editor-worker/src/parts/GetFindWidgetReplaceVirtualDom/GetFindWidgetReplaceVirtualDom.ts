@@ -1,10 +1,11 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as FindStrings from '../FindStrings/FindStrings.ts'
+import type { FindWidgetButton } from '../FindWidgetButton/FindWidgetButton.ts'
 import * as GetIconButtonVirtualDom from '../GetIconButtonVirtualDom/GetIconButtonVirtualDom.ts'
 import * as GetSearchFieldVirtualDom from '../GetSearchFieldVirtualDom/GetSearchFieldVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
-export const getFindWidgetReplaceVirtualDom = (replaceExpanded: boolean, replaceButtons: any) => {
+export const getFindWidgetReplaceVirtualDom = (replaceExpanded: boolean, replaceButtons: readonly FindWidgetButton[]) => {
   const dom = []
   if (replaceExpanded) {
     dom.push(
