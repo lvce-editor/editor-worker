@@ -31,8 +31,18 @@ export const test = async ({ Editor }) => {
     {
       type: 4,
       className: 'EditorSourceActionsList',
-      childCount: 0,
+      childCount: 1,
       onClick: 'handleClick',
     },
+    {
+      type: 4,
+      className: 'SourceActionItem SourceActionItemFocused',
+      childCount: 2,
+    },
+    {
+      type: 4,
+      className: 'SourceActionIcon MaskIcon MaskIconSymbolFile',
+    },
+    { type: 12, text: 'a', childCount: 0 },
   ])
 }
