@@ -11,6 +11,7 @@ const UiStrings = {
   SourceAction: 'Source Action',
   OrganizeImports: 'Organize Imports',
   SortImports: 'Sort Imports',
+  NoCodeActionsAvailable: 'No code actions available',
 }
 
 export const goToDefinition = () => {
@@ -55,4 +56,8 @@ export const organizeImports = () => {
 
 export const sortImports = () => {
   return I18nString.i18nString(UiStrings.SortImports)
+}
+
+export const noCodeActionsAvailable = () => {
+  return I18nString.i18nString(UiStrings.NoCodeActionsAvailable)
 }
