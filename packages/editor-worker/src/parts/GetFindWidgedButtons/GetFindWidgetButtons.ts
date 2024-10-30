@@ -1,3 +1,4 @@
+import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as FindStrings from '../FindStrings/FindStrings.ts'
 import * as Icon from '../Icon/Icon.ts'
 import * as Names from '../Names/Names.ts'
@@ -8,21 +9,21 @@ export const getFindWidgetButtons = (buttonsEnabled: boolean) => {
       label: FindStrings.previousMatch(),
       icon: Icon.ArrowUp,
       disabled: !buttonsEnabled,
-      onClick: 'handleClickPreviousMatch',
+      onClick: DomEventListenerFunctions.HandleClickPreviousMatch,
       name: Names.FocusPrevious,
     },
     {
       label: FindStrings.nextMatch(),
       icon: Icon.ArrowDown,
       disabled: !buttonsEnabled,
-      onClick: 'handleClickNextMatch',
+      onClick: DomEventListenerFunctions.HandleClickNextMatch,
       name: Names.FocusNext,
     },
     {
       label: FindStrings.close(),
       icon: Icon.Close,
       disabled: false,
-      onClick: 'handleClickClose',
+      onClick: DomEventListenerFunctions.HandleClickClose,
       name: Names.Close,
     },
   ]
@@ -31,14 +32,14 @@ export const getFindWidgetButtons = (buttonsEnabled: boolean) => {
       label: FindStrings.replace(),
       icon: Icon.Replace,
       disabled: !buttonsEnabled,
-      onClick: 'handleClickReplace',
+      onClick: DomEventListenerFunctions.HandleClickReplace,
       name: Names.Replace,
     },
     {
       label: FindStrings.replaceAll(),
       icon: Icon.ReplaceAll,
       disabled: !buttonsEnabled,
-      onClick: 'handleClickReplaceAll',
+      onClick: DomEventListenerFunctions.HandleClickReplaceAll,
       name: Names.ReplaceAll,
     },
   ]
