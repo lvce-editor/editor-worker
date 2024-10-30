@@ -2,7 +2,7 @@ import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor
 
 const getHeight = (sourceActionCount: number): number => {
   if (sourceActionCount === 0) {
-    return 30
+    return 45
   }
   return 150
 }
