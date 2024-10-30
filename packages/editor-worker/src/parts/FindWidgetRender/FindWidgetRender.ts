@@ -36,7 +36,8 @@ const renderDetails = {
       newState.matchCase,
       newState.matchWholeWord,
       newState.useRegularExpression,
-      newState.matchCount
+      newState.matchCount,
+      newState.value
     )
     return ['Viewlet.setDom2', dom]
   },
