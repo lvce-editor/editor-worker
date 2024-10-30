@@ -123,7 +123,11 @@ export const setup = async () => {
     'Editor.setSelections'() {},
     'ExtensionHostManagement.activateByEvent'() {},
     'GetEditorSourceActions.getEditorSourceActions'() {
-      return []
+      return [
+        {
+          name: 'a',
+        },
+      ]
     },
     'Focus.setAdditionalFocus'() {},
     'Focus.setFocus'() {},
