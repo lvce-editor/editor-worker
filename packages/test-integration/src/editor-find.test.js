@@ -58,7 +58,7 @@ export const test = async (rpc) => {
       childCount: 0,
     },
     { type: 4, className: 'SearchFieldButtons', childCount: 0 },
-    { type: 4, className: 'FindWidgetMatchCount FindWidgetMatchCountEmpty', childCount: 1 },
+    { type: 4, className: 'FindWidgetMatchCount', childCount: 1 },
     { type: 12, text: 'No Results', childCount: 0 },
     {
       type: 1,
