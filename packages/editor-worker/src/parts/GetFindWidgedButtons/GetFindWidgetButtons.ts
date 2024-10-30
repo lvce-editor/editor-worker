@@ -1,10 +1,16 @@
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as FindStrings from '../FindStrings/FindStrings.ts'
+import type { FindWidgetButton } from '../FindWidgetButton/FindWidgetButton.ts'
 import * as Icon from '../Icon/Icon.ts'
 import * as Names from '../Names/Names.ts'
 
-export const getFindWidgetButtons = (buttonsEnabled: boolean) => {
-  const findButtons = [
+export const getFindWidgetButtons = (
+  buttonsEnabled: boolean
+): {
+  readonly findButtons: readonly FindWidgetButton[]
+  readonly replaceButtons: readonly FindWidgetButton[]
+} => {
+  const findButtons: readonly FindWidgetButton[] = [
     {
       label: FindStrings.previousMatch(),
       icon: Icon.ArrowUp,
