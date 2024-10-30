@@ -1,4 +1,5 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
+import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as FindStrings from '../FindStrings/FindStrings.ts'
 import * as GetIconButtonVirtualDom from '../GetIconButtonVirtualDom/GetIconButtonVirtualDom.ts'
 import * as GetSearchFieldVirtualDom from '../GetSearchFieldVirtualDom/GetSearchFieldVirtualDom.ts'
@@ -16,10 +17,10 @@ export const getFindWidgetReplaceVirtualDom = (replaceExpanded: boolean, replace
       ...GetSearchFieldVirtualDom.getSearchFieldVirtualDom(
         'replace-value',
         FindStrings.replace(),
-        'handleReplaceInput',
+        DomEventListenerFunctions.HandleReplaceInput,
         [],
         [],
-        'handleReplaceFocus'
+        DomEventListenerFunctions.HandleReplaceFocus
       ),
       ...replaceButtons.flatMap(GetIconButtonVirtualDom.getIconButtonVirtualDom)
     )
