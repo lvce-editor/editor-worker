@@ -7,7 +7,7 @@ import * as GetSearchFieldVirtualDom from '../GetSearchFieldVirtualDom/GetSearch
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
-export const getFindWidgetFindVirtualDom = (matchCountText: string, buttons: any, matchCount: number) => {
+export const getFindWidgetFindVirtualDom = (matchCountText: string, buttons: any, matchCount: number, value: string) => {
   const dom = []
   dom.push({
     type: VirtualDomElements.Div,
@@ -24,7 +24,7 @@ export const getFindWidgetFindVirtualDom = (matchCountText: string, buttons: any
       DomEventListenerFunctions.HandleFocus
     )
   )
-  const findClassName = GetFindMatchCountClassName.getFindMatchCountClassName(matchCount)
+  const findClassName = GetFindMatchCountClassName.getFindMatchCountClassName(matchCount, value)
   dom.push(
     {
       type: VirtualDomElements.Div,
