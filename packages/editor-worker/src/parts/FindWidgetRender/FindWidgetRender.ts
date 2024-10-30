@@ -22,7 +22,8 @@ const renderDetails = {
     return (
       oldState.matchIndex === newState.matchIndex &&
       oldState.matchCount === newState.matchCount &&
-      oldState.replaceExpanded === newState.replaceExpanded
+      oldState.replaceExpanded === newState.replaceExpanded &&
+      oldState.value === newState.value
     )
   },
   apply(oldState: FindWidgetState, newState: FindWidgetState) {
