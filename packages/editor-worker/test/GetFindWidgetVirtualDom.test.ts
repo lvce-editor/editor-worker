@@ -28,6 +28,7 @@ test('getFindWidgetVirtualDom', () => {
   const matchCase = false
   const matchWholeWord = false
   const useRegularExpression = false
+  const matchCount = 3
   const dom = GetFindWidgetVirtualDom.getFindWidgetVirtualDom(
     matchCountText,
     replaceExpanded,
@@ -35,7 +36,8 @@ test('getFindWidgetVirtualDom', () => {
     replaceButtons,
     matchCase,
     matchWholeWord,
-    useRegularExpression
+    useRegularExpression,
+    matchCount
   )
   expect(dom).toEqual([
     {
