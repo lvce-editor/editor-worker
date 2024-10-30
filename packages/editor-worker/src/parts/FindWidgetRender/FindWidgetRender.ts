@@ -35,7 +35,8 @@ const renderDetails = {
       replaceButtons,
       newState.matchCase,
       newState.matchWholeWord,
-      newState.useRegularExpression
+      newState.useRegularExpression,
+      newState.matchCount
     )
     return ['Viewlet.setDom2', dom]
   },
