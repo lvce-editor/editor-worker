@@ -2,12 +2,13 @@
   "name": "@lvce-editor/editor-worker-server",
   "version": "0.0.0-dev",
   "main": "index.js",
+  "type": "module",
   "scripts": {},
   "keywords": [],
   "author": "",
   "license": "MIT",
   "description": "",
   "dependencies": {
-    "@lvce-editor/server": "^0.37.6"
+    "@lvce-editor/server": "^0.37.8"
   }
 }
