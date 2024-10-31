@@ -138,28 +138,25 @@ export const offsetAt = (textDocument: any, positionRowIndex: number, positionCo
 }
 
 export const positionAt = (textDocument: any, offset: number) => {
+  const { lines } = textDocument
   let rowIndex = 0
   let columnIndex = 0
   let currentOffset = 0
-  while (rowIndex < textDocument.lines.length && currentOffset < offset) {
-    textDocument
-    currentOffset += textDocument.lines[rowIndex].length + 1
+
+  while (rowIndex < lines.length && currentOffset < offset) {
+    currentOffset += lines[rowIndex].length + 1
     rowIndex++
   }
 
   if (currentOffset > offset) {
     rowIndex
     rowIndex--
-    currentOffset -= textDocument.lines[rowIndex].length + 1
+    currentOffset -= lines[rowIndex].length + 1
     columnIndex = offset - currentOffset
   } else {
     columnIndex = currentOffset - offset
   }
-  currentOffset
-  offset
-  // for (let i = 0; i < textDocument.lines.length; i++) {
-  // if(currentOffset)
-  // }
+  console.log({ rowIndex, columnIndex })
   // TODO
   return {
     rowIndex,
