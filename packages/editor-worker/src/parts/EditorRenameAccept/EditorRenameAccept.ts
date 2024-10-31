@@ -43,7 +43,7 @@ export const accept = async (editor: any): Promise<any> => {
   const offset = GetOffsetAtCursor.getOffsetAtCursor(editor)
 
   const result = await ExtensionHostRename.executeRenameProvider(editor, offset, child.newValue)
-  const changes = getRenameChanges(editor, result, child.oldValue.length)
+  const changes = getRenameChanges(editor, result)
   console.log({ changes })
   // 1. ask extension host for rename edits
   // 2. apply rename edit across editor (and whole workspace)
