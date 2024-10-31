@@ -2,12 +2,15 @@
   "name": "@lvce-editor/editor-worker-server",
   "version": "0.0.0-dev",
   "main": "index.js",
-  "scripts": {},
+  "type": "module",
+  "scripts": {
+    "postinstall": "node src/postinstall.js"
+  },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "description": "",
   "dependencies": {
-    "@lvce-editor/server": "^0.37.6"
+    "@lvce-editor/server": "^0.37.8"
   }
 }
