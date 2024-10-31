@@ -1,10 +1,18 @@
-// import { exportStatic } from '../../editor-worker/node_modules/@lvce-editor/shared-process/'
+import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
+import { root } from './root.js'
 
-// TODO
-// const { commitHash } = await exportStatic({
-//   extensionPath: 'packages/extension',
-//   testPath: 'packages/e2e',
-//   root,
-// })
+const sharedProcessPath = join(root, 'packages', 'server', 'node_modules', '@lvce-editor', 'shared-process', 'index.js')
 
-// console.log({ commitHash })
+const sharedProcessUrl = pathToFileURL(sharedProcessPath).toString()
+
+const sharedProcess = await import(sharedProcessUrl)
+console.log({ sharedProcess })
+
+const { commitHash } = await sharedProcess.exportStatic({
+  extensionPath: 'packages/extension',
+  testPath: 'packages/e2e',
+  root,
+})
+
+console.log({ commitHash })
