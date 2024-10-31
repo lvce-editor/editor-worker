@@ -1,12 +1,8 @@
 import { createHash } from 'node:crypto'
 import { readdirSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-
-const root = join(__dirname, '..', '..', '..')
+import { join } from 'node:path'
+import { root } from './root.js'
 
 const getPackageLocations = () => {
   const packageLocations = []
