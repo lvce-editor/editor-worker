@@ -10,8 +10,6 @@ const sharedProcess = await import(sharedProcessUrl)
 console.log({ sharedProcess })
 
 const { commitHash } = await sharedProcess.exportStatic({
-  extensionPath: 'packages/extension',
-  testPath: 'packages/e2e',
   root,
 })
 
