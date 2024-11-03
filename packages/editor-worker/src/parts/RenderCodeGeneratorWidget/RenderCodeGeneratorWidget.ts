@@ -1,17 +1,8 @@
-import { CodeGeneratorState } from '../CodeGeneratorState/CodeGeneratorState.ts'
-import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import type { CodeGeneratorState } from '../CodeGeneratorState/CodeGeneratorState.ts'
+import * as GetCodeGeneratorVirtualDom from '../GetCodeGeneratorVirtualDom/GetCodeGeneratorVirtualDom.ts'
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
-const getCodeGeneratorVirtualDom = (state: CodeGeneratorState) => {
-  return [
-    {
-      type: VirtualDomElements.Div,
-      className: 'Viewlet CodeGeneratorWidget',
-      childCount: 0,
-    },
-  ]
-}
-
-export const renderCodeGeneratorWidget = (oldState: CodeGeneratorState, newState: CodeGeneratorState): any => {
-  const dom = getCodeGeneratorVirtualDom(newState)
+export const renderCodeGeneratorWidget = (oldState: CodeGeneratorState, newState: CodeGeneratorState): readonly VirtualDomNode[] => {
+  const dom = GetCodeGeneratorVirtualDom.getCodeGeneratorVirtualDom(newState)
   return dom
 }
