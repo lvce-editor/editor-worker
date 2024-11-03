@@ -12,16 +12,17 @@ const renderContent = {
   },
 }
 
-// const renderBounds = {
-//   isEqual(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
-//     return oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height
-//   },
-//   apply(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
-//     const { x, y, width, height } = newState
-//     return [/* method */ RenderMethod.SetBounds, /* x */ x, /* y */ y, /* width */ width, /* height */ height]
-//   },
-// }
-const render = [renderContent]
+const renderBounds = {
+  isEqual(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
+    return oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height
+  },
+  apply(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
+    const { x, y, width, height } = newState
+    return [/* method */ RenderMethod.SetBounds, /* x */ x, /* y */ y, /* width */ width, /* height */ height]
+  },
+}
+
+const render = [renderContent, renderBounds]
 
 export const renderFull = (oldState: CodeGeneratorState, newState: CodeGeneratorState): readonly any[] => {
   const commands: any[] = []
