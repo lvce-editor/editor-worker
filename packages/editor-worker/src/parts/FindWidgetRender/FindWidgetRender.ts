@@ -41,7 +41,7 @@ const renderDetails = {
       newState.matchCount,
       newState.value
     )
-    return ['Viewlet.setDom2', dom]
+    return [RenderMethod.SetDom2, dom]
   },
 }
 
