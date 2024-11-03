@@ -15,5 +15,6 @@ export const closeFind = (editor: any) => {
   return {
     ...editor,
     widgets: newWidgets,
+    focused: true,
   }
 }
