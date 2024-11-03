@@ -8,6 +8,7 @@ import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
 export const getCodeGeneratorVirtualDom = (state: CodeGeneratorState): readonly VirtualDomNode[] => {
   const escapeToClose = EditorStrings.escapeToClose()
+  const enterCode = EditorStrings.enterCode()
   return [
     {
       type: VirtualDomElements.Div,
@@ -18,6 +19,8 @@ export const getCodeGeneratorVirtualDom = (state: CodeGeneratorState): readonly 
       type: VirtualDomElements.Input,
       className: MergeClassNames.mergeClassNames(ClassNames.CodeGeneratorInput, ClassNames.InputBox),
       childCount: 0,
+      placeholder: enterCode,
+      name: 'CodeGeneratorInput',
     },
     {
       type: VirtualDomElements.Div,

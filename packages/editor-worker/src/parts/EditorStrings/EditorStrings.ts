@@ -13,6 +13,7 @@ const UiStrings = {
   SortImports: 'Sort Imports',
   NoCodeActionsAvailable: 'No code actions available',
   EscapeToClose: 'Escape to close',
+  EnterCode: 'Enter Code',
 }
 
 export const goToDefinition = () => {
@@ -65,4 +66,8 @@ export const noCodeActionsAvailable = () => {
 
 export const escapeToClose = () => {
   return I18nString.i18nString(UiStrings.EscapeToClose)
+}
+
+export const enterCode = () => {
+  return I18nString.i18nString(UiStrings.EnterCode)
 }
