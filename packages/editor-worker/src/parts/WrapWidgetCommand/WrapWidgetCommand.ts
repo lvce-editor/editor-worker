@@ -1,6 +1,6 @@
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 
-export const wrapWidgetCommand = (widgetId: string, fn: any) => {
+export const wrapWidgetCommand = (widgetId: number, fn: any) => {
   const isWidget = (widget: any) => {
     return widget.id === widgetId
   }

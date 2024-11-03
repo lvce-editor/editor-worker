@@ -4,8 +4,10 @@ import * as EditOrigin from '../src/parts/EditOrigin/EditOrigin.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 import * as WidgetRegistry from '../src/parts/WidgetRegistry/WidgetRegistry.ts'
 
+const id = 1
+
 beforeEach(() => {
-  WidgetRegistry.set('test', {
+  WidgetRegistry.set(id, {
     handleEditorType(editor: any, state: any) {
       return {
         ...state,
@@ -31,7 +33,7 @@ test('applyWidgetChanges - delete', () => {
     selections: EditorSelection.fromRange(0, 0, 0, 4),
     widgets: [
       {
-        id: 'test',
+        id: id,
         oldState: {
           updated: false,
         },
@@ -50,7 +52,7 @@ test('applyWidgetChanges - delete', () => {
   ]
   expect(ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toEqual([
     {
-      id: 'test',
+      id,
       oldState: {
         updated: false,
       },

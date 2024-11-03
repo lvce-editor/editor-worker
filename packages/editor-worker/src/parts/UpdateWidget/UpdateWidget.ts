@@ -1,4 +1,4 @@
-export const updateWidget = (editor: any, widgetId: string, newState: any): any => {
+export const updateWidget = (editor: any, widgetId: number, newState: any): any => {
   // TODO avoid closure
   const isWidget = (widget: any) => {
     return widget.id === widgetId

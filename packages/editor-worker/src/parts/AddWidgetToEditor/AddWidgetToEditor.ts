@@ -4,7 +4,7 @@ import * as SetFocus from '../SetFocus/SetFocus.ts'
 import type { Widget } from '../Widget/Widget.ts'
 
 export const addWidgetToEditor = async <K, T extends Widget<K>>(
-  widgetId: string,
+  widgetId: number,
   focusKey: number,
   editor: any,
   factory: () => T,
