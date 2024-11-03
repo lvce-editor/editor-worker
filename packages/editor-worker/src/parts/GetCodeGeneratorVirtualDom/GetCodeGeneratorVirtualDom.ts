@@ -16,8 +16,13 @@ export const getCodeGeneratorVirtualDom = (state: CodeGeneratorState): readonly 
     },
     {
       type: VirtualDomElements.Input,
-      className: ClassNames.CodeGeneratorInput,
+      className: MergeClassNames.mergeClassNames(ClassNames.CodeGeneratorInput, ClassNames.InputBox),
       childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      className: ClassNames.CodeGeneratorMessage,
+      childCount: 1,
     },
     text(escapeToClose),
   ]
