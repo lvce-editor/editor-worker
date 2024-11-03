@@ -5,4 +5,6 @@ export interface CodeGeneratorState {
   readonly y: number
   readonly width: number
   readonly height: number
+  readonly focusSource: number
+  readonly focused: boolean
 }
