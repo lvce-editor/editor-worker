@@ -13,6 +13,7 @@ export const render: WidgetLifeCycleFunction<CodeGenratorWidget> = (widget) => {
     if (command[0] === RenderMethod.SetDom2) {
       wrappedCommands.push(command)
     } else {
+      // @ts-ignore
       wrappedCommands.push(['Viewlet.send', uid, ...command])
     }
   }
