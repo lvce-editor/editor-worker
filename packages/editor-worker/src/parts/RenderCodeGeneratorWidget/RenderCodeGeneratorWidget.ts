@@ -27,7 +27,7 @@ const renderFocus = {
     return oldState.focused === newState.focused && oldState.focusSource === newState.focusSource
   },
   apply(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
-    return [RenderMethod.Focus, newState.focusSource]
+    return [RenderMethod.Focus, '.CodeGeneratorInput', newState.focusSource]
   },
 }
 
