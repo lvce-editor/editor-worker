@@ -135,6 +135,7 @@ import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
 import * as HandleTab from '../HandleTab/HandleTab.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
+import * as EditorCommandOpenCodeGenerator from '../EditorCommand/EditorCommandOpenCodeGenerator.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
@@ -229,6 +230,7 @@ export const commandMap = {
   'Editor.moveSelection': EditorMoveSelection.editorMoveSelection,
   'Editor.moveSelectionPx': EditorMoveSelectionPx.moveSelectionPx,
   'Editor.offsetAt': TextDocument.offsetAt,
+  'Editor.openCodeGenerator': EditorCommandOpenCodeGenerator.openCodeGenerator,
   'Editor.openColorPicker': EditorOpenColorPicker.openColorPicker,
   'Editor.openCompletion': EditorOpenCompletion.openCompletion,
   'Editor.openFind': OpenFind.openFind,
