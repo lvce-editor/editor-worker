@@ -1,6 +1,7 @@
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
-export const getSearchToggleButtonVirtualDom = (replaceExpanded: boolean, onClick = '') => {
+export const getSearchToggleButtonVirtualDom = (replaceExpanded: boolean, onClick = ''): readonly VirtualDomNode[] => {
   return [
     {
       type: VirtualDomElements.Button,

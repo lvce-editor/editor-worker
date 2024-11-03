@@ -3,25 +3,26 @@ import * as GetLineInfosVirtualDom from '../GetLineInfosVirtualDom/GetLineInfosV
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
-const hoverProblemMessage = {
+const hoverProblemMessage: VirtualDomNode = {
   type: VirtualDomElements.Span,
   className: ClassNames.HoverProblemMessage,
   childCount: 1,
 }
 
-const hoverProblemDetail = {
+const hoverProblemDetail: VirtualDomNode = {
   type: VirtualDomElements.Span,
   className: ClassNames.HoverProblemDetail,
   childCount: 1,
 }
 
-const getChildCount = (lineInfos: any, documentation: any, diagnostics: any) => {
+const getChildCount = (lineInfos: any, documentation: any, diagnostics: any): number => {
   return lineInfos.length + documentation ? 1 : 0 + (diagnostics && diagnostics.length > 0) ? 1 : 0
 }
 
-export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnostics: any) => {
-  const dom = []
+export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnostics: any): readonly VirtualDomNode[] => {
+  const dom: VirtualDomNode[] = []
   dom.push({
     type: VirtualDomElements.Div,
     className: 'Viewlet EditorHover',
@@ -46,7 +47,7 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
         className: ClassNames.HoverDisplayString,
         childCount: lineInfos.length,
       },
-      ...lineInfosDom,
+      ...lineInfosDom
     )
   }
 
@@ -57,7 +58,7 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
         className: ClassNames.HoverDocumentation,
         childCount: 1,
       },
-      text(documentation),
+      text(documentation)
     )
   }
 

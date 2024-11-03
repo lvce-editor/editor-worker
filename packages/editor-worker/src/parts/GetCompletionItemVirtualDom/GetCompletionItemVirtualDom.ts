@@ -3,8 +3,9 @@ import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as GetCompletionItemIconVirtualDom from '../GetCompletionItemIconVirtualDom/GetCompletionItemIconVirtualDom.ts'
 import * as GetHighlightedLabelDom from '../GetHighlightedLabelDom/GetHighlightedLabelDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
-export const getCompletionItemVirtualDom = (visibleItem: any) => {
+export const getCompletionItemVirtualDom = (visibleItem: any): readonly VirtualDomNode[] => {
   const { top, label, symbolName, highlights, focused, deprecated, fileIcon } = visibleItem
   let className = ClassNames.EditorCompletionItem
   if (focused) {
