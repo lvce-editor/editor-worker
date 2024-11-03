@@ -26,7 +26,7 @@ const renderContent = {
   },
   apply(oldState: ColorPickerState, newState: ColorPickerState) {
     const dom: any[] = GetColorPickerVirtualDom.getColorPickerVirtualDom()
-    return ['Viewlet.setDom2', newState.uid, dom]
+    return [RenderMethod.SetDom2, newState.uid, dom]
   },
 }
 

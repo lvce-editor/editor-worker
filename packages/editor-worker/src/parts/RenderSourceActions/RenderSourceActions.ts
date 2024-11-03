@@ -1,5 +1,6 @@
 import * as GetSourceActionsVirtualDom from '../GetSourceActionsVirtualDom/GetSourceActionsVirtualDom.ts'
 import * as GetVisibleSourceActions from '../GetVisibleSourceActions/GetVisibleSourceActions.ts'
+import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 
 const renderSourceActions = {
@@ -9,7 +10,7 @@ const renderSourceActions = {
   apply(oldStatem: SourceActionState, newState: SourceActionState) {
     const visible = GetVisibleSourceActions.getVisibleSourceActions(newState.sourceActions, newState.focusedIndex)
     const dom = GetSourceActionsVirtualDom.getSourceActionsVirtualDom(visible)
-    return ['Viewlet.setDom2', newState.uid, dom]
+    return [RenderMethod.SetDom2, newState.uid, dom]
   },
 }
 
@@ -18,7 +19,7 @@ const renderBounds = {
     return oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height
   },
   apply(oldState: SourceActionState, newState: SourceActionState) {
-    return ['setBounds', newState.x, newState.y, newState.width, newState.height]
+    return [RenderMethod.SetBounds, newState.x, newState.y, newState.width, newState.height]
   },
 }
 

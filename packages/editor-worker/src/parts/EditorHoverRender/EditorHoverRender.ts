@@ -10,7 +10,7 @@ const renderHoverDom = {
   },
   apply(oldState: HoverState, newState: HoverState) {
     const dom = GetHoverVirtualDom.getHoverVirtualDom(newState.lineInfos, newState.documentation, newState.diagnostics)
-    return [/* method */ 'Viewlet.setDom2', dom]
+    return [/* method */ RenderMethod.SetDom2, dom]
   },
 }
 

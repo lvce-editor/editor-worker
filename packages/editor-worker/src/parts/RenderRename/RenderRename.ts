@@ -9,7 +9,7 @@ const renderContent = {
   },
   apply(oldState: RenameState, newState: RenameState) {
     const dom: readonly any[] = GetRenameVirtualDom.getRenameVirtualDom(newState)
-    return ['Viewlet.setDom2', newState.uid, dom]
+    return [RenderMethod.SetDom2, newState.uid, dom]
   },
 }
 

@@ -5,13 +5,14 @@ import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/E
 import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
+import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
 export const render = (widget: CompletionDetailWidget) => {
   const commands: readonly any[] = EditorCompletionDetailRender.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
   const uid = widget.newState.uid
   for (const command of commands) {
-    if (command[0] === 'Viewlet.setDom2') {
+    if (command[0] === RenderMethod.SetDom2) {
       wrappedCommands.push(command)
     } else {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
