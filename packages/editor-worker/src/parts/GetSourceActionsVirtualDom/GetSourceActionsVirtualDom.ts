@@ -1,8 +1,9 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as EditorStrings from '../EditorStrings/EditorStrings.ts'
-import * as GetSourceActionListItemVirtualDom from '../GetSourceActionListItemVirtualDom/GetSourceActionListItemVirtualDom.ts'
 import * as GetEmptySourceActionsVirtualDom from '../GetEmptySourceActionsVirtualDom/GetEmptySourceActionsVirtualDom.ts'
+import * as GetSourceActionListItemVirtualDom from '../GetSourceActionListItemVirtualDom/GetSourceActionListItemVirtualDom.ts'
+import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
@@ -13,7 +14,7 @@ export const getSourceActionsVirtualDom = (sourceActions: any[]) => {
   const dom: any[] = [
     {
       type: VirtualDomElements.Div,
-      className: 'Viewlet EditorSourceActions',
+      className: MergeClassNames.mergeClassNames(ClassNames.Viewlet, ClassNames.EditorSourceActions),
       tabIndex: -1,
       childCount: 2,
       onFocusIn: DomEventListenerFunctions.HandleFocusIn,
