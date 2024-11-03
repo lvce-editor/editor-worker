@@ -141,8 +141,10 @@ import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as EditorCommandCloseCodeGenerator from '../EditorCommand/EditorCommandCloseCodeGenerator.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
+import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
 
 export const commandMap = {
+  'CodeGenerator.accept': CodeGeneratorAccept.codeGeneratorAccept,
   'ColorPicker.handleSliderPointerDown': ColorPicker.handleSliderPointerDown,
   'ColorPicker.handleSliderPointerMove': ColorPicker.handleSliderPointerMove,
   'ColorPicker.loadContent': ColorPicker.loadContent,
