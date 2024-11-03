@@ -61,7 +61,7 @@ const renderFocus = {
   },
   apply(oldState: FindWidgetState, newState: FindWidgetState) {
     const key = GetFindWidgetFocusSelector.getFindWidgetFocusSelector(newState.focus)
-    return ['focus', key, newState.focusSource]
+    return [RenderMethod.Focus, key, newState.focusSource]
   },
 }
 // const getAriaLabel = (state: FindWidgetState) => {
