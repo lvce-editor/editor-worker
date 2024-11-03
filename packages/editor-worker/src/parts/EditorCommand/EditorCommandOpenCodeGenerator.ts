@@ -15,7 +15,7 @@ const newStateGenerator = async (state: CodeGeneratorState): Promise<CodeGenerat
   return latestState
 }
 
-export const openCodeGenerator = async (editor: any): any => {
+export const openCodeGenerator = async (editor: any): Promise<any> => {
   const fullFocus = true
   return AddWidgetToEditor.addWidgetToEditor(
     WidgetId.CodeGenerator,
