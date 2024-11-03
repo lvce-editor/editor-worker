@@ -5,6 +5,7 @@ import * as GetFindWidgetFindVirtualDom from '../GetFindWidgetFindVirtualDom/Get
 import * as GetFindWidgetReplaceVirtualDom from '../GetFindWidgetReplaceVirtualDom/GetFindWidgetReplaceVirtualDom.ts'
 import * as GetSearchToggleButtonVirtualDom from '../GetSearchToggleButtonVirtualDom/GetSearchToggleButtonVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
 export const getFindWidgetVirtualDom = (
   matchCountText: string,
@@ -16,8 +17,8 @@ export const getFindWidgetVirtualDom = (
   useRegularExpression: any,
   matchCount: number,
   value: string
-) => {
-  const dom = []
+): readonly VirtualDomNode[] => {
+  const dom: VirtualDomNode[] = []
   dom.push({
     type: VirtualDomElements.Div,
     className: 'Viewlet ViewletFind ViewletFindWidget FindWidget',
