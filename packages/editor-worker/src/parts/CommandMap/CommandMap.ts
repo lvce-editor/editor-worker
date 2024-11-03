@@ -138,6 +138,7 @@ import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as EditorCommandOpenCodeGenerator from '../EditorCommand/EditorCommandOpenCodeGenerator.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
+import * as EditorCommandCloseCodeGenerator from '../EditorCommand/EditorCommandCloseCodeGenerator.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
 
@@ -150,6 +151,7 @@ export const commandMap = {
   'Editor.applyEdit': EditorApplyEdit.applyEdit,
   'Editor.braceCompletion': EditorBraceCompletion.braceCompletion,
   'Editor.cancelSelection': CancelSelection.cancelSelection,
+  'Editor.closeCodeGenerator': EditorCommandCloseCodeGenerator.closeCodeGenerator,
   'Editor.closeCompletion': EditorCloseCompletion.closeCompletion,
   'Editor.closeFind': EditorCommandCloseFind.closeFind,
   'Editor.closeRename': CloseRename.closeRename,
