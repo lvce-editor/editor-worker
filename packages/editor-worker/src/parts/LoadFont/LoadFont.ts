@@ -2,7 +2,7 @@ import * as Assert from '../Assert/Assert.ts'
 import * as GetFonts from '../GetFonts/GetFonts.ts'
 import { VError } from '../VError/VError.ts'
 
-export const loadFont = async (fontName: string, fontUrl: string) => {
+export const loadFont = async (fontName: string, fontUrl: string): Promise<void> => {
   try {
     Assert.string(fontName)
     Assert.string(fontUrl)
