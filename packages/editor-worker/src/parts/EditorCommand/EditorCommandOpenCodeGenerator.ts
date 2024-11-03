@@ -9,8 +9,8 @@ const newStateGenerator = async (state: CodeGeneratorState): Promise<CodeGenerat
     ...state,
     x: 100,
     y: 100,
-    width: 100,
-    height: 25,
+    width: 150,
+    height: 45,
   }
   return latestState
 }
