@@ -1,5 +1,5 @@
 import * as AddWidget from '../AddWidget/AddWidget.ts'
-import { CodeGenratorWidget } from '../CodeGeneratorWidget/CodeGeneratorWidget.ts'
+import type { CodeGenratorWidget } from '../CodeGeneratorWidget/CodeGeneratorWidget.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 import * as RenderCodeGeneratorWidget from '../RenderCodeGeneratorWidget/RenderCodeGeneratorWidget.ts'
 import type { WidgetLifeCycleFunction } from '../WidgetLifeCycleFunction/WidgetLifeCycleFunction.ts'
@@ -12,6 +12,7 @@ export const render: WidgetLifeCycleFunction<CodeGenratorWidget> = (widget) => {
     if (command[0] === 'Viewlet.setDom2') {
       wrappedCommands.push(command)
     } else {
+      // @ts-ignore
       wrappedCommands.push(['Viewlet.send', uid, ...command])
     }
   }
