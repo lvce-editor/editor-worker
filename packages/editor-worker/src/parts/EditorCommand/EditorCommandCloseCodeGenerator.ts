@@ -15,5 +15,6 @@ export const closeCodeGenerator = (editor: any) => {
   return {
     ...editor,
     widgets: newWidgets,
+    focused: true,
   }
 }
