@@ -15,4 +15,4 @@ export const FocusFindWidgetReplaceAllButton = 47
 export const FocusFindWidgetReplaceButton = 46
 export const FocusFindWidgetToggleReplace = 42
 export const SourceActions = 38
-export const FocusCodeGenerator = 777
+export const FocusCodeGenerator = 52
