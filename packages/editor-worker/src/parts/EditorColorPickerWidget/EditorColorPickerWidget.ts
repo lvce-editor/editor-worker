@@ -3,13 +3,14 @@ import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 import type { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
 import * as EditorColorPickerRender from '../EditorColorPickerRender/EditorColorPickerRender.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
+import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
 export const render = (widget: ColorPickerWidget) => {
   const commands: any[] = EditorColorPickerRender.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
   const uid = widget.newState.uid
   for (const command of commands) {
-    if (command[0] === 'Viewlet.setDom2') {
+    if (command[0] === RenderMethod.SetDom2) {
       wrappedCommands.push(command)
     } else {
       wrappedCommands.push(['Viewlet.send', uid, ...command])

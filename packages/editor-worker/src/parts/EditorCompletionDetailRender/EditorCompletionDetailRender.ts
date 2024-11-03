@@ -9,7 +9,7 @@ const renderContent = {
   },
   apply(oldState: CompletionDetailState, newState: CompletionDetailState) {
     const dom: any[] = GetCompletionDetailVirtualDom.getCompletionDetailVirtualDom(newState.content)
-    return ['Viewlet.setDom2', newState.uid, dom]
+    return [RenderMethod.SetDom2, newState.uid, dom]
   },
 }
 
