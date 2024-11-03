@@ -22,7 +22,16 @@ const renderBounds = {
   },
 }
 
-const render = [renderContent, renderBounds]
+const renderFocus = {
+  isEqual(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
+    return oldState.focused === newState.focused && oldState.focusSource === newState.focusSource
+  },
+  apply(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
+    return [RenderMethod.Focus, newState.focusSource]
+  },
+}
+
+const render = [renderContent, renderBounds, renderFocus]
 
 export const renderFull = (oldState: CodeGeneratorState, newState: CodeGeneratorState): readonly any[] => {
   const commands: any[] = []
