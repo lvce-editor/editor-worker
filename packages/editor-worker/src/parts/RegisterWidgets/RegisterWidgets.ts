@@ -1,3 +1,4 @@
+import * as EditorCodeGeneratorWidget from '../EditorCodeGeneratorWidget/EditorCodeGeneratorWidget.ts'
 import * as EditorColorPickerWidget from '../EditorColorPickerWidget/EditorColorPickerWidget.ts'
 import * as EditorCompletionDetailWidget from '../EditorCompletionDetailWidget/EditorCompletionDetailWidget.ts'
 import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorCompletionWidget.ts'
@@ -16,4 +17,5 @@ export const registerWidgets = () => {
   WidgetRegistry.set(WidgetId.Hover, EditorHoverWidget)
   WidgetRegistry.set(WidgetId.Rename, EditorRenameWidget)
   WidgetRegistry.set(WidgetId.SourceAction, EditorSourceActionWidget)
+  WidgetRegistry.set(WidgetId.CodeGenerator, EditorCodeGeneratorWidget)
 }
