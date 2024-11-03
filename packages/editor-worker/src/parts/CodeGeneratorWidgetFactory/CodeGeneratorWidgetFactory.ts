@@ -9,10 +9,18 @@ export const create = (): CodeGeneratorWidget => {
     oldState: {
       uid: completionUid,
       questions: [],
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
     },
     newState: {
       uid: completionUid,
       questions: [],
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
     },
   }
   return widget
