@@ -65,12 +65,5 @@
     "semi": false,
     "singleQuote": true,
     "printWidth": 150
-  },
-  "nodemonConfig": {
-    "watch": [
-      "src"
-    ],
-    "ext": "ts,js",
-    "exec": "node scripts/build.js"
   }
 }
