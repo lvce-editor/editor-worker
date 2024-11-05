@@ -7,7 +7,6 @@ export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
   Assert.object(textDocument)
   Assert.array(changes)
   // TODO don't copy all lines (can be expensive, e.g. 10000 lines = 10000 * 64bit = 64kB on every keystroke)
-  const oldLines = textDocument.lines
   const newLines = [...textDocument.lines]
   let linesDelta = 0
   for (const change of changes) {
@@ -25,12 +24,12 @@ export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
     Assert.array(deleted)
     if (startRowIndex === endRowIndex) {
       if (inserted.length === 0) {
-        const line = oldLines[startRowIndex]
+        const line = newLines[startRowIndex]
         const before = line.slice(0, startColumnIndex)
         const after = line.slice(endColumnIndex)
         newLines[startRowIndex] = before + after
       } else if (inserted.length === 1) {
-        const line = oldLines[startRowIndex]
+        const line = newLines[startRowIndex]
         let before = line.slice(0, startColumnIndex)
         if (startColumnIndex > line.length) {
           before += ' '.repeat(startColumnIndex - line.length)
@@ -39,7 +38,7 @@ export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
         const text = inserted[0]
         newLines[startRowIndex] = before + text + after
       } else {
-        const line = oldLines[startRowIndex]
+        const line = newLines[startRowIndex]
         const before = line.slice(0, startColumnIndex) + inserted[0]
         const after = inserted.at(-1) + line.slice(endColumnIndex)
         Arrays.spliceLargeArray(newLines, startRowIndex, deleted.length, [before, ...inserted.slice(1, -1), after])
