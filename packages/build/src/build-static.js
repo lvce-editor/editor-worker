@@ -9,10 +9,10 @@ const sharedProcessUrl = pathToFileURL(sharedProcessPath).toString()
 
 const sharedProcess = await import(sharedProcessUrl)
 
+process.env.PATH_PREFIX = '/editor-worker'
 const { commitHash } = await sharedProcess.exportStatic({
   root,
   extensionPath: '',
-  pathPrefix: '/editor-worker',
 })
 
 await cp(
