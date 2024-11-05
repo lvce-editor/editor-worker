@@ -6,7 +6,7 @@ const state: State = {
   ctx: undefined,
 }
 
-export const getOrCreate = (createCtx: () => OffscreenCanvasRenderingContext2D) => {
+export const getOrCreate = (createCtx: () => OffscreenCanvasRenderingContext2D): OffscreenCanvasRenderingContext2D => {
   if (state.ctx) {
     return state.ctx
   }
