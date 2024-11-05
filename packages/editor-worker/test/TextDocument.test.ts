@@ -669,5 +669,5 @@ test('applyEdits - multiple document edits', () => {
     },
   ]
   const newLines = TextDocument.applyEdits(editor, edits)
-  expect(newLines).toEqual(["import 'a'", "import 'b'", '', 'let   x = 1', '', '', '', 'export { }'])
+  expect(newLines).toEqual(["import 'a'", "import 'b'", '', 'let   x = 1', '', '', '', 'export { }', ''])
 })
