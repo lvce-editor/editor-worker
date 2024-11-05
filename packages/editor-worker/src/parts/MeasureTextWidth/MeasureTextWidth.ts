@@ -11,7 +11,7 @@ export const measureTextWidth = (
   letterSpacing: number,
   isMonoSpaceFont: boolean,
   charWidth: number
-) => {
+): number => {
   Assert.string(text)
   Assert.number(fontWeight)
   Assert.number(fontSize)
@@ -27,11 +27,8 @@ export const measureTextWidth = (
   const letterSpacingString = GetLetterSpacingString.getLetterSpacingString(letterSpacing)
   const fontString = GetFontString.getFontString(fontWeight, fontSize, fontFamily)
   const ctx = GetTextMeasureContext.getContext()
-  // @ts-ignore
   ctx.letterSpacing = letterSpacingString
-  // @ts-ignore
   ctx.font = fontString
-  // @ts-ignore
   const metrics = ctx.measureText(text)
   const width = metrics.width
   return width
