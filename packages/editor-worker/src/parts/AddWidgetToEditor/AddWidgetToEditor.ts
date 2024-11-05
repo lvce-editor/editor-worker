@@ -9,7 +9,7 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
   editor: any,
   factory: () => T,
   newStateGenerator: (state: K) => K | Promise<K>,
-  fullFocus?: boolean
+  fullFocus?: boolean,
 ): Promise<any> => {
   const { widgets } = editor
   if (HasWidget.hasWidget(widgets, widgetId)) {

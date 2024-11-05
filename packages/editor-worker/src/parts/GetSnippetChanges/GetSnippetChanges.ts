@@ -35,7 +35,7 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
         selectionEndColumn + lastInsertedLine.length,
         selectionEndRow + insertedLines.length - deleted.length,
         // @ts-ignore
-        selectionEndColumn + lastInsertedLine.length
+        selectionEndColumn + lastInsertedLine.length,
       )
     } else {
       const line = insertedLines[0]

@@ -7,7 +7,7 @@ const moveSelectionWithoutIntlSegmenter = (
   selectionStartRow: number,
   selectionStartColumn: number,
   selectionEndRow: number,
-  selectionEndColumn: number
+  selectionEndColumn: number,
 ) => {
   if (selectionStartRow === 0) {
     EditorSelection.moveRangeToPosition(selections, i, 0, 0)

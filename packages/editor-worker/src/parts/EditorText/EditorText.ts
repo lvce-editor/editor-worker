@@ -137,7 +137,7 @@ const getLineInfoEmbeddedFull = (
   deltaX: any,
   averageCharWidth: any,
   minOffset: any,
-  maxOffset: any
+  maxOffset: any,
 ) => {
   const lineInfo = []
   const embeddedResult = embeddedResults[tokenResults.embeddedResultIndex]
@@ -202,7 +202,7 @@ const getLineInfoDefault = (
   deltaX: any,
   averageCharWidth: any,
   minOffset: any,
-  maxOffset: any
+  maxOffset: any,
 ) => {
   const lineInfo = []
   let decorationIndex = 0
@@ -263,7 +263,7 @@ const getLineInfo = (
   tabSize: any,
   width: any,
   deltaX: any,
-  averageCharWidth: any
+  averageCharWidth: any,
 ) => {
   const { minOffset, maxOffset } = getOffsets(deltaX, width, averageCharWidth)
   if (embeddedResults.length > 0 && tokenResults.embeddedResultIndex !== undefined) {
@@ -285,7 +285,7 @@ const getLineInfo = (
     deltaX,
     averageCharWidth,
     minOffset,
-    maxOffset
+    maxOffset,
   )
 }
 
@@ -299,7 +299,7 @@ const getLineInfosViewport = (
   minLineOffset: any,
   width: any,
   deltaX: any,
-  averageCharWidth: any
+  averageCharWidth: any,
 ) => {
   const result = []
   const differences = []
@@ -321,7 +321,7 @@ const getLineInfosViewport = (
       tabSize,
       width,
       deltaX,
-      averageCharWidth
+      averageCharWidth,
     )
     result.push(lineInfo)
     differences.push(difference)
@@ -353,7 +353,7 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
     minLineOffset,
     width,
     deltaX,
-    averageCharWidth
+    averageCharWidth,
   )
   if (tokenizersToLoad.length > 0) {
     LoadTokenizers.loadTokenizers(tokenizersToLoad)

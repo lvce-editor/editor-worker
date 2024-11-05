@@ -14,7 +14,7 @@ const completionHighlight = {
   childCount: 1,
 }
 
-export const getHighlightedLabelDom = (label:any, highlights:any[]) => {
+export const getHighlightedLabelDom = (label: any, highlights: any[]) => {
   if (highlights.length === 0) {
     return [label1, text(label)]
   }

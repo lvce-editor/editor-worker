@@ -10,7 +10,7 @@ export const getAccurateColumnIndexAscii = (
   fontFamily: string,
   letterSpacing: number,
   isMonospaceFont: boolean,
-  charWidth: number
+  charWidth: number,
 ) => {
   for (let i = guess; i < line.length; i++) {
     const width = MeasureTextWidth.measureTextWidth(line.slice(0, i), fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth)
