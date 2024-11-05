@@ -559,7 +559,36 @@ test('applyEdits - two lines deleted and two lines inserted', () => {
   expect(newLines).toEqual(['a', 'b', ''])
 })
 
-test.only('applyEdits - multiple document edits', () => {
+test.only('applyEdits - one line replaced by two', () => {
+  const editor = {
+    lines: [`import 'b'`],
+    cursor: {
+      rowIndex: 0,
+      columnIndex: 0,
+    },
+    selections: [],
+    undoStack: [],
+  }
+  const edits: readonly any[] = [
+    {
+      deleted: ["import 'b'", ''],
+      end: {
+        columnIndex: 0,
+        rowIndex: 1,
+      },
+      inserted: ["import 'a'", "import 'b'", ''],
+      origin: 'format',
+      start: {
+        columnIndex: 0,
+        rowIndex: 0,
+      },
+    },
+  ]
+  const newLines = TextDocument.applyEdits(editor, edits)
+  expect(newLines).toEqual(['a', 'b', ''])
+})
+
+test.skip('applyEdits - multiple document edits', () => {
   const editor = {
     lines: [`import 'b'`, `import 'a'`, ``, `let   x = 1`, ``, ``, ``, `export {}`],
     cursor: {
