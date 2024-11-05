@@ -559,7 +559,7 @@ test('applyEdits - two lines deleted and two lines inserted', () => {
   expect(newLines).toEqual(['a', 'b', ''])
 })
 
-test.only('applyEdits - one line replaced by two', () => {
+test('applyEdits - one line replaced by two', () => {
   const editor = {
     lines: [`import 'b'`],
     cursor: {
@@ -585,7 +585,7 @@ test.only('applyEdits - one line replaced by two', () => {
     },
   ]
   const newLines = TextDocument.applyEdits(editor, edits)
-  expect(newLines).toEqual(['a', 'b', ''])
+  expect(newLines).toEqual([`import 'a'`, `import 'b'`, ''])
 })
 
 test.skip('applyEdits - multiple document edits', () => {
