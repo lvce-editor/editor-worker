@@ -14,7 +14,7 @@ test('getIconVirtualDom', () => {
   expect(dom).toEqual([
     {
       type: VirtualDomElements.Div,
-      className: 'SearchFieldButton ',
+      className: 'SearchFieldButton',
       title: 'Test',
       role: AriaRoles.CheckBox,
       ariaChecked: false,
