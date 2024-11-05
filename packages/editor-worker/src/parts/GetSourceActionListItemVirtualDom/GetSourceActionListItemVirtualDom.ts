@@ -1,6 +1,6 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
-import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
+import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 const getActionClassName = (isFocused: boolean) => {
@@ -21,7 +21,7 @@ export const getSourceActionListItemVirtualDom = (sourceAction: any) => {
     },
     {
       type: VirtualDomElements.Div,
-      className: 'SourceActionIcon MaskIcon MaskIconSymbolFile',
+      className: MergeClassNames.mergeClassNames(ClassNames.SourceActionIcon, ClassNames.MaskIcon, ClassNames.MaskIconSymbolFile),
     },
     text(name),
   ]
