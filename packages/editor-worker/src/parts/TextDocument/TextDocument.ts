@@ -71,16 +71,6 @@ export const getLine = (textDocument: any, index: number) => {
 export const getText = (state: any) => {
   return JoinLines.joinLines(state.lines)
 }
-const RE_WHITESPACE = /^\s+/
-
-// TODO this doesn't belong here
-export const getIndent = (line: string) => {
-  const whitespaceMatch = line.match(RE_WHITESPACE)
-  if (!whitespaceMatch) {
-    return ''
-  }
-  return whitespaceMatch[0]
-}
 
 // TDOO this doesn;t belong here
 export const getSelectionText = (textDocument: any, range: any) => {
@@ -161,3 +151,5 @@ export const positionAt = (textDocument: any, offset: number) => {
     columnIndex,
   }
 }
+
+export * from '../GetIndent/GetIndent.ts'
