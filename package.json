@@ -9,7 +9,7 @@
     "lint": "npx xo .",
     "test": "lerna run test",
     "type-check": "tsc -b",
-    "build:watch": "./packages/build/node_modules/.bin/esbuild --format=esm --bundle --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=dist/dist/editorWorkerMain.js",
+    "build:watch": "./packages/build/node_modules/.bin/esbuild --format=esm --bundle --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=.tmp/dist/dist/editorWorkerMain.js",
     "build": "node scripts/build.js",
     "build:static": "node packages/build/src/build-static.js"
   },
