@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
 import * as GetFindWidgetVirtualDom from '../src/parts/GetFindWidgetVirtualDom/GetFindWidgetVirtualDom.ts'
-import { FindWidgetButton } from '../src/parts/FindWidgetButton/FindWidgetButton.ts'
+import { type FindWidgetButton } from '../src/parts/FindWidgetButton/FindWidgetButton.ts'
 
 test('getFindWidgetVirtualDom', () => {
   const matchCountText = '1 of 3'
@@ -43,7 +43,7 @@ test('getFindWidgetVirtualDom', () => {
     matchWholeWord,
     useRegularExpression,
     matchCount,
-    value
+    value,
   )
   expect(dom).toEqual([
     {

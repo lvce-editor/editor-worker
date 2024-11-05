@@ -15,7 +15,7 @@ export const getX = (
   halfCursorWidth: number,
   width: number,
   averageCharWidth: number,
-  difference = 0
+  difference = 0,
 ) => {
   if (!line) {
     return 0

@@ -6,7 +6,7 @@ const combineResults = (results: any) => {
   return results[0] ?? []
 }
 
-export const executeCompletionProvider = (editor: any, offset: number) => {
+export const executeCompletionProvider = async (editor: any, offset: number) => {
   return ExtensionHostEditor.execute({
     editor,
     event: ExtensionHostActivationEvent.OnCompletion,
@@ -22,7 +22,7 @@ const combineResultsResolve = (items: any) => {
   return items[0] ?? undefined
 }
 
-export const executeResolveCompletionItem = (editor: any, offset: any, name: any, completionItem: any) => {
+export const executeResolveCompletionItem = async (editor: any, offset: any, name: any, completionItem: any) => {
   return ExtensionHostEditor.execute({
     editor,
     event: ExtensionHostActivationEvent.OnCompletion,

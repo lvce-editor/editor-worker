@@ -49,7 +49,7 @@ export const editorShowMessage = async (editor, rowIndex, columnIndex, message, 
  * @returns
  */
 // @ts-ignore
-export const showErrorMessage = (editor, rowIndex, columnIndex, message) => {
+export const showErrorMessage = async (editor, rowIndex, columnIndex, message) => {
   return editorShowMessage(editor, rowIndex, columnIndex, message, /* isError */ true)
 }
 

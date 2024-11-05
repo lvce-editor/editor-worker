@@ -47,7 +47,7 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
         className: ClassNames.HoverDisplayString,
         childCount: lineInfos.length,
       },
-      ...lineInfosDom
+      ...lineInfosDom,
     )
   }
 
@@ -58,7 +58,7 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
         className: ClassNames.HoverDocumentation,
         childCount: 1,
       },
-      text(documentation)
+      text(documentation),
     )
   }
 

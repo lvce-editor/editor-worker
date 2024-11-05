@@ -7,7 +7,7 @@ const combineResults = (results: any) => {
   return results[0]
 }
 
-export const executeTabCompletionProvider = (editor: any, offset: number): Promise<TabCompletionResult | undefined> => {
+export const executeTabCompletionProvider = async (editor: any, offset: number): Promise<TabCompletionResult | undefined> => {
   return ExtensionHostEditor.execute({
     editor,
     event: ExtensionHostActivationEvent.OnTabCompletion,

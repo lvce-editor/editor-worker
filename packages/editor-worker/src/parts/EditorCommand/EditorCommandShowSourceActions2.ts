@@ -6,7 +6,7 @@ import * as SourceActionWidgetFactory from '../SourceActionWidgetFactory/SourceA
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const showSourceActions = async (editor: any) => {
-  const newStateGenerator = (state: SourceActionState): Promise<SourceActionState> => {
+  const newStateGenerator = async (state: SourceActionState): Promise<SourceActionState> => {
     return LoadSourceActions.loadSourceActions(editor, state)
   }
   return AddWidgetToEditor.addWidgetToEditor(
@@ -14,6 +14,6 @@ export const showSourceActions = async (editor: any) => {
     FocusKey.SourceActions,
     editor,
     SourceActionWidgetFactory.create,
-    newStateGenerator
+    newStateGenerator,
   )
 }

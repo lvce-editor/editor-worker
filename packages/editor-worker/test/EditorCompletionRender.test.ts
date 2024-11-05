@@ -80,6 +80,6 @@ test('renderCompletion', () => {
     ['setBounds', 0, 0, 100, 100],
     ['setContentHeight', 40],
     ['setNegativeMargin', -1],
-    ['setScrollBar', NaN, 0],
+    ['setScrollBar', Number.NaN, 0],
   ])
 })

@@ -32,7 +32,6 @@ export const loadTokenizer = async (languageId: string, tokenizePath: string) =>
   } catch (error) {
     // TODO better error handling
     console.error(error)
-    return
   }
 }
 

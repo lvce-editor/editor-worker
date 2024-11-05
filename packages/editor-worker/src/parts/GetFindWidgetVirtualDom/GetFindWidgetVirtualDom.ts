@@ -16,7 +16,7 @@ export const getFindWidgetVirtualDom = (
   matchWholeWord: any,
   useRegularExpression: any,
   matchCount: number,
-  value: string
+  value: string,
 ): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = []
   dom.push({

@@ -1,8 +1,8 @@
 import * as Promises from '../Promises/Promises.ts'
 
-export const waitForFirstMessage = async (port: MessagePort): Promise<MessageEvent<any>> => {
-  const { resolve, promise } = Promises.withResolvers<MessageEvent<any>>()
-  const cleanup = (value: MessageEvent<any>) => {
+export const waitForFirstMessage = async (port: MessagePort): Promise<MessageEvent> => {
+  const { resolve, promise } = Promises.withResolvers<MessageEvent>()
+  const cleanup = (value: MessageEvent) => {
     port.onmessage = null
     resolve(value)
   }
