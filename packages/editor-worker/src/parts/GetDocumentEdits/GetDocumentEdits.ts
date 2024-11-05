@@ -3,7 +3,7 @@ import type { OffsetBasedEdit } from '../OffsetBasedEdit/OffsetBasedEdit.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
-export const getDocumentEdits = (editor: any, edits: OffsetBasedEdit[]): readonly any[] => {
+export const getDocumentEdits = (editor: any, edits: readonly OffsetBasedEdit[]): readonly any[] => {
   const documentEdits: any[] = []
   for (const edit of edits) {
     const start = TextDocument.positionAt(editor, edit.startOffset)
