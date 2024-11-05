@@ -59,7 +59,7 @@ export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
       // TODO only do this once after all edits, not inside loop
       textDocument.maxLineY = Math.min(textDocument.numberOfVisibleLines, textDocument.lines.length)
     }
-    linesDelta += Math.max(inserted.length - deleted.length, 0)
+    linesDelta += inserted.length - deleted.length
   }
   return newLines
 }
