@@ -5,7 +5,7 @@ import * as HoverWidgetFactory from '../HoverWidgetFactory/HoverWidgetFactory.ts
 import * as LoadHoverContent from '../LoadHoverContent/LoadHoverContent.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
-const newStateGenerator = (state: HoverState): Promise<HoverState> => {
+const newStateGenerator = async (state: HoverState): Promise<HoverState> => {
   return LoadHoverContent.loadHoverContent(state)
 }
 

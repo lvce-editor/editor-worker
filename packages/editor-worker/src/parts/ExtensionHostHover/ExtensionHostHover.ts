@@ -3,7 +3,7 @@ import * as ExtensionHostActivationEvent from '../ExtensionHostActivationEvent/E
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostEditor from '../ExtensionHostEditor/ExtensionHostEditor.ts'
 
-export const executeHoverProvider = (editor: any, offset: number) => {
+export const executeHoverProvider = async (editor: any, offset: number) => {
   Assert.object(editor)
   Assert.number(offset)
   return ExtensionHostEditor.execute({

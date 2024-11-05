@@ -36,8 +36,8 @@ test('getAccurateColumnIndexAscii - at end of line', () => {
       fontFamily,
       letterSpacing,
       isMonospaceFont,
-      charWidth
-    )
+      charWidth,
+    ),
   ).toBe(3)
 })
 
@@ -63,7 +63,7 @@ test('getAccurateColumnIndexAscii - in the middle of line', () => {
       fontFamily,
       letterSpacing,
       isMonospaceFont,
-      charWidth
-    )
+      charWidth,
+    ),
   ).toBe(1)
 })

@@ -36,8 +36,8 @@ test('getX - empty line', () => {
       halfCursorWidth,
       width,
       averageCharWidth,
-      difference
-    )
+      difference,
+    ),
   ).toBe(0)
 })
 
@@ -67,8 +67,8 @@ test('getX - first column', () => {
       halfCursorWidth,
       width,
       averageCharWidth,
-      difference
-    )
+      difference,
+    ),
   ).toBe(0)
 })
 
@@ -98,8 +98,8 @@ test('getX - enough space', () => {
       halfCursorWidth,
       width,
       averageCharWidth,
-      difference
-    )
+      difference,
+    ),
   ).toBe(25)
 })
 
@@ -129,7 +129,7 @@ test('getX - measure text width', () => {
       halfCursorWidth,
       width,
       averageCharWidth,
-      difference
-    )
+      difference,
+    ),
   ).toBe(51)
 })

@@ -27,6 +27,6 @@ export const openDetails = (editor: any) => {
     FocusKey.CompletionDetail,
     editor,
     CompletionDetailWidgetFactory.create,
-    newStateGenerator
+    newStateGenerator,
   )
 }

@@ -7,9 +7,7 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 const getIncreaseIndentRegex = (languageConfiguration: any): RegExp | undefined => {
   if (
-    languageConfiguration &&
-    languageConfiguration.indentationRules &&
-    languageConfiguration.indentationRules.increaseIndentPattern &&
+    languageConfiguration?.indentationRules?.increaseIndentPattern &&
     typeof languageConfiguration.indentationRules.increaseIndentPattern === 'string'
   ) {
     const regex = new RegExp(languageConfiguration.indentationRules.increaseIndentPattern)

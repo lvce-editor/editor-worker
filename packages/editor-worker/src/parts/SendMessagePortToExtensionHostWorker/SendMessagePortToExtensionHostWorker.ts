@@ -4,6 +4,6 @@ export const sendMessagePortToExtensionHostWorker = async (port: MessagePort) =>
   await RendererWorker.invokeAndTransfer(
     'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker',
     port,
-    'HandleMessagePort.handleMessagePort'
+    'HandleMessagePort.handleMessagePort',
   )
 }

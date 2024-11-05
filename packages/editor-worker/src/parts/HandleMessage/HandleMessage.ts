@@ -14,7 +14,7 @@ const logError = (error: any) => {
   // handled in renderer worker
 }
 
-export const handleMessage = (event: any) => {
+export const handleMessage = async (event: any) => {
   return HandleJsonRpcMessage.handleJsonRpcMessage(
     event.target,
     event.data,
@@ -22,6 +22,6 @@ export const handleMessage = (event: any) => {
     Callback.resolve,
     preparePrettyError,
     logError,
-    requiresSocket
+    requiresSocket,
   )
 }

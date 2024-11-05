@@ -10,51 +10,12 @@
     "test": "lerna run test",
     "type-check": "tsc -b",
     "build:watch": "./packages/build/node_modules/.bin/esbuild --format=esm --bundle --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=dist/dist/editorWorkerMain.js",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "build:static": "node packages/build/src/build-static.js"
   },
   "keywords": [],
   "author": "Lvce Editor",
   "license": "MIT",
-  "xo": {
-    "rules": {
-      "unicorn/filename-case": "off",
-      "indent": "off",
-      "semi": "off",
-      "no-unused-vars": "off",
-      "unicorn/numeric-separators-style": "off",
-      "no-extra-semi": "off",
-      "arrow-body-style": "off",
-      "padded-blocks": "off",
-      "capitalized-comments": "off",
-      "padding-line-between-statements": "off",
-      "arrow-parens": "off",
-      "no-warning-comments": "off",
-      "array-bracket-spacing": "off",
-      "comma-spacing": "off",
-      "unicorn/no-array-callback-reference": "off",
-      "comma-dangle": "off",
-      "operator-linebreak": "off",
-      "no-case-declarations": "off",
-      "no-undef": "off",
-      "object-curly-spacing": "off",
-      "object-shorthand": "off",
-      "complexity": "off",
-      "no-labels": "off",
-      "no-multi-assign": "off",
-      "max-params": "off",
-      "no-bitwise": "off",
-      "unicorn/prefer-math-trunc": "off",
-      "no-await-in-loop": "off",
-      "unicorn/prefer-add-event-listener": "off",
-      "no-unused-expressions": "off",
-      "unicorn/better-regex": "off",
-      "unicorn/no-array-push-push": "off",
-      "unicorn/prevent-abbreviations": "off"
-    },
-    "ignores": [
-      "distmin"
-    ]
-  },
   "devDependencies": {
     "typescript": "^5.6.3",
     "@lerna/legacy-package-management": "^8.1.9",
@@ -64,12 +25,5 @@
     "semi": false,
     "singleQuote": true,
     "printWidth": 150
-  },
-  "nodemonConfig": {
-    "watch": [
-      "src"
-    ],
-    "ext": "ts,js",
-    "exec": "node scripts/build.js"
   }
 }

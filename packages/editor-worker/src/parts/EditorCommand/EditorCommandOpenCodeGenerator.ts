@@ -23,6 +23,6 @@ export const openCodeGenerator = async (editor: any): Promise<any> => {
     editor,
     CodeGeneratorWidgetFactory.create,
     newStateGenerator,
-    fullFocus
+    fullFocus,
   )
 }

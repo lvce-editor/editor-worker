@@ -4,7 +4,7 @@ export interface HoverState extends Rectangle {
   readonly uid: number
   readonly content: string
   readonly editorUid: number
-  readonly lineInfos: (readonly string[])[]
+  readonly lineInfos: Array<readonly string[]>
   readonly documentation: string
   readonly diagnostics: any[]
 }

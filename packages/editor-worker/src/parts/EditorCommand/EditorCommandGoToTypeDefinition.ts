@@ -42,16 +42,10 @@ const getErrorMessage = (error) => {
 }
 
 const isNoProviderFoundError = (error: any) => {
-  return (
-    error &&
-    // @ts-ignore
-    error.message &&
-    // @ts-ignore
-    error.message.startsWith('Failed to execute type definition provider: No type definition provider found')
-  )
+  return error?.message?.startsWith('Failed to execute type definition provider: No type definition provider found')
 }
 
-export const goToTypeDefinition = (editor: any, explicit = true) => {
+export const goToTypeDefinition = async (editor: any, explicit = true) => {
   return EditorGoTo.goTo({
     editor,
     getLocation,

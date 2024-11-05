@@ -22,8 +22,8 @@ export const getFindWidgetFindVirtualDom = (matchCountText: string, buttons: rea
       DomEventListenerFunctions.HandleInput,
       [],
       [],
-      DomEventListenerFunctions.HandleFocus
-    )
+      DomEventListenerFunctions.HandleFocus,
+    ),
   )
   const findClassName = GetFindMatchCountClassName.getFindMatchCountClassName(matchCount, value)
   dom.push(
@@ -33,7 +33,7 @@ export const getFindWidgetFindVirtualDom = (matchCountText: string, buttons: rea
       childCount: 1,
     },
     text(matchCountText),
-    ...buttons.flatMap(GetIconButtonVirtualDom.getIconButtonVirtualDom)
+    ...buttons.flatMap(GetIconButtonVirtualDom.getIconButtonVirtualDom),
   )
   return dom
 }

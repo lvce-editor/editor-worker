@@ -3,7 +3,7 @@ import * as GetLineInfo from '../GetLineInfo/GetLineInfo.ts'
 import * as SafeTokenizeLine from '../SafeTokenizeLine/SafeTokenizeLine.ts'
 
 export const getLineInfos = (lines: readonly string[], tokenizer: any, languageId: string) => {
-  const lineInfos: (readonly string[])[] = []
+  const lineInfos: Array<readonly string[]> = []
   const { tokenizeLine, initialLineState, hasArrayReturn, TokenMap } = tokenizer
   let currentLineState = GetInitialLineState.getInitialLineState(initialLineState)
   for (const line of lines) {

@@ -5,7 +5,7 @@ import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHig
 const sentLines = Object.create(null)
 
 // TODO only send changed lines to renderer process instead of all lines in viewport
-export const getTokensViewport2 = (editor: any, startLineIndex: any, endLineIndex: any, syncIncremental: boolean) => {
+export const getTokensViewport2 = async (editor: any, startLineIndex: any, endLineIndex: any, syncIncremental: boolean) => {
   if (SyntaxHighlightingState.getEnabled()) {
     if (syncIncremental) {
       const { invalidStartIndex, lines, languageId, id } = editor

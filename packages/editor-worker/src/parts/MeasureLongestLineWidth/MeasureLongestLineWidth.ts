@@ -8,7 +8,7 @@ export const measureLongestLineWidth = (
   letterSpacing: number,
   isMonoSpaceFont: boolean,
   charWidth: number,
-) => {
+): number => {
   let longest = 0
   for (const line of lines) {
     const lineWidth = MeasureTextWidth.measureTextWidth(line, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)

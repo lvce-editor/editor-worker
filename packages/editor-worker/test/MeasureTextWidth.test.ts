@@ -47,6 +47,6 @@ test('error - letterSpacing is not of type number', () => {
   const isMonoSpaceFont = false
   const charWidth = 9
   expect(() => MeasureTextWidth.measureTextWidth(text, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)).toThrow(
-    new Error('letterSpacing must be of type number')
+    new Error('letterSpacing must be of type number'),
   )
 })

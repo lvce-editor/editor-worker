@@ -1,3 +1,3 @@
-export const getLetterSpacingString = (letterSpacing: number) => {
+export const getLetterSpacingString = (letterSpacing: number): string => {
   return `${letterSpacing}px`
 }

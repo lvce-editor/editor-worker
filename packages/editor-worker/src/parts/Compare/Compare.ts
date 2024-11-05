@@ -1,3 +1,3 @@
-export const compareString = (a: string, b: string) => {
-  return a.localeCompare(b);
-};
+export const compareString = (a: string, b: string): number => {
+  return a.localeCompare(b)
+}

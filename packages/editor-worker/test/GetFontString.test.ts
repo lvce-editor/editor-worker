@@ -5,5 +5,5 @@ test('getFontString', () => {
   const fontWeight = 400
   const fontSize = 16
   const fontFamily = 'test font'
-  expect(GetFontString.getFontString(fontWeight, fontSize, fontFamily)).toBe(`400 16px test font`)
+  expect(GetFontString.getFontString(fontWeight, fontSize, fontFamily)).toBe('400 16px test font')
 })

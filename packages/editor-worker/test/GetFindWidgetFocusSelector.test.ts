@@ -4,7 +4,7 @@ import * as FocusKey from '../src/parts/FocusKey/FocusKey.ts'
 
 test('find', () => {
   const focus = FocusKey.FindWidget
-  expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe(`[name="search-value"]`)
+  expect(GetFindWidgetFocusSelector.getFindWidgetFocusSelector(focus)).toBe('[name="search-value"]')
 })
 
 test('replace', () => {
