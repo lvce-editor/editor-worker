@@ -200,7 +200,7 @@ test('applyEdits - multiple deletions in one line', () => {
   ).toEqual(['  <body>', '    sample test', '  </body>'])
 })
 
-test.only('applyEdits - deletions in multiple lines', () => {
+test('applyEdits - deletions in multiple lines', () => {
   const textDocument = {
     lines: ['  <body>', '    <!--sample test', '-->', '  </body>'],
   }
