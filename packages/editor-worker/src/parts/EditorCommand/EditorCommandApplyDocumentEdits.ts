@@ -1,38 +1,9 @@
-// @ts-ignore
-import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
-// @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
+import * as GetDocumentEdits from '../GetDocumentEdits/GetDocumentEdits.ts'
 import * as Logger from '../Logger/Logger.ts'
-import * as SplitLines from '../SplitLines/SplitLines.ts'
-// @ts-ignore
-import * as TextDocument from '../TextDocument/TextDocument.ts'
+import type { OffsetBasedEdit } from '../OffsetBasedEdit/OffsetBasedEdit.ts'
 
-const getDocumentEdits = (editor: any, edits: any[]) => {
-  const documentEdits = []
-  for (const edit of edits) {
-    const start = TextDocument.positionAt(editor, edit.startOffset)
-    const end = TextDocument.positionAt(editor, edit.endOffset)
-    const deleted = TextDocument.getSelectionText(editor, {
-      start,
-      end,
-    })
-    const documentEdit = {
-      start,
-      end,
-      inserted: SplitLines.splitLines(edit.inserted),
-      deleted,
-      origin: EditOrigin.Format,
-    }
-    if (documentEdit.inserted.length === 0) {
-      documentEdit.inserted = ['']
-    }
-    documentEdits.push(documentEdit)
-  }
-  return documentEdits
-}
-
-// @ts-ignore
-export const applyDocumentEdits = (editor, edits) => {
+export const applyDocumentEdits = (editor: any, edits: readonly OffsetBasedEdit[]): any => {
   if (!Array.isArray(edits)) {
     Logger.warn('something is wrong with format on save', edits)
     return editor
@@ -40,6 +11,6 @@ export const applyDocumentEdits = (editor, edits) => {
   if (edits.length === 0) {
     return editor
   }
-  const documentEdits = getDocumentEdits(editor, edits)
+  const documentEdits = GetDocumentEdits.getDocumentEdits(editor, edits)
   return Editor.scheduleDocumentAndCursorsSelections(editor, documentEdits)
 }

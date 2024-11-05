@@ -9,7 +9,6 @@ const expectedErrorMessage = 'Failed to execute formatting provider: FormattingE
 export const format = async (editor: any) => {
   try {
     const edits = await GetFormattingEdits.getFormattingEdits(editor)
-
     return ApplyDocumentEdits.applyDocumentEdits(editor, edits)
   } catch (error) {
     if (IsFormattingError.isFormattingError(error)) {
