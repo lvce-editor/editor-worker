@@ -7,8 +7,6 @@ const sharedProcessPath = join(root, 'packages', 'server', 'node_modules', '@lvc
 
 const sharedProcessUrl = pathToFileURL(sharedProcessPath).toString()
 
-await cp(join(root, 'dist'), join(root, '.tmp', 'dist'), { recursive: true })
-
 const sharedProcess = await import(sharedProcessUrl)
 
 const { commitHash } = await sharedProcess.exportStatic({
