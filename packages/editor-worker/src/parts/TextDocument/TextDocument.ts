@@ -3,7 +3,7 @@ import * as Assert from '../Assert/Assert.ts'
 import * as JoinLines from '../JoinLines/JoinLines.ts'
 
 // TODO have function for single edit (most common, avoid one array)
-export const applyEdits = (textDocument: any, changes: any[]) => {
+export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
   Assert.object(textDocument)
   Assert.array(changes)
   // TODO don't copy all lines (can be expensive, e.g. 10000 lines = 10000 * 64bit = 64kB on every keystroke)
