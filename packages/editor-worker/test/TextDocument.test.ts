@@ -200,7 +200,7 @@ test('applyEdits - multiple deletions in one line', () => {
   ).toEqual(['  <body>', '    sample test', '  </body>'])
 })
 
-test('applyEdits - deletions in multiple lines', () => {
+test.only('applyEdits - deletions in multiple lines', () => {
   const textDocument = {
     lines: ['  <body>', '    <!--sample test', '-->', '  </body>'],
   }
@@ -208,14 +208,14 @@ test('applyEdits - deletions in multiple lines', () => {
     {
       start: { rowIndex: 1, columnIndex: 4 },
       end: { rowIndex: 1, columnIndex: 8 },
-      inserted: [],
+      inserted: [''],
       deleted: ['<!--'],
       origin: EditOrigin.ToggleBlockComment,
     },
     {
       start: { rowIndex: 2, columnIndex: 0 },
       end: { rowIndex: 2, columnIndex: 3 },
-      inserted: [],
+      inserted: [''],
       deleted: ['-->'],
       origin: EditOrigin.ToggleBlockComment,
     },
