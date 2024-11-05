@@ -1,6 +1,6 @@
 import { createWorker } from './createWorker.js'
 
-const workerPath = new URL('../../../dist/dist/editorWorkerMain.js', import.meta.url).toString()
+const workerPath = new URL('../../../.tmp/dist/dist/editorWorkerMain.js', import.meta.url).toString()
 
 const getResult = (method, ...params) => {
   if (method === 'GetTokensViewport.getTokensViewport') {

@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { bundleJs } from './bundleJs.js'
 import { root } from './root.js'
 
-const dist = join(root, 'dist')
+const dist = join(root, '.tmp', 'dist')
 
 const readJson = async (path) => {
   const content = await readFile(path, 'utf8')
@@ -73,9 +73,9 @@ await writeJson(join(dist, 'package.json'), packageJson)
 await cp(join(root, 'README.md'), join(dist, 'README.md'))
 await cp(join(root, 'LICENSE'), join(dist, 'LICENSE'))
 
-await mkdir(join(root, 'dist', 'dist', 'api'), {
+await mkdir(join(dist, 'dist', 'api'), {
   recursive: true,
 })
-await cp(join(root, 'packages', 'editor-worker', 'src', 'parts', 'Api', 'Api.ts'), join(root, 'dist', 'dist', 'api', 'api.d.ts'))
+await cp(join(root, 'packages', 'editor-worker', 'src', 'parts', 'Api', 'Api.ts'), join(dist, 'dist', 'api', 'api.d.ts'))
 
-await writeFile(join(root, 'dist', 'dist', 'api', 'api.js'), '')
+await writeFile(join(dist, 'dist', 'api', 'api.js'), '')
