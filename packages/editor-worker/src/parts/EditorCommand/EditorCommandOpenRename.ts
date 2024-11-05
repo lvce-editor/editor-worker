@@ -34,6 +34,6 @@ export const openRename = async (editor: any) => {
     editor,
     RenameWidgetFactory.create,
     newStateGenerator,
-    fullFocus
+    fullFocus,
   )
 }

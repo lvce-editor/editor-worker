@@ -22,6 +22,6 @@ export const handleMessage = (event: any) => {
     Callback.resolve,
     preparePrettyError,
     logError,
-    requiresSocket
+    requiresSocket,
   )
 }

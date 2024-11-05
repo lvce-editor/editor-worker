@@ -14,6 +14,6 @@ export const showSourceActions = async (editor: any) => {
     FocusKey.SourceActions,
     editor,
     SourceActionWidgetFactory.create,
-    newStateGenerator
+    newStateGenerator,
   )
 }

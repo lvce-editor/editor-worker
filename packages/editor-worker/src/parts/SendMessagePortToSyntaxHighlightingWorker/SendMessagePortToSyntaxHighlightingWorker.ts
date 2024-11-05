@@ -4,6 +4,6 @@ export const sendMessagePortToSyntaxHighlightingWorker = async (port: MessagePor
   await RendererWorker.invokeAndTransfer(
     'SendMessagePortToSyntaxHighlightingWorker.sendMessagePortToSyntaxHighlightingWorker',
     port,
-    'HandleMessagePort.handleMessagePort'
+    'HandleMessagePort.handleMessagePort',
   )
 }

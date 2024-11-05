@@ -21,9 +21,9 @@ export const getFindWidgetReplaceVirtualDom = (replaceExpanded: boolean, replace
         DomEventListenerFunctions.HandleReplaceInput,
         [],
         [],
-        DomEventListenerFunctions.HandleReplaceFocus
+        DomEventListenerFunctions.HandleReplaceFocus,
       ),
-      ...replaceButtons.flatMap(GetIconButtonVirtualDom.getIconButtonVirtualDom)
+      ...replaceButtons.flatMap(GetIconButtonVirtualDom.getIconButtonVirtualDom),
     )
   }
   return dom

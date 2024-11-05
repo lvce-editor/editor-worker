@@ -43,7 +43,7 @@ test('getFindWidgetVirtualDom', () => {
     matchWholeWord,
     useRegularExpression,
     matchCount,
-    value
+    value,
   )
   expect(dom).toEqual([
     {

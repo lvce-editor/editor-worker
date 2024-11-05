@@ -39,7 +39,7 @@ const renderDetails = {
       newState.matchWholeWord,
       newState.useRegularExpression,
       newState.matchCount,
-      newState.value
+      newState.value,
     )
     return [RenderMethod.SetDom2, dom]
   },

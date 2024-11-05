@@ -11,7 +11,7 @@ export const measureTextBlockHeight = (
   fontFamily: string,
   fontSize: number,
   lineHeight: number | string,
-  width: number
+  width: number,
 ): Promise<number> => {
   return RendererProcess.invoke('MeasureTextBlockHeight.measureTextBlockHeight', text, fontSize, fontFamily, lineHeight, width)
 }

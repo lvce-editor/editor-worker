@@ -9,7 +9,7 @@ export const getSearchFieldVirtualDom = (
   onInput: string,
   insideButtons: any,
   outsideButtons: any,
-  onFocus = ''
+  onFocus = '',
 ) => {
   const dom = [
     {
