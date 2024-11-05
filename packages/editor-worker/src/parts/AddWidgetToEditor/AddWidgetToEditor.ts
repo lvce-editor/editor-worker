@@ -27,12 +27,8 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
   }
   const newWidgets = [...widgets, latestWidget]
   // TODO avoid side effect, apply focus shift during render
-  if (fullFocus) {
-    await SetFocus.setFocus(focusKey)
-  } else {
-    await SetAdditionalFocus.setAdditionalFocus(focusKey)
-  }
-  const newFocus = fullFocus ? false : true
+  await (fullFocus ? SetFocus.setFocus(focusKey) : SetAdditionalFocus.setAdditionalFocus(focusKey))
+  const newFocus = !fullFocus
   const newEditor = {
     ...editor,
     widgets: newWidgets,

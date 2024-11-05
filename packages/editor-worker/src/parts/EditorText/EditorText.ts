@@ -268,7 +268,7 @@ const getLineInfo = (
   const { minOffset, maxOffset } = getOffsets(deltaX, width, averageCharWidth)
   if (embeddedResults.length > 0 && tokenResults.embeddedResultIndex !== undefined) {
     const embeddedResult = embeddedResults[tokenResults.embeddedResultIndex]
-    if (embeddedResult && embeddedResult.isFull) {
+    if (embeddedResult?.isFull) {
       return getLineInfoEmbeddedFull(embeddedResults, tokenResults, line, normalize, tabSize, width, deltaX, averageCharWidth, minOffset, maxOffset)
     }
   }

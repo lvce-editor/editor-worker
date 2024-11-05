@@ -28,7 +28,7 @@ const warnDeprecatedArrayReturn = (languageId: string, fn: any) => {
 export const safeTokenizeLine = (languageId: string, tokenizeLine: any, line: string, lineStateAtStart: any, hasArrayReturn: boolean) => {
   try {
     const lineState = tokenizeLine(line, lineStateAtStart)
-    if (!lineState || !lineState.tokens || !lineState.state) {
+    if (!lineState?.tokens || !lineState.state) {
       throw new Error('invalid tokenization result')
     }
     if (!hasArrayReturn) {

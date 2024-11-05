@@ -11,7 +11,7 @@ export const addWidget = (widget: any) => {
 export const renderWidget = (widget: any) => {
   const module = WidgetRegistry.get(widget.id)
   if (!module) {
-    throw new Error(`unsupported widget`)
+    throw new Error('unsupported widget')
   }
   return module.render(widget)
 }
@@ -19,7 +19,7 @@ export const renderWidget = (widget: any) => {
 export const removeWidget = (widget: any) => {
   const module = WidgetRegistry.get(widget.id)
   if (!module) {
-    throw new Error(`unsupported widget`)
+    throw new Error('unsupported widget')
   }
   return module.remove(widget)
 }

@@ -6,7 +6,7 @@ const combineResults = (results: any) => {
   return results[0] ?? []
 }
 
-export const executeRenameProvider = (editor: any, offset: number, newName: string) => {
+export const executeRenameProvider = async (editor: any, offset: number, newName: string) => {
   return ExtensionHostEditor.execute({
     editor,
     event: ExtensionHostActivationEvent.OnRename,

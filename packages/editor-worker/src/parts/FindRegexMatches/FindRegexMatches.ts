@@ -1,6 +1,6 @@
 export const findRegexMatches = (lines: readonly string[], regex: RegExp): Uint32Array => {
   if (!regex.global) {
-    throw new Error(`regex must be global`)
+    throw new Error('regex must be global')
   }
   const { length } = lines
   const matches = []

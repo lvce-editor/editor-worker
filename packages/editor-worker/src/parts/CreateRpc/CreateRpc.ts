@@ -13,7 +13,7 @@ export const createRpc = (method: any) => {
     _ipc = ipc
   }
 
-  const invoke = (method: string, ...params: any[]) => {
+  const invoke = async (method: string, ...params: any[]) => {
     return JsonRpc.invoke(_ipc, method, ...params)
   }
 

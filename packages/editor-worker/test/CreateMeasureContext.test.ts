@@ -8,7 +8,7 @@ test('createMeasureContext - error', () => {
       return undefined
     }
   }
-  expect(() => CreateMeasureContext.createMeasureContext()).toThrow(new Error(`Failed to get canvas context 2d`))
+  expect(() => CreateMeasureContext.createMeasureContext()).toThrow(new Error('Failed to get canvas context 2d'))
 })
 
 test('createMeasureContext', () => {

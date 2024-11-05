@@ -1,6 +1,6 @@
 import * as Assert from '../Assert/Assert.ts'
 import * as Editor from '../Editor/Editor.ts'
-import { EditorCreateOptions } from '../EditorCreateOptions/EditorCreateOptions.ts'
+import type { EditorCreateOptions } from '../EditorCreateOptions/EditorCreateOptions.ts'
 import * as EditorState from '../Editors/Editors.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'

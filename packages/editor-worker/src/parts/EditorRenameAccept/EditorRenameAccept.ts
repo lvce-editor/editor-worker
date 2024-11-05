@@ -7,7 +7,7 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 
 const getRenameChanges = (editor: any, result: any) => {
-  if (!result || !result.edits) {
+  if (!result?.edits) {
     return []
   }
   const changes: any[] = []

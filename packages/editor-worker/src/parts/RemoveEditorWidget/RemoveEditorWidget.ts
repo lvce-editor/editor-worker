@@ -1,6 +1,5 @@
 const getIndex = (widgets: any, id: any) => {
-  for (let i = 0; i < widgets.length; i++) {
-    const widget = widgets[i]
+  for (const [i, widget] of widgets.entries()) {
     if (widget.id === id) {
       return i
     }

@@ -43,16 +43,10 @@ const getErrorMessage = (error) => {
 
 // @ts-ignore
 const isNoProviderFoundError = (error) => {
-  return (
-    error &&
-    // @ts-ignore
-    error.message &&
-    // @ts-ignore
-    error.message.startsWith('Failed to execute definition provider: No definition provider found')
-  )
+  return error?.message?.startsWith('Failed to execute definition provider: No definition provider found')
 }
 
-export const goToDefinition = (editor: any) => {
+export const goToDefinition = async (editor: any) => {
   return EditorGoTo.goTo({
     editor,
     getLocation,
