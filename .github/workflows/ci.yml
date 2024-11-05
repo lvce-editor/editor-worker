@@ -33,3 +33,22 @@ jobs:
         run: node scripts/build.js
       - run: npm test
       - run: npm run type-check
+      - name: Upload artifact
+        if: matrix.os == 'ubuntu-24.04'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./.tmp/static
+      - name: Clean up
+        run: rm -rf .tmp
+        shell: bash
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-24.04
+    needs: ci
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
