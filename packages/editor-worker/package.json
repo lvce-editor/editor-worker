@@ -50,7 +50,13 @@
       "no-unused-expressions": "off",
       "unicorn/better-regex": "off",
       "unicorn/no-array-push-push": "off",
-      "unicorn/prevent-abbreviations": "off"
+      "unicorn/prevent-abbreviations": "off",
+      "@typescript-eslint/semi": "off",
+      "@typescript-eslint/indent": "off",
+      "@typescript-eslint/object-curly-spacing": "off",
+      "n/file-extension-in-import": "off",
+      "@typescript-eslint/comma-dangle": "off",
+      "@typescript-eslint/naming-convention": "off"
     },
     "ignores": [
       "distmin"
