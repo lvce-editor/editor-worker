@@ -588,7 +588,7 @@ test('applyEdits - one line replaced by two', () => {
   expect(newLines).toEqual([`import 'a'`, `import 'b'`, ''])
 })
 
-test.only('applyEdits - one line deleted', () => {
+test('applyEdits - one line deleted', () => {
   const editor = {
     lines: [`b`],
     cursor: {
@@ -617,7 +617,7 @@ test.only('applyEdits - one line deleted', () => {
   expect(newLines).toEqual([''])
 })
 
-test.skip('applyEdits - multiple document edits', () => {
+test.only('applyEdits - multiple document edits', () => {
   const editor = {
     lines: [`import 'b'`, `import 'a'`, ``, `let   x = 1`, ``, ``, ``, `export {}`],
     cursor: {
