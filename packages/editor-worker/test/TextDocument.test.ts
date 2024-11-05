@@ -559,7 +559,7 @@ test('applyEdits - two lines deleted and two lines inserted', () => {
   expect(newLines).toEqual(['a', 'b', ''])
 })
 
-test.skip('applyEdits - multiple document edits', () => {
+test.only('applyEdits - multiple document edits', () => {
   const editor = {
     lines: [`import 'b'`, `import 'a'`, ``, `let   x = 1`, ``, ``, ``, `export {}`],
     cursor: {
