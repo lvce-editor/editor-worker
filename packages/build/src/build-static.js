@@ -7,14 +7,19 @@ const sharedProcessPath = join(root, 'packages', 'server', 'node_modules', '@lvc
 
 const sharedProcessUrl = pathToFileURL(sharedProcessPath).toString()
 
+await cp(join(root, 'dist'), join(root, '.tmp', 'dist'), { recursive: true })
+
 const sharedProcess = await import(sharedProcessUrl)
-console.log({ sharedProcess })
 
 const { commitHash } = await sharedProcess.exportStatic({
   root,
   extensionPath: '',
+  pathPrefix: '/editor-worker',
 })
 
-console.log({ commitHash })
+await cp(
+  join(root, '.tmp', 'dist', 'dist', 'editorWorkerMain.js'),
+  join(root, 'dist', commitHash, 'packages', 'editor-worker', 'dist', 'editorWorkerMain.js')
+)
 
-await cp(join(root, 'dist', 'dist', 'editorWorkerMain.js'), join(root, ''))
+await cp(join(root, 'dist'), join(root, '.tmp', 'static'), { recursive: true })
