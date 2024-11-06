@@ -1,5 +1,4 @@
 export const rerender = (editor: any): any => {
-  return {
-    ...editor,
-  }
+  // TODO avoid slow clone
+  return structuredClone(editor)
 }
