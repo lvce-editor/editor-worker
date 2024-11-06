@@ -14,7 +14,7 @@ export const updateDiagnostics = async (uid: number): Promise<void> => {
       return
     }
     const newEditor = {
-      ...latest.newstate,
+      ...latest.newState,
       diagnostics,
     }
     EditorState.set(uid, latest.oldState, newEditor)
