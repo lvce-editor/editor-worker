@@ -3,10 +3,11 @@ import * as Editor from '../Editor/Editor.ts'
 import type { EditorCreateOptions } from '../EditorCreateOptions/EditorCreateOptions.ts'
 import * as EditorState from '../Editors/Editors.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
-import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
+import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
+import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 const emptyEditor = {
   uri: '',
@@ -132,4 +133,8 @@ export const createEditor = async ({
   }
   EditorState.set(id, emptyEditor, newEditor4)
   await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, languageId, content)
+
+  if (diagnosticsEnabled) {
+    UpdateDiagnostics.updateDiagnostics(editor.uid)
+  }
 }
