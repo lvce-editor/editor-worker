@@ -59,6 +59,7 @@ export const createEditor = async ({
   fontFamily,
   isMonospaceFont,
   uri,
+  diagnosticsEnabled,
 }: EditorCreateOptions) => {
   Assert.number(id)
   Assert.string(content)
@@ -119,6 +120,7 @@ export const createEditor = async ({
     id,
     widgets: [],
     focusKey: FocusKey.Empty,
+    diagnosticsEnabled,
   }
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds(editor, x, y, width, height, 9)
