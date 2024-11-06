@@ -1,5 +1,6 @@
 import * as EditorState from '../Editors/Editors.ts'
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
+import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
 export const updateDiagnostics = async (uid: number): Promise<void> => {
@@ -13,13 +14,15 @@ export const updateDiagnostics = async (uid: number): Promise<void> => {
     if (!latest) {
       return
     }
+    const decorations = GetVisibleDiagnostics.getVisibleDiagnostics(latest.newState, diagnostics)
     const newEditor = {
       ...latest.newState,
       diagnostics,
+      decorations,
     }
     EditorState.set(uid, latest.oldState, newEditor)
     await RendererWorker.invoke('Editor.rerender', uid)
   } catch (error) {
-    console.error(`Failed to updated diagnostics: ${error}`)
+    console.error(`Failed to update diagnostics: ${error}`)
   }
 }
