@@ -3,15 +3,15 @@ import * as GetDiagnosticClassName from '../src/parts/GetDiagnosticClassName/Get
 
 test('error', () => {
   const type = 'error'
-  expect(GetDiagnosticClassName.getDiagnosticClassNames(type)).toBe('DiagnosticError')
+  expect(GetDiagnosticClassName.getDiagnosticClassName(type)).toBe('DiagnosticError')
 })
 
 test('warning', () => {
   const type = 'warning'
-  expect(GetDiagnosticClassName.getDiagnosticClassNames(type)).toBe('DiagnosticWarning')
+  expect(GetDiagnosticClassName.getDiagnosticClassName(type)).toBe('DiagnosticWarning')
 })
 
 test('unknown', () => {
   const type = 'unknown'
-  expect(GetDiagnosticClassName.getDiagnosticClassNames(type)).toBe('DiagnosticError')
+  expect(GetDiagnosticClassName.getDiagnosticClassName(type)).toBe('DiagnosticError')
 })

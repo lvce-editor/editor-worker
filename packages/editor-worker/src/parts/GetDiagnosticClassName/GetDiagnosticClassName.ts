@@ -1,7 +1,7 @@
 import * as DiagnosticType from '../DiagnosticType/DiagnosticType.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 
-export const getDiagnosticClassNames = (type: string): string => {
+export const getDiagnosticClassName = (type: string): string => {
   switch (type) {
     case DiagnosticType.Error:
       return ClassNames.DiagnosticError
