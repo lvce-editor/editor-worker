@@ -1,13 +1,13 @@
 import * as DiagnosticType from '../DiagnosticType/DiagnosticType.ts'
+import * as ClassNames from '../ClassNames/ClassNames.ts'
 
-export const getDiagnosticClassName = (type: any): string => {
-  // TODO use classnames enum
+export const getDiagnosticClassName = (type: string): string => {
   switch (type) {
     case DiagnosticType.Error:
-      return 'DiagnosticError'
+      return ClassNames.DiagnosticError
     case DiagnosticType.Warning:
-      return 'DiagnosticWarning'
+      return ClassNames.DiagnosticWarning
     default:
-      return 'DiagnosticError'
+      return ClassNames.DiagnosticError
   }
 }
