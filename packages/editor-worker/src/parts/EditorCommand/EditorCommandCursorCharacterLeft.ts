@@ -1,7 +1,6 @@
 import * as EditorCursorHorizontalLeft from './EditorCommandCursorHorizontalLeft.ts'
 import * as EditorDelta from './EditorCommandDelta.ts'
 
-// @ts-ignore
-export const cursorCharacterLeft = (editor) => {
+export const cursorCharacterLeft = (editor: any): any => {
   return EditorCursorHorizontalLeft.editorCursorHorizontalLeft(editor, EditorDelta.characterLeft)
 }

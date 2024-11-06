@@ -1,3 +1,4 @@
+import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
 import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import * as AddCursorAbove from '../EditorCommand/EditorCommandAddCursorAbove.ts'
@@ -6,6 +7,7 @@ import * as EditorApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as EditorBlur from '../EditorCommand/EditorCommandBlur.ts'
 import * as EditorBraceCompletion from '../EditorCommand/EditorCommandBraceCompletion.ts'
 import * as CancelSelection from '../EditorCommand/EditorCommandCancelSelection.ts'
+import * as EditorCommandCloseCodeGenerator from '../EditorCommand/EditorCommandCloseCodeGenerator.ts'
 import * as EditorCloseCompletion from '../EditorCommand/EditorCommandCloseCompletion.ts'
 import * as EditorCommandCloseFind from '../EditorCommand/EditorCommandCloseFind.ts'
 import * as CloseRename from '../EditorCommand/EditorCommandCloseRename.ts'
@@ -68,6 +70,7 @@ import * as MoveRectangleSelection from '../EditorCommand/EditorCommandMoveRecta
 import * as MoveRectangleSelectionPx from '../EditorCommand/EditorCommandMoveRectangleSelectionPx.ts'
 import * as EditorMoveSelection from '../EditorCommand/EditorCommandMoveSelection.ts'
 import * as EditorMoveSelectionPx from '../EditorCommand/EditorCommandMoveSelectionPx.ts'
+import * as EditorCommandOpenCodeGenerator from '../EditorCommand/EditorCommandOpenCodeGenerator.ts'
 import * as EditorOpenCompletion from '../EditorCommand/EditorCommandOpenCompletion.ts'
 import * as OpenFind from '../EditorCommand/EditorCommandOpenFind.ts'
 import * as OpenFind2 from '../EditorCommand/EditorCommandOpenFind2.ts'
@@ -124,6 +127,7 @@ import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 import * as EditorRenameAccept from '../EditorRenameAccept/EditorRenameAccept.ts'
 import * as EditorRenameHandleBlur from '../EditorRenameHandleBlur/EditorRenameHandleBlur.ts'
+import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as FindWidgetReplaceAll from '../FindWidgetReplaceAll/FindWidgetReplaceAll.ts'
@@ -135,13 +139,10 @@ import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
 import * as HandleTab from '../HandleTab/HandleTab.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
-import * as EditorCommandOpenCodeGenerator from '../EditorCommand/EditorCommandOpenCodeGenerator.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
-import * as EditorCommandCloseCodeGenerator from '../EditorCommand/EditorCommandCloseCodeGenerator.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
-import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
 
 export const commandMap = {
   'CodeGenerator.accept': CodeGeneratorAccept.codeGeneratorAccept,
@@ -245,6 +246,7 @@ export const commandMap = {
   'Editor.pasteText': PasteText.pasteText,
   'Editor.render': RenderEditor.renderEditor,
   'Editor.replaceRange': ReplaceRange.replaceRange,
+  'Editor.rerender': EditorRerender.rerender,
   'Editor.save': Save.save,
   'Editor.selectAll': SelectAll.selectAll,
   'Editor.selectAllLeft': SelectAllLeft.editorSelectAllLeft,
