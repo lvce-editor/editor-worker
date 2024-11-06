@@ -25,4 +25,5 @@ export interface EditorCreateOptions {
   readonly fontFamily: string
   readonly isMonospaceFont: boolean
   readonly uri: string
+  readonly diagnosticsEnabled: boolean
 }
