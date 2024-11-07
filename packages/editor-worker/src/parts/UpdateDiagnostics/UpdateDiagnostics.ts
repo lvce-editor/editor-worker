@@ -15,6 +15,9 @@ export const updateDiagnostics = async (newState: any): Promise<void> => {
     // TODO sync and ask for diagnostics at the same time?
     // TODO throttle diagnostics
     const content = TextDocument.getText(newState)
+
+    // TODO don't really need text document sync response
+    // could perhaps save a lot of messages by using send instead of invoke
     await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, newState.uri, newState.id, newState.languageId, content)
 
     const diagnostics = await ExtensionHostDiagnostic.executeDiagnosticProvider(newState)
