@@ -1,7 +1,5 @@
-import * as Assert from '../Assert/Assert.ts'
-import * as GetFontString from '../GetFontString/GetFontString.ts'
-import * as GetLetterSpacingString from '../GetLetterSpacingString/GetLetterSpacingString.ts'
-import * as GetTextMeasureContext from '../GetTextMeasureContext/GetTextMeasureContext.ts'
+import * as MeasureTextWidthFast from '../MeasureTextWidthFast/MeasureTextWidthFast.ts'
+import * as MeasureTextWidthSlow from '../MeasureTextWidthSlow/MeasureTextWidthSlow.ts'
 
 export const measureTextWidth = (
   text: string,
@@ -12,24 +10,8 @@ export const measureTextWidth = (
   isMonoSpaceFont: boolean,
   charWidth: number,
 ): number => {
-  Assert.string(text)
-  Assert.number(fontWeight)
-  Assert.number(fontSize)
-  Assert.string(fontFamily)
-  Assert.boolean(isMonoSpaceFont)
-  Assert.number(charWidth)
   if (isMonoSpaceFont) {
-    return text.length * charWidth
+    return MeasureTextWidthFast.measureTextWidthFast(text, charWidth)
   }
-  if (typeof letterSpacing !== 'number') {
-    throw new TypeError('letterSpacing must be of type number')
-  }
-  const letterSpacingString = GetLetterSpacingString.getLetterSpacingString(letterSpacing)
-  const fontString = GetFontString.getFontString(fontWeight, fontSize, fontFamily)
-  const ctx = GetTextMeasureContext.getContext()
-  ctx.letterSpacing = letterSpacingString
-  ctx.font = fontString
-  const metrics = ctx.measureText(text)
-  const width = metrics.width
-  return width
+  return MeasureTextWidthSlow.measureTextWidthSlow(text, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)
 }
