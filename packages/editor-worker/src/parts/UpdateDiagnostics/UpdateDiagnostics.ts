@@ -23,6 +23,10 @@ export const updateDiagnostics = async (uid: number): Promise<void> => {
     EditorState.set(uid, latest.oldState, newEditor)
     await RendererWorker.invoke('Editor.rerender', uid)
   } catch (error) {
+    // @ts-ignore
+    if (error && error.message.includes('No diagnostic provider found')) {
+      return
+    }
     console.error(`Failed to update diagnostics: ${error}`)
   }
 }
