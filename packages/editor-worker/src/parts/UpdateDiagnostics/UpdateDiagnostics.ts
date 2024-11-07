@@ -6,11 +6,10 @@ import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagn
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
-export const updateDiagnostics = async (uid: number): Promise<void> => {
+export const updateDiagnostics = async (newState: any): Promise<void> => {
   try {
     // TODO handle error
     // TODO handle race condition
-    const { newState } = EditorState.get(uid)
 
     // TODO sync textdocument incrementally
     // TODO sync and ask for diagnostics at the same time?
@@ -19,7 +18,7 @@ export const updateDiagnostics = async (uid: number): Promise<void> => {
     await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, newState.uri, newState.id, newState.languageId, content)
 
     const diagnostics = await ExtensionHostDiagnostic.executeDiagnosticProvider(newState)
-    const latest = EditorState.get(uid)
+    const latest = EditorState.get(newState.id)
     if (!latest) {
       return
     }
@@ -29,8 +28,8 @@ export const updateDiagnostics = async (uid: number): Promise<void> => {
       diagnostics,
       decorations,
     }
-    EditorState.set(uid, latest.oldState, newEditor)
-    await RendererWorker.invoke('Editor.rerender', uid)
+    EditorState.set(newState.id, latest.oldState, newEditor)
+    await RendererWorker.invoke('Editor.rerender', newState.id)
   } catch (error) {
     // @ts-ignore
     if (error && error.message.includes('No diagnostic provider found')) {
