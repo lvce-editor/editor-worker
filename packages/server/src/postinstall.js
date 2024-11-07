@@ -1,3 +1,4 @@
+import { write } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -14,13 +15,17 @@ const sharedProcessPath = join(nodeModulesPath, '@lvce-editor', 'shared-process'
 
 const file = join(sharedProcessPath, 'src', 'parts', 'AddCustomPathsToIndexHtml', 'AddCustomPathsToIndexHtml.js')
 
-const content = await readFile(file, 'utf8')
+const newContent = `import * as GetRemoteUrl from '../GetRemoteUrl/GetRemoteUrl.js';
 
-const newContent = content.replaceAll(
-  'const config = Object.create(null)',
-  `const config = Object.create(null)
-    config['develop.editorWorkerPath'] = '${editorWorkerPath}'
+export const addCustomPathsToIndexHtml = async (content) => {
+    const config = Object.create(null)
+    config['develop.editorWorkerPath'] = GetRemoteUrl.getRemoteUrl('${editorWorkerPath}')
+    const stringifiedConfig = JSON.stringify(config, null, 2);
+    let newContent = content
+    newContent = newContent.toString().replace('</title>', \`</title>
+    <script type="application.json" id="Config">\${stringifiedConfig}</script>\`);
+    return newContent;
+};
 `
-)
 
 await writeFile(file, newContent)
