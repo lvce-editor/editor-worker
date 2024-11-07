@@ -135,6 +135,6 @@ export const createEditor = async ({
   await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, languageId, content)
 
   if (diagnosticsEnabled) {
-    UpdateDiagnostics.updateDiagnostics(editor.uid)
+    UpdateDiagnostics.updateDiagnostics(newEditor4)
   }
 }

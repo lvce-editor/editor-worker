@@ -7,6 +7,6 @@ export const editorDiagnosticEffect = {
   },
   // TODO set effects delay / diagnostic delay
   async apply(editor: any) {
-    await UpdateDiagnostics.updateDiagnostics(editor.id)
+    await UpdateDiagnostics.updateDiagnostics(editor)
   },
 }
