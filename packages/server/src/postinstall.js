@@ -33,11 +33,12 @@ const serverJsPath = join(nodeModulesPath, '@lvce-editor', 'server', 'src', 'ser
 
 const oldContent = await readFile(serverJsPath, 'utf8')
 
-const newContent2 = oldContent.replace(
-  `app.use('/packages', servePackages, serve404())`,
-  `app.use('/packages', servePackages, serve404())
-app.use('/', servePackages, serve404())
-`
-)
-
-await writeFile(serverJsPath, newContent2)
+if (!oldContent.includes(`app.use('/', servePackages, serve404())`)) {
+  const newContent2 = oldContent.replace(
+    `app.use('/packages', servePackages, serve404())`,
+    `app.use('/packages', servePackages, serve404())
+    app.use('/', servePackages, serve404())
+    `
+  )
+  await writeFile(serverJsPath, newContent2)
+}
