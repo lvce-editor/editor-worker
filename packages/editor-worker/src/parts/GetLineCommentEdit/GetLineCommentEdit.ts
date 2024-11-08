@@ -3,7 +3,7 @@ import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 
 const RE_WHITESPACE_AT_START = /^\s+/
 
-export const getLineCommentEdit = (rowIndex: number, line: string, lineComment: any): Edit => {
+export const getLineCommentEdit = (rowIndex: number, line: string, lineComment: string): Edit => {
   const whitespaceMatch = line.match(RE_WHITESPACE_AT_START)
   const index = whitespaceMatch ? whitespaceMatch[0].length : 0
   if (line.slice(index).startsWith(lineComment)) {
@@ -11,7 +11,7 @@ export const getLineCommentEdit = (rowIndex: number, line: string, lineComment: 
     if (line[index + lineComment.length] === ' ') {
       return {
         inserted: [''],
-        deleted: [lineComment.length + 1],
+        deleted: [lineComment + ' '],
         start: {
           rowIndex,
           columnIndex: index,
