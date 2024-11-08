@@ -9,6 +9,6 @@ const newStateGenerator = async (state: HoverState): Promise<HoverState> => {
   return LoadHoverContent.loadHoverContent(state)
 }
 
-export const showHover2 = async (editor: any) => {
+export const showHover2 = async (editor: any): Promise<any> => {
   return AddWidgetToEditor.addWidgetToEditor(WidgetId.Hover, FocusKey.FocusEditorHover, editor, HoverWidgetFactory.create, newStateGenerator)
 }
