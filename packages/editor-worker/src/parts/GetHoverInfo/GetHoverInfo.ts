@@ -68,7 +68,7 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
     displayStringLanguageId || fallbackDisplayStringLanguageId,
     tokenizerPath,
   )
-  const wordPart = await GetWordAt.getWordBefore(editor, rowIndex, columnIndex)
+  const wordPart = GetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   const wordStart = columnIndex - wordPart.length
   const documentationHeight = await MeasureTextHeight.measureTextBlockHeight(
     documentation,

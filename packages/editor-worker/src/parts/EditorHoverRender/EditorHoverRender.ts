@@ -19,9 +19,8 @@ const renderBounds = {
     return oldState.x === newState.x && oldState.y === newState.y
   },
   apply(oldState: HoverState, newState: HoverState) {
-    const { x, y, height } = newState
-    const renderWidth = 200
-    return [RenderMethod.SetBounds, x, y, renderWidth, height]
+    const { x, y, width, height } = newState
+    return [RenderMethod.SetBounds, x, y, width, height]
   },
 }
 

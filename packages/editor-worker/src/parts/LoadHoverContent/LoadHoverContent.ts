@@ -15,6 +15,7 @@ export const loadHoverContent = async (state: HoverState): Promise<HoverState> =
     documentation,
     x,
     y,
+    width: 600,
     diagnostics: matchingDiagnostics,
   }
 }
