@@ -6,8 +6,7 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 const RE_WHITESPACE_AT_START = /^\s+/
 const RE_WHITESPACE_AT_END = /\s+$/
 
-// @ts-ignore
-export const toggleBlockComment = async (editor) => {
+export const toggleBlockComment = async (editor: any) => {
   const blockComment = await GetBlockComment.getBlockComment(editor)
   if (!blockComment) {
     return editor

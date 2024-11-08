@@ -5,7 +5,7 @@ import * as EditorShowMessage from './EditorCommandShowMessage.ts'
 
 // TODO rename file
 // TODO when handle case when editor has selection
-export const toggleComment = async (editor: any) => {
+export const toggleComment = async (editor: any): Promise<any> => {
   try {
     const newEditor = await EditorToggleLineComment.editorToggleLineComment(editor)
     if (editor !== newEditor) {
