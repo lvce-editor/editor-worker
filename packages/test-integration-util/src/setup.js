@@ -53,6 +53,9 @@ const createWrappedRpc = (rpc) => {
   rpc.Editor.type = (...params) => {
     return rpc.invoke('Editor.type', ...params)
   }
+  rpc.Editor.toggleComment = (...params) => {
+    return rpc.invoke('Editor.toggleComment', ...params)
+  }
   rpc.Editor.handleTab = (...params) => {
     return rpc.invoke('Editor.handleTab', ...params)
   }
@@ -135,6 +138,14 @@ export const setup = async () => {
     'Focus.setAdditionalFocus'() {},
     'Focus.setFocus'() {},
     'Viewlet.openWidget'() {},
+    'Languages.getLanguageConfiguration'() {
+      return {
+        comments: {
+          lineComment: '//',
+          blockComment: ['/*', '*/'],
+        },
+      }
+    },
   }
   const rpc = await createWorker(workerPath, commandMap)
   const syntaxHighlightingEnabled = true
