@@ -142,6 +142,7 @@ import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
 
 export const commandMap = {
@@ -282,6 +283,7 @@ export const commandMap = {
   'Editor.typeWithAutoClosing': EditorTypeWithAutoClosing.typeWithAutoClosing,
   'Editor.undo': EditorUndo.undo,
   'Editor.unIndent': Unindent.editorUnindent,
+  'Editor.updateDiagnostics': UpdateDiagnostics.updateDiagnostics,
   'EditorCompletion.advance': EditorCompletion.advance,
   'EditorCompletion.closeDetails': EditorCompletionCloseDetails.closeDetails,
   'EditorCompletion.focusFirst': EditorCompletionFocusFirst.focusFirst,
