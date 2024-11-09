@@ -56,6 +56,9 @@ const createWrappedRpc = (rpc) => {
   rpc.Editor.toggleComment = (...params) => {
     return rpc.invoke('Editor.toggleComment', ...params)
   }
+  rpc.Editor.toggleBlockComment = (...params) => {
+    return rpc.invoke('Editor.toggleBlockComment', ...params)
+  }
   rpc.Editor.handleTab = (...params) => {
     return rpc.invoke('Editor.handleTab', ...params)
   }
