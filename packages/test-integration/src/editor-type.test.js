@@ -1,8 +1,10 @@
 import * as assert from 'assert'
 
+const id = 0
+
 export const test = async ({ Editor }) => {
   await Editor.create({
-    id: 0,
+    id,
     content: 'abc',
     fontFamily: '',
     fontSize: 14,
@@ -14,10 +16,10 @@ export const test = async ({ Editor }) => {
     isMonospaceFont: true,
     charWidth: 9,
   })
-  await Editor.cursorSet(0, 0, 3)
-  await Editor.type(0, 'd')
-  const selections = await Editor.getSelections(0)
+  await Editor.cursorSet(id, 0, 3)
+  await Editor.type(id, 'd')
+  const selections = await Editor.getSelections(id)
   assert.deepEqual(selections, new Uint32Array([0, 4, 0, 4]))
-  const text = await Editor.getText(0)
+  const text = await Editor.getText(id)
   assert.deepEqual(text, 'abcd')
 }
