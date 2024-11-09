@@ -50,6 +50,9 @@ const createWrappedRpc = (rpc) => {
   rpc.Editor.cursorSet = (...params) => {
     return rpc.invoke('Editor.cursorSet', ...params)
   }
+  rpc.Editor.type = (...params) => {
+    return rpc.invoke('Editor.type', ...params)
+  }
   rpc.Editor.handleTab = (...params) => {
     return rpc.invoke('Editor.handleTab', ...params)
   }
