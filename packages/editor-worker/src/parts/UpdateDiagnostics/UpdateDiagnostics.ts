@@ -6,7 +6,7 @@ import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagn
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
-export const updateDiagnostics = async (newState: any): Promise<void> => {
+export const updateDiagnostics = async (newState: any): Promise<any> => {
   try {
     // TODO handle error
     // TODO handle race condition
@@ -23,7 +23,7 @@ export const updateDiagnostics = async (newState: any): Promise<void> => {
     const diagnostics = await ExtensionHostDiagnostic.executeDiagnosticProvider(newState)
     const latest = EditorState.get(newState.id)
     if (!latest) {
-      return
+      return newState
     }
     const decorations = GetVisibleDiagnostics.getVisibleDiagnostics(latest.newState, diagnostics)
     const newEditor = {
@@ -33,6 +33,7 @@ export const updateDiagnostics = async (newState: any): Promise<void> => {
     }
     EditorState.set(newState.id, latest.oldState, newEditor)
     await RendererWorker.invoke('Editor.rerender', newState.id)
+    return newEditor
   } catch (error) {
     // @ts-ignore
     if (error && error.message.includes('No diagnostic provider found')) {
