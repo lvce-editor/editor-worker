@@ -20,7 +20,7 @@ export const getIncrementalEdits = async (oldState: any, newState: any) => {
         oldLine,
         newLine,
         rowIndex,
-        newState.minLineY,
+        newState.minLineY
       )
       if (incrementalEdits && incrementalEdits.length === 1) {
         return incrementalEdits

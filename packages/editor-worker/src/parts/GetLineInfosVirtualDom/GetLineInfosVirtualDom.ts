@@ -1,9 +1,10 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
+import { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
-const getLineInfoVirtualDom = (lineInfo: any) => {
-  const dom = [
+const getLineInfoVirtualDom = (lineInfo: readonly string[]): readonly VirtualDomNode[] => {
+  const dom: VirtualDomNode[] = [
     {
       type: VirtualDomElements.Div,
       className: ClassNames.HoverEditorRow,
@@ -19,14 +20,13 @@ const getLineInfoVirtualDom = (lineInfo: any) => {
         className: tokenClass,
         childCount: 1,
       },
-      // @ts-ignore
-      text(tokenText),
+      text(tokenText)
     )
   }
   return dom
 }
 
-export const getLineInfosVirtualDom = (lineInfos: any[]) => {
+export const getLineInfosVirtualDom = (lineInfos: readonly (readonly string[])[]): readonly VirtualDomNode[] => {
   const dom = lineInfos.flatMap(getLineInfoVirtualDom)
   return dom
 }
