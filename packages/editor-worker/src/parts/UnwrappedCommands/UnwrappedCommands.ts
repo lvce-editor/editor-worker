@@ -7,6 +7,7 @@ export const keep = [
   'Editor.getWordBefore',
   'Editor.offsetAt',
   'Editor.render',
+  'Editor.getKeyBindings',
   // 'ColorPicker.render',
   'Editor.getText',
   'Editor.getSelections',
