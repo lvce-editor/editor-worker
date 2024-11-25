@@ -16,6 +16,7 @@ import * as EditorOpenColorPicker from '../EditorCommand/EditorCommandColorPicke
 import * as Composition from '../EditorCommand/EditorCommandComposition.ts'
 import * as Copy from '../EditorCommand/EditorCommandCopy.ts'
 import * as CopyLineDown from '../EditorCommand/EditorCommandCopyLineDown.ts'
+import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
 import * as CopyLineUp from '../EditorCommand/EditorCommandCopyLineUp.ts'
 import * as CursorCharacterLeft from '../EditorCommand/EditorCommandCursorCharacterLeft.ts'
 import * as CursorCharacterRight from '../EditorCommand/EditorCommandCursorCharacterRight.ts'
@@ -195,6 +196,7 @@ export const commandMap = {
   'Editor.deleteWordRight': DeleteWordRight.deleteWordRight,
   'Editor.findAllReferences': FindAllReferences.findAllReferences,
   'Editor.format': EditorFormat.format,
+  'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
   'Editor.getSelections': GetSelections.getSelections,
   'Editor.getText': GetText.getText,
   'Editor.getWordAt': GetWordAt.getWordAt,
