@@ -1,0 +1,13 @@
+export const FocusEditor = 12
+export const FocusEditorCompletions = 9
+export const FocusEditorRename = 11
+export const FocusEditorText = 12
+export const FocusFindWidget = 16
+export const FocusSourceActions = 38
+export const FocusFindWidgetReplace = 43
+export const FocusFindWidgetReplaceButton = 46
+export const FocusFindWidgetReplaceAllButton = 47
+export const FocusFindWidgetCloseButton = 48
+export const FocusFindWidgetNextMatchButton = 49
+export const FocusFindWidgetPreviousMatchButton = 50
+export const FocusEditorCodeGenerator = 52
