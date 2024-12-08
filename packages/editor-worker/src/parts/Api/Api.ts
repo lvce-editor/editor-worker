@@ -4,13 +4,14 @@ interface EventMap {
   'ColorPicker.loadContent': (state: any) => Promise<any>
   'ColorPicker.render': (oldState: any, newState: any) => Promise<any>
   'Editor.create': (options: any) => Promise<void>
+  'Editor.getQuickPickMenuEntries': () => Promise<readonly any[]>
   'Editor.offsetAt': (textDocument: any, positionRowIndex: number, positionColumnIndex: number) => Promise<any>
   'Editor.render': (editorUid: number) => Promise<any>
+  'EditorCompletion.closeDetails': (editorUid: number, state: any) => Promise<any>
   'EditorCompletion.loadContent': (editorUid: number, state: any) => Promise<any>
+  'EditorCompletion.openDetails': (editorUid: number, state: any) => Promise<any>
   'EditorCompletion.selectCurrent': (editorUid: number, state: any) => Promise<any>
   'EditorCompletion.selectIndex': (editorUid: number, state: any, index: number) => Promise<any>
-  'EditorCompletion.openDetails': (editorUid: number, state: any) => Promise<any>
-  'EditorCompletion.closeDetails': (editorUid: number, state: any) => Promise<any>
   'EditorCompletion.toggleDetails': (editorUid: number, state: any) => Promise<any>
   'FindWidget.focusFirst': (state: any) => Promise<any>
   'FindWidget.focusIndex': (state: any, index: number) => Promise<any>
