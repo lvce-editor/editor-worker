@@ -40,11 +40,11 @@ test('organizeImports', () => {
 })
 
 test('escapeToClose', () => {
-  expect(EditorStrings.escapeToClose()).toBe('Press Escape to close')
+  expect(EditorStrings.escapeToClose()).toBe('Escape to close')
 })
 
 test('enterCode', () => {
-  expect(EditorStrings.enterCode()).toBe('Enter code')
+  expect(EditorStrings.enterCode()).toBe('Enter Code')
 })
 
 test('formatDocument', () => {
@@ -56,51 +56,51 @@ test('editorShowHover', () => {
 })
 
 test('editorFormatDocumentForced', () => {
-  expect(EditorStrings.editorFormatDocumentForced()).toBe('Format Document (Forced)')
+  expect(EditorStrings.editorFormatDocumentForced()).toBe('Editor: Format Document (forced)')
 })
 
 test('editorSelectNextOccurrence', () => {
-  expect(EditorStrings.editorSelectNextOccurrence()).toBe('Select Next Occurrence')
+  expect(EditorStrings.editorSelectNextOccurrence()).toBe('Editor: Select Next Occurrence')
 })
 
 test('editorSelectAllOccurrences', () => {
-  expect(EditorStrings.editorSelectAllOccurrences()).toBe('Select All Occurrences')
+  expect(EditorStrings.editorSelectAllOccurrences()).toBe('Editor: Select All Occurrences')
 })
 
 test('editorGoToDefinition', () => {
-  expect(EditorStrings.editorGoToDefinition()).toBe('Go to Definition')
+  expect(EditorStrings.editorGoToDefinition()).toBe('Editor: Go To Definition')
 })
 
 test('editorGoToTypeDefinition', () => {
-  expect(EditorStrings.editorGoToTypeDefinition()).toBe('Go to Type Definition')
+  expect(EditorStrings.editorGoToTypeDefinition()).toBe('Editor: Go To Type Definition')
 })
 
 test('editorSelectInsideString', () => {
-  expect(EditorStrings.editorSelectInsideString()).toBe('Select Inside String')
+  expect(EditorStrings.editorSelectInsideString()).toBe('Editor: Select Inside String')
 })
 
 test('editorIndent', () => {
-  expect(EditorStrings.editorIndent()).toBe('Indent')
+  expect(EditorStrings.editorIndent()).toBe('Editor: Indent')
 })
 
 test('editorUnindent', () => {
-  expect(EditorStrings.editorUnindent()).toBe('Unindent')
+  expect(EditorStrings.editorUnindent()).toBe('Editor: Unindent')
 })
 
 test('editorSortLinesAscending', () => {
-  expect(EditorStrings.editorSortLinesAscending()).toBe('Sort Lines Ascending')
+  expect(EditorStrings.editorSortLinesAscending()).toBe('Editor: Sort Lines Ascending')
 })
 
 test('editorToggleComment', () => {
-  expect(EditorStrings.editorToggleComment()).toBe('Toggle Comment')
+  expect(EditorStrings.editorToggleComment()).toBe('Editor: Toggle Comment')
 })
 
 test('editorSelectUp', () => {
-  expect(EditorStrings.editorSelectUp()).toBe('Select Up')
+  expect(EditorStrings.editorSelectUp()).toBe('Editor: Select Up')
 })
 
 test('editorSelectDown', () => {
-  expect(EditorStrings.editorSelectDown()).toBe('Select Down')
+  expect(EditorStrings.editorSelectDown()).toBe('Editor: Select Down')
 })
 
 test('toggleBlockComment', () => {
@@ -108,19 +108,19 @@ test('toggleBlockComment', () => {
 })
 
 test('editorOpenColorPicker', () => {
-  expect(EditorStrings.editorOpenColorPicker()).toBe('Open Color Picker')
+  expect(EditorStrings.editorOpenColorPicker()).toBe('Editor: Open Color Picker')
 })
 
 test('editorCloseColorPicker', () => {
-  expect(EditorStrings.editorCloseColorPicker()).toBe('Close Color Picker')
+  expect(EditorStrings.editorCloseColorPicker()).toBe('Editor: Close Color Picker')
 })
 
 test('editorCopyLineDown', () => {
-  expect(EditorStrings.editorCopyLineDown()).toBe('Copy Line Down')
+  expect(EditorStrings.editorCopyLineDown()).toBe('Editor: Copy Line Down')
 })
 
 test('editorCopyLineUp', () => {
-  expect(EditorStrings.editorCopyLineUp()).toBe('Copy Line Up')
+  expect(EditorStrings.editorCopyLineUp()).toBe('Editor: Copy Line Up')
 })
 
 test('moveLineDown', () => {
