@@ -20,7 +20,7 @@
   "devDependencies": {
     "@lerna/legacy-package-management": "^8.1.9",
     "lerna": "^8.1.9",
-    "prettier": "^3.4.1",
+    "prettier": "^3.4.2",
     "typescript": "^5.7.2"
   },
   "prettier": {
