@@ -16,7 +16,6 @@ import * as EditorOpenColorPicker from '../EditorCommand/EditorCommandColorPicke
 import * as Composition from '../EditorCommand/EditorCommandComposition.ts'
 import * as Copy from '../EditorCommand/EditorCommandCopy.ts'
 import * as CopyLineDown from '../EditorCommand/EditorCommandCopyLineDown.ts'
-import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
 import * as CopyLineUp from '../EditorCommand/EditorCommandCopyLineUp.ts'
 import * as CursorCharacterLeft from '../EditorCommand/EditorCommandCursorCharacterLeft.ts'
 import * as CursorCharacterRight from '../EditorCommand/EditorCommandCursorCharacterRight.ts'
@@ -134,6 +133,8 @@ import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as FindWidgetReplaceAll from '../FindWidgetReplaceAll/FindWidgetReplaceAll.ts'
 import * as Font from '../Font/Font.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
+import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
+import * as GetQuickPickMenuEntries from '../GetQuickPickMenuEntries/GetQuickPickMenuEntries.ts'
 import * as GetSelections from '../GetSelections/GetSelections.ts'
 import * as GetText from '../GetText/GetText.ts'
 import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
@@ -197,6 +198,7 @@ export const commandMap = {
   'Editor.findAllReferences': FindAllReferences.findAllReferences,
   'Editor.format': EditorFormat.format,
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
+  'Editor.getQuickPickMenuEntries': GetQuickPickMenuEntries.getQuickPickMenuEntries,
   'Editor.getSelections': GetSelections.getSelections,
   'Editor.getText': GetText.getText,
   'Editor.getWordAt': GetWordAt.getWordAt,
