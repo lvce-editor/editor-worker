@@ -14,7 +14,7 @@
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@types/node": "^22.9.0",
     "esbuild": "^0.24.0",
-    "execa": "^9.5.1",
+    "execa": "^9.5.2",
     "rollup": "^4.27.3"
   }
 }
