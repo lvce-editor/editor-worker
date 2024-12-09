@@ -8,6 +8,7 @@ import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 export const render = (widget: IFindWidget) => {
   const commands: readonly any[] = FindWidgetRender.apply(widget.oldState, widget.newState)
   const wrappedCommands = []
+  wrappedCommands.push()
   const uid = widget.newState.uid
   for (const command of commands) {
     if (command[0] === RenderMethod.SetDom2) {
@@ -19,8 +20,77 @@ export const render = (widget: IFindWidget) => {
   return wrappedCommands
 }
 
+const renderEventListeners = () => {
+  return [
+    {
+      name: 'handleInput',
+      params: ['FindWidget.handleInput', 'event.target.value'],
+    },
+    {
+      name: 'handleClickClose',
+      params: ['FindWidget.close'],
+    },
+    {
+      name: 'handleClickPreviousMatch',
+      params: ['FindWidget.focusPrevious'],
+    },
+    {
+      name: 'handleClickNextMatch',
+      params: ['FindWidget.focusNext'],
+    },
+    {
+      name: 'handleClickReplace',
+      params: ['FindWidget.replace'],
+    },
+    {
+      name: 'handleClickReplaceAll',
+      params: ['FindWidget.replaceAll'],
+    },
+    {
+      name: 'handleClickToggleReplace',
+      params: ['FindWidget.toggleReplace'],
+    },
+    {
+      name: 'handleInputBlur',
+      params: ['FindWidget.handleBlur'],
+    },
+    {
+      name: 'handleReplaceInput',
+      params: ['FindWidget.handleReplaceInput', 'event.target.value'],
+    },
+    {
+      name: 'handleReplaceFocus',
+      params: ['FindWidget.handleReplaceFocus'],
+    },
+    {
+      name: 'handleFocus',
+      params: ['FindWidget.handleFocus'],
+    },
+    {
+      name: 'handleToggleReplaceFocus',
+      params: ['FindWidget.handleToggleReplaceFocus'],
+    },
+    {
+      name: 'handleFocusPrevious',
+      params: ['FindWidget.handleFocusPrevious'],
+    },
+    {
+      name: 'handleFocusNext',
+      params: ['FindWidget.handleFocusNext'],
+    },
+    {
+      name: 'handleFocusClose',
+      params: ['FindWidget.handleFocusClose'],
+    },
+    {
+      name: 'handleFocusReplaceAll',
+      params: ['FindWidget.handleFocusReplaceAll'],
+    },
+  ]
+}
+
 export const add = (widget: IFindWidget) => {
-  return AddWidget.addWidget(widget, 'FindWidget', render)
+  return AddWidget.addWidget(widget, 'FindWidget', render, renderEventListeners)
 }
 
 export const remove = RemoveWidget.removeWidget

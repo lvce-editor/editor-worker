@@ -1,13 +1,25 @@
 import type { Widget } from '../Widget/Widget.ts'
 
-export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Widget<T>) => readonly any[]): readonly any[] => {
+export const addWidget = <T>(
+  widget: Widget<T>,
+  id: string,
+  render: (widget: Widget<T>) => readonly any[],
+  renderEventListeners?: (widget: Widget<T>) => readonly any[],
+): readonly any[] => {
   const commands = render(widget)
+  let eventListeners: readonly any[] = []
+  if (renderEventListeners) {
+    eventListeners = renderEventListeners(widget)
+  }
   // TODO how to generate a unique integer id
   // that doesn't collide with ids created in renderer worker?
   // @ts-ignore
   const uid = widget.newState.uid
   const allCommands: any[] = []
   allCommands.push(['Viewlet.createFunctionalRoot', id, uid])
+  if (eventListeners.length > 0) {
+    allCommands.push(['Viewlet.registerEventListeners', uid, eventListeners])
+  }
   allCommands.push(...commands)
   allCommands.push(['Viewlet.send', uid, 'appendWidget'])
   const focusCommandIndex = allCommands.findIndex((command) => {
