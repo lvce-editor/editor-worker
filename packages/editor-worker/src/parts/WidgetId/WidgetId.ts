@@ -1,4 +1,3 @@
-// TODO use numeric widget id
 export const CodeGenerator = 1
 export const ColorPicker = 2
 export const Completion = 3
