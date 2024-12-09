@@ -16,7 +16,8 @@ export const addWidget = <T>(
   // @ts-ignore
   const uid = widget.newState.uid
   const allCommands: any[] = []
-  allCommands.push(['Viewlet.createFunctionalRoot', id, uid])
+  const hasFunctionalEvents = Boolean(renderEventListeners)
+  allCommands.push(['Viewlet.createFunctionalRoot', id, uid, hasFunctionalEvents])
   if (eventListeners.length > 0) {
     allCommands.push(['Viewlet.registerEventListeners', uid, eventListeners])
   }
