@@ -15,8 +15,8 @@ const nodeModulesPath = join(root, 'packages', 'server', 'node_modules')
 
 const editorWorkerPath = join(root, 'dist', 'dist', 'editorWorkerMain.js')
 
-const serverPath = join(nodeModulesPath, '@lvce-editor', 'server')
-const indexHtmlPath = join(serverPath, 'static', 'index.html')
+const staticPath = join(nodeModulesPath, '@lvce-editor', 'static-server', 'static')
+const indexHtmlPath = join(staticPath, 'index.html')
 
 const indexHtmlContent = await readFile(indexHtmlPath, 'utf8')
 
@@ -29,7 +29,7 @@ const stringifiedConfig = JSON.stringify(config, null, 2)
 const newContent = indexHtmlContent.replace(
   '</title>',
   `</title>
-  <script type="application/json" id="Config">${stringifiedConfig}</script>`
+  <script type="application/json" id="Config">${stringifiedConfig}</script>`,
 )
 
 await writeFile(indexHtmlPath, newContent)
