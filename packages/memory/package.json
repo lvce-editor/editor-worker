@@ -11,6 +11,6 @@
     "@types/express": "^5.0.0",
     "chrome-remote-interface": "^0.33.2",
     "express": "^4.21.2",
-    "playwright": "^1.49.0"
+    "playwright": "^1.49.1"
   }
 }
