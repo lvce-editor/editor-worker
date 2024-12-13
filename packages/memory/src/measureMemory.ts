@@ -7,6 +7,10 @@ import { startServer } from './server.ts'
 import { waitForWorkerReady } from './waitForWorkerReady.ts'
 
 const main = async () => {
+  if (process.platform === 'win32') {
+    // not supported
+    return
+  }
   const options = parseArgs()
 
   const server = await startServer(options.port, workerPath)
