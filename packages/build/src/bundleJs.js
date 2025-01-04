@@ -23,6 +23,7 @@ const options = {
       objectShorthand: true,
     },
   },
+  external:['electron', 'ws'],
   plugins: [
     babel({
       babelHelpers: 'bundled',
