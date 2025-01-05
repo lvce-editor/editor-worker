@@ -1,7 +1,7 @@
-import * as GetRenameVirtualDom from '../GetRenameVirtualDom/GetRenameVirtualDom.ts'
 import type { RenameState } from '../RenameState/RenameState.ts'
-import * as RenderParts from '../RenderParts/RenderParts.ts'
+import * as GetRenameVirtualDom from '../GetRenameVirtualDom/GetRenameVirtualDom.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
+import * as RenderParts from '../RenderParts/RenderParts.ts'
 
 const renderContent = {
   isEqual(oldState: RenameState, newState: RenameState) {

@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
-import * as GetFindWidgetFocusSelector from '../src/parts/GetFindWidgetFocusSelector/GetFindWidgetFocusSelector.ts'
 import * as FocusKey from '../src/parts/FocusKey/FocusKey.ts'
+import * as GetFindWidgetFocusSelector from '../src/parts/GetFindWidgetFocusSelector/GetFindWidgetFocusSelector.ts'
 
 test('find', () => {
   const focus = FocusKey.FindWidget

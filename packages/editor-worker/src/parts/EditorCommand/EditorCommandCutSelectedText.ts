@@ -1,6 +1,6 @@
 import * as ClipBoard from '../ClipBoard/ClipBoard.ts'
-import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as Editor from '../Editor/Editor.ts'
+import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as JoinLines from '../JoinLines/JoinLines.ts'
 import * as EditorReplaceSelections from './EditorCommandReplaceSelection.ts'
 

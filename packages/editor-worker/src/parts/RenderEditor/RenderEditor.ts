@@ -1,16 +1,16 @@
+import * as Editors from '../Editors/Editors.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
-import * as Editors from '../Editors/Editors.ts'
 import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
 import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
 import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
 import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
-import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
 const renderLines = {
   isEqual(oldState: any, newState: any) {

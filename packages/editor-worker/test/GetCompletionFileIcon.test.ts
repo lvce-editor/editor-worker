@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
-import * as GetCompletionFileIcon from '../src/parts/GetCompletionFileIcon/GetCompletionFileIcon.ts'
 import * as EditorCompletionType from '../src/parts/EditorCompletionType/EditorCompletionType.ts'
+import * as GetCompletionFileIcon from '../src/parts/GetCompletionFileIcon/GetCompletionFileIcon.ts'
 
 test('file', () => {
   const kind = EditorCompletionType.File

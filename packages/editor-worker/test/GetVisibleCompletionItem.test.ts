@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
-import * as GetVisibleCompletionItem from '../src/parts/GetVisibleCompletionItem/GetVisibleCompletionItem.ts'
 import * as EditorCompletionType from '../src/parts/EditorCompletionType/EditorCompletionType.ts'
+import * as GetVisibleCompletionItem from '../src/parts/GetVisibleCompletionItem/GetVisibleCompletionItem.ts'
 
 test('getVisibleCompletionItem', () => {
   const visibleItem = {

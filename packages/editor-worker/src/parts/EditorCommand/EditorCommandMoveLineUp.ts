@@ -1,7 +1,7 @@
 // @ts-ignore
-import * as TextDocument from '../TextDocument/TextDocument.ts'
-// @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
+// @ts-ignore
+import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 // TODO handle multiple cursors
 // @ts-ignore

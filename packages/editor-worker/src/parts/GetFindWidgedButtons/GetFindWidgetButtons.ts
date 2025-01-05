@@ -1,7 +1,7 @@
-import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
-import * as FindStrings from '../FindStrings/FindStrings.ts'
 import type { FindWidgetButton } from '../FindWidgetButton/FindWidgetButton.ts'
 import type { FindWidgetButtons } from '../FindWidgetButtons/FindWidgetButtons.ts'
+import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
+import * as FindStrings from '../FindStrings/FindStrings.ts'
 import * as Icon from '../Icon/Icon.ts'
 import * as Names from '../Names/Names.ts'
 

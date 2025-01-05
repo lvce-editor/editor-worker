@@ -1,6 +1,6 @@
+import * as Character from '../Character/Character.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
-import * as Character from '../Character/Character.ts'
 
 const getNewSelections = (lines: readonly string[], selections: any) => {
   const newSelections = new Uint32Array(selections.length)

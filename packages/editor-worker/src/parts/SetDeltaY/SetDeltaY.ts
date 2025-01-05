@@ -1,7 +1,7 @@
+import type { VirtualListState } from '../VirtualListState/VirtualListState.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as Clamp from '../Clamp/Clamp.ts'
 import * as GetNumberOfVisibleItems from '../GetNumberOfVisibleItems/GetNumberOfVisibleItems.ts'
-import type { VirtualListState } from '../VirtualListState/VirtualListState.ts'
 
 export const setDeltaY = <K, T extends VirtualListState<K>>(state: T, value: number): T => {
   Assert.object(state)

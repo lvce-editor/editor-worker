@@ -1,5 +1,5 @@
-import * as Id from '../Id/Id.ts'
 import type { RenameWidget } from '../RenameWidget/RenameWidget.ts'
+import * as Id from '../Id/Id.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const create = (): RenameWidget => {

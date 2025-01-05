@@ -1,7 +1,7 @@
+import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
 import * as FindWidgetFactory from '../FindWidgetFactory/FindWidgetFactory.ts'
 import * as FindWidgetFunctions from '../FindWidgetFunctions/FindWidgetFunctions.ts'
-import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as FocusSource from '../FocusSource/FocusSource.ts'
 import * as GetFindWidgetPosition from '../GetFindWidgetPosition/GetFindWidgetPosition.ts'

@@ -1,6 +1,6 @@
 import type { Page } from 'playwright'
-import * as WorkerState from './workerState.ts'
 import { WorkerInitializationError } from './errors.ts'
+import * as WorkerState from './workerState.ts'
 
 export const waitForWorkerReady = async (page: Page): Promise<void> => {
   const workerState = await Promise.race([

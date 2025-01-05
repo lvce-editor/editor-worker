@@ -1,7 +1,7 @@
 import * as IpcParentType from '../IpcParentType/IpcParentType.ts'
 import * as IpcParentWithExtensionHostWorker from '../IpcParentWithExtensionHostWorker/IpcParentWithExtensionHostWorker.ts'
-import * as IpcParentWithSyntaxHighlightingWorker from '../IpcParentWithSyntaxHighlightingWorker/IpcParentWithSyntaxHighlightingWorker.ts'
 import * as IpcParentWithRendererProcess from '../IpcParentWithRendererProcess/IpcParentWithRendererProcess.ts'
+import * as IpcParentWithSyntaxHighlightingWorker from '../IpcParentWithSyntaxHighlightingWorker/IpcParentWithSyntaxHighlightingWorker.ts'
 
 export const getModule = (method: any) => {
   switch (method) {

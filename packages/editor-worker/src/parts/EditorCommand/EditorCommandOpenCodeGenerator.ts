@@ -1,5 +1,5 @@
-import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
 import type { CodeGeneratorState } from '../CodeGeneratorState/CodeGeneratorState.ts'
+import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
 import * as CodeGeneratorWidgetFactory from '../CodeGeneratorWidgetFactory/CodeGeneratorWidgetFactory.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'

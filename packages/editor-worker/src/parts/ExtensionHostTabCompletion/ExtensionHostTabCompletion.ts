@@ -1,7 +1,7 @@
+import type { TabCompletionResult } from '../TabCompletionResult/TabCompletionResult.ts'
 import * as ExtensionHostActivationEvent from '../ExtensionHostActivationEvent/ExtensionHostActivationEvent.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostEditor from '../ExtensionHostEditor/ExtensionHostEditor.ts'
-import type { TabCompletionResult } from '../TabCompletionResult/TabCompletionResult.ts'
 
 const combineResults = (results: any) => {
   return results[0]

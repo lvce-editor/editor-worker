@@ -1,10 +1,10 @@
+import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as ExtensionHostRename from '../ExtensionHostRename/ExtensionHostRename.ts'
 import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
 import * as GetRenameState from '../GetRenameState/GetRenameState.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
-import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const getRenameChanges = (editor: any, result: any) => {
   if (!result?.edits) {

@@ -1,8 +1,8 @@
+import type { RenameWidget } from '../RenameWidget/RenameWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
-import type { RenameWidget } from '../RenameWidget/RenameWidget.ts'
-import * as RenderRename from '../RenderRename/RenderRename.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
+import * as RenderRename from '../RenderRename/RenderRename.ts'
 
 export const render = (widget: RenameWidget) => {
   const commands: readonly any[] = RenderRename.renderFull(widget.oldState, widget.newState)

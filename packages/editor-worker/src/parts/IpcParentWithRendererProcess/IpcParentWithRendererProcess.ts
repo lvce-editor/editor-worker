@@ -1,8 +1,8 @@
 import * as GetData from '../GetData/GetData.ts'
-import * as SendMessagePortToRendererProcess from '../SendMessagePortToRendererProcess/SendMessagePortToRendererProcess.ts'
 import * as GetPortTuple from '../GetPortTuple/GetPortTuple.ts'
-import * as WaitForFirstMessage from '../WaitForFirstMessage/WaitForFirstMessage.ts'
 import { IpcError } from '../IpcError/IpcError.ts'
+import * as SendMessagePortToRendererProcess from '../SendMessagePortToRendererProcess/SendMessagePortToRendererProcess.ts'
+import * as WaitForFirstMessage from '../WaitForFirstMessage/WaitForFirstMessage.ts'
 
 export const create = async () => {
   const { port1, port2 } = GetPortTuple.getPortTuple()

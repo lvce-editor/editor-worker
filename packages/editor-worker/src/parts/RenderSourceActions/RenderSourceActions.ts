@@ -1,7 +1,7 @@
+import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 import * as GetSourceActionsVirtualDom from '../GetSourceActionsVirtualDom/GetSourceActionsVirtualDom.ts'
 import * as GetVisibleSourceActions from '../GetVisibleSourceActions/GetVisibleSourceActions.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
-import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 
 const renderSourceActions = {
   isEqual(oldState: SourceActionState, newState: SourceActionState) {

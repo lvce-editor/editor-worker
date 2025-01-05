@@ -1,6 +1,6 @@
 import * as Editor from '../Editor/Editor.ts'
-import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
+import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as EditorGetSelectionFromNativeRange from './EditorCommandGetSelectionFromNativeRange.ts'
 
 // @ts-ignore

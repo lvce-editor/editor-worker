@@ -1,5 +1,5 @@
-import * as DiagnosticType from '../DiagnosticType/DiagnosticType.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
+import * as DiagnosticType from '../DiagnosticType/DiagnosticType.ts'
 
 export const getDiagnosticClassName = (type: string): string => {
   switch (type) {
