@@ -1,5 +1,5 @@
-import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as Editor from '../Editor/Editor.ts'
+import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 export const copyLineUp = (editor: any) => {
   const { selections } = editor

@@ -1,7 +1,7 @@
-import * as TokenizePlainText from '../TokenizePlainText/TokenizePlainText.ts'
-import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
 import * as SyntaxHighlightingState from '../SyntaxHighlightingState/SyntaxHighlightingState.ts'
 import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
+import * as TokenizePlainText from '../TokenizePlainText/TokenizePlainText.ts'
+import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
 import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 
 // TODO loadTokenizer should be invoked from renderer worker

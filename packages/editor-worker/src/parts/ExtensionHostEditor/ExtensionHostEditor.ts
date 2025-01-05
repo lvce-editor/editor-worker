@@ -1,5 +1,5 @@
-import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
+import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 
 export const execute = async ({ editor, args, event, method, noProviderFoundMessage, noProviderFoundResult = undefined }: any) => {
   const fullEvent = `${event}:${editor.languageId}`

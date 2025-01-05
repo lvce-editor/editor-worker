@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
-import * as GetFindWidgetVirtualDom from '../src/parts/GetFindWidgetVirtualDom/GetFindWidgetVirtualDom.ts'
 import { type FindWidgetButton } from '../src/parts/FindWidgetButton/FindWidgetButton.ts'
+import * as GetFindWidgetVirtualDom from '../src/parts/GetFindWidgetVirtualDom/GetFindWidgetVirtualDom.ts'
 
 test('getFindWidgetVirtualDom', () => {
   const matchCountText = '1 of 3'

@@ -1,5 +1,5 @@
-import * as Assert from '../Assert/Assert.ts'
 import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
+import * as Assert from '../Assert/Assert.ts'
 import * as GetDiagnosticDecoration from '../GetDiagnosticDecoration/GetDiagnosticDecoration.ts'
 
 export const getDiagnosticDecorations = (editor: any, diagnostics: readonly Diagnostic[]): readonly any[] => {

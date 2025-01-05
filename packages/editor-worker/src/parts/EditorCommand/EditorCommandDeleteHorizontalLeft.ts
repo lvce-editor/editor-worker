@@ -1,5 +1,5 @@
-import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as Editor from '../Editor/Editor.ts'
+import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as GetDeleteHorizontalLeftChanges from '../GetDeleteHorizonatlLeftChanges/GetDeleteHorizontalLeftChanges.ts'
 import * as IsAllAutoClosingPairDelete from '../IsAllAutoClosingPairDelete/IsAllAutoClosingPairDelete.ts'

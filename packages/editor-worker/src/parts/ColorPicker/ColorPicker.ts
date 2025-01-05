@@ -1,5 +1,5 @@
-import * as Clamp from '../Clamp/Clamp.ts'
 import type { ColorPickerState } from '../ColorPickerState/ColorPickerState.ts'
+import * as Clamp from '../Clamp/Clamp.ts'
 
 const getNewColor = (x: number, max: number) => {
   const percent = x / max

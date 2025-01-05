@@ -1,6 +1,6 @@
+import type { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
-import type { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
 import * as EditorColorPickerRender from '../EditorColorPickerRender/EditorColorPickerRender.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'

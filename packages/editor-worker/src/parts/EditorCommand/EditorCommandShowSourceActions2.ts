@@ -1,7 +1,7 @@
+import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as LoadSourceActions from '../LoadSourceActions/LoadSourceActions.ts'
-import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 import * as SourceActionWidgetFactory from '../SourceActionWidgetFactory/SourceActionWidgetFactory.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 

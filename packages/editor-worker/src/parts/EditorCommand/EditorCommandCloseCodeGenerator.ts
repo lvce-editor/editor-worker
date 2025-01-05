@@ -1,5 +1,5 @@
-import * as WidgetId from '../WidgetId/WidgetId.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const isMatchingWidget = (widget: any) => {
   return widget.id === WidgetId.CodeGenerator

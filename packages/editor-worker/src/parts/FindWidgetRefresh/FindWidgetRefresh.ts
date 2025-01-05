@@ -1,5 +1,5 @@
-import * as FindWidgetRefreshWithEditor from '../FindWidgetRefreshWithEditor/FindWidgetRefreshWithEditor.ts'
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
+import * as FindWidgetRefreshWithEditor from '../FindWidgetRefreshWithEditor/FindWidgetRefreshWithEditor.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 
 export const refresh = (state: FindWidgetState, value = state.value): FindWidgetState => {

@@ -1,7 +1,7 @@
+import type { Widget } from '../Widget/Widget.ts'
 import * as HasWidget from '../HasWidget/HasWidget.ts'
 import * as SetAdditionalFocus from '../SetAdditionalFocus/SetAdditionalFocus.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
-import type { Widget } from '../Widget/Widget.ts'
 
 export const addWidgetToEditor = async <K, T extends Widget<K>>(
   widgetId: number,

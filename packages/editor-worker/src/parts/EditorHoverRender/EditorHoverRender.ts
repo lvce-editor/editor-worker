@@ -1,5 +1,5 @@
-import * as GetHoverVirtualDom from '../GetHoverVirtualDom/GetHoverVirtualDom.ts'
 import type { HoverState } from '../HoverState/HoverState.ts'
+import * as GetHoverVirtualDom from '../GetHoverVirtualDom/GetHoverVirtualDom.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
 const renderHoverDom = {

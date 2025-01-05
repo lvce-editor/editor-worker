@@ -1,7 +1,7 @@
 import * as HandleIpc from '../HandleIpc/HandleIpc.ts'
 import * as IpcParent from '../IpcParent/IpcParent.ts'
-import * as JsonRpc from '../JsonRpc/JsonRpc.ts'
 import * as IpcParentType from '../IpcParentType/IpcParentType.ts'
+import * as JsonRpc from '../JsonRpc/JsonRpc.ts'
 
 let _ipc: any
 

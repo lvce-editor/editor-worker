@@ -1,7 +1,7 @@
 import { expect, test } from '@jest/globals'
-import * as FindWidgetToggleReplace from '../src/parts/FindWidgetToggleReplace/FindWidgetToggleReplace.ts'
 import * as FindWidgetFactory from '../src/parts/FindWidgetFactory/FindWidgetFactory.ts'
 import { type FindWidgetState } from '../src/parts/FindWidgetState/FindWidgetState.ts'
+import * as FindWidgetToggleReplace from '../src/parts/FindWidgetToggleReplace/FindWidgetToggleReplace.ts'
 
 test('expand', () => {
   const { oldState } = FindWidgetFactory.create()

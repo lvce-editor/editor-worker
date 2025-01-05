@@ -1,5 +1,5 @@
-import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindMatchesCaseInsensitive.ts'
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
+import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindMatchesCaseInsensitive.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'

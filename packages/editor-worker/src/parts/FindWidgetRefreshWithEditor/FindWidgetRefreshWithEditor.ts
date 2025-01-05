@@ -1,5 +1,5 @@
-import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindMatchesCaseInsensitive.ts'
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
+import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindMatchesCaseInsensitive.ts'
 import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
 
 export const refresh = (editor: any, state: FindWidgetState, value: string): FindWidgetState => {

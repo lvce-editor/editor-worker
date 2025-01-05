@@ -1,7 +1,7 @@
+import type { OffsetBasedEdit } from '../OffsetBasedEdit/OffsetBasedEdit.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as GetDocumentEdits from '../GetDocumentEdits/GetDocumentEdits.ts'
 import * as Logger from '../Logger/Logger.ts'
-import type { OffsetBasedEdit } from '../OffsetBasedEdit/OffsetBasedEdit.ts'
 
 export const applyDocumentEdits = (editor: any, edits: readonly OffsetBasedEdit[]): any => {
   if (!Array.isArray(edits)) {
