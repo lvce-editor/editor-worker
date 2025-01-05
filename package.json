@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "lerna bootstrap --ci",
-    "lint": "npx xo .",
+    "lint": "eslint .",
     "test": "lerna run test",
     "type-check": "tsc -b",
     "build:watch": "./packages/build/node_modules/.bin/esbuild --format=esm --bundle --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=.tmp/dist/dist/editorWorkerMain.js",
@@ -21,7 +21,11 @@
     "@lerna/legacy-package-management": "^8.1.9",
     "lerna": "^8.1.9",
     "prettier": "^3.4.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "@eslint/js": "9.17.0",
+    "eslint": "9.17.0",
+    "eslint-plugin-perfectionist": "^4.4.0",
+    "typescript-eslint": "^8.19.0"
   },
   "prettier": {
     "semi": false,
