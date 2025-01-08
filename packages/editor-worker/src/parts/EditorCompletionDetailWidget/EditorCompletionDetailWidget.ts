@@ -1,6 +1,6 @@
-import * as AddWidget from '../AddWidget/AddWidget.ts'
 import type { CompletionDetailState } from '../CompletionDetailState/CompletionDetailState.ts'
 import type { CompletionDetailWidget } from '../CompletionDetailWidget/CompletionDetailWidget.ts'
+import * as AddWidget from '../AddWidget/AddWidget.ts'
 import * as EditorCompletionDetailRender from '../EditorCompletionDetailRender/EditorCompletionDetailRender.ts'
 import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'

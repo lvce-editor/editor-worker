@@ -1,7 +1,7 @@
 import * as Logger from '../Logger/Logger.ts'
+import * as EditorShowMessage from './EditorCommandShowMessage.ts'
 import * as EditorToggleBlockComment from './EditorCommandToggleBlockComment.ts'
 import * as EditorToggleLineComment from './EditorCommandToggleLineComment.ts'
-import * as EditorShowMessage from './EditorCommandShowMessage.ts'
 
 // TODO rename file
 // TODO when handle case when editor has selection

@@ -1,10 +1,10 @@
 import * as ApplyWidgetChanges from '../ApplyWidgetChanges/ApplyWidgetChanges.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
+import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
-import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as EditorSelection from './EditorSelection.ts'
 
 // TODO

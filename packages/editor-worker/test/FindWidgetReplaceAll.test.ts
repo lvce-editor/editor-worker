@@ -1,7 +1,7 @@
 import { expect, test } from '@jest/globals'
+import type { FindWidgetState } from '../src/parts/FindWidgetState/FindWidgetState.ts'
 import * as FindWidgetFactory from '../src/parts/FindWidgetFactory/FindWidgetFactory.ts'
 import * as FindWidgetReplaceAll from '../src/parts/FindWidgetReplaceAll/FindWidgetReplaceAll.ts'
-import type { FindWidgetState } from '../src/parts/FindWidgetState/FindWidgetState.ts'
 import * as GetFindState from '../src/parts/GetFindState/GetFindState.ts'
 import * as WidgetId from '../src/parts/WidgetId/WidgetId.ts'
 

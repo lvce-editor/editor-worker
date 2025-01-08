@@ -1,5 +1,5 @@
-import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as Editor from '../Editor/Editor.ts'
+import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as Languages from '../Languages/Languages.ts'

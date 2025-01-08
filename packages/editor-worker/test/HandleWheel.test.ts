@@ -1,7 +1,7 @@
 import { expect, test } from '@jest/globals'
+import type { VirtualListState } from '../src/parts/VirtualListState/VirtualListState.ts'
 import * as HandleWheel from '../src/parts/HandleWheel/HandleWheel.ts'
 import * as WheelEventType from '../src/parts/WheelEventType/WheelEventType.ts'
-import type { VirtualListState } from '../src/parts/VirtualListState/VirtualListState.ts'
 
 test('handleWheel - scroll down', () => {
   const state: VirtualListState<number> = {

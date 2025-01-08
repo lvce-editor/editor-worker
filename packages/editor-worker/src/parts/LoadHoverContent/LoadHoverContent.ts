@@ -1,5 +1,5 @@
-import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import type { HoverState } from '../HoverState/HoverState.ts'
+import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 
 export const loadHoverContent = async (state: HoverState): Promise<HoverState> => {
   // TODO

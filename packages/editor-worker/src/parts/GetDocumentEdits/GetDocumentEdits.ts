@@ -1,5 +1,5 @@
-import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import type { OffsetBasedEdit } from '../OffsetBasedEdit/OffsetBasedEdit.ts'
+import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 

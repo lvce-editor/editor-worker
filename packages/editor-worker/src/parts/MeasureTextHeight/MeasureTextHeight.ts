@@ -1,5 +1,5 @@
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
 // TODO ask renderer process directly
 export const measureTextHeight = async (text: string, fontFamily: string, fontSize: number): Promise<number> => {

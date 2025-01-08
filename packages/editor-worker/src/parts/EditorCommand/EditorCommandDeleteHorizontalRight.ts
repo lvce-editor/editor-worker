@@ -1,7 +1,7 @@
 // @ts-ignore
-import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
-// @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
+// @ts-ignore
+import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 // @ts-ignore
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 // @ts-ignore

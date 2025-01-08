@@ -1,5 +1,5 @@
-import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorGetPositionLeft from '../EditorCommand/EditorCommandGetPositionLeft.ts'
+import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 

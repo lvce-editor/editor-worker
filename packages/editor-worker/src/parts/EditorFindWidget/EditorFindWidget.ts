@@ -1,7 +1,7 @@
+import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import * as FindWidgetFunctions from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as FindWidgetRender from '../FindWidgetRender/FindWidgetRender.ts'
-import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 

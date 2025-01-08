@@ -1,7 +1,7 @@
 import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
-import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { editorReplaceSelections } from './EditorCommandReplaceSelection.ts'
 
 export const typeWithAutoClosingTag = async (editor: any, text: string) => {

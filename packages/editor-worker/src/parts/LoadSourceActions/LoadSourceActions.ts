@@ -1,6 +1,6 @@
+import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 import * as GetSourceActions from '../GetSourceActions/GetSourceActions.ts'
 import * as GetSourceActionWidgetPosition from '../GetSourceActionWidgetPosition/GetSourceActionWidgetPosition.ts'
-import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 
 export const loadSourceActions = async (editor: any, state: SourceActionState): Promise<SourceActionState> => {
   // const editor = GetEditor.getEditor(editorUid)

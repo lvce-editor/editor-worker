@@ -1,6 +1,6 @@
 import * as ClipBoard from '../ClipBoard/ClipBoard.ts'
-import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as Editor from '../Editor/Editor.ts'
+import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorCommandReplaceRange from './EditorCommandReplaceRange.ts'
 
 export const cutLine = async (editor: any) => {

@@ -1,6 +1,6 @@
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
-import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
 export const getEditorMessageVirtualDom = (message: string): readonly VirtualDomNode[] => {
   const dom: readonly VirtualDomNode[] = [

@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
-import * as GetRenameVirtualDom from '../src/parts/GetRenameVirtualDom/GetRenameVirtualDom.ts'
 import type { RenameState } from '../src/parts/RenameState/RenameState.ts'
+import * as GetRenameVirtualDom from '../src/parts/GetRenameVirtualDom/GetRenameVirtualDom.ts'
 import * as RenameWidgetFactory from '../src/parts/RenameWidgetFactory/RenameWidgetFactory.ts'
 
 test('getRenameVirtualDom', () => {
