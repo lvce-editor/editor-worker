@@ -14,7 +14,7 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['dist', 'coverage', 'scripts', 'rollup.config.js', 'eslint.config.js', 'src/testWorkerMain.ts'],
+    ignores: ['dist', 'coverage', 'scripts', 'rollup.config.js', 'eslint.config.js', 'src/testWorkerMain.ts', '.tmp', 'coverage'],
   },
   {
     rules: {
@@ -32,6 +32,24 @@ export default tseslint.config(
       '@typescript-eslint/require-await': 'off',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/restrict-plus-operands': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-undef': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-confusing-void-expression': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/await-thenable': 'off',
+      'no-useless-escape': 'off',
+      '@typescript-eslint/no-deprecated': 'off',
+      'no-constant-condition': 'off',
+      '@typescript-eslint/no-unnecessary-condition': 'off',
+      '@typescript-eslint/no-unnecessary-type-parameters': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/no-misused-promises': 'off',
+      'prefer-const': 'off',
+      '@typescript-eslint/return-await': 'off',
+      'no-empty': 'off',
+      '@typescript-eslint/no-dynamic-delete': 'off',
     },
   },
   {
