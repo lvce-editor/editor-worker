@@ -14,7 +14,7 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['dist', 'coverage', 'scripts', 'rollup.config.js', 'eslint.config.js', 'src/testWorkerMain.ts', '.tmp', 'coverage'],
+    ignores: ['dist', 'coverage', 'scripts', 'rollup.config.js', 'eslint.config.js', 'src/testWorkerMain.ts', '.tmp', '**/coverage/**'],
   },
   {
     rules: {
