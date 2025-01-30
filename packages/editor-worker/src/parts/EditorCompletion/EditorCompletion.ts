@@ -4,23 +4,9 @@ import * as EditorCompletionState from '../EditorCompletionState/EditorCompletio
 import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletionItems.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetFinalDeltaY from '../GetFinalDeltaY/GetFinalDeltaY.ts'
+import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
-
-const RE_WORD = /[\w\-]+$/
-
-const getWordAtOffset = (editor: any) => {
-  const { lines, selections } = editor
-  const rowIndex = selections[0]
-  const columnIndex = selections[1]
-  const line = lines[rowIndex]
-  const part = line.slice(0, columnIndex)
-  const wordMatch = part.match(RE_WORD)
-  if (wordMatch) {
-    return wordMatch[0]
-  }
-  return ''
-}
 
 export const handleEditorType = (editorUid: number, state: any, text: string) => {
   const editor = GetEditor.getEditor(editorUid)
@@ -30,7 +16,7 @@ export const handleEditorType = (editorUid: number, state: any, text: string) =>
   const x = EditorPosition.x(editor, rowIndex, columnIndex)
   // @ts-ignore
   const y = EditorPosition.y(editor, rowIndex, columnIndex)
-  const wordAtOffset = getWordAtOffset(editor)
+  const wordAtOffset = GetWordAtOffset.getWordAtOffset(editor)
   const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)
   const newMinLineY = 0
   const newMaxLineY = Math.min(items.length, 8)
@@ -57,7 +43,7 @@ export const handleEditorDeleteLeft = (editorUid: number, state: any) => {
   const x = EditorPosition.x(editor, rowIndex, columnIndex)
   // @ts-ignore
   const y = EditorPosition.y(editor, rowIndex, columnIndex)
-  const wordAtOffset = getWordAtOffset(editor)
+  const wordAtOffset = GetWordAtOffset.getWordAtOffset(editor)
   if (!wordAtOffset) {
     editor.completionState = EditorCompletionState.None
     return {
@@ -101,7 +87,7 @@ export const loadContent = async (editorUid: number, state: any) => {
   const editor = GetEditor.getEditor(editorUid)
   const { itemHeight, maxHeight } = state
   const unfilteredItems = await Completions.getCompletions(editor)
-  const wordAtOffset = getWordAtOffset(editor)
+  const wordAtOffset = GetWordAtOffset.getWordAtOffset(editor)
   const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)
   const { rowIndex, columnIndex, x, y } = GetPositionAtCursor.getPositionAtCursor(editor)
   const newMaxLineY = Math.min(items.length, 8)
