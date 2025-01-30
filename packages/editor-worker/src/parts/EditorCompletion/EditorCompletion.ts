@@ -4,9 +4,9 @@ import * as EditorCompletionState from '../EditorCompletionState/EditorCompletio
 import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletionItems.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetFinalDeltaY from '../GetFinalDeltaY/GetFinalDeltaY.ts'
-import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
+import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 
 export const handleEditorType = (editorUid: number, state: any, text: string) => {
   const editor = GetEditor.getEditor(editorUid)
