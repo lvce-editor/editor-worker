@@ -143,6 +143,7 @@ import * as Initialize from '../Initialize/Initialize.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
+import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
@@ -250,6 +251,7 @@ export const commandMap = {
   'Editor.paste': EditorPaste.paste,
   'Editor.pasteText': PasteText.pasteText,
   'Editor.render': RenderEditor.renderEditor,
+  'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': ReplaceRange.replaceRange,
   'Editor.rerender': EditorRerender.rerender,
   'Editor.save': Save.save,
