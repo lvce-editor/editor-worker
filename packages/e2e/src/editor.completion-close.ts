@@ -1,13 +1,13 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
-export const name = 'viewlet.completion-click'
+export const name = 'viewlet.completion-one-result'
 
 export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Editor, Locator, expect, Command }) => {
   // arrange
-  const extensionUri = import.meta.resolve('../fixtures/editor.completion-click')
+  const extensionUri = import.meta.resolve('../fixtures/editor.completion-one-result')
   await Extension.addWebExtension(extensionUri)
   const tmpDir = await FileSystem.getTmpDir()
-  await FileSystem.writeFile(`${tmpDir}/file1.xyz`, ' ')
+  await FileSystem.writeFile(`${tmpDir}/file1.xyz`, 'content 1')
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.xyz`)
   await Editor.setCursor(0, 0)
@@ -23,9 +23,8 @@ export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Edito
   await expect(items).toHaveText('test')
 
   // act
-  await Command.execute('EditorCompletion.selectIndex', 0)
+  await Command.execute('Editor.closeCompletion')
 
   // assert
-  const token = Locator('.Token.Unknown')
-  await expect(token).toHaveText('test ')
+  await expect(completions).toBeHidden()
 }
