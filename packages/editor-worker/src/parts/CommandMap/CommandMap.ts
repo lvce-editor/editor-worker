@@ -300,7 +300,7 @@ export const commandMap = {
   'EditorCompletion.handleEditorClick': EditorCompletion.handleEditorClick,
   'EditorCompletion.handleEditorDeleteLeft': EditorCompletion.handleEditorDeleteLeft,
   'EditorCompletion.handleEditorType': EditorCompletion.handleEditorType,
-  'EditorCompletion.handleWheel': EditorCompletionHandleWheel.handelWheel,
+  'EditorCompletion.handleWheel': EditorCompletionHandleWheel.handleWheel,
   'EditorCompletion.loadContent': EditorCompletion.loadContent,
   'EditorCompletion.openDetails': EditorCompletionOpenDetails.openDetails,
   'EditorCompletion.selectCurrent': EditorCompletionSelectCurrent.selectCurrent,
