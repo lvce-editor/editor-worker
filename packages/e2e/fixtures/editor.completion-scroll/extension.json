@@ -1,0 +1,13 @@
+{
+  "id": "test.completion-scroll",
+  "name": "Completion Scroll",
+  "description": "Test Scroll",
+  "activation": ["onLanguage:xyz", "onCompletion:xyz"],
+  "browser": "main.js",
+  "languages": [
+    {
+      "id": "xyz",
+      "extensions": [".xyz"]
+    }
+  ]
+}
