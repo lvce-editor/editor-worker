@@ -1,0 +1,13 @@
+{
+  "id": "test.completion-one-result",
+  "name": "Completion One Result",
+  "description": "",
+  "activation": ["onLanguage:xyz", "onCompletion:xyz"],
+  "browser": "main.js",
+  "languages": [
+    {
+      "id": "xyz",
+      "extensions": [".xyz"]
+    }
+  ]
+}
