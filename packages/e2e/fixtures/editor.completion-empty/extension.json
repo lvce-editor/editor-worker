@@ -1,0 +1,13 @@
+{
+  "id": "test.completion-empty",
+  "name": "Completion Empty",
+  "description": "Test Empty",
+  "activation": ["onLanguage:xyz", "onCompletion:xyz"],
+  "browser": "main.js",
+  "languages": [
+    {
+      "id": "xyz",
+      "extensions": [".xyz"]
+    }
+  ]
+}

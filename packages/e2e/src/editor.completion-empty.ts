@@ -4,8 +4,10 @@ export const name = 'viewlet.completion-empty'
 
 export const skip = 1
 
-export const test: Test = async ({ FileSystem, Workspace, Main, Editor, Locator, expect }) => {
+export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Editor, Locator, expect }) => {
   // arrange
+  const extensionUri = import.meta.resolve('../fixtures/editor.completion-empty')
+  await Extension.addWebExtension(extensionUri)
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.xyz`, 'content 1')
   await Workspace.setPath(tmpDir)
@@ -16,5 +18,9 @@ export const test: Test = async ({ FileSystem, Workspace, Main, Editor, Locator,
   await Editor.openCompletion()
 
   // assert
-  // TODO message no completion items
+  const completions = Locator('.EditorCompletion')
+  await expect(completions).toBeVisible()
+  await expect(completions).toHaveText('No Results')
+  await expect(completions).toHaveCSS('top', '75px')
+  await expect(completions).toHaveCSS('left', '0')
 }
