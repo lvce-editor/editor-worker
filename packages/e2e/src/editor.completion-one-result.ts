@@ -1,12 +1,12 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
-export const name = 'editor.completion-empty'
+export const name = 'viewlet.completion-one-result'
 
 export const skip = 1
 
 export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Editor, Locator, expect }) => {
   // arrange
-  const extensionUri = import.meta.resolve('../fixtures/editor.completion-empty')
+  const extensionUri = import.meta.resolve('../fixtures/editor.completion-one-result')
   await Extension.addWebExtension(extensionUri)
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.xyz`, 'content 1')
