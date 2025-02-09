@@ -1,6 +1,6 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
-export const name = 'viewlet.completion-empty'
+export const name = 'editor.completion-empty'
 
 export const skip = 1
 
