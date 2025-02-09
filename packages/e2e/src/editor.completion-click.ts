@@ -1,10 +1,12 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
-export const name = 'viewlet.completion-scroll'
+export const name = 'viewlet.completion-click'
+
+export const skip = 1
 
 export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Editor, Locator, expect, Command }) => {
   // arrange
-  const extensionUri = import.meta.resolve('../fixtures/editor.completion-scroll')
+  const extensionUri = import.meta.resolve('../fixtures/editor.completion-click')
   await Extension.addWebExtension(extensionUri)
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.xyz`, 'content 1')
@@ -16,12 +18,12 @@ export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Edito
   await Editor.openCompletion()
 
   // assert
-  const firstItem = Locator('.EditorCompletionItem').nth(0)
-  await expect(firstItem).toHaveText('test 0')
+  const completions = Locator('.EditorCompletion')
+  await expect(completions).toBeVisible()
+  const items = Locator('.EditorCompletionItem')
+  await expect(items).toHaveCount(1)
+  await expect(items).toHaveText('test')
 
   // act
-  await Command.execute('EditorCompletion.handleWheel', 0, 20)
-
-  // assert
-  await expect(firstItem).toHaveText('test 1')
+  await Command.execute('EditorCompletion.selectIndex', 0)
 }
