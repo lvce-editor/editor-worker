@@ -9,7 +9,7 @@ const provider = {
     ]
   },
   resolveCompletionItem(textDocument, offset, name, completionItem) {
-    return {}
+    return undefined
   },
 }
 
