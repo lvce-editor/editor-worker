@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "lerna bootstrap --ci",
-    "lint": "npx xo .",
+    "lint": "eslint .",
     "test": "lerna run test",
     "type-check": "tsc -b",
     "build:watch": "./packages/build/node_modules/.bin/esbuild --format=esm --bundle --external:node:buffer --external:electron --external:ws --external:node:worker_threads  --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=.tmp/dist/dist/editorWorkerMain.js",
@@ -18,10 +18,14 @@
   "author": "Lvce Editor",
   "license": "MIT",
   "devDependencies": {
+    "@eslint/js": "^9.20.0",
     "@lerna/legacy-package-management": "^8.1.9",
+    "eslint": "^9.20.0",
+    "eslint-plugin-perfectionist": "^4.8.0",
     "lerna": "^8.1.9",
-    "prettier": "^3.4.2",
-    "typescript": "^5.7.3"
+    "prettier": "^3.5.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.23.0"
   },
   "prettier": {
     "semi": false,

@@ -1,6 +1,8 @@
+import type { Test } from '@lvce-editor/test-with-playwright'
+
 export const name = 'viewlet.editor-cursor-character-left'
 
-export const test = async ({ FileSystem, Workspace, Main, Editor, Locator, expect }) => {
+export const test: Test = async ({ FileSystem, Workspace, Main, Editor, Locator, expect }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'content 1')

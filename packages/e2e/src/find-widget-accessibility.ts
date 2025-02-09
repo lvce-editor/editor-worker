@@ -1,3 +1,4 @@
+import type { Test } from '@lvce-editor/test-with-playwright'
 // manual accessibility tests
 
 // open find widget
@@ -34,13 +35,13 @@ export const name = 'viewlet.editor-find-widget-accessibility'
 
 export const skip = true
 
-export const test = async ({ FileSystem, Workspace, Main, Editor, Locator, expect, FindWidget }) => {
+export const test: Test = async ({ FileSystem, Workspace, Main, Editor, Locator, expect, FindWidget }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(
     `${tmpDir}/file1.txt`,
     `content 1
-content 2`
+content 2`,
   )
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
