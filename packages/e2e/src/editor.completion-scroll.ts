@@ -2,9 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.completion-scroll'
 
-export const skip = 1
-
-export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Editor, Locator, expect }) => {
+export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Editor, Locator, expect, Command }) => {
   // arrange
   const extensionUri = import.meta.resolve('../fixtures/editor.completion-scroll')
   await Extension.addWebExtension(extensionUri)
@@ -18,9 +16,12 @@ export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Edito
   await Editor.openCompletion()
 
   // assert
-  const completions = Locator('.EditorCompletion')
-  await expect(completions).toBeVisible()
-  await expect(completions).toHaveText('No Results')
-  await expect(completions).toHaveCSS('top', '75px')
-  await expect(completions).toHaveCSS('left', '0')
+  const firstItem = Locator('.EditorCompletionItem').nth(0)
+  await expect(firstItem).toHaveText('test 0')
+
+  // act
+  await Command.execute('EditorCompletion.handleWheel', 0, 20)
+
+  // assert
+  await expect(firstItem).toHaveText('test 1')
 }
