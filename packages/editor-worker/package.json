@@ -104,7 +104,7 @@
     "@lvce-editor/i18n": "^1.1.0",
     "@lvce-editor/ipc": "^13.7.0",
     "@lvce-editor/json-rpc": "^5.4.0",
-    "@lvce-editor/rpc": "^1.21.0",
+    "@lvce-editor/rpc": "^1.22.0",
     "@lvce-editor/rpc-registry": "^1.0.0",
     "@lvce-editor/verror": "^1.6.0",
     "jest": "^29.7.0",
