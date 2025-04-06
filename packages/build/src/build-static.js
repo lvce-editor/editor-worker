@@ -17,7 +17,7 @@ const { commitHash } = await sharedProcess.exportStatic({
 
 await cp(
   join(root, '.tmp', 'dist', 'dist', 'editorWorkerMain.js'),
-  join(root, 'dist', commitHash, 'packages', 'editor-worker', 'dist', 'editorWorkerMain.js')
+  join(root, 'dist', commitHash, 'packages', 'editor-worker', 'dist', 'editorWorkerMain.js'),
 )
 
 await cp(join(root, 'dist'), join(root, '.tmp', 'static'), { recursive: true })
