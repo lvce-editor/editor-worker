@@ -14,6 +14,6 @@
     "@lvce-editor/ipc": "^13.8.0",
     "@lvce-editor/json-rpc": "^5.4.0",
     "@lvce-editor/verror": "^1.6.0",
-    "@types/node": "^22.9.0"
+    "@types/node": "^22.14.0"
   }
 }
