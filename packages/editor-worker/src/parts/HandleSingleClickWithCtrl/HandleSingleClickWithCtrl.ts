@@ -1,10 +1,8 @@
 import * as Editor from '../Editor/Editor.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 
-
-export
-const handleSingleClickWithCtrl = async (editor: any, position: any) => {
-  const selections = editor.selections
+export const handleSingleClickWithCtrl = async (editor: any, position: any) => {
+  const { selections } = editor
   for (let i = 0; i < selections.length; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
     if (

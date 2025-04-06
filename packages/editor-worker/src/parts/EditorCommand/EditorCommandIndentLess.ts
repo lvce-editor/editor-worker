@@ -32,7 +32,7 @@ const getChanges = (selections) => {
 
 // @ts-ignore
 export const indentLess = (editor) => {
-  const selections = editor.selections
+  const { selections } = editor
   const changes = getChanges(selections)
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes)
 }

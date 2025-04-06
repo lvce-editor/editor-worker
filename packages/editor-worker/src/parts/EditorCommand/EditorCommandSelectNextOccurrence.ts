@@ -30,8 +30,8 @@ export const selectNextOccurrence = (editor: any) => {
   if (!result) {
     return editor
   }
-  const revealRange = result.revealRange
-  const selectionEdits = result.selectionEdits
+  const { revealRange } = result
+  const { selectionEdits } = result
   const revealRangeStartRowIndex = selectionEdits[revealRange]
   const revealRangeEndRowIndex = selectionEdits[revealRange + 2]
   if (isRangeInViewPort(editor.minLineY, editor.maxLineY, revealRangeStartRowIndex, revealRangeEndRowIndex)) {

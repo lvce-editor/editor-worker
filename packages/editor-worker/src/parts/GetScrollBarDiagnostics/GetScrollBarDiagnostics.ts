@@ -1,5 +1,5 @@
+import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
 import type { ScrollBarDiagnostic } from '../ScrollbarDiagnostic/ScrollBarDiagnostic.ts'
-import { Diagnostic } from '../Diagnostic/Diagnostic.ts'
 
 export const getScrollBarDiagnostics = (editor: any, diagnostics: readonly Diagnostic[]): readonly ScrollBarDiagnostic[] => {
   const scrollBarDecorations: ScrollBarDiagnostic[] = []

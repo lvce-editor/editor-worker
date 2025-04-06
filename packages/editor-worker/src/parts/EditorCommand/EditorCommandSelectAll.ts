@@ -5,7 +5,7 @@ import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 
 // @ts-ignore
 export const selectAll = (editor) => {
-  const lines = editor.lines
+  const { lines } = editor
   const startRowIndex = 0
   const startColumnIndex = 0
   const endRowIndex = lines.length - 1

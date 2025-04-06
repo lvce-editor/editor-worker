@@ -35,7 +35,7 @@ export const editorShowMessage = async (editor, rowIndex, columnIndex, message, 
 
     // TODO use wrapper timing module instead of this
     // @ts-ignore
-    state.timeout = setTimeout(handleTimeout, 3_000)
+    state.timeout = setTimeout(handleTimeout, 3000)
   }
   return editor
 }

@@ -5,7 +5,7 @@ export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Wid
   // TODO how to generate a unique integer id
   // that doesn't collide with ids created in renderer worker?
   // @ts-ignore
-  const uid = widget.newState.uid
+  const { uid } = widget.newState
   const allCommands: any[] = []
   allCommands.push(['Viewlet.createFunctionalRoot', id, uid])
   allCommands.push(...commands)

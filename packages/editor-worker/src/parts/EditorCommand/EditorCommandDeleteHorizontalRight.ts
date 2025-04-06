@@ -13,10 +13,10 @@ import { editorReplaceSelections } from './EditorCommandReplaceSelection.ts'
 
 // @ts-ignore
 const getChanges = (editor, getDelta) => {
-  const selections = editor.selections
+  const { selections } = editor
   if (EditorSelection.isEverySelectionEmpty(selections)) {
     const changes: any[] = []
-    const lines = editor.lines
+    const { lines } = editor
     for (let i = 0; i < selections.length; i += 4) {
       // @ts-ignore
       const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)

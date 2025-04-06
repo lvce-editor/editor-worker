@@ -11,7 +11,7 @@ const getNewSelections = (line, rowIndex) => {
 
 // @ts-ignore
 export const selectLine = (editor) => {
-  const selections = editor.selections
+  const { selections } = editor
   const rowIndex = selections[editor.primarySelectionIndex]
   const line = TextDocument.getLine(editor, rowIndex)
   const newSelections = getNewSelections(line, rowIndex)

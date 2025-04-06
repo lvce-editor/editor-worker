@@ -1,6 +1,6 @@
 export const editorGetPositionRight = (position: any, lines: string, getDelta: any) => {
-  const rowIndex = position.rowIndex
-  const columnIndex = position.columnIndex
+  const { rowIndex } = position
+  const { columnIndex } = position
   if (columnIndex >= lines[rowIndex].length) {
     if (rowIndex >= lines.length) {
       return position
