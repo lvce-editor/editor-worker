@@ -8,5 +8,5 @@ test('character', () => {
 
 test('plus', () => {
   const value = '+'
-  expect(GetSearchRegex.getSearchRegex(value)).toEqual(new RegExp('\\+', 'gi'))
+  expect(GetSearchRegex.getSearchRegex(value)).toEqual(new RegExp(String.raw`\+`, 'gi'))
 })

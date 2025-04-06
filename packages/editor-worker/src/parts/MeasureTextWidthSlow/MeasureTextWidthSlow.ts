@@ -29,6 +29,6 @@ export const measureTextWidthSlow = (
   ctx.letterSpacing = letterSpacingString
   ctx.font = fontString
   const metrics = ctx.measureText(text)
-  const width = metrics.width
+  const { width } = metrics
   return width
 }

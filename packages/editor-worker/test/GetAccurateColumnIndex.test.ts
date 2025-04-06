@@ -246,7 +246,7 @@ test('getAccurateColumnIndex - line starting with tab', () => {
   const fontFamily = 'Test'
   const letterSpacing = 0.5
   const isMonospaceFont = false
-  const charWidth = 9.73080444
+  const charWidth = 9.730_804_44
   const tabSize = 2
   const eventX = 50
   // @ts-ignore
@@ -264,5 +264,5 @@ test('getAccurateColumnIndex - line starting with tab', () => {
     GetAccurateColumnIndex.getAccurateColumnIndex(line, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth, tabSize, eventX),
   ).toBe(4)
   expect(MeasureTextWidth.measureTextWidth).toHaveBeenCalledTimes(1)
-  expect(MeasureTextWidth.measureTextWidth).toHaveBeenNthCalledWith(1, '  try', 400, 15, 'Test', 0.5, false, 9.73080444)
+  expect(MeasureTextWidth.measureTextWidth).toHaveBeenNthCalledWith(1, '  try', 400, 15, 'Test', 0.5, false, 9.730_804_44)
 })

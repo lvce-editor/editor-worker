@@ -5,7 +5,7 @@ const getErrorMessage = (error: any) => {
   if (!error) {
     return `Error: ${error}`
   }
-  let message = error.message
+  let { message } = error
   while (error.cause) {
     error = error.cause
     message += `: ${error}`

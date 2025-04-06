@@ -27,7 +27,7 @@ const getNewEditor = async (editor) => {
 // @ts-ignore
 export const save = async (editor) => {
   try {
-    const uri = editor.uri
+    const { uri } = editor
     const newEditor = await getNewEditor(editor)
     const content = TextDocument.getText(newEditor)
     await RendererWorker.invoke('FileSystem.writeFile', uri, content)

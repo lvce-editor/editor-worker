@@ -6,7 +6,7 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 // TODO handle multiple cursors
 // @ts-ignore
 export const moveLineUp = (editor) => {
-  const rowIndex = editor.cursor.rowIndex
+  const { rowIndex } = editor.cursor
   if (rowIndex === 0) {
     return
   }

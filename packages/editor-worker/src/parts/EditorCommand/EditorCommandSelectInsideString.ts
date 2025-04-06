@@ -35,8 +35,8 @@ const getNewSelections = (lines: readonly string[], selections: any) => {
 }
 
 export const selectInsideString = (editor: any) => {
-  const selections = editor.selections
-  const lines = editor.lines
+  const { selections } = editor
+  const { lines } = editor
   const newSelections = getNewSelections(lines, selections)
   return Editor.scheduleSelections(editor, newSelections)
 }

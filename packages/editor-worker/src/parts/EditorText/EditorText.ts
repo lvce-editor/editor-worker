@@ -212,7 +212,7 @@ const getLineInfoDefault = (
       break
     }
   }
-  const tokens = tokenResults.tokens
+  const { tokens } = tokenResults
   let { startIndex, start, end } = getStartDefaults(tokens, minOffset)
   const difference = getDifference(start, averageCharWidth, deltaX)
   const tokensLength = tokens.length

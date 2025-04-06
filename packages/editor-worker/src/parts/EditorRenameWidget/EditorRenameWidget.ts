@@ -7,7 +7,7 @@ import * as RenderRename from '../RenderRename/RenderRename.ts'
 export const render = (widget: RenameWidget) => {
   const commands: readonly any[] = RenderRename.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
-  const uid = widget.newState.uid
+  const { uid } = widget.newState
   for (const command of commands) {
     if (command[0] === RenderMethod.SetDom2) {
       wrappedCommands.push(command)

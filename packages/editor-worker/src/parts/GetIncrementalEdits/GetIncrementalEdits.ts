@@ -9,8 +9,8 @@ export const getIncrementalEdits = async (oldState: any, newState: any) => {
   if (lastChanges && lastChanges.length === 1) {
     const lastChange = lastChanges[0]
     if (lastChange.origin === EditOrigin.EditorType) {
-      const rowIndex = lastChange.start.rowIndex
-      const lines = newState.lines
+      const { rowIndex } = lastChange.start
+      const { lines } = newState
       const oldLine = oldState.lines[rowIndex]
       const newLine = lines[rowIndex]
       const incrementalEdits = await SyntaxHighlightingWorker.invoke(
@@ -20,7 +20,7 @@ export const getIncrementalEdits = async (oldState: any, newState: any) => {
         oldLine,
         newLine,
         rowIndex,
-        newState.minLineY
+        newState.minLineY,
       )
       if (incrementalEdits && incrementalEdits.length === 1) {
         return incrementalEdits

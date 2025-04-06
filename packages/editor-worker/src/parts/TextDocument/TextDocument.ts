@@ -14,8 +14,8 @@ export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
     const endRowIndex = change.end.rowIndex + linesDelta
     const startColumnIndex = change.start.columnIndex
     const endColumnIndex = change.end.columnIndex
-    const inserted = change.inserted
-    const deleted = change.deleted
+    const { inserted } = change
+    const { deleted } = change
     Assert.number(startRowIndex)
     Assert.number(endRowIndex)
     Assert.number(startColumnIndex)
@@ -101,7 +101,7 @@ export const offsetAtSync = async (textDocument: any, positionRowIndex: any, pos
   Assert.number(positionColumnIndex)
   let offset = 0
   let rowIndex = 0
-  const lines = textDocument.lines
+  const { lines } = textDocument
   const max = Math.min(positionRowIndex, textDocument.lines.length)
   while (rowIndex < max) {
     offset += lines[rowIndex].length + 1
@@ -117,7 +117,7 @@ export const offsetAt = (textDocument: any, positionRowIndex: number, positionCo
   Assert.number(positionColumnIndex)
   let offset = 0
   let rowIndex = 0
-  const lines = textDocument.lines
+  const { lines } = textDocument
   const max = Math.min(positionRowIndex, textDocument.lines.length)
   while (rowIndex < max) {
     offset += lines[rowIndex].length + 1

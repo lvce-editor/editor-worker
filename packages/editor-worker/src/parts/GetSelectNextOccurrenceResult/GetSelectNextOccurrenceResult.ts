@@ -123,8 +123,8 @@ const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
 }
 
 export const getSelectNextOccurrenceResult = (editor: any) => {
-  const lines = editor.lines
-  const selections = editor.selections
+  const { lines } = editor
+  const { selections } = editor
   if (EditorSelection.isEverySelectionEmpty(selections)) {
     const newSelections = new Uint32Array(selections.length)
     for (let i = 0; i < selections.length; i += 4) {
