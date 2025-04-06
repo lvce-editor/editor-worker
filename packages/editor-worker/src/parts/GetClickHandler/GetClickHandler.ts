@@ -3,7 +3,6 @@ import * as HandleSingleClickWithAlt from '../HandleSingleClickWithAlt/HandleSin
 import * as HandleSingleClickWithCtrl from '../HandleSingleClickWithCtrl/HandleSingleClickWithCtrl.ts'
 import * as ModifierKey from '../ModifierKey/ModifierKey.ts'
 
-
 const handleSingleClickDefault = (editor: any, position: any) => {
   EditorMoveSelectionAnchorState.setPosition(position)
   return {
@@ -16,9 +15,9 @@ const handleSingleClickDefault = (editor: any, position: any) => {
 export const getClickHandler = (modifier: any) => {
   switch (modifier) {
     case ModifierKey.Alt:
-      return HandleSingleClickWithAlt.  handleSingleClickWithAlt
+      return HandleSingleClickWithAlt.handleSingleClickWithAlt
     case ModifierKey.Ctrl:
-      return HandleSingleClickWithCtrl. handleSingleClickWithCtrl
+      return HandleSingleClickWithCtrl.handleSingleClickWithCtrl
     default:
       return handleSingleClickDefault
   }

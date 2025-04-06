@@ -2,10 +2,6 @@ import * as Assert from '../Assert/Assert.ts'
 import * as GetClickHandler from '../GetClickHandler/GetClickHandler.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
 
-
-
-
-
 export const handleSingleClick = async (editor: any, modifier: any, x: number, y: number) => {
   Assert.object(editor)
   Assert.number(modifier)

@@ -8,7 +8,7 @@ import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 export const render = (widget: IFindWidget) => {
   const commands: readonly any[] = FindWidgetRender.apply(widget.oldState, widget.newState)
   const wrappedCommands = []
-  const uid = widget.newState.uid
+  const { uid } = widget.newState
   for (const command of commands) {
     if (command[0] === RenderMethod.SetDom2) {
       wrappedCommands.push([command[0], uid, ...command.slice(1)])

@@ -6,9 +6,9 @@ export const editorDeleteHorizontalRight = (editor, getDelta) => {
   if (Editor.hasSelection(editor)) {
     return
   }
-  const lines = editor.lines
-  const rowIndex = editor.cursor.rowIndex
-  const columnIndex = editor.cursor.columnIndex
+  const { lines } = editor
+  const { rowIndex } = editor.cursor
+  const { columnIndex } = editor.cursor
   if (columnIndex >= lines[rowIndex].length) {
     if (rowIndex >= lines.length) {
       return

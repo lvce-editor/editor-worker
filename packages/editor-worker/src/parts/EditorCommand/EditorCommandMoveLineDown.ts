@@ -8,7 +8,7 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 // TODO with selection -> vscode moves whole selection
 // @ts-ignore
 export const moveLineDown = (editor) => {
-  const rowIndex = editor.cursor.rowIndex
+  const { rowIndex } = editor.cursor
   if (rowIndex === editor.lines.length - 1) {
     return
   }

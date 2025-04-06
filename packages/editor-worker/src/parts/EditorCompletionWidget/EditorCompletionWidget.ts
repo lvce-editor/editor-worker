@@ -8,7 +8,7 @@ import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 export const render = (widget: any) => {
   const commands = EditorCompletionRender.renderCompletion(widget.oldState, widget.newState)
   const wrappedCommands = []
-  const uid = widget.newState.uid
+  const { uid } = widget.newState
   for (const command of commands) {
     wrappedCommands.push(['Viewlet.send', uid, ...command])
   }
@@ -20,7 +20,7 @@ export const add = (widget: any) => {
   const id = 'EditorCompletion'
   // TODO how to generate a unique integer id
   // that doesn't collide with ids created in renderer worker?
-  const uid = widget.newState.uid
+  const { uid } = widget.newState
   const allCommands: any[] = []
   allCommands.push(['Viewlet.create', id, uid])
   allCommands.push(...commands)

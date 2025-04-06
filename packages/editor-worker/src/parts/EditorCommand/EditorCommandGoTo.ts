@@ -23,7 +23,7 @@ export const goTo = async ({ editor, getLocation, getNoLocationFoundMessage, get
       // Logger.warn('invalid definition result', definition)
       return editor
     }
-    const uri = definition.uri
+    const { uri } = definition
     if (uri === editor.uri) {
       // TODO set cursor to the definition position
       const position = TextDocument.positionAt(editor, definition.startOffset)

@@ -1,5 +1,5 @@
+import type { QuickPickMenuEntry } from '../QuickPickMenuEntry/QuickPickMenuEntry.ts'
 import * as EditorStrings from '../EditorStrings/EditorStrings.ts'
-import { QuickPickMenuEntry } from '../QuickPickMenuEntry/QuickPickMenuEntry.ts'
 
 export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
   return [

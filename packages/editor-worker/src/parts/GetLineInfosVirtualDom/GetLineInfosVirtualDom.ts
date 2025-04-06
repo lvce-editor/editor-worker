@@ -1,7 +1,7 @@
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
-import { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
 const getLineInfoVirtualDom = (lineInfo: readonly string[]): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = [
@@ -20,7 +20,7 @@ const getLineInfoVirtualDom = (lineInfo: readonly string[]): readonly VirtualDom
         className: tokenClass,
         childCount: 1,
       },
-      text(tokenText)
+      text(tokenText),
     )
   }
   return dom

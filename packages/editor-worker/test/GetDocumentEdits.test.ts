@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
+import type { OffsetBasedEdit } from '../src/parts/OffsetBasedEdit/OffsetBasedEdit.ts'
 import * as GetDocumentEdits from '../src/parts/GetDocumentEdits/GetDocumentEdits.ts'
-import { OffsetBasedEdit } from '../src/parts/OffsetBasedEdit/OffsetBasedEdit.ts'
 
 test('multiple edits', () => {
   const edits: readonly OffsetBasedEdit[] = [

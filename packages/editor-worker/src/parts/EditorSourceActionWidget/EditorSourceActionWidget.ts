@@ -8,7 +8,7 @@ import * as RenderSourceActions from '../RenderSourceActions/RenderSourceActions
 export const render: WidgetLifeCycleFunction<SourceActionWidget> = (widget) => {
   const commands = RenderSourceActions.doRender(widget.oldState, widget.newState)
   const wrappedCommands = []
-  const uid = widget.newState.uid
+  const { uid } = widget.newState
   for (const command of commands) {
     if (command[0] === RenderMethod.SetDom2) {
       wrappedCommands.push(command)

@@ -1,14 +1,14 @@
 const provider = {
-  languageId: "xyz",
+  languageId: 'xyz',
   provideCompletions(textDocument, offset) {
-    return [];
+    return []
   },
   resolveCompletionItem(textDocument, offset, name, completionItem) {
-    return {};
+    return {}
   },
-};
+}
 
 export const activate = () => {
   // @ts-ignore
-  vscode.registerCompletionProvider(provider);
-};
+  vscode.registerCompletionProvider(provider)
+}
