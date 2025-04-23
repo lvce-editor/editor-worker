@@ -18,15 +18,15 @@
   "author": "Lvce Editor",
   "license": "MIT",
   "devDependencies": {
-    "@eslint/js": "^9.24.0",
-    "@lerna/legacy-package-management": "^8.2.1",
-    "@lvce-editor/eslint-config": "^1.37.0",
-    "eslint": "^9.24.0",
-    "eslint-plugin-perfectionist": "^4.11.0",
-    "lerna": "^8.2.1",
+    "@eslint/js": "^9.25.1",
+    "@lerna/legacy-package-management": "^8.2.2",
+    "@lvce-editor/eslint-config": "^1.38.0",
+    "eslint": "^9.25.1",
+    "eslint-plugin-perfectionist": "^4.12.1",
+    "lerna": "^8.2.2",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.29.1"
+    "typescript-eslint": "^8.31.0"
   },
   "prettier": {
     "semi": false,
