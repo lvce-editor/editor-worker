@@ -20,13 +20,13 @@
   "devDependencies": {
     "@eslint/js": "^9.26.0",
     "@lerna/legacy-package-management": "^8.2.2",
-    "@lvce-editor/eslint-config": "^1.39.0",
+    "@lvce-editor/eslint-config": "^1.42.0",
     "eslint": "^9.26.0",
     "eslint-plugin-perfectionist": "^4.12.3",
     "lerna": "^8.2.2",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.1"
+    "typescript-eslint": "^8.32.0"
   },
   "prettier": {
     "semi": false,
