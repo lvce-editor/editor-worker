@@ -8,6 +8,7 @@ export const keep = [
   'Editor.offsetAt',
   'Editor.render',
   'Editor.getKeyBindings',
+  'Editor.getPositionAtCursor',
   'Editor.getQuickPickMenuEntries',
   // 'ColorPicker.render',
   'Editor.getText',

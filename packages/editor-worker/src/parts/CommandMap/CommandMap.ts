@@ -129,9 +129,10 @@ import * as EditorRenameAccept from '../EditorRenameAccept/EditorRenameAccept.ts
 import * as EditorRenameHandleBlur from '../EditorRenameHandleBlur/EditorRenameHandleBlur.ts'
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
+import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
+import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as FindWidgetReplaceAll from '../FindWidgetReplaceAll/FindWidgetReplaceAll.ts'
-import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
 import * as Font from '../Font/Font.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
@@ -151,13 +152,12 @@ import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
 
 export const commandMap = {
   'CodeGenerator.accept': CodeGeneratorAccept.codeGeneratorAccept,
-  'ColorPicker.handleSliderPointerDown': ColorPicker.handleSliderPointerDown,
-  'ColorPicker.handleSliderPointerMove': ColorPicker.handleSliderPointerMove,
   'ColorPicker.loadContent': ColorPicker.loadContent,
   'Editor.addCursorAbove': AddCursorAbove.addCursorAbove,
   'Editor.addCursorBelow': AddCursorBelow.addCursorBelow,
   'Editor.applyEdit': EditorApplyEdit.applyEdit,
   'Editor.braceCompletion': EditorBraceCompletion.braceCompletion,
+  'Editor.getPositionAtCursor': ExternalGetPositionAtCursor.getPositionAtCursor,
   'Editor.cancelSelection': CancelSelection.cancelSelection,
   'Editor.closeCodeGenerator': EditorCommandCloseCodeGenerator.closeCodeGenerator,
   'Editor.closeCompletion': EditorCloseCompletion.closeCompletion,
