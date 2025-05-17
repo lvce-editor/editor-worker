@@ -158,6 +158,7 @@ export const commandMap = {
   'Editor.applyEdit': EditorApplyEdit.applyEdit,
   'Editor.braceCompletion': EditorBraceCompletion.braceCompletion,
   'Editor.getPositionAtCursor': ExternalGetPositionAtCursor.getPositionAtCursor,
+  'Editor.getWordAt2': ExternalGetPositionAtCursor.getWordAt,
   'Editor.cancelSelection': CancelSelection.cancelSelection,
   'Editor.closeCodeGenerator': EditorCommandCloseCodeGenerator.closeCodeGenerator,
   'Editor.closeCompletion': EditorCloseCompletion.closeCompletion,
