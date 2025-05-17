@@ -2,35 +2,31 @@
   "name": "@lvce-editor/editor-worker-monorepo",
   "version": "0.0.0-dev",
   "description": "",
-  "main": "",
+  "license": "MIT",
+  "author": "Lvce Editor",
   "type": "module",
+  "main": "",
   "scripts": {
-    "postinstall": "lerna bootstrap --ci",
-    "lint": "eslint .",
-    "test": "lerna run test",
-    "type-check": "tsc -b",
-    "build:watch": "./packages/build/node_modules/.bin/esbuild --format=esm --bundle --external:node:buffer --external:electron --external:ws --external:node:worker_threads  --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=.tmp/dist/dist/editorWorkerMain.js",
     "build": "node packages/build/src/build.js",
     "build:static": "node packages/build/src/build-static.js",
-    "dev": "node packages/build/src/dev.js"
-  },
-  "keywords": [],
-  "author": "Lvce Editor",
-  "license": "MIT",
-  "devDependencies": {
-    "@eslint/js": "^9.27.0",
-    "@lerna/legacy-package-management": "^8.2.2",
-    "@lvce-editor/eslint-config": "^1.43.0",
-    "eslint": "^9.27.0",
-    "eslint-plugin-perfectionist": "^4.13.0",
-    "lerna": "^8.2.2",
-    "prettier": "^3.5.3",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.32.1"
+    "build:watch": "./packages/build/node_modules/.bin/esbuild --format=esm --bundle --external:node:buffer --external:electron --external:ws --external:node:worker_threads  --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=.tmp/dist/dist/editorWorkerMain.js",
+    "dev": "node packages/build/src/dev.js",
+    "lint": "eslint .",
+    "postinstall": "lerna bootstrap --ci",
+    "test": "lerna run test",
+    "type-check": "tsc -b"
   },
   "prettier": {
     "semi": false,
     "singleQuote": true,
     "printWidth": 150
+  },
+  "devDependencies": {
+    "@lerna/legacy-package-management": "^8.2.2",
+    "@lvce-editor/eslint-config": "^1.43.0",
+    "eslint": "^9.27.0",
+    "lerna": "^8.2.2",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
   }
 }
