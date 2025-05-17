@@ -7,7 +7,7 @@ export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Wid
   // @ts-ignore
   const { uid } = widget.newState
   const allCommands: any[] = []
-  allCommands.push(['Viewlet.createFunctionalRoot', id, uid])
+  allCommands.push(['Viewlet.createFunctionalRoot', id, uid, true])
   allCommands.push(...commands)
   allCommands.push(['Viewlet.send', uid, 'appendWidget'])
   const focusCommandIndex = allCommands.findIndex((command) => {

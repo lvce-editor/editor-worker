@@ -4,5 +4,6 @@ export const renderFull = (oldState: ColorPickerState, newState: ColorPickerStat
   const commands = [...newState.commands]
   // @ts-ignore
   newState.commands = []
+  console.log({ commands })
   return commands
 }
