@@ -10,7 +10,12 @@ export const render = (widget: ColorPickerWidget) => {
   const wrappedCommands = []
   const { uid } = widget.newState
   for (const command of commands) {
-    if (command[0] === RenderMethod.SetDom2 || command[0] === RenderMethod.SetCss || command[0] === RenderMethod.AppendToBody) {
+    if (
+      command[0] === RenderMethod.SetDom2 ||
+      command[0] === RenderMethod.SetCss ||
+      command[0] === RenderMethod.AppendToBody ||
+      command[0] === RenderMethod.SetBounds
+    ) {
       wrappedCommands.push(command)
     } else {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
