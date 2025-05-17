@@ -1,7 +1,7 @@
 import type { ColorPickerState } from '../ColorPickerState/ColorPickerState.ts'
 import * as ColorPickerWorker from '../ColorPickerWorker/ColorPickerWorker.ts'
 
-export const loadContent = async (state: ColorPickerState): Promise<Promise<ColorPickerState>> => {
+export const loadContent = async (state: ColorPickerState): Promise<ColorPickerState> => {
   const { uid, x, y, width, height } = state
   await ColorPickerWorker.invoke('ColorPicker.create', uid, x, y, width, height)
   await ColorPickerWorker.invoke('ColorPicker.loadContent', uid)
