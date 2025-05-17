@@ -15,25 +15,3 @@ export const loadContent = async (state: ColorPickerState, parentUid: number): P
     commands,
   }
 }
-
-export const handleSliderPointerDown = async (state: ColorPickerState, x: number, y: number): Promise<ColorPickerState> => {
-  const { uid } = state
-  await ColorPickerWorker.invoke('ColorPicker.handleSliderPointerDown', uid, x, y)
-  const diff = await ColorPickerWorker.invoke('ColorPicker.diff2', uid)
-  const commands = await ColorPickerWorker.invoke('ColorPicker.render2', uid, diff)
-  return {
-    ...state,
-    commands,
-  }
-}
-
-export const handleSliderPointerMove = async (state: ColorPickerState, x: number, y: number): Promise<ColorPickerState> => {
-  const { uid } = state
-  await ColorPickerWorker.invoke('ColorPicker.handleSliderPointerMove', uid, x, y)
-  const diff = await ColorPickerWorker.invoke('ColorPicker.diff2', uid)
-  const commands = await ColorPickerWorker.invoke('ColorPicker.render2', uid, diff)
-  return {
-    ...state,
-    commands,
-  }
-}
