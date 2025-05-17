@@ -7,26 +7,20 @@ export const create = (): ColorPickerWidget => {
   const widget: ColorPickerWidget = {
     id: WidgetId.ColorPicker,
     oldState: {
-      color: '',
-      offsetX: 0,
-      min: 0,
-      max: 0,
       uid: completionUid,
       x: 0,
       y: 0,
       width: 0,
       height: 0,
+      commands: [],
     },
     newState: {
-      color: '',
-      offsetX: 0,
-      min: 0,
-      max: 0,
       uid: completionUid,
       x: 0,
       y: 0,
       width: 0,
       height: 0,
+      commands: [],
     },
   }
   return widget

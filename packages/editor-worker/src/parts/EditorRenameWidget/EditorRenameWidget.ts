@@ -9,9 +9,15 @@ export const render = (widget: RenameWidget) => {
   const wrappedCommands = []
   const { uid } = widget.newState
   for (const command of commands) {
-    if (command[0] === RenderMethod.SetDom2) {
-      wrappedCommands.push(command)
-    } else if (command[0] === 'Viewlet.focusSelector') {
+    if (
+      command[0] === RenderMethod.SetDom2 ||
+      command[0] === RenderMethod.SetCss ||
+      command[0] === RenderMethod.AppendToBody ||
+      command[0] === RenderMethod.SetBounds2 ||
+      command[0] === RenderMethod.RegisterEventListeners ||
+      command[0] === RenderMethod.SetUid ||
+      command[0] === 'Viewlet.focusSelector'
+    ) {
       wrappedCommands.push(command)
     } else {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
