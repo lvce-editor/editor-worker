@@ -8,7 +8,7 @@ export const fromRange = (startRowIndex: number, startColumnIndex: number, endRo
 }
 
 export const fromRanges = (...items: any[]) => {
-  return new Uint32Array(items.flat(1))
+  return new Uint32Array(items.flat())
 }
 
 export const alloc = (length: number) => {

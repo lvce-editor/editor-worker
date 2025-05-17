@@ -1,18 +1,7 @@
-import eslint from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import perfectionist from 'eslint-plugin-perfectionist'
+import * as config from '@lvce-editor/eslint-config'
 
-export default tseslint.config(
-  eslint.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  {
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-  },
+export default [
+  ...config.default,
   {
     ignores: [
       'dist',
@@ -60,21 +49,13 @@ export default tseslint.config(
       '@typescript-eslint/return-await': 'off',
       'no-empty': 'off',
       '@typescript-eslint/no-dynamic-delete': 'off',
+      'jest/no-identical-title': 'off',
+      '@typescript-eslint/prefer-readonly-parameter-types': 'off',
+      'unicorn/no-array-for-each': 'off',
+      'no-console': 'off',
+      'unicorn/prefer-number-properties': 'off',
+      'unicorn/no-empty-file': 'off',
+      'unicorn/no-array-method-this-argument': 'off',
     },
   },
-  {
-    plugins: {
-      perfectionist,
-    },
-    rules: {
-      'perfectionist/sort-imports': [
-        'error',
-        {
-          type: 'natural',
-          order: 'asc',
-          newlinesBetween: 'never',
-        },
-      ],
-    },
-  },
-)
+]
