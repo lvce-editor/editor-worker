@@ -16,6 +16,8 @@ export const launchColorPickerWorker = async () => {
   const rpc = await MessagePortRpcParent.create({
     commandMap: {},
     messagePort: port2,
+    isMessagePortOpen: true,
   })
+  port2.start()
   return rpc
 }
