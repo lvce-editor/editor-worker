@@ -5,7 +5,7 @@ import * as ColorPickerWidgetFactory from '../ColorPickerWidgetFactory/ColorPick
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
-const newStateGenerator = (state: ColorPickerState): ColorPickerState => {
+const newStateGenerator = (state: ColorPickerState): Promise<ColorPickerState> => {
   return ColorPicker.loadContent(state)
 }
 
