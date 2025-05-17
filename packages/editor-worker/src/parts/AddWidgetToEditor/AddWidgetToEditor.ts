@@ -8,7 +8,7 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
   focusKey: number,
   editor: any,
   factory: () => T,
-  newStateGenerator: (state: K) => K | Promise<K>,
+  newStateGenerator: (state: K, uid: number) => K | Promise<K>,
   fullFocus?: boolean,
 ): Promise<any> => {
   const { widgets } = editor
@@ -18,7 +18,7 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
   const widget = factory()
   // @ts-ignore
   widget.newState.editorUid = editor.uid
-  const newState = await newStateGenerator(widget.newState)
+  const newState = await newStateGenerator(widget.newState, editor.uid)
   // @ts-ignore
   newState.editorUid = editor.uid
   const latestWidget = {
