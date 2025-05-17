@@ -1,43 +1,37 @@
 import type { ColorPickerState } from '../ColorPickerState/ColorPickerState.ts'
-import * as Clamp from '../Clamp/Clamp.ts'
+import * as ColorPickerWorker from '../ColorPickerWorker/ColorPickerWorker.ts'
 
-const getNewColor = (x: number, max: number) => {
-  const percent = x / max
-  const hue = percent * 360
-  const newColor = `hsl(${hue}, 100%, 50%)`
-  return newColor
-}
-
-export const loadContent = (state: ColorPickerState): ColorPickerState => {
-  const max = 300
-  const x = 20
-  const color = getNewColor(x, max)
+export const loadContent = async (state: ColorPickerState): Promise<Promise<ColorPickerState>> => {
+  const { uid, x, y, width, height } = state
+  await ColorPickerWorker.invoke('ColorPicker.create', uid, x, y, width, height)
+  await ColorPickerWorker.invoke('ColorPicker.loadContent', uid)
+  const diff = await ColorPickerWorker.invoke('ColorPicker.diff2', uid)
+  const commands = await ColorPickerWorker.invoke('ColorPicker.render2', uid, diff)
+  console.log({ commands })
   return {
     ...state,
-    offsetX: x,
-    color,
-    max,
+    commands,
   }
 }
 
-export const handleSliderPointerDown = (state: ColorPickerState, x: number, y: number): ColorPickerState => {
-  const { min, max } = state
-  const newX = Clamp.clamp(x, min, max)
-  const newColor = getNewColor(newX, max)
+export const handleSliderPointerDown = async (state: ColorPickerState, x: number, y: number): Promise<ColorPickerState> => {
+  const { uid } = state
+  await ColorPickerWorker.invoke('ColorPicker.handleSliderPointerDown', uid, x, y)
+  const diff = await ColorPickerWorker.invoke('ColorPicker.diff2', uid)
+  const commands = await ColorPickerWorker.invoke('ColorPicker.render2', uid, diff)
   return {
     ...state,
-    color: newColor,
-    offsetX: newX,
+    commands,
   }
 }
 
-export const handleSliderPointerMove = (state: ColorPickerState, x: number, y: number): ColorPickerState => {
-  const { min, max } = state
-  const newX = Clamp.clamp(x, min, max)
-  const newColor = getNewColor(newX, max)
+export const handleSliderPointerMove = async (state: ColorPickerState, x: number, y: number): Promise<ColorPickerState> => {
+  const { uid } = state
+  await ColorPickerWorker.invoke('ColorPicker.handleSliderPointerMove', uid, x, y)
+  const diff = await ColorPickerWorker.invoke('ColorPicker.diff2', uid)
+  const commands = await ColorPickerWorker.invoke('ColorPicker.render2', uid, diff)
   return {
     ...state,
-    color: newColor,
-    offsetX: newX,
+    commands,
   }
 }
