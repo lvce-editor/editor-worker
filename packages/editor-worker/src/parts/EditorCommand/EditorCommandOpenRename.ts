@@ -10,7 +10,7 @@ import * as EditorCommandGetWordAt from './EditorCommandGetWordAt.ts'
 const newStateGenerator = async (state: RenameState, parentUid: number): Promise<RenameState> => {
   // const editor: any = {}
   const { uid, x, y, width, height } = state
-  await RenameWorker.invoke('Rename.create', uid, x, y, width, height)
+  await RenameWorker.invoke('Rename.create', uid, x, y, width, height, parentUid)
   await RenameWorker.invoke('Rename.loadContent', uid)
   const diff = await RenameWorker.invoke('Rename.diff2', uid)
   const commands = await RenameWorker.invoke('Rename.render2', uid, diff)
