@@ -7,7 +7,8 @@ export const getPositionAtCursor = (editorUid: number): any => {
   return GetPositionAtCursor.getPositionAtCursor(editor)
 }
 
-export const getWordAt = (editorUid: number, rowIndex: number, columnIndex: number): any => {
+export const getWordAt = (editorUid: number, rowIndex: number, columnIndex: number): string => {
   const editor = GetEditor.getEditor(editorUid)
-  return EditorCommandGetWordAt.getWordAt(editor, rowIndex, columnIndex)
+  const { word } = EditorCommandGetWordAt.getWordAt(editor, rowIndex, columnIndex)
+  return word
 }
