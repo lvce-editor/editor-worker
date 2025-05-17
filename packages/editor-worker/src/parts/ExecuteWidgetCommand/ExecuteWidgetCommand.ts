@@ -5,15 +5,22 @@ const getInvoke = (): any => {
   return ColorPickerWorker.invoke
 }
 
-export const executeWidgetCommand = async (editor: any, name: string, method: string, uid: number, ...params: readonly any[]): Promise<any> => {
-  console.log({ editor })
+export const executeWidgetCommand = async (
+  editor: any,
+  name: string,
+  method: string,
+  uid: number,
+  widgetId: number,
+  ...params: readonly any[]
+): Promise<any> => {
   const invoke = getInvoke()
-  await invoke(`${name}.${method}`, uid, ...params)
+  const actualMethod = method.slice(name.length + 1)
+  await invoke(`${name}.${actualMethod}`, uid, ...params)
   const diff = await invoke(`${name}.diff2`, uid)
   const commands = await invoke(`${name}.render2`, uid, diff)
 
   const isWidget = (widget: any) => {
-    return widget.id === uid
+    return widget.id === widgetId
   }
   const childIndex = editor.widgets.findIndex(isWidget)
   const childWidget = editor.widgets[childIndex]
@@ -21,6 +28,6 @@ export const executeWidgetCommand = async (editor: any, name: string, method: st
     ...childWidget.state,
     commands,
   }
-  const newEditor = UpdateWidget.updateWidget(editor, uid, newState)
+  const newEditor = UpdateWidget.updateWidget(editor, widgetId, newState)
   return newEditor
 }
