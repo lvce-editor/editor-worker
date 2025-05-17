@@ -1,4 +1,5 @@
 export const SetBounds = 'setBounds'
+export const SetBounds2 = 'Viewlet.setBounds'
 export const SetColor = 'setColor'
 export const SetContentHeight = 'setContentHeight'
 export const SetNegativeMargin = 'setNegativeMargin'
