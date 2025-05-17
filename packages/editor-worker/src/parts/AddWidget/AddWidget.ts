@@ -1,4 +1,14 @@
 import type { Widget } from '../Widget/Widget.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
+
+const isFunctional = (widgetId: number | string): boolean => {
+  switch (widgetId) {
+    case WidgetId.ColorPicker:
+      return true
+    default:
+      return false
+  }
+}
 
 export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Widget<T>) => readonly any[]): readonly any[] => {
   const commands = render(widget)
@@ -7,7 +17,7 @@ export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Wid
   // @ts-ignore
   const { uid } = widget.newState
   const allCommands: any[] = []
-  allCommands.push(['Viewlet.createFunctionalRoot', id, uid, true])
+  allCommands.push(['Viewlet.createFunctionalRoot', id, uid, isFunctional(widget.id)])
   allCommands.push(...commands)
   // allCommands.push(['Viewlet.send', uid, 'appendWidget'])
   allCommands.push(['Viewlet.appendToBody', uid])
