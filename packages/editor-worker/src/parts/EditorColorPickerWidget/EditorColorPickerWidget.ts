@@ -32,7 +32,4 @@ export const add = (widget: ColorPickerWidget) => {
 
 export const remove = RemoveWidget.removeWidget
 
-export const Commands = {
-  'ColorPicker.handleSliderPointerDown': ColorPicker.handleSliderPointerDown,
-  'ColorPicker.handleSliderPointerMove': ColorPicker.handleSliderPointerMove,
-}
+export const Commands = {}
