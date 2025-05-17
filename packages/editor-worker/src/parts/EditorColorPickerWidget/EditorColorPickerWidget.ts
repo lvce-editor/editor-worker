@@ -15,7 +15,8 @@ export const render = (widget: ColorPickerWidget) => {
       command[0] === RenderMethod.SetCss ||
       command[0] === RenderMethod.AppendToBody ||
       command[0] === RenderMethod.SetBounds2 ||
-      command[0] === RenderMethod.RegisterEventListeners
+      command[0] === RenderMethod.RegisterEventListeners ||
+      command[0] === RenderMethod.SetUid
     ) {
       wrappedCommands.push(command)
     } else {
