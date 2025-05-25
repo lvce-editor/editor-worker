@@ -17,6 +17,7 @@ export const render = (widget: RenameWidget) => {
       command[0] === RenderMethod.RegisterEventListeners ||
       command[0] === RenderMethod.SetSelectionByName ||
       command[0] === RenderMethod.SetValueByName ||
+      command[0] === RenderMethod.SetFocusContext ||
       command[0] === RenderMethod.SetUid ||
       command[0] === 'Viewlet.focusSelector'
     ) {
