@@ -13,7 +13,7 @@ export const getRemoteUrl = (path) => {
 
 const nodeModulesPath = join(root, 'packages', 'server', 'node_modules')
 
-const editorWorkerPath = join(root, 'dist', 'dist', 'editorWorkerMain.js')
+const editorWorkerPath = join(root, '.tmp', 'dist', 'editorWorkerMain.js')
 
 const staticPath = join(nodeModulesPath, '@lvce-editor', 'static-server', 'static')
 const indexHtmlPath = join(staticPath, 'index.html')
