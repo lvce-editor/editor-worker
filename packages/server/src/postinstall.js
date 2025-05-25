@@ -18,8 +18,6 @@ const editorWorkerPath = join(root, '.tmp', 'dist', 'editorWorkerMain.js')
 const staticPath = join(nodeModulesPath, '@lvce-editor', 'static-server', 'static')
 const indexHtmlPath = join(staticPath, 'index.html')
 
-const indexHtmlContent = await readFile(indexHtmlPath, 'utf8')
-
 const remoteUrl = getRemoteUrl(editorWorkerPath)
 
 const config = {
