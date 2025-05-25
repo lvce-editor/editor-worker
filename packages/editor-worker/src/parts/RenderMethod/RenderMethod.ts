@@ -1,6 +1,7 @@
 export const AppendToBody = 'Viewlet.appendToBody'
 export const Focus = 'focus'
 export const RegisterEventListeners = 'Viewlet.registerEventListeners'
+export const SetSelectionByName = 'Viewlet.setSelectionByName'
 export const SetBounds = 'setBounds'
 export const SetBounds2 = 'Viewlet.setBounds'
 export const SetColor = 'setColor'
