@@ -1,4 +1,15 @@
 import type { Widget } from '../Widget/Widget.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
+
+const isFunctional = (widgetId: number | string): boolean => {
+  switch (widgetId) {
+    case WidgetId.ColorPicker:
+      // case WidgetId.Rename: // TODO
+      return true
+    default:
+      return false
+  }
+}
 
 export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Widget<T>) => readonly any[]): readonly any[] => {
   const commands = render(widget)
@@ -7,9 +18,14 @@ export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Wid
   // @ts-ignore
   const { uid } = widget.newState
   const allCommands: any[] = []
-  allCommands.push(['Viewlet.createFunctionalRoot', id, uid])
+  allCommands.push(['Viewlet.createFunctionalRoot', id, uid, isFunctional(widget.id)])
   allCommands.push(...commands)
-  allCommands.push(['Viewlet.send', uid, 'appendWidget'])
+  if (isFunctional(widget.id)) {
+    allCommands.push(['Viewlet.appendToBody', uid])
+  } else {
+    allCommands.push(['Viewlet.send', uid, 'appendWidget'])
+  }
+
   const focusCommandIndex = allCommands.findIndex((command) => {
     return command[2] === 'focus' || command[0] === 'Viewlet.focusSelector'
   })
@@ -23,6 +39,5 @@ export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Wid
     allCommands.splice(focusCommandIndex, 1)
     allCommands.push(command)
   }
-
   return allCommands
 }

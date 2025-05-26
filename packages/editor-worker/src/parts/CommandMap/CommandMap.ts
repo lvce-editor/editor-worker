@@ -129,6 +129,8 @@ import * as EditorRenameAccept from '../EditorRenameAccept/EditorRenameAccept.ts
 import * as EditorRenameHandleBlur from '../EditorRenameHandleBlur/EditorRenameHandleBlur.ts'
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
+import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
+import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as FindWidgetReplaceAll from '../FindWidgetReplaceAll/FindWidgetReplaceAll.ts'
 import * as Font from '../Font/Font.ts'
@@ -150,13 +152,13 @@ import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
 
 export const commandMap = {
   'CodeGenerator.accept': CodeGeneratorAccept.codeGeneratorAccept,
-  'ColorPicker.handleSliderPointerDown': ColorPicker.handleSliderPointerDown,
-  'ColorPicker.handleSliderPointerMove': ColorPicker.handleSliderPointerMove,
   'ColorPicker.loadContent': ColorPicker.loadContent,
   'Editor.addCursorAbove': AddCursorAbove.addCursorAbove,
   'Editor.addCursorBelow': AddCursorBelow.addCursorBelow,
   'Editor.applyEdit': EditorApplyEdit.applyEdit,
   'Editor.braceCompletion': EditorBraceCompletion.braceCompletion,
+  'Editor.getPositionAtCursor': ExternalGetPositionAtCursor.getPositionAtCursor,
+  'Editor.getWordAt2': ExternalGetPositionAtCursor.getWordAt,
   'Editor.cancelSelection': CancelSelection.cancelSelection,
   'Editor.closeCodeGenerator': EditorCommandCloseCodeGenerator.closeCodeGenerator,
   'Editor.closeCompletion': EditorCloseCompletion.closeCompletion,
@@ -196,6 +198,7 @@ export const commandMap = {
   'Editor.deleteWordPartLeft': DeleteWordPartLeft.deleteWordPartLeft,
   'Editor.deleteWordPartRight': DeleteWordPartRight.deleteWordPartRight,
   'Editor.deleteWordRight': DeleteWordRight.deleteWordRight,
+  'Editor.executeWidgetCommand': ExecuteWidgetCommand.executeWidgetCommand,
   'Editor.findAllReferences': FindAllReferences.findAllReferences,
   'Editor.format': EditorFormat.format,
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
