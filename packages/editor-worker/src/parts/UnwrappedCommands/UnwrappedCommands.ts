@@ -23,4 +23,5 @@ export const keep = [
   'Hover.loadContent',
   'Hover.render',
   'Initialize.initialize',
+  'ActivateByEvent.activateByEvent',
 ]
