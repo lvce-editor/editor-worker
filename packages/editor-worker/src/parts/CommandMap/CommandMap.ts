@@ -146,6 +146,7 @@ import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
+import * as SendMessagePortToExtensionHostWorker from '../SendMessagePortToExtensionHostWorker/SendMessagePortToExtensionHostWorker.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
@@ -344,6 +345,8 @@ export const commandMap = {
   'Hover.loadContent': EditorHover.loadContent,
   'Hover.render': EditorHoverRender.renderHover,
   'Initialize.initialize': Initialize.intialize,
+  'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
+    SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
 }
 
 WrapCommands.wrapCommands(commandMap)
