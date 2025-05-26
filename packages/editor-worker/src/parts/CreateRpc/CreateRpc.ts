@@ -17,8 +17,13 @@ export const createRpc = (method: any) => {
     return JsonRpc.invoke(_ipc, method, ...params)
   }
 
+  const invokeAndTransfer = async (method: string, ...params: any[]) => {
+    return JsonRpc.invokeAndTransfer(_ipc, method, ...params)
+  }
+
   return {
     listen,
     invoke,
+    invokeAndTransfer,
   }
 }
