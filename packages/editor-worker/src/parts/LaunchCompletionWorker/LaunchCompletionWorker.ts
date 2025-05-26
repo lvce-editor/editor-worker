@@ -19,5 +19,6 @@ export const launchCompletionWorker = async () => {
     isMessagePortOpen: true,
   })
   port2.start()
+  await rpc.invoke('Initialize.initialize')
   return rpc
 }
