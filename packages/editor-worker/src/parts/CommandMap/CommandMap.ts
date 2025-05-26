@@ -1,3 +1,4 @@
+import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
 import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
 import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
@@ -152,14 +153,13 @@ import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
 
 export const commandMap = {
+  'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
   'CodeGenerator.accept': CodeGeneratorAccept.codeGeneratorAccept,
   'ColorPicker.loadContent': ColorPicker.loadContent,
   'Editor.addCursorAbove': AddCursorAbove.addCursorAbove,
   'Editor.addCursorBelow': AddCursorBelow.addCursorBelow,
   'Editor.applyEdit': EditorApplyEdit.applyEdit,
   'Editor.braceCompletion': EditorBraceCompletion.braceCompletion,
-  'Editor.getPositionAtCursor': ExternalGetPositionAtCursor.getPositionAtCursor,
-  'Editor.getWordAt2': ExternalGetPositionAtCursor.getWordAt,
   'Editor.cancelSelection': CancelSelection.cancelSelection,
   'Editor.closeCodeGenerator': EditorCommandCloseCodeGenerator.closeCodeGenerator,
   'Editor.closeCompletion': EditorCloseCompletion.closeCompletion,
@@ -203,10 +203,12 @@ export const commandMap = {
   'Editor.findAllReferences': FindAllReferences.findAllReferences,
   'Editor.format': EditorFormat.format,
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
+  'Editor.getPositionAtCursor': ExternalGetPositionAtCursor.getPositionAtCursor,
   'Editor.getQuickPickMenuEntries': GetQuickPickMenuEntries.getQuickPickMenuEntries,
   'Editor.getSelections': GetSelections.getSelections,
   'Editor.getText': GetText.getText,
   'Editor.getWordAt': GetWordAt.getWordAt,
+  'Editor.getWordAt2': ExternalGetPositionAtCursor.getWordAt,
   'Editor.getWordBefore': GetWordAt.getWordBefore,
   'Editor.goToDefinition': EditorGoToDefinition.goToDefinition,
   'Editor.goToTypeDefinition': EditorGoToTypeDefinition.goToTypeDefinition,
