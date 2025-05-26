@@ -15,6 +15,7 @@ export const keep = [
   'Editor.getText',
   'Editor.getSelections',
   'Font.ensure',
+  'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker',
   'Hover.getHoverInfo',
   'Hover.handleSashPointerDown',
   'Hover.handleSashPointerMove',
