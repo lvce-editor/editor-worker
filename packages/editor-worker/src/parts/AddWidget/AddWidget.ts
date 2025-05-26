@@ -20,8 +20,11 @@ export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Wid
   const allCommands: any[] = []
   allCommands.push(['Viewlet.createFunctionalRoot', id, uid, isFunctional(widget.id)])
   allCommands.push(...commands)
-  // allCommands.push(['Viewlet.send', uid, 'appendWidget'])
-  allCommands.push(['Viewlet.appendToBody', uid])
+  if (isFunctional(widget.id)) {
+    allCommands.push(['Viewlet.appendToBody', uid])
+  } else {
+    allCommands.push(['Viewlet.send', uid, 'appendWidget'])
+  }
 
   const focusCommandIndex = allCommands.findIndex((command) => {
     return command[2] === 'focus' || command[0] === 'Viewlet.focusSelector'
@@ -36,7 +39,5 @@ export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Wid
     allCommands.splice(focusCommandIndex, 1)
     allCommands.push(command)
   }
-
-  console.log({ allCommands })
   return allCommands
 }
