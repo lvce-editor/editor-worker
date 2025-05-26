@@ -39,7 +39,5 @@ export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Wid
     allCommands.splice(focusCommandIndex, 1)
     allCommands.push(command)
   }
-
-  console.log({ allCommands })
   return allCommands
 }
