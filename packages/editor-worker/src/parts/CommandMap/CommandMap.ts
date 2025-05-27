@@ -113,17 +113,6 @@ import * as EditorType from '../EditorCommand/EditorCommandType.ts'
 import * as EditorTypeWithAutoClosing from '../EditorCommand/EditorCommandTypeWithAutoClosing.ts'
 import * as EditorUndo from '../EditorCommand/EditorCommandUndo.ts'
 import * as Unindent from '../EditorCommand/EditorCommandUnindent.ts'
-import * as EditorCompletion from '../EditorCompletion/EditorCompletion.ts'
-import * as EditorCompletionCloseDetails from '../EditorCompletionCloseDetails/EditorCompletionCloseDetails.ts'
-import * as EditorCompletionFocusFirst from '../EditorCompletionFocusFirst/EditorCompletionFocusFirst.ts'
-import * as EditorCompletionFocusIndex from '../EditorCompletionFocusIndex/EditorCompletionFocusIndex.ts'
-import * as EditorCompletionFocusNext from '../EditorCompletionFocusNext/EditorCompletionFocusNext.ts'
-import * as EditorCompletionFocusPrevious from '../EditorCompletionFocusPrevious/EditorCompletionFocusPrevious.ts'
-import * as EditorCompletionHandleWheel from '../EditorCompletionHandleWheel/EditorCompletionHandleWheel.ts'
-import * as EditorCompletionOpenDetails from '../EditorCompletionOpenDetails/EditorCompletionOpenDetails.ts'
-import * as EditorCompletionSelectCurrent from '../EditorCompletionSelectCurrent/EditorCompletionSelectCurrent.ts'
-import * as EditorCompletionSelectIndex from '../EditorCompletionSelectIndex/EditorCompletionSelectIndex.ts'
-import * as EditorCompletionToggleDetails from '../EditorCompletionToggleDetails/EditorCompletionToggleDetails.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
@@ -296,22 +285,6 @@ export const commandMap = {
   'Editor.undo': EditorUndo.undo,
   'Editor.unIndent': Unindent.editorUnindent,
   'Editor.updateDiagnostics': UpdateDiagnostics.updateDiagnostics,
-  'EditorCompletion.advance': EditorCompletion.advance,
-  'EditorCompletion.closeDetails': EditorCompletionCloseDetails.closeDetails,
-  'EditorCompletion.focusFirst': EditorCompletionFocusFirst.focusFirst,
-  'EditorCompletion.focusIndex': EditorCompletionFocusIndex.focusIndex,
-  'EditorCompletion.focusNext': EditorCompletionFocusNext.focusNext,
-  'EditorCompletion.focusPrevious': EditorCompletionFocusPrevious.focusPrevious,
-  'EditorCompletion.handleEditorBlur': EditorCompletion.handleEditorBlur,
-  'EditorCompletion.handleEditorClick': EditorCompletion.handleEditorClick,
-  'EditorCompletion.handleEditorDeleteLeft': EditorCompletion.handleEditorDeleteLeft,
-  'EditorCompletion.handleEditorType': EditorCompletion.handleEditorType,
-  'EditorCompletion.handleWheel': EditorCompletionHandleWheel.handleWheel,
-  'EditorCompletion.loadContent': EditorCompletion.loadContent,
-  'EditorCompletion.openDetails': EditorCompletionOpenDetails.openDetails,
-  'EditorCompletion.selectCurrent': EditorCompletionSelectCurrent.selectCurrent,
-  'EditorCompletion.selectIndex': EditorCompletionSelectIndex.selectIndex,
-  'EditorCompletion.toggleDetails': EditorCompletionToggleDetails.toggleDetails,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
   'FindWidget.close': FindWidget.close,
   'FindWidget.focusCloseButton': FindWidget.focusCloseButton,
