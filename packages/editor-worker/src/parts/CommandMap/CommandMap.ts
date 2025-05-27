@@ -313,8 +313,6 @@ export const commandMap = {
   'EditorCompletion.selectCurrent': EditorCompletionSelectCurrent.selectCurrent,
   'EditorCompletion.selectIndex': EditorCompletionSelectIndex.selectIndex,
   'EditorCompletion.toggleDetails': EditorCompletionToggleDetails.toggleDetails,
-  'EditorRename.accept': EditorRenameAccept.accept,
-  'EditorRename.handleBlur': EditorRenameHandleBlur.handleBlur,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
   'FindWidget.close': FindWidget.close,
   'FindWidget.focusCloseButton': FindWidget.focusCloseButton,
