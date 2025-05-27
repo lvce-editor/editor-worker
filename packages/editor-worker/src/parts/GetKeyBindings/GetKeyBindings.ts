@@ -3,9 +3,10 @@ import * as KeyModifier from '../KeyModifier/KeyModifier.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
 import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 
-export const getKeyBindings = async (): Promise<readonly any[]> => {
+export const getKeyBindings = async (uid: number): Promise<readonly any[]> => {
+  console.log({ uid })
   // TODO only load completion keybindings once opening completions
-  const extraKeyBindings = await CompletionWorker.invoke('Completions.getKeyBindings')
+  const extraKeyBindings = await CompletionWorker.invoke('Completions.getKeyBindings', uid)
   return [
     ...extraKeyBindings,
     {

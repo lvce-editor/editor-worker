@@ -1,8 +1,17 @@
 import * as ColorPickerWorker from '../ColorPickerWorker/ColorPickerWorker.ts'
+import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
 
-const getInvoke = (): any => {
-  return ColorPickerWorker.invoke
+const getInvoke = (widgetId: number): any => {
+  switch (widgetId) {
+    case WidgetId.ColorPicker:
+      return ColorPickerWorker.invoke
+    case WidgetId.Completion:
+      return CompletionWorker.invoke
+    default:
+      return undefined
+  }
 }
 
 export const executeWidgetCommand = async (
@@ -13,7 +22,7 @@ export const executeWidgetCommand = async (
   widgetId: number,
   ...params: readonly any[]
 ): Promise<any> => {
-  const invoke = getInvoke()
+  const invoke = getInvoke(widgetId)
   const actualMethod = method.slice(name.length + 1)
   await invoke(`${name}.${actualMethod}`, uid, ...params)
   const diff = await invoke(`${name}.diff2`, uid)
