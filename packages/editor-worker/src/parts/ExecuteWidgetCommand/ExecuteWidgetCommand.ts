@@ -18,12 +18,17 @@ export const executeWidgetCommand = async (
   editor: any,
   name: string,
   method: string,
-  uid: number,
+  _uid: number,
   widgetId: number,
   ...params: readonly any[]
 ): Promise<any> => {
   const invoke = getInvoke(widgetId)
   const actualMethod = method.slice(name.length + 1)
+  const widget = editor.widgets.find((widget: any) => widget.id === widgetId)
+  if (!widget) {
+    return
+  }
+  const uid = widget.newState.uid
   await invoke(`${name}.${actualMethod}`, uid, ...params)
   const diff = await invoke(`${name}.diff2`, uid)
   const commands = await invoke(`${name}.render2`, uid, diff)
