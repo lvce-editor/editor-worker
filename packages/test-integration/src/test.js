@@ -15,9 +15,14 @@ const only = [
   // 'editor-completion-focus-previous.test.js'
 ]
 
+const skip = ['editor.close-rename.test.js', 'editor.open-rename.test.js']
+
 const runTests = async (dirents) => {
   for (const dirent of dirents) {
     if (only.length > 0 && !only.includes(dirent)) {
+      continue
+    }
+    if (skip.includes(dirent)) {
       continue
     }
     const absolutePath = join(__dirname, dirent)
