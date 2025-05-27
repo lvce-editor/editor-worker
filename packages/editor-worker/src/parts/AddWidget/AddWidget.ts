@@ -4,7 +4,8 @@ import * as WidgetId from '../WidgetId/WidgetId.ts'
 const isFunctional = (widgetId: number | string): boolean => {
   switch (widgetId) {
     case WidgetId.ColorPicker:
-      // case WidgetId.Rename: // TODO
+    case WidgetId.Rename:
+      // case WidgetId.Completion:
       return true
     default:
       return false
