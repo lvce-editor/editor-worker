@@ -2,6 +2,7 @@ import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as GetWordAt from '../GetWordAt/GetWordAt.ts'
+import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 
 export const getPositionAtCursor = (editorUid: number): any => {
@@ -21,8 +22,8 @@ export const getWordAtOffset2 = (editorUid: number): string => {
   return word
 }
 
-export const getWordBefore2 = (editorUid: number, columnIndex: number): string => {
+export const getWordBefore2 = (editorUid: number, rowIndex: number, columnIndex: number): string => {
   const editor = GetEditor.getEditor(editorUid)
-  const word = GetWordAt.getWordBefore(editor, columnIndex)
+  const word = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   return word
 }
