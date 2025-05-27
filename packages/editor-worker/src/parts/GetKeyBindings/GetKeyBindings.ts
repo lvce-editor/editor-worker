@@ -1,9 +1,13 @@
 import * as KeyCode from '../KeyCode/KeyCode.ts'
 import * as KeyModifier from '../KeyModifier/KeyModifier.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
+import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 
-export const getKeyBindings = () => {
+export const getKeyBindings = async (): Promise<readonly any[]> => {
+  // TODO only load completion keybindings once opening completions
+  const extraKeyBindings = await CompletionWorker.invoke('Completions.getKeyBindings')
   return [
+    ...extraKeyBindings,
     {
       key: KeyCode.Escape,
       command: 'Editor.closeSourceAction',
