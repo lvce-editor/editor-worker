@@ -126,8 +126,6 @@ import * as EditorCompletionSelectIndex from '../EditorCompletionSelectIndex/Edi
 import * as EditorCompletionToggleDetails from '../EditorCompletionToggleDetails/EditorCompletionToggleDetails.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
-import * as EditorRenameAccept from '../EditorRenameAccept/EditorRenameAccept.ts'
-import * as EditorRenameHandleBlur from '../EditorRenameHandleBlur/EditorRenameHandleBlur.ts'
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
