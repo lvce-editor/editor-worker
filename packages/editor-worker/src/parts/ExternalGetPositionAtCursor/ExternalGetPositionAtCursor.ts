@@ -1,8 +1,6 @@
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
-import * as GetWordAt from '../GetWordAt/GetWordAt.ts'
-import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 
 export const getPositionAtCursor = (editorUid: number): any => {
