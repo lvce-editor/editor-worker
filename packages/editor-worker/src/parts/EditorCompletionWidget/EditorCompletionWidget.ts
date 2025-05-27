@@ -1,30 +1,40 @@
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
-import * as EditorCompletionRender from '../EditorCompletionRender/EditorCompletionRender.ts'
 import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletionItems.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
+import * as AddWidget from '../AddWidget/AddWidget.ts'
+import type { CompletionWidget } from '../CompletionWidget/CompletionWidget.ts'
+import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
+import * as RenderRename from '../RenderRename/RenderRename.ts'
 
-export const render = (widget: any) => {
-  const commands = EditorCompletionRender.renderCompletion(widget.oldState, widget.newState)
+export const render = (widget: CompletionWidget) => {
+  const commands: readonly any[] = RenderRename.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
   const { uid } = widget.newState
   for (const command of commands) {
-    wrappedCommands.push(['Viewlet.send', uid, ...command])
+    if (
+      command[0] === RenderMethod.SetDom2 ||
+      command[0] === RenderMethod.SetCss ||
+      command[0] === RenderMethod.AppendToBody ||
+      command[0] === RenderMethod.SetBounds2 ||
+      command[0] === RenderMethod.RegisterEventListeners ||
+      command[0] === RenderMethod.SetSelectionByName ||
+      command[0] === RenderMethod.SetValueByName ||
+      command[0] === RenderMethod.SetFocusContext ||
+      command[0] === RenderMethod.SetUid ||
+      command[0] === 'Viewlet.focusSelector'
+    ) {
+      wrappedCommands.push(command)
+    } else {
+      wrappedCommands.push(['Viewlet.send', uid, ...command])
+    }
   }
   return wrappedCommands
 }
 
-export const add = (widget: any) => {
-  const commands = render(widget)
-  const id = 'EditorCompletion'
-  // TODO how to generate a unique integer id
-  // that doesn't collide with ids created in renderer worker?
-  const { uid } = widget.newState
-  const allCommands: any[] = []
-  allCommands.push(['Viewlet.create', id, uid])
-  allCommands.push(...commands)
-  return allCommands
+export const add = (widget: CompletionWidget) => {
+  return AddWidget.addWidget(widget, 'EditorRename', render)
 }
 
 export const remove = RemoveWidget.removeWidget
