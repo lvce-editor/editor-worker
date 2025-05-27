@@ -10,6 +10,7 @@ export const keep = [
   'Editor.getKeyBindings',
   'Editor.getPositionAtCursor',
   'Editor.getWordAt2',
+  'Editor.getWordAtOffset2',
   'Editor.getQuickPickMenuEntries',
   // 'ColorPicker.render',
   'Editor.getText',
