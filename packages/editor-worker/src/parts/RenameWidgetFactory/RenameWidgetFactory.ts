@@ -8,25 +8,19 @@ export const create = (): RenameWidget => {
     id: WidgetId.Rename,
     oldState: {
       uid: completionUid,
-      focusedIndex: -1,
-      oldValue: '',
-      newValue: '',
-      focused: false,
       x: 0,
       y: 0,
       width: 0,
       height: 0,
+      commands: [],
     },
     newState: {
       uid: completionUid,
-      focusedIndex: -1,
-      oldValue: '',
-      newValue: '',
-      focused: true,
       x: 0,
       y: 0,
       width: 0,
       height: 0,
+      commands: [],
     },
   }
   return renameWidget
