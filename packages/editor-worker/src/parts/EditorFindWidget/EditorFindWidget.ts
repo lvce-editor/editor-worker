@@ -6,7 +6,7 @@ import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
 export const render = (widget: IFindWidget) => {
-  const commands: readonly any[] = FindWidgetRender.apply(widget.oldState, widget.newState)
+  const commands: readonly any[] = FindWidgetRender.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
   const { uid } = widget.newState
   for (const command of commands) {
