@@ -6,6 +6,7 @@ const isFunctional = (widgetId: number | string): boolean => {
     case WidgetId.ColorPicker:
     case WidgetId.Rename:
     case WidgetId.Completion:
+    case WidgetId.Find:
       return true
     default:
       return false
