@@ -9,6 +9,6 @@ const newStateGenerator = (state: FindWidgetState, parentUid: number): Promise<F
   return FindWidgetFunctions.loadContent(state, parentUid)
 }
 
-export const openColorPicker = async (editor: any) => {
+export const openFind2 = async (editor: any) => {
   return AddWidgetToEditor.addWidgetToEditor(WidgetId.ColorPicker, FocusKey.ColorPicker, editor, FindWidgetFactory.create, newStateGenerator)
 }
