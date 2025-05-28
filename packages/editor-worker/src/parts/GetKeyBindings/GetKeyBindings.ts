@@ -1,7 +1,7 @@
+import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as KeyCode from '../KeyCode/KeyCode.ts'
 import * as KeyModifier from '../KeyModifier/KeyModifier.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
-import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 
 export const getKeyBindings = async (uid: number): Promise<readonly any[]> => {
   console.log({ uid })

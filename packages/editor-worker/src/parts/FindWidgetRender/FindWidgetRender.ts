@@ -1,4 +1,4 @@
-import { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
+import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
 
 export const renderFull = (oldState: FindWidgetState, newState: FindWidgetState) => {
   const commands = [...newState.commands]

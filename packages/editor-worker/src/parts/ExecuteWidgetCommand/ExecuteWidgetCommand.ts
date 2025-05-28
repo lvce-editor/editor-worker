@@ -29,7 +29,7 @@ export const executeWidgetCommand = async (
   if (!widget) {
     return
   }
-  const uid = widget.newState.uid
+  const {uid} = widget.newState
   number(uid)
   await invoke(`${name}.${actualMethod}`, uid, ...params)
   const diff = await invoke(`${name}.diff2`, uid)
