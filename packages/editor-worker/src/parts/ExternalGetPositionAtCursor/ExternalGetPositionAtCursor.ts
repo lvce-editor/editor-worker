@@ -25,3 +25,15 @@ export const getWordBefore2 = (editorUid: number, rowIndex: number, columnIndex:
   const word = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   return word
 }
+
+export const getLines2 = (editorUid: number): readonly string[] => {
+  const editor = GetEditor.getEditor(editorUid)
+  const { lines } = editor
+  return lines
+}
+
+export const getSelections2 = (editorUid: number): readonly string[] => {
+  const editor = GetEditor.getEditor(editorUid)
+  const { selections } = editor
+  return selections
+}

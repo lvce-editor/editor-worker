@@ -11,6 +11,8 @@ export const keep = [
   'Editor.getPositionAtCursor',
   'Editor.getWordAt2',
   'Editor.getWordAtOffset2',
+  'Editor.getLines2',
+  'Editor.getSelections2',
   'Editor.getQuickPickMenuEntries',
   // 'ColorPicker.render',
   'Editor.getText',
