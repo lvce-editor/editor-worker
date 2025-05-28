@@ -1,11 +1,11 @@
 import type { Rpc } from '@lvce-editor/rpc'
-import * as LaunchColorPickerWorker from '../LaunchColorPickerWorker/LaunchColorPickerWorker.ts'
+import * as LaunchFindWidgetWorker from '../LaunchFindWidgetWorker/LaunchFindWidgetWorker.ts'
 
 let workerPromise: any
 
 const getOrCreate = (): Promise<Rpc> => {
   if (!workerPromise) {
-    workerPromise = LaunchColorPickerWorker.launchColorPickerWorker()
+    workerPromise = LaunchFindWidgetWorker.launchFindWidgetWorker()
   }
   return workerPromise
 }
