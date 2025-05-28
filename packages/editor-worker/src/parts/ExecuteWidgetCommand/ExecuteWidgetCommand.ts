@@ -1,6 +1,7 @@
 import { number } from '@lvce-editor/assert'
 import * as ColorPickerWorker from '../ColorPickerWorker/ColorPickerWorker.ts'
 import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
+import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
@@ -10,6 +11,8 @@ const getInvoke = (widgetId: number): any => {
       return ColorPickerWorker.invoke
     case WidgetId.Completion:
       return CompletionWorker.invoke
+    case WidgetId.Find:
+      return FindWidgetWorker.invoke
     default:
       return undefined
   }
@@ -27,9 +30,9 @@ export const executeWidgetCommand = async (
   const actualMethod = method.slice(name.length + 1)
   const widget = editor.widgets.find((widget: any) => widget.id === widgetId)
   if (!widget) {
-    return
+    return editor
   }
-  const {uid} = widget.newState
+  const { uid } = widget.newState
   number(uid)
   await invoke(`${name}.${actualMethod}`, uid, ...params)
   const diff = await invoke(`${name}.diff2`, uid)
