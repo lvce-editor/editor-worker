@@ -9,6 +9,7 @@ export const loadContent = async (state: FindWidgetState, parentUid: number): Pr
   await FindWidgetWorker.invoke('FindWidget.loadContent', uid)
   const diff = await FindWidgetWorker.invoke('FindWidget.diff2', uid)
   const commands = await FindWidgetWorker.invoke('FindWidget.render2', uid, diff)
+  console.log({ commands })
   return {
     ...state,
     commands,
