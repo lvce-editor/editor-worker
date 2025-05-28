@@ -1,26 +1,17 @@
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
-import * as FindMatchesCaseInsensitive from '../FindMatchesCaseInsensitive/FindMatchesCaseInsensitive.ts'
+import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
-import * as GetEditor from '../GetEditor/GetEditor.ts'
-import * as GetMatchCount from '../GetMatchCount/GetMatchCount.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
 
-export const loadContent = (editorId: number) => {
-  const editor = GetEditor.getEditor(editorId)
-  const { selections, lines } = editor
-  const startRowIndex = selections[0]
-  const startColumnIndex = selections[1]
-  const endColumnIndex = selections[3]
-  const line = lines[startRowIndex]
-  const value = line.slice(startColumnIndex, endColumnIndex)
-  const matches = FindMatchesCaseInsensitive.findMatchesCaseInsensitive(lines, value)
-  const matchCount = GetMatchCount.getMatchCount(matches)
+export const loadContent = async (state: FindWidgetState, parentUid: number): Promise<FindWidgetState> => {
+  const { uid, x, y, width, height } = state
+  await FindWidgetWorker.invoke('FindWidget.create', uid, x, y, width, height, parentUid)
+  await FindWidgetWorker.invoke('FindWidget.loadContent', uid)
+  const diff = await FindWidgetWorker.invoke('FindWidget.diff2', uid)
+  const commands = await FindWidgetWorker.invoke('FindWidget.render2', uid, diff)
   return {
-    value,
-    matches,
-    matchIndex: 0,
-    matchCount,
-    editorUid: editor.uid,
+    ...state,
+    commands,
   }
 }
 
@@ -51,6 +42,7 @@ export const handleReplaceInput = (state: FindWidgetState, value: string): FindW
   }
 }
 
+// TODO move these to worker
 export * from '../FindWidgetFocusCloseButton/FindWidgetFocusCloseButton.ts'
 export * from '../FindWidgetFocusFind/FindWidgetFocusFind.ts'
 export * from '../FindWidgetFocusIndex/FindWidgetFocusIndex.ts'
