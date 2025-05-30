@@ -57,6 +57,7 @@ export const closeFind2 = async (editorUid: number) => {
   const newEditor = {
     ...editor,
     widgets: newWidgets,
+    focused: true,
   }
   Editors.set(editorUid, editor, newEditor)
   // console.log('before rerender')
