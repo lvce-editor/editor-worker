@@ -43,7 +43,7 @@ export const getSelections2 = (editorUid: number): readonly string[] => {
 }
 
 export const closeFind2 = async (editorUid: number) => {
-  console.log('close find')
+  // console.log('close find')
   const editor = GetEditor.getEditor(editorUid)
   const { widgets } = editor
   const index = widgets.findIndex((widget: any) => widget.id === WidgetId.Find)
@@ -59,7 +59,7 @@ export const closeFind2 = async (editorUid: number) => {
     widgets: newWidgets,
   }
   Editors.set(editorUid, editor, newEditor)
-  console.log('before rerender')
-  await RendererWorker.invoke('Editor.rerender', editorUid)
-  console.log('after rerender')
+  // console.log('before rerender')
+  // await RendererWorker.invoke('Editor.rerender', editorUid)
+  // console.log('after rerender')
 }

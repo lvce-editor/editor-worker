@@ -187,6 +187,7 @@ export const renderEditor = async (id: number) => {
   }
   const { oldState, newState } = instance
   const commands = []
+  console.log({ oldState, newState })
   Editors.set(id, newState, newState)
   for (const item of render) {
     if (!item.isEqual(oldState, newState)) {

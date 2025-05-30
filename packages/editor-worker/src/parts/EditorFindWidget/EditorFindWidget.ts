@@ -1,8 +1,6 @@
-import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
-import * as FindWidgetFunctions from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as FindWidgetRender from '../FindWidgetRender/FindWidgetRender.ts'
-import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
+import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
 export const render = (widget: IFindWidget) => {
@@ -33,8 +31,8 @@ export const add = (widget: IFindWidget) => {
   return AddWidget.addWidget(widget, 'FindWidget', render)
 }
 
-export const remove = RemoveWidget.removeWidget
-
-export const Commands = {
-  'FindWidget.close': FindWidgetFunctions.close,
+export const remove = (widget: IFindWidget) => {
+  return [['Viewlet.dispose', widget.newState.uid]]
 }
+
+export const Commands = {}

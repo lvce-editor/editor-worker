@@ -42,7 +42,8 @@ export const executeWidgetCommand = async (
   const latestEditor = GetEditor.getEditor(editor.uid)
   const childIndex1 = latestEditor.widgets.findIndex(isWidget)
   if (childIndex1 === -1) {
-    return editor
+    console.log('got disposed')
+    return latestEditor
   }
 
   const diff = await invoke(`${name}.diff2`, uid)
