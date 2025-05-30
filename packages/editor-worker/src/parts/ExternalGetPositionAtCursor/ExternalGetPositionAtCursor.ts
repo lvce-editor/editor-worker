@@ -2,6 +2,10 @@ import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
+import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import * as Editors from '../Editors/Editors.ts'
 
 export const getPositionAtCursor = (editorUid: number): any => {
   const editor = GetEditor.getEditor(editorUid)
@@ -38,10 +42,24 @@ export const getSelections2 = (editorUid: number): readonly string[] => {
   return selections
 }
 
-export const closeFind2 = (editorUid: number) => {
+export const closeFind2 = async (editorUid: number) => {
   console.log('close find')
-  // TODO
-  // 1. ask find widget worker to remove widget
-  // 2. remove find widget from editor
-  // 3. ask renderer worker to rerender editor
+  const editor = GetEditor.getEditor(editorUid)
+  const { widgets } = editor
+  const index = widgets.findIndex((widget: any) => widget.id === WidgetId.Find)
+  if (index === -1) {
+    return
+  }
+  const findWidget = widgets[index]
+  await FindWidgetWorker.invoke('FindWidget.dispose', findWidget.newState.uid)
+  const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
+  // TODO transfer focus to editor
+  const newEditor = {
+    ...editor,
+    widgets: newWidgets,
+  }
+  Editors.set(editorUid, editor, newEditor)
+  console.log('before rerender')
+  await RendererWorker.invoke('Editor.rerender', editorUid)
+  console.log('after rerender')
 }

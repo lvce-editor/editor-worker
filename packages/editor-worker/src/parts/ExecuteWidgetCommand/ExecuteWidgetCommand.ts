@@ -3,6 +3,7 @@ import * as ColorPickerWorker from '../ColorPickerWorker/ColorPickerWorker.ts'
 import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
+import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const getInvoke = (widgetId: number): any => {
@@ -35,12 +36,18 @@ export const executeWidgetCommand = async (
   const { uid } = widget.newState
   number(uid)
   await invoke(`${name}.${actualMethod}`, uid, ...params)
-  const diff = await invoke(`${name}.diff2`, uid)
-  const commands = await invoke(`${name}.render2`, uid, diff)
-
   const isWidget = (widget: any) => {
     return widget.id === widgetId
   }
+  const latestEditor = GetEditor.getEditor(editor.uid)
+  const childIndex1 = latestEditor.widgets.findIndex(isWidget)
+  if (childIndex1 === -1) {
+    return editor
+  }
+
+  const diff = await invoke(`${name}.diff2`, uid)
+  const commands = await invoke(`${name}.render2`, uid, diff)
+
   const childIndex = editor.widgets.findIndex(isWidget)
   const childWidget = editor.widgets[childIndex]
   const newState = {

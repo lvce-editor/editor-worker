@@ -165,6 +165,7 @@ const renderWidgets = {
       }
     }
     const removeCommands = []
+    console.log({ removedWidgets, oldWidgets, newWidgets })
     for (const removedWidget of removedWidgets) {
       const childCommands = RenderWidget.removeWidget(removedWidget)
       if (childCommands.length > 0) {
