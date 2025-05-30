@@ -37,3 +37,11 @@ export const getSelections2 = (editorUid: number): readonly string[] => {
   const { selections } = editor
   return selections
 }
+
+export const closeFind2 = (editorUid: number) => {
+  console.log('close find')
+  // TODO
+  // 1. ask find widget worker to remove widget
+  // 2. remove find widget from editor
+  // 3. ask renderer worker to rerender editor
+}

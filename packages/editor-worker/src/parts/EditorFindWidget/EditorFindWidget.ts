@@ -37,11 +37,4 @@ export const remove = RemoveWidget.removeWidget
 
 export const Commands = {
   'FindWidget.close': FindWidgetFunctions.close,
-  'FindWidget.focusNext': FindWidgetFunctions.focusNext,
-  'FindWidget.focusPrevious': FindWidgetFunctions.focusPrevious,
-  'FindWidget.focusIndex': FindWidgetFunctions.focusIndex,
-  'FindWidget.focusLast': FindWidgetFunctions.focusLast,
-  'FindWidget.toggleReplace': FindWidgetFunctions.toggleReplace,
-  'FindWidget.handleFocus': FindWidgetFunctions.focusFind,
-  'FindWidget.handleBlur': FindWidgetFunctions.handleBlur,
 }

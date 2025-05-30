@@ -201,6 +201,7 @@ export const commandMap = {
   'Editor.getWordBefore': GetWordAt.getWordBefore,
   'Editor.getLines2': ExternalGetPositionAtCursor.getLines2,
   'Editor.getSelections2': ExternalGetPositionAtCursor.getSelections2,
+  'Editor.closeFind2': ExternalGetPositionAtCursor.closeFind2,
   'Editor.goToDefinition': EditorGoToDefinition.goToDefinition,
   'Editor.goToTypeDefinition': EditorGoToTypeDefinition.goToTypeDefinition,
   'Editor.handleBeforeInput': HandleBeforeInput.handleBeforeInput,
