@@ -148,7 +148,6 @@ export const commandMap = {
   'Editor.braceCompletion': EditorBraceCompletion.braceCompletion,
   'Editor.cancelSelection': CancelSelection.cancelSelection,
   'Editor.closeCodeGenerator': EditorCommandCloseCodeGenerator.closeCodeGenerator,
-  'Editor.closeCompletion': EditorCloseCompletion.closeCompletion,
   'Editor.closeFind': EditorCommandCloseFind.closeFind,
   'Editor.closeRename': CloseRename.closeRename,
   'Editor.closeSourceAction': EditorCommandCloseSourceAction.closeSourceAction,

@@ -1,15 +1,13 @@
+import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as Editors from '../Editors/Editors.ts'
-import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
-import * as SetFocus from '../SetFocus/SetFocus.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
-import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
-import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
-import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
-import * as FocusKey from '../FocusKey/FocusKey.ts'
 import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
+import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
+import * as SetFocus from '../SetFocus/SetFocus.ts'
+import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const getPositionAtCursor = (editorUid: number): any => {
   const editor = GetEditor.getEditor(editorUid)
@@ -46,12 +44,14 @@ export const getSelections2 = (editorUid: number): readonly string[] => {
   return selections
 }
 
-export const closeWidget2 = async (editorUid: number, widgetId: number, widgetName: string) => {
+export const closeWidget2 = async (editorUid: number, widgetId: number, widgetName: string, unsetAdditionalFocus: number) => {
+  console.log('close', widgetId)
   const editor = GetEditor.getEditor(editorUid)
   const invoke = getWidgetInvoke(widgetId)
   const { widgets } = editor
   const index = widgets.findIndex((widget: any) => widget.id === widgetId)
   if (index === -1) {
+    console.log('was already closed')
     return
   }
   await invoke(`${widgetName}.dispose`)
@@ -63,10 +63,15 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
   }
   Editors.set(editorUid, editor, newEditor)
   await SetFocus.setFocus(WhenExpression.FocusEditorText)
+  console.log({ unsetAdditionalFocus })
+  if (unsetAdditionalFocus) {
+    console.log('UNSET FOCUS', unsetAdditionalFocus)
+    await SetFocus.unsetAdditionalFocus(unsetAdditionalFocus)
+  }
 }
 
 export const closeFind2 = async (editorUid: number) => {
-  await closeWidget2(editorUid, WidgetId.Find, 'FindWidget')
+  await closeWidget2(editorUid, WidgetId.Find, 'FindWidget', 0)
 }
 
 export const applyEdits2 = async (editorUid: number, edits: readonly any[]): Promise<void> => {
