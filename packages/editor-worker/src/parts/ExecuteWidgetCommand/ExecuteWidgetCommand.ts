@@ -27,7 +27,6 @@ export const executeWidgetCommand = async (
   widgetId: number,
   ...params: readonly any[]
 ): Promise<any> => {
-  console.log('exec', name)
   const invoke = getInvoke(widgetId)
   const actualMethod = method.slice(name.length + 1)
   const widget = editor.widgets.find((widget: any) => widget.id === widgetId)
@@ -45,8 +44,6 @@ export const executeWidgetCommand = async (
   if (childIndex1 === -1) {
     return latestEditor
   }
-
-  console.log('exec', name)
 
   const diff = await invoke(`${name}.diff2`, uid)
   const commands = await invoke(`${name}.render2`, uid, diff)

@@ -32,7 +32,6 @@ const runTests = async (dirents) => {
       continue
     }
     try {
-      console.log('exec', dirent)
       const absolutePath = join(__dirname, dirent)
       const absoluteUri = pathToFileURL(absolutePath).toString()
       const module = await import(absoluteUri)
