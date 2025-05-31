@@ -1,21 +1,21 @@
-import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
+import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
-import * as Editors from '../Editors/Editors.ts'
 
 // TODO duplicate code
 const isRenameWidget = (widget: any) => {
   return widget.id === WidgetId.Rename
 }
 
-export const closeRename = async (editor: any) => {
-  const { widgets, uid } = editor
+export const closeRename = (editor: any) => {
+  const { widgets } = editor
   const renameWidgetIndex = widgets.findIndex(isRenameWidget)
   if (renameWidgetIndex === -1) {
     return editor
   }
-  const renameWidget = widgets[renameWidgetIndex]
-  await RenameWorker.invoke('Rename.close', renameWidget.newState.uid)
-  const latest = Editors.get(uid)
-  const newState = latest.newState
-  return newState
+  const newWidgets = RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.Rename)
+  return {
+    ...editor,
+    focused: true,
+    widgets: newWidgets,
+  }
 }
