@@ -185,6 +185,7 @@ export const commandMap = {
   'Editor.deleteWordPartLeft': DeleteWordPartLeft.deleteWordPartLeft,
   'Editor.applyEdit2': ExternalGetPositionAtCursor.applyEdits2,
   'Editor.closeFind2': ExternalGetPositionAtCursor.closeFind2,
+  'Editor.closeWidget2': ExternalGetPositionAtCursor.closeWidget2,
   'Editor.deleteWordPartRight': DeleteWordPartRight.deleteWordPartRight,
   'Editor.deleteWordRight': DeleteWordRight.deleteWordRight,
   'Editor.executeWidgetCommand': ExecuteWidgetCommand.executeWidgetCommand,

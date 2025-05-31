@@ -15,6 +15,7 @@ export const keep = [
   'Editor.applyEdit2',
   'Editor.applyEdits2',
   'Editor.closeFind2',
+  'Editor.closeWidget2',
   'Editor.getSelections2',
   'Editor.getQuickPickMenuEntries',
   // 'ColorPicker.render',

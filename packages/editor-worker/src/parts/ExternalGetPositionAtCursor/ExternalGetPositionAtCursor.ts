@@ -6,6 +6,7 @@ import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
+import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 
 export const getPositionAtCursor = (editorUid: number): any => {
   const editor = GetEditor.getEditor(editorUid)
@@ -42,15 +43,15 @@ export const getSelections2 = (editorUid: number): readonly string[] => {
   return selections
 }
 
-export const closeFind2 = async (editorUid: number) => {
+export const closeWidget2 = async (editorUid: number, widgetId: number, widgetName: string) => {
   const editor = GetEditor.getEditor(editorUid)
+  const invoke = getWidgetInvoke(widgetId)
   const { widgets } = editor
-  const index = widgets.findIndex((widget: any) => widget.id === WidgetId.Find)
+  const index = widgets.findIndex((widget: any) => widget.id === widgetId)
   if (index === -1) {
     return
   }
-  const findWidget = widgets[index]
-  await FindWidgetWorker.invoke('FindWidget.dispose', findWidget.newState.uid)
+  await invoke(`${widgetName}.dispose`)
   const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
   const newEditor = {
     ...editor,
@@ -58,6 +59,10 @@ export const closeFind2 = async (editorUid: number) => {
     focused: true,
   }
   Editors.set(editorUid, editor, newEditor)
+}
+
+export const closeFind2 = async (editorUid: number) => {
+  await closeWidget2(editorUid, WidgetId.Find, 'FindWidget')
 }
 
 export const applyEdits2 = async (editorUid: number, edits: readonly any[]): Promise<void> => {
