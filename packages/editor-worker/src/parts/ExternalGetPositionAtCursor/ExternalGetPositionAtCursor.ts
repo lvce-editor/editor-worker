@@ -49,9 +49,7 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
   const invoke = getWidgetInvoke(widgetId)
   const { widgets } = editor
   const index = widgets.findIndex((widget: any) => widget.id === widgetId)
-  console.log('close widget')
   if (index === -1) {
-    console.log('widge not found')
     return
   }
   await invoke(`${widgetName}.dispose`)
@@ -66,7 +64,6 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
   if (unsetAdditionalFocus) {
     await SetFocus.unsetAdditionalFocus(unsetAdditionalFocus)
   }
-  console.log('did finish', newEditor)
 }
 
 export const closeFind2 = async (editorUid: number) => {

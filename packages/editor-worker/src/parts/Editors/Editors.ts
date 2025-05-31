@@ -8,7 +8,6 @@ export const get = (id: number) => {
 }
 
 export const set = (id: number, oldEditor: any, newEditor: any) => {
-  Assert.number(id)
   Assert.object(oldEditor)
   Assert.object(newEditor)
   editors[id] = {
