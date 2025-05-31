@@ -1,9 +1,15 @@
+import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as KeyCode from '../KeyCode/KeyCode.ts'
 import * as KeyModifier from '../KeyModifier/KeyModifier.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
 
-export const getKeyBindings = () => {
+export const getKeyBindings = async (uid: number): Promise<readonly any[]> => {
+  // TODO only load completion keybindings once opening completions
+  // or maybe have a function renderKeyBindings that returns keybindings based on state
+  // (also needed for explorer view)
+  const extraKeyBindings = await CompletionWorker.invoke('Completions.getKeyBindings', uid)
   return [
+    ...extraKeyBindings,
     {
       key: KeyCode.Escape,
       command: 'Editor.closeSourceAction',
@@ -118,41 +124,6 @@ export const getKeyBindings = () => {
       key: KeyModifier.Shift | KeyCode.Tab,
       command: 'FindWidget.focusReplaceButton',
       when: WhenExpression.FocusFindWidgetReplaceAllButton,
-    },
-    {
-      key: KeyCode.DownArrow,
-      command: 'EditorCompletion.focusNext',
-      when: WhenExpression.FocusEditorCompletions,
-    },
-    {
-      key: KeyCode.UpArrow,
-      command: 'EditorCompletion.focusPrevious',
-      when: WhenExpression.FocusEditorCompletions,
-    },
-    {
-      key: KeyCode.Enter,
-      command: 'EditorCompletion.selectCurrent',
-      when: WhenExpression.FocusEditorCompletions,
-    },
-    {
-      key: KeyCode.Escape,
-      command: 'Editor.closeCompletion',
-      when: WhenExpression.FocusEditorCompletions,
-    },
-    {
-      key: KeyCode.End,
-      command: 'EditorCompletion.focusLast',
-      when: WhenExpression.FocusEditorCompletions,
-    },
-    {
-      key: KeyCode.Home,
-      command: 'EditorCompletion.focusFirst',
-      when: WhenExpression.FocusEditorCompletions,
-    },
-    {
-      key: KeyModifier.CtrlCmd | KeyCode.Space,
-      command: 'EditorCompletion.toggleDetails',
-      when: WhenExpression.FocusEditorCompletions,
     },
     {
       key: KeyModifier.CtrlCmd | KeyCode.RightArrow,

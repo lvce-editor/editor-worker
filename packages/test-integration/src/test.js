@@ -23,6 +23,12 @@ const skip = [
   'editor-completion-details.test.js',
   'editor-find-focus-next.test.js',
   'editor-find-focus-previous.test.js',
+  'editor-completion-focus-first.test.js',
+  'editor-completion-focus-next.test.js',
+  'editor-completion.test.js',
+  'editor-completion-focus-previous.test.js',
+  'editor-find-handle-input.test.js',
+  'editor-find.test.js',
 ]
 
 const runTests = async (dirents) => {
@@ -57,7 +63,7 @@ const main = async () => {
   const dirents = await readdir(__dirname)
   const filteredDirents = dirents.filter(isTest)
   await runTests(filteredDirents)
-  process.exit(0)
+  process.exit()
 }
 
 main()

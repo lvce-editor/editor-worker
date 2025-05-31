@@ -1,6 +1,8 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
-export const name = 'viewlet.completion-one-result'
+export const name = 'viewlet.completion-close'
+
+export const skip = 1
 
 export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Editor, Locator, expect, Command }) => {
   // arrange

@@ -1,8 +1,8 @@
-import type { VirtualListState } from '../VirtualListState/VirtualListState.ts'
-
-export interface CompletionState extends VirtualListState<any> {
-  readonly maxHeight: number
+export interface CompletionState {
   readonly uid: number
-  readonly focusedIndex: number
-  readonly focused: boolean
+  readonly x: number
+  readonly y: number
+  readonly width: number
+  readonly height: number
+  readonly commands: readonly any[]
 }
