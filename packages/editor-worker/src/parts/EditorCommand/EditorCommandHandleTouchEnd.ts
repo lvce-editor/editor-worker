@@ -17,6 +17,5 @@ export const handleTouchEnd = (editor, touchEvent) => {
   //     EditorCursorSet.cursorSet(editor, position)
   //   }
   // } else {
-  //   console.log('different position')
   // }
 }

@@ -9,7 +9,6 @@ const getNewPercent = (size, scrollBarSize, relativeX) => {
     return 0
   }
   // if (relativeY <= editor.scrollBarHeight / 2) {
-  //   console.log('clicked at top')
   //   // clicked at top
   //   return 0
   // }

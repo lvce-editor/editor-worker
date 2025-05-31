@@ -1,6 +1,7 @@
 import * as ApplyWidgetChanges from '../ApplyWidgetChanges/ApplyWidgetChanges.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
+import * as EditorStates from '../Editors/Editors.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
@@ -95,6 +96,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     invalidStartIndex,
     autoClosingRanges,
   }
+  EditorStates.set(editor.uid, editor, newEditor)
   const newWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditor, changes)
   const newEditor2 = {
     ...newEditor,
@@ -128,11 +130,7 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = (editor, changes) => {
 
 // @ts-ignore
 export const scheduleDocument = async (editor, changes) => {
-  // console.log('before')
-  // console.log([...editor.lines])
   const newLines = TextDocument.applyEdits(editor, changes)
-  // console.log('after')
-  // console.log([...editor.lines])
   const invalidStartIndex = changes[0].start.rowIndex
   // if (editor.undoStack) {
   //   editor.undoStack.push(changes)

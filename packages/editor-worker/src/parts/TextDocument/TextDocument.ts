@@ -75,16 +75,12 @@ export const getText = (state: any) => {
 // TDOO this doesn;t belong here
 export const getSelectionText = (textDocument: any, range: any) => {
   Assert.object(textDocument)
-  // console.log(range)
-  // console.log(textDocument)
   const startRowIndex = range.start.rowIndex
   const startColumnIndex = range.start.columnIndex
   const endRowIndex = Math.min(range.end.rowIndex, textDocument.lines.length - 1)
   const endColumnIndex = range.end.columnIndex
 
   if (startRowIndex === endRowIndex) {
-    // console.log(startRowIndex)
-    // console.log(textDocument.lines)
     return [textDocument.lines[startRowIndex].slice(startColumnIndex, endColumnIndex)]
   }
   const selectedLines = [

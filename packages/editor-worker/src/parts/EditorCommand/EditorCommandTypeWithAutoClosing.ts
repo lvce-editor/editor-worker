@@ -50,7 +50,6 @@ export const typeWithAutoClosing = async (editor: any, text: string) => {
 
   return newEditor
   // if (isBrace(text)) {
-  //   console.log('is brace')
   //   return editorTypeWithBraceCompletion(editor, text)
   // }
   // if (isSlash(text)) {

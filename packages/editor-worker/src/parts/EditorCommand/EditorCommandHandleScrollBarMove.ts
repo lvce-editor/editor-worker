@@ -5,7 +5,6 @@ import * as Editor from '../Editor/Editor.ts'
 const getNewPercent = (state, relativeY) => {
   const { height, scrollBarHeight } = state
   // if (relativeY <= editor.scrollBarHeight / 2) {
-  //   console.log('clicked at top')
   //   // clicked at top
   //   return 0
   // }
