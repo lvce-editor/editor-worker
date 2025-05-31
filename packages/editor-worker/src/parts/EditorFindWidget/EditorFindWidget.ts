@@ -1,6 +1,6 @@
+import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import * as FindWidgetRender from '../FindWidgetRender/FindWidgetRender.ts'
-import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
 export const render = (widget: IFindWidget) => {

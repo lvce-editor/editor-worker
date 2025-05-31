@@ -2,8 +2,8 @@ import { number } from '@lvce-editor/assert'
 import * as ColorPickerWorker from '../ColorPickerWorker/ColorPickerWorker.ts'
 import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
-import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
+import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const getInvoke = (widgetId: number): any => {
