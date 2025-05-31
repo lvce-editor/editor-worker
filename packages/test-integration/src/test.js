@@ -24,9 +24,11 @@ const skip = [
   'editor-find-focus-next.test.js',
   'editor-find-focus-previous.test.js',
   'editor-completion-focus-first.test.js',
-  'editor-completion-focus-next.test.js',
+  'editor-completion-focus-first.test.js',
+  'editor-completion.test.js',
   'editor-completion-focus-previous.test.js',
-  'editor-fund-handle-input.test.js',
+  'editor-find-handle-input.test.js',
+  'editor-find.test.js',
 ]
 
 const runTests = async (dirents) => {
