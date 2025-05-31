@@ -4,7 +4,6 @@ import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const getPositionAtCursor = (editorUid: number): any => {
