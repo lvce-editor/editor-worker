@@ -3,6 +3,7 @@ import * as Assert from '../Assert/Assert.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
+import * as EditorStates from '../Editors/Editors.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as EditorSelection from './EditorSelection.ts'
@@ -95,6 +96,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     invalidStartIndex,
     autoClosingRanges,
   }
+  EditorStates.set(editor.uid, editor, newEditor)
   const newWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditor, changes)
   const newEditor2 = {
     ...newEditor,
