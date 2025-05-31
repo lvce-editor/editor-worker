@@ -183,7 +183,7 @@ export const commandMap = {
   'Editor.deleteRight': DeleteCharacterRight.deleteCharacterRight,
   'Editor.deleteWordLeft': DeleteWordLeft.deleteWordLeft,
   'Editor.deleteWordPartLeft': DeleteWordPartLeft.deleteWordPartLeft,
-  'Editor.applyEdits2': ExternalGetPositionAtCursor.applyEdits2,
+  'Editor.applyEdit2': ExternalGetPositionAtCursor.applyEdits2,
   'Editor.closeFind2': ExternalGetPositionAtCursor.closeFind2,
   'Editor.deleteWordPartRight': DeleteWordPartRight.deleteWordPartRight,
   'Editor.deleteWordRight': DeleteWordRight.deleteWordRight,
