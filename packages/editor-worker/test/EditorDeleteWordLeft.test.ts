@@ -50,7 +50,7 @@ test.skip('editorDeleteWordLeft - no word left', async () => {
   })
 })
 
-test('editorDeleteWordLeft - at start of line', () => {
+test('editorDeleteWordLeft - at start of line', async () => {
   const editor = {
     lines: ['1', '2'],
     primarySelectionIndex: 0,
@@ -59,7 +59,7 @@ test('editorDeleteWordLeft - at start of line', () => {
     tokenizer: TokenizePlainText,
     undoStack: [],
   }
-  const newState = EditorDeleteWordLeft.deleteWordLeft(editor)
+  const newState = await EditorDeleteWordLeft.deleteWordLeft(editor)
   expect(newState).toMatchObject({
     lines: ['12'],
     selections: EditorSelection.fromRange(0, 1, 0, 1),

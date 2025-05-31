@@ -2,14 +2,14 @@ import { expect, test } from '@jest/globals'
 import * as EditorDeleteCharacterRight from '../src/parts/EditorCommand/EditorCommandDeleteCharacterRight.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 
-test('deleteCharacterRight', () => {
+test('deleteCharacterRight', async () => {
   const editor = {
     lines: ['a'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
     undoStack: [],
   }
-  expect(EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
+  expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     lines: [''],
     selections: EditorSelection.fromRange(0, 0, 0, 0),
   })
