@@ -75,6 +75,7 @@ export const {
   toggleDetails,
   closeDetails,
   handleWheel,
+  close,
 } = createFns([
   'handleEditorType',
   'focusFirst',
@@ -92,4 +93,5 @@ export const {
   'toggleDetails',
   'closeDetails',
   'handleWheel',
+  'close',
 ])

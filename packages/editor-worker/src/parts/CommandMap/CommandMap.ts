@@ -254,9 +254,9 @@ export const commandMap = {
   'EditorCompletion.handleWheel': EditorCompletionWidget.handleWheel,
   'EditorCompletion.openDetails': EditorCompletionWidget.openDetails,
   'EditorCompletion.selectCurrent': EditorCompletionWidget.selectCurrent,
+  'EditorCompletion.close': EditorCompletionWidget.close,
   'EditorCompletion.selectIndex': EditorCompletionWidget.selectIndex,
   'EditorCompletion.toggleDetails': EditorCompletionWidget.toggleDetails,
-
   'Editor.openFind': OpenFind.openFind,
   'Editor.openFind2': OpenFind2.openFind2,
   'Editor.openRename': EditorCommandOpenRename.openRename,
