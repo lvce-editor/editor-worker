@@ -5,6 +5,8 @@ import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
 
 export const getKeyBindings = async (uid: number): Promise<readonly any[]> => {
   // TODO only load completion keybindings once opening completions
+  // or maybe have a function renderKeyBindings that returns keybindings based on state
+  // (also needed for explorer view)
   const extraKeyBindings = await CompletionWorker.invoke('Completions.getKeyBindings', uid)
   return [
     ...extraKeyBindings,
