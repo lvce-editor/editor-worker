@@ -12,6 +12,8 @@ export const keep = [
   'Editor.getWordAt2',
   'Editor.getWordAtOffset2',
   'Editor.getLines2',
+  'Editor.applyEdit2',
+  'Editor.applyEdits2',
   'Editor.closeFind2',
   'Editor.getSelections2',
   'Editor.getQuickPickMenuEntries',
