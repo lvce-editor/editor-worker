@@ -45,7 +45,6 @@ export const getSelections2 = (editorUid: number): readonly string[] => {
 }
 
 export const closeWidget2 = async (editorUid: number, widgetId: number, widgetName: string, unsetAdditionalFocus: number) => {
-  console.log('close', widgetId)
   const editor = GetEditor.getEditor(editorUid)
   const invoke = getWidgetInvoke(widgetId)
   const { widgets } = editor
@@ -63,9 +62,7 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
   }
   Editors.set(editorUid, editor, newEditor)
   await SetFocus.setFocus(WhenExpression.FocusEditorText)
-  console.log({ unsetAdditionalFocus })
   if (unsetAdditionalFocus) {
-    console.log('UNSET FOCUS', unsetAdditionalFocus)
     await SetFocus.unsetAdditionalFocus(unsetAdditionalFocus)
   }
 }

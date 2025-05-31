@@ -128,11 +128,7 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = (editor, changes) => {
 
 // @ts-ignore
 export const scheduleDocument = async (editor, changes) => {
-  // console.log('before')
-  // console.log([...editor.lines])
   const newLines = TextDocument.applyEdits(editor, changes)
-  // console.log('after')
-  // console.log([...editor.lines])
   const invalidStartIndex = changes[0].start.rowIndex
   // if (editor.undoStack) {
   //   editor.undoStack.push(changes)

@@ -18,7 +18,6 @@ const newStateGenerator = async (state: CompletionState, parentUid: number): Pro
 }
 
 export const openCompletion = async (editor: any) => {
-  console.log('open completion')
   const fullFocus = false
   return AddWidgetToEditor.addWidgetToEditor(
     WidgetId.Completion,

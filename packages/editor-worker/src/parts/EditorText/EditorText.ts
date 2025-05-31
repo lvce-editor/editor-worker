@@ -16,13 +16,11 @@ import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 //   // recomputing tokens would be a waste of cpu time and cause lots of garbage collection
 //   const lineCache = editor.lineCache
 //   // TODO only compute tokens in viewport
-//   // console.log('minmax', editor.minLineY, editor.maxLineY)
 //   // const cachedLineStates = Object.create(null)
 //   // if(cachedLineStates[i])
 //   const tokenizeLine = editor.tokenizer.tokenizeLine
 //   for (let i = 0; i < lines.length; i++) {
 //     if (lineCache[i]) {
-//       // console.log('cached line')
 //       tokens.push(lineCache[i].tokens)
 //       continue
 //     }
@@ -227,7 +225,6 @@ const getLineInfoDefault = (
       const decorationType = decorations[++decorationIndex]
       // @ts-ignore
       const decorationModifiers = decorations[++decorationIndex]
-      // console.log('MATCHING DECORATION', {
       //   decorationIndex,
       //   decorationLength,
       //   decorationType,
