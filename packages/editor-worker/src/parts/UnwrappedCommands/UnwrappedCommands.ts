@@ -11,6 +11,7 @@ export const keep = [
   'Editor.getPositionAtCursor',
   'Editor.getWordAt2',
   'Editor.getWordAtOffset2',
+  'Editor.getWordBefore2',
   'Editor.getLines2',
   'Editor.applyEdit2',
   'Editor.applyEdits2',
