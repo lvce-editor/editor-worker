@@ -4,8 +4,5 @@ export const renderFull = (oldState: RenameState, newState: RenameState) => {
   const commands = [...newState.commands]
   // @ts-ignore
   newState.commands = []
-  console.log({
-    commands,
-  })
   return commands
 }
