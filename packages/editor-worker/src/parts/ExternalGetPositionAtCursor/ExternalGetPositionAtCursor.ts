@@ -60,8 +60,9 @@ export const closeFind2 = async (editorUid: number) => {
   Editors.set(editorUid, editor, newEditor)
 }
 
-export const applyEdits2 = (editorUid: number, edits: readonly any[]): void => {
+export const applyEdits2 = async (editorUid: number, edits: readonly any[]): Promise<void> => {
   const editor = GetEditor.getEditor(editorUid)
-  const newEditor = ApplyEdit.applyEdit(editor, edits)
+  const newEditor = await ApplyEdit.applyEdit(editor, edits)
+  console.log({ newEditor })
   Editors.set(editorUid, editor, newEditor)
 }
