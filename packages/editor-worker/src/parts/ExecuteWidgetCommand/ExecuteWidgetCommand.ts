@@ -27,6 +27,7 @@ export const executeWidgetCommand = async (
   widgetId: number,
   ...params: readonly any[]
 ): Promise<any> => {
+  console.log('exec', name)
   const invoke = getInvoke(widgetId)
   const actualMethod = method.slice(name.length + 1)
   const widget = editor.widgets.find((widget: any) => widget.id === widgetId)
