@@ -25,14 +25,20 @@ const runTests = async (dirents) => {
     if (skip.includes(dirent)) {
       continue
     }
-    const absolutePath = join(__dirname, dirent)
-    const absoluteUri = pathToFileURL(absolutePath).toString()
-    const module = await import(absoluteUri)
-    if (module.skip) {
-      continue
+    try {
+      console.log('exec', dirent)
+      const absolutePath = join(__dirname, dirent)
+      const absoluteUri = pathToFileURL(absolutePath).toString()
+      const module = await import(absoluteUri)
+      if (module.skip) {
+        continue
+      }
+      const rpc = await setup()
+      await module.test(rpc)
+    } catch (error) {
+      console.error(`test failed ${dirent}: ${error}`)
+      process.exitCode = 1
     }
-    const rpc = await setup()
-    await module.test(rpc)
   }
 }
 

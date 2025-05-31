@@ -45,11 +45,16 @@ export const executeWidgetCommand = async (
     return latestEditor
   }
 
+  console.log('exec', name)
+
   const diff = await invoke(`${name}.diff2`, uid)
   const commands = await invoke(`${name}.render2`, uid, diff)
 
-  const childIndex = editor.widgets.findIndex(isWidget)
-  const childWidget = editor.widgets[childIndex]
+  const childIndex = latestEditor.widgets.findIndex(isWidget)
+  if (childIndex === -1) {
+    return latestEditor
+  }
+  const childWidget = latestEditor.widgets[childIndex]
   const newState = {
     ...childWidget.newState,
     commands,
