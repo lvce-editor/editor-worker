@@ -1,13 +1,10 @@
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as Editors from '../Editors/Editors.ts'
-import * as Editors from '../Editors/Editors.ts'
-import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
+import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const getPositionAtCursor = (editorUid: number): any => {
@@ -46,7 +43,6 @@ export const getSelections2 = (editorUid: number): readonly string[] => {
 }
 
 export const closeFind2 = async (editorUid: number) => {
-  // console.log('close find')
   const editor = GetEditor.getEditor(editorUid)
   const { widgets } = editor
   const index = widgets.findIndex((widget: any) => widget.id === WidgetId.Find)
@@ -56,14 +52,16 @@ export const closeFind2 = async (editorUid: number) => {
   const findWidget = widgets[index]
   await FindWidgetWorker.invoke('FindWidget.dispose', findWidget.newState.uid)
   const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
-  // TODO transfer focus to editor
   const newEditor = {
     ...editor,
     widgets: newWidgets,
     focused: true,
   }
   Editors.set(editorUid, editor, newEditor)
-  // console.log('before rerender')
-  // await RendererWorker.invoke('Editor.rerender', editorUid)
-  // console.log('after rerender')
+}
+
+export const applyEdits2 = async (editorUid: number, edits: readonly any[]): void => {
+  const editor = GetEditor.getEditor(editorUid)
+  const newEditor = ApplyEdit.applyEdit(editor, edits)
+  Editors.set(editorUid, editor, newEditor)
 }
