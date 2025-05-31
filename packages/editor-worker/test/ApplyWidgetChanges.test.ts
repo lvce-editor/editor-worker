@@ -23,7 +23,7 @@ beforeEach(() => {
   })
 })
 
-test('applyWidgetChanges - delete', () => {
+test('applyWidgetChanges - delete', async () => {
   const editor = {
     lines: ['line 1', 'line 2', 'line 3'],
     cursor: {
@@ -50,7 +50,7 @@ test('applyWidgetChanges - delete', () => {
       deleted: ['a'],
     },
   ]
-  expect(ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toEqual([
+  expect(await ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toEqual([
     {
       id,
       oldState: {
@@ -63,7 +63,7 @@ test('applyWidgetChanges - delete', () => {
   ])
 })
 
-test('applyWidgetChanges - empty widgets', () => {
+test('applyWidgetChanges - empty widgets', async () => {
   const editor = {
     lines: ['line 1', 'line 2', 'line 3'],
     cursor: {
@@ -80,5 +80,5 @@ test('applyWidgetChanges - empty widgets', () => {
       deleted: ['a'],
     },
   ]
-  expect(ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toEqual([])
+  expect(await ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toEqual([])
 })

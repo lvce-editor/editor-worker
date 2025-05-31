@@ -65,7 +65,7 @@ export const scheduleSelections = (editor: any, selectionEdits: any) => {
  * @param {Uint32Array|undefined} selectionChanges
  * @returns
  */
-export const scheduleDocumentAndCursorsSelections = (editor: any, changes: any, selectionChanges: any = undefined) => {
+export const scheduleDocumentAndCursorsSelections = async (editor: any, changes: any, selectionChanges: any = undefined) => {
   Assert.object(editor)
   Assert.array(changes)
   if (changes.length === 0) {
@@ -95,7 +95,7 @@ export const scheduleDocumentAndCursorsSelections = (editor: any, changes: any, 
     invalidStartIndex,
     autoClosingRanges,
   }
-  const newWidgets = ApplyWidgetChanges.applyWidgetChanges(newEditor, changes)
+  const newWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditor, changes)
   const newEditor2 = {
     ...newEditor,
     widgets: newWidgets,
