@@ -3,8 +3,6 @@ import * as ColorPickerWorker from '../ColorPickerWorker/ColorPickerWorker.ts'
 import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
-import * as GetEditor from '../GetEditor/GetEditor.ts'
-import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
@@ -59,6 +57,6 @@ export const executeWidgetCommand = async (
     ...childWidget.newState,
     commands,
   }
-  const newEditor = UpdateWidget.updateWidget(editor, widgetId, newState)
+  const newEditor = UpdateWidget.updateWidget(latestEditor, widgetId, newState)
   return newEditor
 }
