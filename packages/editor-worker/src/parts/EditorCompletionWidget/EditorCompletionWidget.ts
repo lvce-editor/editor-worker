@@ -1,12 +1,12 @@
-import * as AddWidget from '../AddWidget/AddWidget.ts'
 import type { CompletionWidget } from '../CompletionWidget/CompletionWidget.ts'
+import * as AddWidget from '../AddWidget/AddWidget.ts'
+import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletionItems.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderRename from '../RenderRename/RenderRename.ts'
-import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 
 export const render = (widget: CompletionWidget) => {
   const commands: readonly any[] = RenderRename.renderFull(widget.oldState, widget.newState)
