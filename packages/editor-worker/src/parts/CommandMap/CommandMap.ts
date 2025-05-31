@@ -112,6 +112,7 @@ import * as EditorType from '../EditorCommand/EditorCommandType.ts'
 import * as EditorTypeWithAutoClosing from '../EditorCommand/EditorCommandTypeWithAutoClosing.ts'
 import * as EditorUndo from '../EditorCommand/EditorCommandUndo.ts'
 import * as Unindent from '../EditorCommand/EditorCommandUnindent.ts'
+import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorCompletionWidget.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
@@ -241,6 +242,21 @@ export const commandMap = {
   'Editor.openCodeGenerator': EditorCommandOpenCodeGenerator.openCodeGenerator,
   'Editor.openColorPicker': EditorOpenColorPicker.openColorPicker,
   'Editor.openCompletion': EditorOpenCompletion.openCompletion,
+  'EditorCompletion.closeDetails': EditorCompletionWidget.closeDetails,
+  'EditorCompletion.focusFirst': EditorCompletionWidget.focusFirst,
+  'EditorCompletion.focusIndex': EditorCompletionWidget.focusIndex,
+  'EditorCompletion.focusNext': EditorCompletionWidget.focusNext,
+  'EditorCompletion.focusPrevious': EditorCompletionWidget.focusPrevious,
+  'EditorCompletion.handleEditorBlur': EditorCompletionWidget.handleEditorBlur,
+  'EditorCompletion.handleEditorClick': EditorCompletionWidget.handleEditorClick,
+  'EditorCompletion.handleEditorDeleteLeft': EditorCompletionWidget.handleEditorDeleteLeft,
+  'EditorCompletion.handleEditorType': EditorCompletionWidget.handleEditorType,
+  'EditorCompletion.handleWheel': EditorCompletionWidget.handleWheel,
+  'EditorCompletion.openDetails': EditorCompletionWidget.openDetails,
+  'EditorCompletion.selectCurrent': EditorCompletionWidget.selectCurrent,
+  'EditorCompletion.close': EditorCompletionWidget.close,
+  'EditorCompletion.selectIndex': EditorCompletionWidget.selectIndex,
+  'EditorCompletion.toggleDetails': EditorCompletionWidget.toggleDetails,
   'Editor.openFind': OpenFind.openFind,
   'Editor.openFind2': OpenFind2.openFind2,
   'Editor.openRename': EditorCommandOpenRename.openRename,
