@@ -4,6 +4,8 @@ import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
+import * as GetEditor from '../GetEditor/GetEditor.ts'
+import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const getInvoke = (widgetId: number): any => {
@@ -42,7 +44,6 @@ export const executeWidgetCommand = async (
   const latestEditor = GetEditor.getEditor(editor.uid)
   const childIndex1 = latestEditor.widgets.findIndex(isWidget)
   if (childIndex1 === -1) {
-    console.log('got disposed')
     return latestEditor
   }
 
@@ -50,7 +51,10 @@ export const executeWidgetCommand = async (
   const commands = await invoke(`${name}.render2`, uid, diff)
 
   const childIndex = editor.widgets.findIndex(isWidget)
-  const childWidget = editor.widgets[childIndex]
+  if (childIndex === -1) {
+    return latestEditor
+  }
+  const childWidget = latestEditor.widgets[childIndex]
   const newState = {
     ...childWidget.newState,
     commands,

@@ -52,7 +52,6 @@ export default [
       'jest/no-identical-title': 'off',
       '@typescript-eslint/prefer-readonly-parameter-types': 'off',
       'unicorn/no-array-for-each': 'off',
-      'no-console': 'off',
       'unicorn/prefer-number-properties': 'off',
       'unicorn/no-empty-file': 'off',
       'unicorn/no-array-method-this-argument': 'off',
