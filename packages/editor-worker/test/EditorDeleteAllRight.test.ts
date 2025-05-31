@@ -3,7 +3,7 @@ import * as EditorDeleteAllRight from '../src/parts/EditorCommand/EditorCommandD
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
 
-test('editorDeleteAllRight - at start', () => {
+test('editorDeleteAllRight - at start', async () => {
   const editor = {
     lines: ['1 2 3 4 5'],
     selections: EditorSelection.fromRange(0, 0, 0, 0),
@@ -11,13 +11,13 @@ test('editorDeleteAllRight - at start', () => {
     tokenizer: TokenizePlainText,
     undoStack: [],
   }
-  expect(EditorDeleteAllRight.deleteAllRight(editor)).toMatchObject({
+  expect(await EditorDeleteAllRight.deleteAllRight(editor)).toMatchObject({
     lines: [''],
     selections: EditorSelection.fromRange(0, 0, 0, 0),
   })
 })
 
-test('editorDeleteAllRight in middle', () => {
+test('editorDeleteAllRight in middle', async () => {
   const cursor = {
     rowIndex: 0,
     columnIndex: 5,
@@ -30,7 +30,7 @@ test('editorDeleteAllRight in middle', () => {
     tokenizer: TokenizePlainText,
     undoStack: [],
   }
-  expect(EditorDeleteAllRight.deleteAllRight(editor)).toMatchObject({
+  expect(await EditorDeleteAllRight.deleteAllRight(editor)).toMatchObject({
     lines: ['1 2 3'],
     selections: EditorSelection.fromRange(0, 5, 0, 5),
   })

@@ -3,7 +3,7 @@ import * as EditorDeleteAllLeft from '../src/parts/EditorCommand/EditorCommandDe
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
 
-test('editorDeleteAllLeft', () => {
+test('editorDeleteAllLeft', async () => {
   const editor = {
     lines: ['1 2 3 4 5'],
     selections: EditorSelection.fromRange(0, 9, 0, 9),
@@ -11,13 +11,13 @@ test('editorDeleteAllLeft', () => {
     tokenizer: TokenizePlainText,
     undoStack: [],
   }
-  expect(EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
+  expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: [''],
     selections: EditorSelection.fromRange(0, 0, 0, 0),
   })
 })
 
-test('editorDeleteAllLeft in middle', () => {
+test('editorDeleteAllLeft in middle', async () => {
   const editor = {
     lines: ['1 2 3 4 5'],
     primarySelectionIndex: 0,
@@ -26,7 +26,7 @@ test('editorDeleteAllLeft in middle', () => {
     tokenizer: TokenizePlainText,
     undoStack: [],
   }
-  expect(EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
+  expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: [' 4 5'],
     selections: EditorSelection.fromRange(0, 0, 0, 0),
   })
@@ -45,7 +45,7 @@ test.skip('editorDeleteAllLeft - with selection', () => {
   })
 })
 
-test('editorDeleteAllLeft - at start of line', () => {
+test('editorDeleteAllLeft - at start of line', async () => {
   const editor = {
     lines: ['1', '2'],
     selections: EditorSelection.fromRange(1, 0, 1, 0),
@@ -53,13 +53,13 @@ test('editorDeleteAllLeft - at start of line', () => {
     tokenizer: TokenizePlainText,
     undoStack: [],
   }
-  expect(EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
+  expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: ['12'],
     selections: EditorSelection.fromRange(0, 1, 0, 1),
   })
 })
 
-test('editorDeleteAllLeft - at start of file', () => {
+test('editorDeleteAllLeft - at start of file', async () => {
   const cursor = {
     rowIndex: 0,
     columnIndex: 0,
@@ -72,7 +72,7 @@ test('editorDeleteAllLeft - at start of file', () => {
     tokenizer: TokenizePlainText,
     undoStack: [],
   }
-  expect(EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
+  expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: ['1', '2'],
     selections: EditorSelection.fromRange(0, 0, 0, 0),
   })

@@ -23,7 +23,7 @@ beforeEach(() => {
   })
 })
 
-test('applyWidgetChange - type', () => {
+test('applyWidgetChange - type', async () => {
   const editor = {
     lines: ['line 1', 'line 2', 'line 3'],
     cursor: {
@@ -48,12 +48,12 @@ test('applyWidgetChange - type', () => {
       deleted: [],
     },
   ]
-  expect(ApplyWidgetChange.applyWidgetChange(editor, widget, changes).newState).toEqual({
+  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual({
     updated: true,
   })
 })
 
-test('applyWidgetChange - deleteLeft', () => {
+test('applyWidgetChange - deleteLeft', async () => {
   const editor = {
     lines: ['line 1', 'line 2', 'line 3'],
     cursor: {
@@ -78,12 +78,12 @@ test('applyWidgetChange - deleteLeft', () => {
       deleted: ['a'],
     },
   ]
-  expect(ApplyWidgetChange.applyWidgetChange(editor, widget, changes).newState).toEqual({
+  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual({
     updated: true,
   })
 })
 
-test('applyWidgetChange - other', () => {
+test('applyWidgetChange - other', async () => {
   const editor = {
     lines: ['line 1', 'line 2', 'line 3'],
     cursor: {
@@ -108,7 +108,7 @@ test('applyWidgetChange - other', () => {
       deleted: [],
     },
   ]
-  expect(ApplyWidgetChange.applyWidgetChange(editor, widget, changes).newState).toEqual({
+  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual({
     updated: false,
   })
 })

@@ -29,7 +29,7 @@ test.skip('editorIndentLess - indented by one space', () => {
   })
 })
 
-test('editorIndentLess - indented by two spaces', () => {
+test('editorIndentLess - indented by two spaces', async () => {
   const editor = {
     lines: ['  line 1'],
     primarySelectionIndex: 0,
@@ -37,19 +37,19 @@ test('editorIndentLess - indented by two spaces', () => {
     minLineY: 0,
     undoStack: [],
   }
-  expect(EditorIndentLess.indentLess(editor)).toMatchObject({
+  expect(await EditorIndentLess.indentLess(editor)).toMatchObject({
     lines: ['line 1'],
     selections: EditorSelection.fromRange(0, 0, 0, 0),
   })
 })
 
-test.skip('editorIndentLess - indented by tab', () => {
+test.skip('editorIndentLess - indented by tab', async () => {
   const editor = {
     lines: ['\tline 1'],
     selections: EditorSelection.fromRange(0, 0, 0, 0),
     minLineY: 0,
   }
-  expect(EditorIndentLess.indentLess(editor)).toMatchObject({
+  expect(await EditorIndentLess.indentLess(editor)).toMatchObject({
     lines: ['line 1'],
     selections: EditorSelection.fromRange(0, 0, 0, 0),
   })
