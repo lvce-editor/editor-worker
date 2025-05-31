@@ -123,7 +123,6 @@ export const getKeyBindings = async (uid: number): Promise<readonly any[]> => {
       command: 'FindWidget.focusReplaceButton',
       when: WhenExpression.FocusFindWidgetReplaceAllButton,
     },
-
     {
       key: KeyModifier.CtrlCmd | KeyCode.RightArrow,
       command: 'Editor.cursorWordRight',
