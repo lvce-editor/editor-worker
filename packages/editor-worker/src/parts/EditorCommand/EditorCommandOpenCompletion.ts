@@ -6,7 +6,6 @@ import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const newStateGenerator = async (state: CompletionState, parentUid: number): Promise<CompletionState> => {
-  // const editor: any = {}
   const { uid, x, y, width, height } = state
   await CompletionWorker.invoke('Completions.create', uid, x, y, width, height, parentUid)
   await CompletionWorker.invoke('Completions.loadContent', uid)
