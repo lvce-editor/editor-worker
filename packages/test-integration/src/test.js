@@ -15,7 +15,7 @@ const only = [
   // 'editor-completion-focus-previous.test.js'
 ]
 
-const skip = ['editor.close-rename.test.js', 'editor.open-rename.test.js', 'find-widget.test.js']
+const skip = ['editor.close-rename.test.js', 'editor.open-rename.test.js']
 
 const runTests = async (dirents) => {
   for (const dirent of dirents) {
