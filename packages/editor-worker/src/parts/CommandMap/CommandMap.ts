@@ -39,6 +39,7 @@ import * as DeleteWordPartLeft from '../EditorCommand/EditorCommandDeleteWordPar
 import * as DeleteWordPartRight from '../EditorCommand/EditorCommandDeleteWordPartRight.ts'
 import * as DeleteWordRight from '../EditorCommand/EditorCommandDeleteWordRight.ts'
 import * as FindAllReferences from '../EditorCommand/EditorCommandFindAllReferences.ts'
+import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorCompletionWidget.ts'
 import * as EditorFormat from '../EditorCommand/EditorCommandFormat.ts'
 import * as GetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as EditorGoToDefinition from '../EditorCommand/EditorCommandGoToDefinition.ts'

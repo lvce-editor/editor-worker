@@ -37,24 +37,33 @@ export const remove = (widget: CompletionWidget) => {
   return [['Viewlet.dispose', widget.newState.uid]]
 }
 
-export const handleEditorType = async (editor: any, state: any) => {
-  const { uid } = state
-  await CompletionWorker.invoke('Completions.handleEditorType', uid)
-  const diff = await CompletionWorker.invoke('Completions.diff2', uid)
-  const commands = await CompletionWorker.invoke('Completions.render2', uid, diff)
-  return {
-    ...state,
-    commands,
+const createFn = (key: string) => {
+  const fn = async (editor: any, state: any) => {
+    const { uid } = state
+    await CompletionWorker.invoke(`Completions.${key}`, uid)
+    const diff = await CompletionWorker.invoke('Completions.diff2', uid)
+    const commands = await CompletionWorker.invoke('Completions.render2', uid, diff)
+    return {
+      ...state,
+      commands,
+    }
   }
+  return fn
 }
 
-export const handleEditorDeleteLeft = async (editor: any, state: any) => {
-  const { uid } = state
-  await CompletionWorker.invoke('Completions.handleEditorDeleteLeft', uid)
-  const diff = await CompletionWorker.invoke('Completions.diff2', uid)
-  const commands = await CompletionWorker.invoke('Completions.render2', uid, diff)
-  return {
-    ...state,
-    commands,
+const createFns = (keys: readonly string[]): any => {
+  const fns = Object.create(null)
+  for (const key of keys) {
+    fns[key] = createFn(key)
   }
+  return fns
 }
+
+export const { handleEditorType, focusFirst, focusNext, focusPrevious, focusLast, handleEditorDeleteLeft } = createFns([
+  'handleEditorType',
+  'focusFirst',
+  'focusNext',
+  'focusPrevious',
+  'focusLast',
+  'handleEditorDeleteLeft',
+])
