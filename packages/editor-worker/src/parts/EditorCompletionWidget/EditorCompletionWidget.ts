@@ -1,10 +1,9 @@
-import type { CompletionWidget } from '../CompletionWidget/CompletionWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
+import type { CompletionWidget } from '../CompletionWidget/CompletionWidget.ts'
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as FilterCompletionItems from '../FilterCompletionItems/FilterCompletionItems.ts'
 import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
-import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderRename from '../RenderRename/RenderRename.ts'
 
@@ -37,7 +36,9 @@ export const add = (widget: CompletionWidget) => {
   return AddWidget.addWidget(widget, 'EditorRename', render)
 }
 
-export const remove = RemoveWidget.removeWidget
+export const remove = (widget: CompletionWidget) => {
+  return [['Viewlet.dispose', widget.newState.uid]]
+}
 
 export const handleEditorType = (editor: any, state: any) => {
   const { unfilteredItems, itemHeight, maxHeight } = state
