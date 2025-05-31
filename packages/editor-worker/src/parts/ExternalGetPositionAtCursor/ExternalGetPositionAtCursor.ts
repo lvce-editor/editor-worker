@@ -2,10 +2,13 @@ import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt
 import * as Editors from '../Editors/Editors.ts'
 import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
+import * as SetFocus from '../SetFocus/SetFocus.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
+import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
+import * as FocusKey from '../FocusKey/FocusKey.ts'
 import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 
 export const getPositionAtCursor = (editorUid: number): any => {
@@ -59,6 +62,7 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
     focused: true,
   }
   Editors.set(editorUid, editor, newEditor)
+  await SetFocus.setFocus(WhenExpression.FocusEditorText)
 }
 
 export const closeFind2 = async (editorUid: number) => {
@@ -68,6 +72,5 @@ export const closeFind2 = async (editorUid: number) => {
 export const applyEdits2 = async (editorUid: number, edits: readonly any[]): Promise<void> => {
   const editor = GetEditor.getEditor(editorUid)
   const newEditor = await ApplyEdit.applyEdit(editor, edits)
-  console.log({ newEditor })
   Editors.set(editorUid, editor, newEditor)
 }
