@@ -6,6 +6,7 @@ import * as GetListHeight from '../GetListHeight/GetListHeight.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderRename from '../RenderRename/RenderRename.ts'
+import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 
 export const render = (widget: CompletionWidget) => {
   const commands: readonly any[] = RenderRename.renderFull(widget.oldState, widget.newState)
@@ -40,45 +41,24 @@ export const remove = (widget: CompletionWidget) => {
   return [['Viewlet.dispose', widget.newState.uid]]
 }
 
-export const handleEditorType = (editor: any, state: any) => {
-  const { unfilteredItems, itemHeight, maxHeight } = state
-  const { x, y, rowIndex, columnIndex } = GetPositionAtCursor.getPositionAtCursor(editor)
-  const wordAtOffset = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
-  const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)
-  const newMinLineY = 0
-  const newMaxLineY = Math.min(items.length, 8)
-  const height = GetListHeight.getListHeight(items.length, itemHeight, maxHeight)
-  const finalDeltaY = items.length * itemHeight - height
+export const handleEditorType = async (editor: any, state: any) => {
+  const { uid } = state
+  await CompletionWorker.invoke('Completions.handleEditorType', uid)
+  const diff = await CompletionWorker.invoke('Completions.diff2', uid)
+  const commands = await CompletionWorker.invoke('Completions.render2', uid, diff)
   return {
     ...state,
-    items,
-    x,
-    y,
-    minLineY: newMinLineY,
-    maxLineY: newMaxLineY,
-    leadingWord: wordAtOffset,
-    height,
-    finalDeltaY,
+    commands,
   }
 }
 
-export const handleEditorDeleteLeft = (editor: any, state: any) => {
-  const { unfilteredItems, itemHeight, maxHeight } = state
-  const { x, y, rowIndex, columnIndex } = GetPositionAtCursor.getPositionAtCursor(editor)
-  const wordAtOffset = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
-  if (!wordAtOffset) {
-    return undefined
-  }
-  const items = FilterCompletionItems.filterCompletionItems(unfilteredItems, wordAtOffset)
-  const newMaxLineY = Math.min(items.length, 8)
-  const height = GetListHeight.getListHeight(items.length, itemHeight, maxHeight)
+export const handleEditorDeleteLeft = async (editor: any, state: any) => {
+  const { uid } = state
+  await CompletionWorker.invoke('Completions.handleEditorDeleteLeft', uid)
+  const diff = await CompletionWorker.invoke('Completions.diff2', uid)
+  const commands = await CompletionWorker.invoke('Completions.render2', uid, diff)
   return {
     ...state,
-    items,
-    x,
-    y,
-    maxLineY: newMaxLineY,
-    leadingWord: wordAtOffset,
-    height,
+    commands,
   }
 }
