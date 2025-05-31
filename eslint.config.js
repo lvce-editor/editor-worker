@@ -55,6 +55,7 @@ export default [
       'unicorn/prefer-number-properties': 'off',
       'unicorn/no-empty-file': 'off',
       'unicorn/no-array-method-this-argument': 'off',
+      'unicorn/no-await-expression-member': 'off',
     },
   },
 ]
