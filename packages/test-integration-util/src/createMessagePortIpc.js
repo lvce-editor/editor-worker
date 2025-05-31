@@ -15,7 +15,14 @@ export const createMessagePortIpc = async (port, commandMap) => {
     if (message.method) {
       const fn = commandMap[message.method]
       if (!fn) {
-        throw new Error(`command ${message.method} not found`)
+        port.postMessage({
+          jsonrpc: '2.0',
+          id: message.id,
+          error: {
+            message: `Command ${message.method} not found`,
+          },
+        })
+        return
       }
       const result = await fn(...message.params)
       port.postMessage({
