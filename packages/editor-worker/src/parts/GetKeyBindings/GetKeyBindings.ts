@@ -125,11 +125,6 @@ export const getKeyBindings = async (uid: number): Promise<readonly any[]> => {
     },
 
     {
-      key: KeyCode.Escape,
-      command: 'Editor.closeCompletion',
-      when: WhenExpression.FocusEditorCompletions,
-    },
-    {
       key: KeyModifier.CtrlCmd | KeyCode.RightArrow,
       command: 'Editor.cursorWordRight',
       when: WhenExpression.FocusEditorText,
