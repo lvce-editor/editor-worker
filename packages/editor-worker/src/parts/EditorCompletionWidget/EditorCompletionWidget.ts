@@ -1,5 +1,5 @@
-import * as AddWidget from '../AddWidget/AddWidget.ts'
 import type { CompletionWidget } from '../CompletionWidget/CompletionWidget.ts'
+import * as AddWidget from '../AddWidget/AddWidget.ts'
 import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderRename from '../RenderRename/RenderRename.ts'
