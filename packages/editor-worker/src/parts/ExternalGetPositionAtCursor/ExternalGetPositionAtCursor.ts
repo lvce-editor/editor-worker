@@ -50,7 +50,6 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
   const { widgets } = editor
   const index = widgets.findIndex((widget: any) => widget.id === widgetId)
   if (index === -1) {
-    console.log('was already closed')
     return
   }
   await invoke(`${widgetName}.dispose`)
