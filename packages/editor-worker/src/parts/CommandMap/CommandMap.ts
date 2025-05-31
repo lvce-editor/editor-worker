@@ -131,7 +131,6 @@ import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/Edi
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
-import * as FindWidgetReplaceAll from '../FindWidgetReplaceAll/FindWidgetReplaceAll.ts'
 import * as Font from '../Font/Font.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
@@ -317,29 +316,7 @@ export const commandMap = {
   'EditorCompletion.toggleDetails': EditorCompletionToggleDetails.toggleDetails,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
   'FindWidget.close': FindWidget.close,
-  'FindWidget.focusCloseButton': FindWidget.focusCloseButton,
-  'FindWidget.focusFind': FindWidget.focusFind,
-  'FindWidget.focusFirst': FindWidget.focusFirst,
-  'FindWidget.focusIndex': FindWidget.focusIndex,
-  'FindWidget.focusLast': FindWidget.focusLast,
-  'FindWidget.focusNext': FindWidget.focusNext,
-  'FindWidget.focusNextMatchButton': FindWidget.focusNextMatchButton,
-  'FindWidget.focusPrevious': FindWidget.focusPrevious,
-  'FindWidget.focusPreviousMatchButton': FindWidget.focusPreviousMatchButton,
-  'FindWidget.focusReplace': FindWidget.focusReplace,
-  'FindWidget.focusReplaceAllButton': FindWidget.focusReplaceAllButton,
-  'FindWidget.focusReplaceButton': FindWidget.focusReplaceButton,
-  'FindWidget.focusToggleReplace': FindWidget.focusToggleReplaceButton,
-  'FindWidget.handleBlur': FindWidget.handleBlur,
-  'FindWidget.handleFocus': FindWidget.handleFindWidgetFocus,
-  'FindWidget.handleInput': FindWidget.handleInput,
-  'FindWidget.handleReplaceAllFocus': FindWidget.handleReplaceAllFocus,
-  'FindWidget.handleReplaceFocus': FindWidget.handleReplaceFocus,
-  'FindWidget.handleReplaceInput': FindWidget.handleReplaceInput,
-  'FindWidget.handleToggleReplaceFocus': FindWidget.handleToggleReplaceFocus,
   'FindWidget.loadContent': FindWidget.loadContent,
-  'FindWidget.replaceAll': FindWidgetReplaceAll.replaceAll,
-  'FindWidget.toggleReplace': FindWidget.toggleReplace,
   'Font.ensure': Font.ensure,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
   'Hover.handleSashPointerDown': EditorHover.handleSashPointerDown,

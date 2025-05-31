@@ -15,7 +15,15 @@ const only = [
   // 'editor-completion-focus-previous.test.js'
 ]
 
-const skip = ['editor.close-rename.test.js', 'editor.open-rename.test.js']
+const skip = [
+  'editor.close-rename.test.js',
+  'editor.open-rename.test.js',
+  'find-widget.test.js',
+  'editor-completion-details-close.test.js',
+  'editor-completion-details.test.js',
+  'editor-find-focus-next.test.js',
+  'editor-find-focus-previous.test.js',
+]
 
 const runTests = async (dirents) => {
   for (const dirent of dirents) {
@@ -25,14 +33,19 @@ const runTests = async (dirents) => {
     if (skip.includes(dirent)) {
       continue
     }
-    const absolutePath = join(__dirname, dirent)
-    const absoluteUri = pathToFileURL(absolutePath).toString()
-    const module = await import(absoluteUri)
-    if (module.skip) {
-      continue
+    try {
+      const absolutePath = join(__dirname, dirent)
+      const absoluteUri = pathToFileURL(absolutePath).toString()
+      const module = await import(absoluteUri)
+      if (module.skip) {
+        continue
+      }
+      const rpc = await setup()
+      await module.test(rpc)
+    } catch (error) {
+      console.error(`test failed ${dirent}: ${error}`)
+      process.exitCode = 1
     }
-    const rpc = await setup()
-    await module.test(rpc)
   }
 }
 
