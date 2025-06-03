@@ -38,9 +38,9 @@ export const remove = (widget: CompletionWidget) => {
 }
 
 const createFn = (key: string) => {
-  const fn = async (state: any) => {
+  const fn = async (state: any, ...args: readonly any[]) => {
     const { uid } = state
-    await CompletionWorker.invoke(`Completions.${key}`, uid)
+    await CompletionWorker.invoke(`Completions.${key}`, uid, ...args)
     const diff = await CompletionWorker.invoke('Completions.diff2', uid)
     const commands = await CompletionWorker.invoke('Completions.render2', uid, diff)
     return {
