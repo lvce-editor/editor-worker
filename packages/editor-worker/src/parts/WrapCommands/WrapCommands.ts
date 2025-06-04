@@ -30,12 +30,14 @@ const widgetCommands = {
   'FindWidget.focusPreviousMatchButton': WidgetId.Find,
   'FindWidget.focusCloseButton': WidgetId.Find,
 
-  'EditorCompletion.handleWheel': WidgetId.Completion,
-  'EditorCompletion.focusFirst': WidgetId.Completion,
-  'EditorCompletion.focusNext': WidgetId.Completion,
-  'EditorCompletion.focusPrevious': WidgetId.Completion,
-  'EditorCompletion.focusIndex': WidgetId.Completion,
-  'EditorCompletion.focusLast': WidgetId.Completion,
+  // 'EditorCompletion.handleWheel': WidgetId.Completion,
+  // 'EditorCompletion.focusFirst': WidgetId.Completion,
+  // 'EditorCompletion.focusNext': WidgetId.Completion,
+  // 'EditorCompletion.focusPrevious': WidgetId.Completion,
+  // 'EditorCompletion.focusIndex': WidgetId.Completion,
+  // 'EditorCompletion.focusLast': WidgetId.Completion,
+  // 'EditorCompletion.selectCurrent': WidgetId.Completion,
+  // 'EditorCompletion.selectIndex': WidgetId.Completion,
 } as any
 
 // TODO wrap commands globally, not per editor

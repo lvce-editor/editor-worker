@@ -1,8 +1,11 @@
 import type { CompletionWidget } from '../CompletionWidget/CompletionWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
+import * as Editors from '../Editors/Editors.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderRename from '../RenderRename/RenderRename.ts'
+import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const render = (widget: CompletionWidget) => {
   const commands: readonly any[] = RenderRename.renderFull(widget.oldState, widget.newState)
@@ -38,15 +41,26 @@ export const remove = (widget: CompletionWidget) => {
 }
 
 const createFn = (key: string) => {
-  const fn = async (state: any, ...args: readonly any[]) => {
+  const widgetId = WidgetId.Completion
+  const isWidget = (widget: any) => {
+    return widget.id === widgetId
+  }
+  const fn = async (editor: any, ...args: readonly any[]) => {
+    const childIndex = editor.widgets.findIndex(isWidget)
+    // TODO scroll up/down if necessary
+    const childWidget = editor.widgets[childIndex]
+    const state = childWidget.newState
     const { uid } = state
     await CompletionWorker.invoke(`Completions.${key}`, uid, ...args)
     const diff = await CompletionWorker.invoke('Completions.diff2', uid)
     const commands = await CompletionWorker.invoke('Completions.render2', uid, diff)
-    return {
+    const newState = {
       ...state,
       commands,
     }
+    const latest = Editors.get(editor.uid).newState
+    const newEditor = UpdateWidget.updateWidget(latest, widgetId, newState)
+    return newEditor
   }
   return fn
 }
