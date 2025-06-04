@@ -4,6 +4,9 @@ export const updateWidget = (editor: any, widgetId: number, newState: any): any 
     return widget.id === widgetId
   }
   const childIndex = editor.widgets.findIndex(isWidget)
+  if (childIndex === -1) {
+    return editor
+  }
   // TODO scroll up/down if necessary
   const childWidget = editor.widgets[childIndex]
   const newWidget = {
