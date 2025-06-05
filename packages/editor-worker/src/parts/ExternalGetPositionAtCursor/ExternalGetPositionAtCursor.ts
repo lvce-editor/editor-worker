@@ -44,6 +44,12 @@ export const getSelections2 = (editorUid: number): readonly string[] => {
   return selections
 }
 
+export const setSelections2 = (editorUid: number, selections: Uint32Array): void => {
+  const editor = GetEditor.getEditor(editorUid)
+  const newEditor = { ...editor, selections }
+  Editors.set(editorUid, editor, newEditor)
+}
+
 export const closeWidget2 = async (editorUid: number, widgetId: number, widgetName: string, unsetAdditionalFocus: number) => {
   const editor = GetEditor.getEditor(editorUid)
   const invoke = getWidgetInvoke(widgetId)
