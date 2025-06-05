@@ -22,6 +22,7 @@ export const keep = [
   // 'ColorPicker.render',
   'Editor.getText',
   'Editor.getSelections',
+  'Editor.setSelections2',
   'Font.ensure',
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker',
   'Hover.getHoverInfo',
