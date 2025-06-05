@@ -113,6 +113,7 @@ import * as EditorTypeWithAutoClosing from '../EditorCommand/EditorCommandTypeWi
 import * as EditorUndo from '../EditorCommand/EditorCommandUndo.ts'
 import * as Unindent from '../EditorCommand/EditorCommandUnindent.ts'
 import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorCompletionWidget.ts'
+import * as EditorFindWidget from '../EditorFindWidget/EditorFindWidget.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
@@ -243,6 +244,24 @@ export const commandMap = {
   'Editor.openCodeGenerator': EditorCommandOpenCodeGenerator.openCodeGenerator,
   'Editor.openColorPicker': EditorOpenColorPicker.openColorPicker,
   'Editor.openCompletion': EditorOpenCompletion.openCompletion,
+  'FindWidget.close': EditorFindWidget.close,
+  'FindWidget.focusCloseButton': EditorFindWidget.focusCloseButton,
+  'FindWidget.focusFind': EditorFindWidget.focusFind,
+  'FindWidget.focusNext': EditorFindWidget.focusNext,
+  'FindWidget.focusNextMatchButton': EditorFindWidget.focusNextMatchButton,
+  'FindWidget.focusPrevious': EditorFindWidget.focusPrevious,
+  'FindWidget.focusPreviousMatchButton': EditorFindWidget.focusPreviousMatchButton,
+  'FindWidget.focusReplace': EditorFindWidget.focusReplace,
+  'FindWidget.focusReplaceAllButton': EditorFindWidget.focusReplaceAllButton,
+  'FindWidget.focusReplaceButton': EditorFindWidget.focusReplaceButton,
+  'FindWidget.focusToggleReplace': EditorFindWidget.focusToggleReplace,
+  'FindWidget.handleBlur': EditorFindWidget.handleBlur,
+  'FindWidget.handleFocus': EditorFindWidget.handleFocus,
+  'FindWidget.handleInput': EditorFindWidget.handleInput,
+  'FindWidget.handleReplaceFocus': EditorFindWidget.handleReplaceFocus,
+  'FindWidget.handleReplaceInput': EditorFindWidget.handleReplaceInput,
+  'FindWidget.handleToggleReplaceFocus': EditorFindWidget.handleToggleReplaceFocus,
+  'FindWidget.toggleReplace': EditorFindWidget.toggleReplace,
   'EditorCompletion.closeDetails': EditorCompletionWidget.closeDetails,
   'EditorCompletion.focusFirst': EditorCompletionWidget.focusFirst,
   'EditorCompletion.focusIndex': EditorCompletionWidget.focusIndex,
@@ -305,7 +324,6 @@ export const commandMap = {
   'Editor.unIndent': Unindent.editorUnindent,
   'Editor.updateDiagnostics': UpdateDiagnostics.updateDiagnostics,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
-  'FindWidget.close': FindWidget.close,
   'FindWidget.loadContent': FindWidget.loadContent,
   'Font.ensure': Font.ensure,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
