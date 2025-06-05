@@ -1,5 +1,5 @@
-import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as Editors from '../Editors/Editors.ts'
+import * as GetWidgetInvoke from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 
 const createFn = (key: string, name: string, widgetId: number) => {
@@ -12,9 +12,10 @@ const createFn = (key: string, name: string, widgetId: number) => {
     const childWidget = editor.widgets[childIndex]
     const state = childWidget.newState
     const { uid } = state
-    await CompletionWorker.invoke(`${name}.${key}`, uid, ...args)
-    const diff = await CompletionWorker.invoke(`${name}.diff2`, uid)
-    const commands = await CompletionWorker.invoke(`${name}.render2`, uid, diff)
+    const invoke = GetWidgetInvoke.getWidgetInvoke(widgetId)
+    await invoke(`${name}.${key}`, uid, ...args)
+    const diff = await invoke(`${name}.diff2`, uid)
+    const commands = await invoke(`${name}.render2`, uid, diff)
     const newState = {
       ...state,
       commands,
