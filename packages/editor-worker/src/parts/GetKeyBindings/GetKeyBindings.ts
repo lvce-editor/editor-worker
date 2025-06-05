@@ -40,6 +40,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusFindWidget,
     },
     {
+      key: KeyModifier.CtrlCmd | KeyCode.KeyF,
+      command: 'FindWidget.preventDefaultBrowserFind',
+      when: WhenExpression.FocusFindWidget,
+    },
+    {
       key: KeyModifier.Shift | KeyCode.F4,
       command: 'FindWidget.focusPrevious',
       when: WhenExpression.FocusFindWidget,
