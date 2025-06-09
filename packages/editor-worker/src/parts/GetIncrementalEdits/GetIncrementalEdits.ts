@@ -13,7 +13,9 @@ export const getIncrementalEdits = async (oldState: any, newState: any) => {
       const { lines } = newState
       const oldLine = oldState.lines[rowIndex]
       const newLine = lines[rowIndex]
+      // @ts-ignore
       const incrementalEdits = await SyntaxHighlightingWorker.invoke(
+        // @ts-ignore
         'TokenizeIncremental.tokenizeIncremental',
         newState.uid,
         // @ts-ignore
