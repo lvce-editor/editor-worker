@@ -7,6 +7,10 @@ export const get = (id: number) => {
   return editors[id]
 }
 
+export const getKeys = (): readonly string[] => {
+  return Object.keys(editors)
+}
+
 export const set = (id: number, oldEditor: any, newEditor: any) => {
   Assert.object(oldEditor)
   Assert.object(newEditor)

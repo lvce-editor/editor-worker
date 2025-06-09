@@ -1,3 +1,25 @@
-export const updateDebugInfo = (info: any): any => {
+import * as GetDebugHighlight from '../GetDebugHighlight/GetDebugHighlight.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import * as Editors from '../Editors/Editors.ts'
+
+const getKey = (): number => {
+  const keys = Editors.getKeys()
+  return parseInt(keys[0])
+}
+
+export const updateDebugInfo = async (debugId: number): Promise<any> => {
+  const newInfo = await GetDebugHighlight.getDebugHighlight(debugId)
+  const key = getKey()
+  const { oldState, newState } = Editors.get(key)
   // TODO query all editors and update them with debug information if needed, then rerender them
+
+  // TODO if debug url matches an editor, update i
+  // d
+  const newEditor = {
+    ...newState,
+    highlightedLine: newInfo.rowIndex,
+  }
+  Editors.set(key, oldState, newEditor)
+  // @ts-ignore
+  await RendererWorker.invoke('Editor.rerender', key)
 }
