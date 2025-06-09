@@ -133,8 +133,9 @@ export const createEditor = async ({
   let newEditor3
 
   if (lineToReveal && columnToReveal) {
+    const delta = lineToReveal * rowHeight
     // TODO scroll to this line
-    newEditor3 = EditorScrolling.setDeltaY(newEditor2, 200)
+    newEditor3 = EditorScrolling.setDeltaY(newEditor2, delta)
   } else {
     newEditor3 = EditorScrolling.setDeltaY(newEditor2, 0)
   }
