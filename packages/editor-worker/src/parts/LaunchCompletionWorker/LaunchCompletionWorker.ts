@@ -6,6 +6,7 @@ import * as RendererWorkerIpcParentType from '../RendererWorkerIpcParentType/Ren
 export const launchCompletionWorker = async () => {
   const name = 'Completion Worker'
   const { port1, port2 } = GetPortTuple.getPortTuple()
+  // @ts-ignore
   await RendererWorker.invokeAndTransfer('IpcParent.create', {
     method: RendererWorkerIpcParentType.ModuleWorkerAndWorkaroundForChromeDevtoolsBug,
     url: 'completionWorkerMain.js',

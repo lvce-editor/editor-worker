@@ -1,6 +1,7 @@
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
 export const sendMessagePortToExtensionHostWorker = async (port: MessagePort): Promise<void> => {
+  // @ts-ignore
   await RendererWorker.invokeAndTransfer(
     'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker',
     port,
