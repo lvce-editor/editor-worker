@@ -3,14 +3,18 @@ import * as Px from '../Px/Px.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
-export const getEditorRowsVirtualDom = (textInfos: any, differences: any, lineNumbers = true) => {
+export const getEditorRowsVirtualDom = (textInfos: any, differences: any, lineNumbers = true, highlightedLine = -1) => {
   const dom = []
   for (let i = 0; i < textInfos.length; i++) {
     const textInfo = textInfos[i]
     const difference = differences[i]
+    let className = ClassNames.EditorRow
+    if (i === highlightedLine) {
+      className += ' ' + ClassNames.EditorRowHighlighted
+    }
     dom.push({
       type: VirtualDomElements.Div,
-      className: ClassNames.EditorRow,
+      className,
       translate: Px.px(difference),
       childCount: textInfo.length / 2,
     })
