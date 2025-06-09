@@ -10,8 +10,8 @@
   "devDependencies": {
     "@lvce-editor/assert": "^1.3.0",
     "@lvce-editor/command": "^1.2.0",
-    "@lvce-editor/ipc": "^14.1.0",
-    "@lvce-editor/json-rpc": "^6.0.0",
+    "@lvce-editor/ipc": "^14.2.0",
+    "@lvce-editor/json-rpc": "^6.1.0",
     "@lvce-editor/verror": "^1.6.0",
     "@types/node": "^22.14.0"
   }
