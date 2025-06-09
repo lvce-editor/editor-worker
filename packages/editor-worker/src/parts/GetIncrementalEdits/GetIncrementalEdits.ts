@@ -1,7 +1,8 @@
+import type { State } from '../State/State.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
 
-export const getIncrementalEdits = async (oldState: any, newState: any) => {
+export const getIncrementalEdits = async (oldState: State, newState: State) => {
   if (!newState.undoStack) {
     return undefined
   }
