@@ -128,6 +128,7 @@ import * as GetQuickPickMenuEntries from '../GetQuickPickMenuEntries/GetQuickPic
 import * as GetSelections from '../GetSelections/GetSelections.ts'
 import * as GetText from '../GetText/GetText.ts'
 import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
+import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import * as HandleTab from '../HandleTab/HandleTab.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
@@ -335,6 +336,7 @@ export const commandMap = {
   'Hover.loadContent': EditorHover.loadContent,
   'Hover.render': EditorHoverRender.renderHover,
   'Initialize.initialize': Initialize.intialize,
+  'HandleMessagePort.handleMessagePort': HandleMessagePort.handleMessagePort2,
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
     SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
 }
