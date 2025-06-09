@@ -3,6 +3,7 @@ import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 // import * as ExtensionHostSelection from '../ExtensionHost/ExtensionHostSelection.ts'
 
 const getNewSelections = async (editor: any, selections: any) => {
+  // @ts-ignore
   const newSelections = await RendererWorker.invoke('ExtensionHostSelection.executeGrowSelection', editor, selections)
   if (newSelections.length === 0) {
     return selections

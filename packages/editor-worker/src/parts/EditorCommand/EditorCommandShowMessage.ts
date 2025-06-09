@@ -26,6 +26,7 @@ export const editorShowMessage = async (editor, rowIndex, columnIndex, message, 
   const x = EditorPosition.x(editor, rowIndex, columnIndex)
   const y = EditorPosition.y(editor, rowIndex)
   const displayErrorMessage = message
+  // @ts-ignore
   await RendererWorker.invoke('Editor.showOverlayMessage', editor, 'Viewlet.send', editor.uid, 'showOverlayMessage', x, y, displayErrorMessage)
 
   if (!isError) {

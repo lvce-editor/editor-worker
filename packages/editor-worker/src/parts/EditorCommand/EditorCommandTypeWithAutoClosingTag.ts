@@ -6,6 +6,7 @@ import { editorReplaceSelections } from './EditorCommandReplaceSelection.ts'
 
 export const typeWithAutoClosingTag = async (editor: any, text: string) => {
   const offset = TextDocument.offsetAt(editor, editor.selections[0], editor.selections[1])
+  // @ts-ignore
   const result = await RendererWorker.invoke('ExtensionHostClosingTagCompletion.executeClosingTagProvider', editor, offset, text)
   if (!result) {
     const changes = editorReplaceSelections(editor, [text], EditOrigin.EditorType)
