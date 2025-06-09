@@ -1,4 +1,4 @@
-import * as EditorDebug from '../EditorDebug/EditorDebug.ts'
+import type { State } from '../State/State.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
@@ -14,7 +14,7 @@ import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
 const renderLines = {
-  isEqual(oldState: any, newState: any) {
+  isEqual(oldState: State, newState: State) {
     return (
       oldState.lines === newState.lines &&
       oldState.tokenizerId === newState.tokenizerId &&
@@ -27,7 +27,7 @@ const renderLines = {
       oldState.debugEnabled === newState.debugEnabled
     )
   },
-  async apply(oldState: any, newState: any) {
+  async apply(oldState: State, newState: State) {
     const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(oldState, newState)
     if (incrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
@@ -35,7 +35,7 @@ const renderLines = {
     const syncIncremental = SyncIncremental.getEnabled()
     const { textInfos, differences } = await EditorText.getVisible(newState, syncIncremental)
     newState.differences = differences
-    const highlightedLine = await EditorDebug.getHighlightedLine(newState)
+    const { highlightedLine } = newState
     const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, highlightedLine)
     return [/* method */ 'setText', dom]
   },
@@ -59,10 +59,10 @@ const renderSelections = {
 }
 
 const renderScrollBarY = {
-  isEqual(oldState: any, newState: any) {
+  isEqual(oldState: State, newState: State) {
     return oldState.deltaY === newState.deltaY && oldState.scrollBarHeight === newState.scrollBarHeight
   },
-  apply(oldState: any, newState: any) {
+  apply(oldState: State, newState: State) {
     const scrollBarY = ScrollBarFunctions.getScrollBarY(newState.deltaY, newState.finalDeltaY, newState.height, newState.scrollBarHeight)
     const translate = `0 ${scrollBarY}px`
     const heightPx = `${newState.scrollBarHeight}px`
@@ -71,10 +71,10 @@ const renderScrollBarY = {
 }
 
 const renderScrollBarX = {
-  isEqual(oldState: any, newState: any) {
+  isEqual(oldState: State, newState: State) {
     return oldState.longestLineWidth === newState.longestLineWidth && oldState.deltaX === newState.deltaX
   },
-  apply(oldState: any, newState: any) {
+  apply(oldState: State, newState: State) {
     const scrollBarWidth = ScrollBarFunctions.getScrollBarSize(newState.width, newState.longestLineWidth, newState.minimumSliderSize)
     const scrollBarX = (newState.deltaX / newState.longestLineWidth) * newState.width
     return [/* method */ 'setScrollBarHorizontal', /* scrollBarX */ scrollBarX, /* scrollBarWidth */ scrollBarWidth, /* deltaX */ newState.deltaX]
@@ -82,10 +82,10 @@ const renderScrollBarX = {
 }
 
 const renderFocus = {
-  isEqual(oldState: any, newState: any) {
+  isEqual(oldState: State, newState: State) {
     return oldState.focused === newState.focused
   },
-  apply(oldState: any, newState: any) {
+  apply(oldState: State, newState: State) {
     // TODO avoid side effect
     if (newState.focused) {
       const FocusEditorText = 12
@@ -96,20 +96,20 @@ const renderFocus = {
 }
 
 const renderDecorations = {
-  isEqual(oldState: any, newState: any) {
+  isEqual(oldState: State, newState: State) {
     return oldState.decorations === newState.decorations
   },
-  apply(oldState: any, newState: any) {
+  apply(oldState: State, newState: State) {
     const dom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(newState.decorations)
     return ['setDecorationsDom', dom]
   },
 }
 
 const renderGutterInfo = {
-  isEqual(oldState: any, newState: any) {
+  isEqual(oldState: State, newState: State) {
     return oldState.minLineY === newState.minLineY && oldState.maxLineY === newState.maxLineY
   },
-  apply(oldState: any, newState: any) {
+  apply(oldState: State, newState: State) {
     const { minLineY, maxLineY, lineNumbers } = newState
     const gutterInfos = []
     if (lineNumbers) {

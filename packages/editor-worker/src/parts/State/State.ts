@@ -19,4 +19,10 @@ export interface State {
   readonly tokenizerId: any
   readonly decorations: any
   readonly embeds: any
+  readonly scrollBarHeight: number
+  readonly finalDeltaY: number
+  readonly longestLineWidth: number
+  readonly minimumSliderSize: number
+  readonly focused: boolean
+  readonly lineNumbers: boolean
 }
