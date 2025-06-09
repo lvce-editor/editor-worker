@@ -100,7 +100,6 @@ import * as SetDecorations from '../EditorCommand/EditorCommandSetDecorations.ts
 import * as SetDelta from '../EditorCommand/EditorCommandSetDelta.ts'
 import * as SetLanguageId from '../EditorCommand/EditorCommandSetLanguageId.ts'
 import * as SetSelections from '../EditorCommand/EditorCommandSetSelections.ts'
-import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as EditorCommandShowHover2 from '../EditorCommand/EditorCommandShowHover2.ts'
 import * as EditorShowHover from '../EditorCommand/EditorCommandShowHover.ts'
 import * as EditorShowSourceActions2 from '../EditorCommand/EditorCommandShowSourceActions2.ts'
@@ -139,6 +138,7 @@ import * as RenderEventListeners from '../RenderEventListeners/RenderEventListen
 import * as SendMessagePortToExtensionHostWorker from '../SendMessagePortToExtensionHostWorker/SendMessagePortToExtensionHostWorker.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
 
