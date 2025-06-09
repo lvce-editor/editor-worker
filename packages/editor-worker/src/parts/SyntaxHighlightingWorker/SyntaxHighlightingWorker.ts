@@ -1,4 +1,3 @@
-import * as CreateRpc from '../CreateRpc/CreateRpc.ts'
-import * as IpcParentType from '../IpcParentType/IpcParentType.ts'
+import { SyntaxHighlightingWorker } from '@lvce-editor/rpc-registry'
 
-export const { listen, invoke } = CreateRpc.createRpc(IpcParentType.SyntaxHighlightingWorker)
+export const { set, invoke, invokeAndTransfer } = SyntaxHighlightingWorker
