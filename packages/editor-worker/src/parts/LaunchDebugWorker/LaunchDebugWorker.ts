@@ -6,6 +6,7 @@ import * as RendererWorkerIpcParentType from '../RendererWorkerIpcParentType/Ren
 export const launchDebugWorker = async () => {
   const name = 'Debug Worker'
   const { port1, port2 } = GetPortTuple.getPortTuple()
+  // @ts-ignore
   await RendererWorker.invokeAndTransfer('IpcParent.create', {
     method: RendererWorkerIpcParentType.ModuleWorkerAndWorkaroundForChromeDevtoolsBug,
     url: 'debugWorkerMain.js',
