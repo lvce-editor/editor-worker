@@ -101,7 +101,7 @@
     "@lvce-editor/command": "^1.2.0",
     "@lvce-editor/i18n": "^1.1.0",
     "@lvce-editor/ipc": "^14.2.0",
-    "@lvce-editor/json-rpc": "^6.1.0",
+    "@lvce-editor/json-rpc": "^6.2.0",
     "@lvce-editor/rpc": "^4.1.0",
     "@lvce-editor/rpc-registry": "^2.22.0",
     "@lvce-editor/verror": "^1.6.0",
