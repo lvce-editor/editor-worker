@@ -4,6 +4,7 @@ import { VError } from '../VError/VError.ts'
 
 export const readText = async () => {
   try {
+    // @ts-ignore
     return await RendererWorker.invoke('ClipBoard.readText')
   } catch (error) {
     // @ts-ignore
