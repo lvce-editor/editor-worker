@@ -1,3 +1,4 @@
+import * as EditorDebug from '../EditorDebug/EditorDebug.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
@@ -22,7 +23,8 @@ const renderLines = {
       oldState.embeds === newState.embeds &&
       oldState.deltaX === newState.deltaX &&
       oldState.width === newState.width &&
-      oldState.highlightedLine === newState.highlightedLine
+      oldState.highlightedLine === newState.highlightedLine &&
+      oldState.debugEnabled === newState.debugEnabled
     )
   },
   async apply(oldState: any, newState: any) {
@@ -33,7 +35,8 @@ const renderLines = {
     const syncIncremental = SyncIncremental.getEnabled()
     const { textInfos, differences } = await EditorText.getVisible(newState, syncIncremental)
     newState.differences = differences
-    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, newState.highlightedLine)
+    const highlightedLine = await EditorDebug.getHighlightedLine(newState)
+    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, highlightedLine)
     return [/* method */ 'setText', dom]
   },
 }
