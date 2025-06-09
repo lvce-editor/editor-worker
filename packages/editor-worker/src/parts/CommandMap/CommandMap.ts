@@ -336,7 +336,7 @@ export const commandMap = {
   'Hover.loadContent': EditorHover.loadContent,
   'Hover.render': EditorHoverRender.renderHover,
   'Initialize.initialize': Initialize.intialize,
-  'HandleMessagePort.handleMessagePort': HandleMessagePort.handleMessagePort2,
+  'HandleMessagePort.handleMessagePort': HandleMessagePort.handleMessagePort,
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
     SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
 }
