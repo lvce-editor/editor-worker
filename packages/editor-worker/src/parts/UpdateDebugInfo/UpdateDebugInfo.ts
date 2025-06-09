@@ -1,6 +1,6 @@
+import * as Editors from '../Editors/Editors.ts'
 import * as GetDebugHighlight from '../GetDebugHighlight/GetDebugHighlight.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
-import * as Editors from '../Editors/Editors.ts'
 
 const getKey = (): number => {
   const keys = Editors.getKeys()
