@@ -28,6 +28,7 @@ export const braceCompletion = async (editor: any, text: string) => {
   try {
     // @ts-ignore
     const offset = TextDocument.offsetAt(editor, editor.cursor)
+    // @ts-ignore
     const result = await RendererWorker.invoke('ExtensionHostBraceCompletion.executeBraceCompletionProvider', editor, offset, text)
     if (result) {
       const closingBrace = getMatchingClosingBrace(text)

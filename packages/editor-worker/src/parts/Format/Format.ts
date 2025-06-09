@@ -10,6 +10,7 @@ import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 // TODO should be in editor folder
 
 export const format = async (editor: any) => {
+  // @ts-ignore
   const edits = await RendererWorker.invoke('Format.format', editor)
   return edits
 }

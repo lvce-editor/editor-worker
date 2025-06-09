@@ -18,6 +18,7 @@ export const updateDiagnostics = async (newState: any): Promise<any> => {
 
     // TODO don't really need text document sync response
     // could perhaps save a lot of messages by using send instead of invoke
+    // @ts-ignore
     await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, newState.uri, newState.id, newState.languageId, content)
 
     const diagnostics = await ExtensionHostDiagnostic.executeDiagnosticProvider(newState)
@@ -32,6 +33,7 @@ export const updateDiagnostics = async (newState: any): Promise<any> => {
       decorations,
     }
     EditorState.set(newState.id, latest.oldState, newEditor)
+    // @ts-ignore
     await RendererWorker.invoke('Editor.rerender', newState.id)
     return newEditor
   } catch (error) {

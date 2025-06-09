@@ -16,6 +16,7 @@ export const getIncrementalEdits = async (oldState: any, newState: any) => {
       const incrementalEdits = await SyntaxHighlightingWorker.invoke(
         'TokenizeIncremental.tokenizeIncremental',
         newState.uid,
+        // @ts-ignore
         newState.languageId,
         oldLine,
         newLine,

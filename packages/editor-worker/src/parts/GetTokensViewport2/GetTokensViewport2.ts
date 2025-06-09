@@ -24,6 +24,7 @@ export const getTokensViewport2 = async (editor: any, startLineIndex: any, endLi
       return SyntaxHighlightingWorker.invoke(
         'GetTokensViewport.getTokensViewport',
         slimEditor,
+        // @ts-ignore
         startLineIndex,
         endLineIndex,
         hasLinesToSend,
@@ -32,6 +33,7 @@ export const getTokensViewport2 = async (editor: any, startLineIndex: any, endLi
       )
     }
     // TODO only send needed lines of text
+    // @ts-ignore
     return SyntaxHighlightingWorker.invoke('GetTokensViewport.getTokensViewport', editor, startLineIndex, endLineIndex, true, editor.id, editor.lines)
   }
   return GetTokensViewport.getTokensViewport(editor, startLineIndex, endLineIndex)

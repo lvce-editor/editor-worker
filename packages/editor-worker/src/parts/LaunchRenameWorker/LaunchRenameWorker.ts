@@ -6,6 +6,7 @@ import * as RendererWorkerIpcParentType from '../RendererWorkerIpcParentType/Ren
 export const launchRenameWorker = async () => {
   const name = 'Rename Worker'
   const { port1, port2 } = GetPortTuple.getPortTuple()
+  // @ts-ignore
   await RendererWorker.invokeAndTransfer('IpcParent.create', {
     method: RendererWorkerIpcParentType.ModuleWorkerAndWorkaroundForChromeDevtoolsBug,
     url: 'renameWorkerMain.js',

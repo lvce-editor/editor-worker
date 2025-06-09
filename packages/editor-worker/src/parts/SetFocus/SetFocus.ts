@@ -11,5 +11,6 @@ export const unsetAdditionalFocus = async (focusKey: number) => {
   if (!focusKey) {
     return
   }
+  // @ts-ignore
   await RendererWorker.invoke('Focus.removeAdditionalFocus', focusKey)
 }
