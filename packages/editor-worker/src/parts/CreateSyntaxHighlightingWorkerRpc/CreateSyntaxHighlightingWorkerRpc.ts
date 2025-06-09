@@ -1,15 +1,13 @@
 import { type Rpc, PlainMessagePortRpcParent } from '@lvce-editor/rpc'
 import { VError } from '@lvce-editor/verror'
-import * as GetPortTuple from '../GetPortTuple/GetPortTuple.ts'
 import * as SendMessagePortToSyntaxHighlightingWorker from '../SendMessagePortToSyntaxHighlightingWorker/SendMessagePortToSyntaxHighlightingWorker.ts'
 
 export const createSyntaxHighlightingWorkerRpc = async (): Promise<Rpc> => {
   try {
-    const { port1, port2 } = GetPortTuple.getPortTuple()
-    await SendMessagePortToSyntaxHighlightingWorker.sendMessagePortToSyntaxHighlightingWorker(port2)
+    const port = await SendMessagePortToSyntaxHighlightingWorker.sendMessagePortToSyntaxHighlightingWorker()
     const rpc = await PlainMessagePortRpcParent.create({
       commandMap: {},
-      messagePort: port1,
+      messagePort: port,
     })
     return rpc
   } catch (error) {
