@@ -1,11 +1,11 @@
 import type { Rpc } from '@lvce-editor/rpc'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import * as LaunchDebugWorker from '../LaunchDebugWorker/LaunchDebugWorker.ts'
 
 let workerPromise: Promise<Rpc> | undefined
 
 const getOrCreate = async (): Promise<Rpc> => {
   if (!workerPromise) {
-    workerPromise = RendererWorker.invoke('DebugWorker.create')
+    workerPromise = LaunchDebugWorker.launchDebugWorker()
   }
   return workerPromise
 }
