@@ -32,5 +32,6 @@ export const keep = [
   'Hover.loadContent',
   'Hover.render',
   'Initialize.initialize',
+  'HandleMessagePort.handleMessagePort',
   'ActivateByEvent.activateByEvent',
 ]
