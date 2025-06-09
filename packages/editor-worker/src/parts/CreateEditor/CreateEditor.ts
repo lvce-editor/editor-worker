@@ -63,6 +63,8 @@ export const createEditor = async ({
   isMonospaceFont,
   uri,
   diagnosticsEnabled,
+  lineToReveal,
+  columnToReveal,
 }: EditorCreateOptions) => {
   Assert.number(id)
   Assert.string(content)
@@ -128,7 +130,14 @@ export const createEditor = async ({
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds(editor, x, y, width, height, 9)
   const newEditor2 = Editor.setText(newEditor1, content)
-  const newEditor3 = EditorScrolling.setDeltaY(newEditor2, 0)
+  let newEditor3
+
+  if (lineToReveal && columnToReveal) {
+    // TODO scroll to this line
+    newEditor3 = EditorScrolling.setDeltaY(newEditor2, 200)
+  } else {
+    newEditor3 = EditorScrolling.setDeltaY(newEditor2, 0)
+  }
   const newEditor4 = {
     ...newEditor3,
     focused: true,

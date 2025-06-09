@@ -26,4 +26,6 @@ export interface EditorCreateOptions {
   readonly isMonospaceFont: boolean
   readonly uri: string
   readonly diagnosticsEnabled: boolean
+  readonly lineToReveal?: number
+  readonly columnToReveal?: number
 }
