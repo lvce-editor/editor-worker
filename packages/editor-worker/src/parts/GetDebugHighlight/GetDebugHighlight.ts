@@ -1,4 +1,4 @@
-import { DebugHighlight } from '../DebugHighlight/DebugHighlight.ts'
+import type { DebugHighlight } from '../DebugHighlight/DebugHighlight.ts'
 import * as DebugWorker from '../DebugWorker/DebugWorker.ts'
 
 export const getDebugHighlight = async (debugId: number): Promise<DebugHighlight> => {
