@@ -31,6 +31,7 @@ const emptyEditor = {
   lineCache: [],
   selections: new Uint32Array(),
   diagnostics: [],
+  highlightedLine: -1,
 }
 
 export const createEditor = async ({

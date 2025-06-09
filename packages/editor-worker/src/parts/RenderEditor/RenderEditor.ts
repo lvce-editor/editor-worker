@@ -21,7 +21,8 @@ const renderLines = {
       oldState.decorations === newState.decorations &&
       oldState.embeds === newState.embeds &&
       oldState.deltaX === newState.deltaX &&
-      oldState.width === newState.width
+      oldState.width === newState.width &&
+      oldState.highlightedLine === newState.highlightedLine
     )
   },
   async apply(oldState: any, newState: any) {
@@ -32,7 +33,7 @@ const renderLines = {
     const syncIncremental = SyncIncremental.getEnabled()
     const { textInfos, differences } = await EditorText.getVisible(newState, syncIncremental)
     newState.differences = differences
-    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences)
+    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, newState.highlightedLine)
     return [/* method */ 'setText', dom]
   },
 }
