@@ -338,6 +338,7 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
   // @ts-ignore
   const { minLineY, numberOfVisibleLines, lines, width, deltaX, fontWeight, fontSize, fontFamily, letterSpacing, charWidth } = editor
   const maxLineY = Math.min(minLineY + numberOfVisibleLines, lines.length)
+  // @ts-ignore
   const { tokens, tokenizersToLoad, embeddedResults } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
   const minLineOffset = TextDocument.offsetAtSync(editor, minLineY, 0)
   const averageCharWidth = charWidth
