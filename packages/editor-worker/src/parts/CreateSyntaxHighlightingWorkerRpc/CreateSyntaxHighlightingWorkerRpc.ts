@@ -13,6 +13,6 @@ export const createSyntaxHighlightingWorkerRpc = async (): Promise<Rpc> => {
     })
     return rpc
   } catch (error) {
-    throw new VError(error, `Failed to create synax highlighting worker rpc`)
+    throw new VError(error, `Failed to create syntax highlighting worker rpc`)
   }
 }
