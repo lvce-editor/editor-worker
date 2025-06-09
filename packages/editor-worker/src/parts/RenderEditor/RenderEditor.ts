@@ -35,8 +35,9 @@ const renderLines = {
     const syncIncremental = SyncIncremental.getEnabled()
     const { textInfos, differences } = await EditorText.getVisible(newState, syncIncremental)
     newState.differences = differences
-    const { highlightedLine } = newState
-    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, highlightedLine)
+    const { highlightedLine, minLineY } = newState
+    const relativeLine = highlightedLine - minLineY
+    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
     return [/* method */ 'setText', dom]
   },
 }

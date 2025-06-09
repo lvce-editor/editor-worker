@@ -1,10 +1,11 @@
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as Px from '../Px/Px.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
-export const getEditorRowsVirtualDom = (textInfos: any, differences: any, lineNumbers = true, highlightedLine = -1) => {
-  const dom = []
+export const getEditorRowsVirtualDom = (textInfos: any, differences: any, lineNumbers = true, highlightedLine = -1): readonly VirtualDomNode[] => {
+  const dom: VirtualDomNode[] = []
   for (let i = 0; i < textInfos.length; i++) {
     const textInfo = textInfos[i]
     const difference = differences[i]
