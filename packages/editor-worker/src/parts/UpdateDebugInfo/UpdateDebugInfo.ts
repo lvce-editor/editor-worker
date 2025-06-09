@@ -7,7 +7,7 @@ const getKey = (): number => {
   return parseInt(keys[0])
 }
 
-export const updateDebugInfo = async (debugId: number): Promise<any> => {
+export const updateDebugInfo = async (debugId: number): Promise<void> => {
   const newInfo = await GetDebugHighlight.getDebugHighlight(debugId)
   const key = getKey()
   const { oldState, newState } = Editors.get(key)
