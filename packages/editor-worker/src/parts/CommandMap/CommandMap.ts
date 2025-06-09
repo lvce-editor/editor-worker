@@ -138,6 +138,7 @@ import * as RenderEventListeners from '../RenderEventListeners/RenderEventListen
 import * as SendMessagePortToExtensionHostWorker from '../SendMessagePortToExtensionHostWorker/SendMessagePortToExtensionHostWorker.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
 
@@ -292,6 +293,7 @@ export const commandMap = {
   'Editor.typeWithAutoClosing': EditorTypeWithAutoClosing.typeWithAutoClosing,
   'Editor.undo': EditorUndo.undo,
   'Editor.unIndent': Unindent.editorUnindent,
+  'Editor.updateDebugInfo': UpdateDebugInfo.updateDebugInfo,
   'Editor.updateDiagnostics': UpdateDiagnostics.updateDiagnostics,
   'EditorCompletion.close': EditorCompletionWidget.close,
   'EditorCompletion.closeDetails': EditorCompletionWidget.closeDetails,
@@ -329,6 +331,7 @@ export const commandMap = {
   'FindWidget.loadContent': FindWidget.loadContent,
   'FindWidget.toggleReplace': EditorFindWidget.toggleReplace,
   'Font.ensure': Font.ensure,
+  'HandleMessagePort.handleMessagePort': HandleMessagePort.handleMessagePort,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
   'Hover.handleSashPointerDown': EditorHover.handleSashPointerDown,
   'Hover.handleSashPointerMove': EditorHover.handleSashPointerMove,
@@ -336,7 +339,6 @@ export const commandMap = {
   'Hover.loadContent': EditorHover.loadContent,
   'Hover.render': EditorHoverRender.renderHover,
   'Initialize.initialize': Initialize.intialize,
-  'HandleMessagePort.handleMessagePort': HandleMessagePort.handleMessagePort,
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
     SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
 }
