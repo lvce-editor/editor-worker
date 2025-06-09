@@ -32,6 +32,7 @@ const emptyEditor = {
   selections: new Uint32Array(),
   diagnostics: [],
   highlightedLine: -1,
+  debugEnabled: false,
 }
 
 export const createEditor = async ({
