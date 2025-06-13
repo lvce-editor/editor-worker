@@ -4,5 +4,11 @@ import { launchWorker } from '../LaunchWorker/LaunchWorker.ts'
 export const launchRenameWorker = async (): Promise<Rpc> => {
   const name = 'Rename Worker'
   const url = 'renameWorkerMain.js'
-  return launchWorker(name, url)
+  const rpc = await launchWorker(name, url)
+  try {
+    await rpc.invoke('Rename.initialize')
+  } catch {
+    // ignore
+  }
+  return rpc
 }
