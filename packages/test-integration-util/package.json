@@ -12,7 +12,7 @@
     "@lvce-editor/command": "^1.2.0",
     "@lvce-editor/ipc": "^14.2.0",
     "@lvce-editor/json-rpc": "^6.2.0",
-    "@lvce-editor/verror": "^1.6.0",
+    "@lvce-editor/verror": "^1.7.0",
     "@types/node": "^22.14.0"
   }
 }
