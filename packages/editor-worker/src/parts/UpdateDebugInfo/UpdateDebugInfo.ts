@@ -10,7 +10,11 @@ const getKey = (): number => {
 export const updateDebugInfo = async (debugId: number): Promise<void> => {
   const newInfo = await GetDebugHighlight.getDebugHighlight(debugId)
   const key = getKey()
-  const { oldState, newState } = Editors.get(key)
+  const instance = Editors.get(key)
+  if (!instance) {
+    return
+  }
+  const { oldState, newState } = instance
   const newEditor = {
     ...newState,
     highlightedLine: newInfo.rowIndex,
