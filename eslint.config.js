@@ -56,6 +56,7 @@ export default [
       'unicorn/no-empty-file': 'off',
       'unicorn/no-array-method-this-argument': 'off',
       'unicorn/no-await-expression-member': 'off',
+      'jest/no-restricted-jest-methods': 'off',
     },
   },
 ]
