@@ -2,6 +2,7 @@ import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
+import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
@@ -12,6 +13,11 @@ import * as WidgetId from '../WidgetId/WidgetId.ts'
 export const getPositionAtCursor = (editorUid: number): any => {
   const editor = GetEditor.getEditor(editorUid)
   return GetPositionAtCursor.getPositionAtCursor(editor)
+}
+
+export const getOffsetAtCursor = (editorUid: number): any => {
+  const editor = GetEditor.getEditor(editorUid)
+  return GetOffsetAtCursor.getOffsetAtCursor(editor)
 }
 
 export const getWordAt = (editorUid: number, rowIndex: number, columnIndex: number): string => {
