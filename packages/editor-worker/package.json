@@ -103,7 +103,7 @@
     "@lvce-editor/ipc": "^14.3.0",
     "@lvce-editor/json-rpc": "^6.2.0",
     "@lvce-editor/rpc": "^4.6.0",
-    "@lvce-editor/rpc-registry": "^2.43.0",
+    "@lvce-editor/rpc-registry": "^2.45.0",
     "@lvce-editor/verror": "^1.7.0",
     "jest": "^30.0.4",
     "ts-jest": "^29.4.0"
