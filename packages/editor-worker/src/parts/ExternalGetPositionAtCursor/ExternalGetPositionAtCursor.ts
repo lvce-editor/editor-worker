@@ -20,6 +20,11 @@ export const getUri = (editorUid: number): string => {
   return editor.uri
 }
 
+export const getLanguageId = (editorUid: number): string => {
+  const editor = GetEditor.getEditor(editorUid)
+  return editor.languageId
+}
+
 export const getOffsetAtCursor = (editorUid: number): any => {
   const editor = GetEditor.getEditor(editorUid)
   return GetOffsetAtCursor.getOffsetAtCursor(editor)

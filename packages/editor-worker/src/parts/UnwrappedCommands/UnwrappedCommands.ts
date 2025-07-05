@@ -23,6 +23,7 @@ export const keep = [
   'Editor.render',
   'Editor.setSelections2',
   'Editor.updateDebugInfo',
+  'Editor.getLanguageId',
   'Font.ensure',
   'HandleMessagePort.handleMessagePort',
   'Hover.getHoverInfo',
