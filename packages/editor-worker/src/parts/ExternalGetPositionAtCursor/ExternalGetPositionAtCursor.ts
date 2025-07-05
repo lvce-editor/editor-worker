@@ -15,6 +15,11 @@ export const getPositionAtCursor = (editorUid: number): any => {
   return GetPositionAtCursor.getPositionAtCursor(editor)
 }
 
+export const getUri = (editorUid: number): string => {
+  const editor = GetEditor.getEditor(editorUid)
+  return editor.uri
+}
+
 export const getOffsetAtCursor = (editorUid: number): any => {
   const editor = GetEditor.getEditor(editorUid)
   return GetOffsetAtCursor.getOffsetAtCursor(editor)

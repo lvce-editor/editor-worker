@@ -16,6 +16,7 @@ export const keep = [
   'Editor.getWordAt',
   'Editor.getWordAt2',
   'Editor.getWordAtOffset2',
+  'Editor.getUri',
   'Editor.getWordBefore',
   'Editor.getWordBefore2',
   'Editor.offsetAt',
