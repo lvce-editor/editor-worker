@@ -124,6 +124,7 @@ import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as Font from '../Font/Font.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
+import { getProblems } from '../GetProblems/GetProblems.ts'
 import * as GetQuickPickMenuEntries from '../GetQuickPickMenuEntries/GetQuickPickMenuEntries.ts'
 import * as GetSelections from '../GetSelections/GetSelections.ts'
 import * as GetText from '../GetText/GetText.ts'
@@ -256,6 +257,7 @@ export const commandMap = {
   'Editor.paste': EditorPaste.paste,
   'Editor.pasteText': PasteText.pasteText,
   'Editor.render': RenderEditor.renderEditor,
+  'Editor.getProblems': getProblems,
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': ReplaceRange.replaceRange,
   'Editor.rerender': EditorRerender.rerender,
