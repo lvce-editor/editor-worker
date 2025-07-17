@@ -8,6 +8,7 @@ export const createExtensionHostRpc = async (): Promise<Rpc> => {
   try {
     const { port1, port2 } = GetPortTuple.getPortTuple()
     const initialCommand = 'HandleMessagePort.handleMessagePort2'
+    // TODO use transfer rpc
     await sendMessagePortToExtensionHostWorker2(port2, initialCommand, RpcId.EditorWorker)
     const rpc = await PlainMessagePortRpcParent.create({
       commandMap: {},
