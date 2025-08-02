@@ -12,9 +12,9 @@
     "@babel/preset-typescript": "^7.27.1",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^16.0.1",
-    "@types/node": "^22.14.0",
+    "@types/node": "^24.1.0",
     "esbuild": "^0.25.8",
     "execa": "^9.6.0",
-    "rollup": "^4.39.0"
+    "rollup": "^4.46.2"
   }
 }
