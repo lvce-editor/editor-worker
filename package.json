@@ -1,7 +1,6 @@
 {
   "name": "@lvce-editor/editor-worker-monorepo",
   "version": "0.0.0-dev",
-  "description": "",
   "license": "MIT",
   "author": "Lvce Editor",
   "type": "module",
@@ -11,8 +10,8 @@
     "build:static": "node packages/build/src/build-static.js",
     "build:watch": "./packages/build/node_modules/.bin/esbuild --format=esm --bundle --external:node:buffer --external:electron --external:ws --external:node:worker_threads  --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=.tmp/dist/dist/editorWorkerMain.js",
     "dev": "node packages/build/src/dev.js",
-    "lint": "eslint .",
     "postinstall": "lerna bootstrap --ci",
+    "lint": "eslint .",
     "test": "lerna run test",
     "type-check": "tsc -b"
   },
@@ -23,10 +22,10 @@
   },
   "devDependencies": {
     "@lerna/legacy-package-management": "^8.2.4",
-    "@lvce-editor/eslint-config": "^1.55.0",
-    "eslint": "^9.32.0",
+    "@lvce-editor/eslint-config": "^1.58.0",
+    "eslint": "^9.33.0",
     "lerna": "^8.2.3",
     "prettier": "^3.6.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   }
 }

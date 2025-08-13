@@ -1,7 +1,6 @@
 {
   "name": "@lvce-editor/editor-worker",
   "version": "0.0.0-dev",
-  "description": "",
   "license": "MIT",
   "author": "Lvce Editor",
   "type": "module",
@@ -98,14 +97,14 @@
   },
   "devDependencies": {
     "@lvce-editor/assert": "^1.4.0",
-    "@lvce-editor/command": "^1.2.0",
+    "@lvce-editor/command": "^2.0.0",
     "@lvce-editor/i18n": "^1.1.0",
-    "@lvce-editor/ipc": "^14.3.0",
-    "@lvce-editor/json-rpc": "^6.2.0",
-    "@lvce-editor/rpc": "^4.11.0",
-    "@lvce-editor/rpc-registry": "^2.58.0",
+    "@lvce-editor/ipc": "^14.4.0",
+    "@lvce-editor/json-rpc": "^7.0.0",
+    "@lvce-editor/rpc": "^4.14.0",
+    "@lvce-editor/rpc-registry": "^2.67.0",
     "@lvce-editor/verror": "^1.7.0",
-    "jest": "^30.0.4",
-    "ts-jest": "^29.4.0"
+    "jest": "^30.0.5",
+    "ts-jest": "^29.4.1"
   }
 }
