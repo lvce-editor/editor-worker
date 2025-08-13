@@ -7,6 +7,7 @@ export const characterLeft = (line: string, columnIndex: number) => {
   }
   const segmenter = TextSegmenter.create()
   const last = segmenter.at(line, columnIndex - 1)
+  // @ts-ignore
   return columnIndex - last.index
 }
 
@@ -20,6 +21,7 @@ export const characterRight = (line: string, columnIndex: number) => {
   }
   const segmenter = TextSegmenter.create()
   const next = segmenter.at(line, columnIndex)
+  // @ts-ignore
   return next.segment.length
 }
 
