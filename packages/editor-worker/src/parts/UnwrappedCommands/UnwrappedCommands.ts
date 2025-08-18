@@ -25,6 +25,7 @@ export const keep = [
   'Editor.updateDebugInfo',
   'Editor.getLanguageId',
   'Editor.getProblems',
+  'Editor.getKeys',
   'Font.ensure',
   'HandleMessagePort.handleMessagePort',
   'Hover.getHoverInfo',

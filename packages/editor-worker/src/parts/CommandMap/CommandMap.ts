@@ -124,6 +124,7 @@ import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as Font from '../Font/Font.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
+import * as GetKeys from '../GetKeys/GetKeys.ts'
 import { getProblems } from '../GetProblems/GetProblems.ts'
 import * as GetQuickPickMenuEntries from '../GetQuickPickMenuEntries/GetQuickPickMenuEntries.ts'
 import * as GetSelections from '../GetSelections/GetSelections.ts'
@@ -196,15 +197,17 @@ export const commandMap = {
   'Editor.findAllReferences': FindAllReferences.findAllReferences,
   'Editor.format': EditorFormat.format,
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
+  'Editor.getKeys': GetKeys.getKeys,
+  'Editor.getLanguageId': ExternalGetPositionAtCursor.getLanguageId,
   'Editor.getLines2': ExternalGetPositionAtCursor.getLines2,
   'Editor.getOffsetAtCursor': ExternalGetPositionAtCursor.getOffsetAtCursor,
   'Editor.getPositionAtCursor': ExternalGetPositionAtCursor.getPositionAtCursor,
+  'Editor.getProblems': getProblems,
   'Editor.getQuickPickMenuEntries': GetQuickPickMenuEntries.getQuickPickMenuEntries,
   'Editor.getSelections': GetSelections.getSelections,
   'Editor.getSelections2': ExternalGetPositionAtCursor.getSelections2,
-  'Editor.getLanguageId': ExternalGetPositionAtCursor.getLanguageId,
-  'Editor.getUri': ExternalGetPositionAtCursor.getUri,
   'Editor.getText': GetText.getText,
+  'Editor.getUri': ExternalGetPositionAtCursor.getUri,
   'Editor.getWordAt': GetWordAt.getWordAt,
   'Editor.getWordAt2': ExternalGetPositionAtCursor.getWordAt,
   'Editor.getWordAtOffset2': ExternalGetPositionAtCursor.getWordAtOffset2,
@@ -257,7 +260,6 @@ export const commandMap = {
   'Editor.paste': EditorPaste.paste,
   'Editor.pasteText': PasteText.pasteText,
   'Editor.render': RenderEditor.renderEditor,
-  'Editor.getProblems': getProblems,
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': ReplaceRange.replaceRange,
   'Editor.rerender': EditorRerender.rerender,
