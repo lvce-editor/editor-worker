@@ -124,6 +124,7 @@ import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as Font from '../Font/Font.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
+import * as GetKeys from '../GetKeys/GetKeys.ts'
 import { getProblems } from '../GetProblems/GetProblems.ts'
 import * as GetQuickPickMenuEntries from '../GetQuickPickMenuEntries/GetQuickPickMenuEntries.ts'
 import * as GetSelections from '../GetSelections/GetSelections.ts'
@@ -142,7 +143,6 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
-import * as GetKeys from '../GetKeys/GetKeys.ts'
 
 export const commandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
