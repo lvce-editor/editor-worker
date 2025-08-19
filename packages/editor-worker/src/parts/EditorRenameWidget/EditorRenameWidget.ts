@@ -1,7 +1,6 @@
 import type { RenameWidget } from '../RenameWidget/RenameWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import { createFns } from '../CreateFns/CreateFns.ts'
-import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderRename from '../RenderRename/RenderRename.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
@@ -35,6 +34,8 @@ export const add = (widget: RenameWidget) => {
   return AddWidget.addWidget(widget, 'EditorRename', render)
 }
 
-export const remove = RemoveWidget.removeWidget
+export const remove = (widget: RenameWidget) => {
+  return [['Viewlet.dispose', widget.newState.uid]]
+}
 
 export const { handleInput, close, accept } = createFns(['handleInput', 'close', 'accept'], 'Rename', WidgetId.Rename)
