@@ -5,6 +5,7 @@ import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import * as AddCursorAbove from '../EditorCommand/EditorCommandAddCursorAbove.ts'
 import * as AddCursorBelow from '../EditorCommand/EditorCommandAddCursorBelow.ts'
 import * as EditorApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
+import * as EditorCommandApplyWorkspaceEdit from '../EditorCommand/EditorCommandApplyWorkspaceEdit.ts'
 import * as EditorBlur from '../EditorCommand/EditorCommandBlur.ts'
 import * as EditorBraceCompletion from '../EditorCommand/EditorCommandBraceCompletion.ts'
 import * as CancelSelection from '../EditorCommand/EditorCommandCancelSelection.ts'
@@ -154,6 +155,7 @@ export const commandMap = {
   'Editor.addCursorBelow': AddCursorBelow.addCursorBelow,
   'Editor.applyEdit': EditorApplyEdit.applyEdit,
   'Editor.applyEdit2': ExternalGetPositionAtCursor.applyEdits2,
+  'Editor.applyWorkspaceEdit': EditorCommandApplyWorkspaceEdit.applyWorkspaceEdit,
   'Editor.braceCompletion': EditorBraceCompletion.braceCompletion,
   'Editor.cancelSelection': CancelSelection.cancelSelection,
   'Editor.closeCodeGenerator': EditorCommandCloseCodeGenerator.closeCodeGenerator,
