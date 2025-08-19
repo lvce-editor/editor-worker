@@ -37,4 +37,4 @@ export const add = (widget: RenameWidget) => {
 
 export const remove = RemoveWidget.removeWidget
 
-export const { handleInput, close, accept } = createFns(['handleInput', 'close', 'accept'], 'Rename', WidgetId.Completion)
+export const { handleInput, close, accept } = createFns(['handleInput', 'close', 'accept'], 'Rename', WidgetId.Rename)
