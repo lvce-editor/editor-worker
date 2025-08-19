@@ -35,6 +35,8 @@ export const add = (widget: RenameWidget) => {
   return AddWidget.addWidget(widget, 'EditorRename', render)
 }
 
-export const remove = RemoveWidget.removeWidget
+export const remove = (widget: RenameWidget) => {
+  return [['Viewlet.dispose', widget.newState.uid]]
+}
 
 export const { handleInput, close, accept } = createFns(['handleInput', 'close', 'accept'], 'Rename', WidgetId.Rename)
