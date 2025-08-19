@@ -1,5 +1,6 @@
 export const keep = [
   'ActivateByEvent.activateByEvent',
+  'ExtensionHostManagement.activateByEvent',
   'Editor.applyEdit2',
   'Editor.applyEdits2',
   'Editor.closeFind2',
