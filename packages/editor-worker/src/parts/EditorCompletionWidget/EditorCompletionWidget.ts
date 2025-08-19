@@ -31,7 +31,7 @@ export const render = (widget: CompletionWidget) => {
 }
 
 export const add = (widget: CompletionWidget) => {
-  return AddWidget.addWidget(widget, 'EditorRename', render)
+  return AddWidget.addWidget(widget, 'EditorCompletion', render)
 }
 
 export const remove = (widget: CompletionWidget) => {
