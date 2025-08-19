@@ -4,7 +4,8 @@ import * as GetPortTuple from '../GetPortTuple/GetPortTuple.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as RendererWorkerIpcParentType from '../RendererWorkerIpcParentType/RendererWorkerIpcParentType.ts'
 
-export const launchWorker = async (name: string, url: string): Promise<Rpc> => {
+export const launchWorker = async (name: string, url: string, intializeCommand?: string): Promise<Rpc> => {
+  // TODO use transferMessagePortRpc
   const { port1, port2 } = GetPortTuple.getPortTuple()
   // @ts-ignore
   await RendererWorker.invokeAndTransfer('IpcParent.create', {
@@ -20,5 +21,8 @@ export const launchWorker = async (name: string, url: string): Promise<Rpc> => {
     isMessagePortOpen: true,
   })
   port2.start()
+  if (intializeCommand) {
+    await rpc.invoke(intializeCommand)
+  }
   return rpc
 }
