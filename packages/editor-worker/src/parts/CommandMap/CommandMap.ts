@@ -131,6 +131,7 @@ import * as GetSelections from '../GetSelections/GetSelections.ts'
 import * as GetText from '../GetText/GetText.ts'
 import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
 import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
+import * as EditorRenameWidget from '../EditorRenameWidget/EditorRenameWidget.ts'
 import * as HandleTab from '../HandleTab/HandleTab.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
@@ -317,6 +318,9 @@ export const commandMap = {
   'EditorCompletion.selectCurrent': EditorCompletionWidget.selectCurrent,
   'EditorCompletion.selectIndex': EditorCompletionWidget.selectIndex,
   'EditorCompletion.toggleDetails': EditorCompletionWidget.toggleDetails,
+  'EditorRename.accept': EditorRenameWidget.accept,
+  'EditorRename.close': EditorRenameWidget.close,
+  'EditorRename.handleInput': EditorRenameWidget.handleInput,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
   'FindWidget.close': EditorFindWidget.close,
   'FindWidget.focusCloseButton': EditorFindWidget.focusCloseButton,
