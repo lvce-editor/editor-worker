@@ -16,6 +16,6 @@ export const closeRename = async (editor: any) => {
   const renameWidget = widgets[renameWidgetIndex]
   await RenameWorker.invoke('Rename.close', renameWidget.newState.uid)
   const latest = Editors.get(uid)
-  const {newState} = latest
+  const { newState } = latest
   return newState
 }

@@ -9,7 +9,7 @@ import * as WidgetId from '../WidgetId/WidgetId.ts'
 const newStateGenerator = async (state: CompletionState, parentUid: number): Promise<CompletionState> => {
   const { uid, x, y, width, height } = state
   const editor = Editors.get(parentUid)
-  const {languageId} = editor
+  const { languageId } = editor
   await CompletionWorker.invoke('Completions.create', uid, x, y, width, height, parentUid, languageId)
   await CompletionWorker.invoke('Completions.loadContent', uid)
   const diff = await CompletionWorker.invoke('Completions.diff2', uid)
