@@ -147,6 +147,7 @@ import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
 
 export const commandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
+  'ExtensionHostManagement.activateByEvent': ActivateByEvent.activateByEvent,
   'CodeGenerator.accept': CodeGeneratorAccept.codeGeneratorAccept,
   'ColorPicker.loadContent': ColorPicker.loadContent,
   'Editor.addCursorAbove': AddCursorAbove.addCursorAbove,
