@@ -11,12 +11,13 @@ const getTextChanges = (editor: any, changes: readonly any[]) => {
     if (change.uri === editor.uri) {
       for (const edit of change.edits) {
         const startPosition = TextDocument.positionAt(editor, edit.offset)
-        const endPosition = TextDocument.positionAt(editor, edit.offset)
+        const endPosition = TextDocument.positionAt(editor, edit.offset + edit.deleted)
+        const deleted = TextDocument.getSelectionText(editor, { start: startPosition, end: endPosition })
         const textChange = {
           start: startPosition,
           end: endPosition,
           inserted: [edit.inserted],
-          deleted: [''],
+          deleted,
           origin: EditOrigin.Rename,
         }
         textChanges.push(textChange)
