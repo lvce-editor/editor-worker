@@ -116,6 +116,7 @@ import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorComplet
 import * as EditorFindWidget from '../EditorFindWidget/EditorFindWidget.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
+import * as EditorRenameWidget from '../EditorRenameWidget/EditorRenameWidget.ts'
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
@@ -317,6 +318,9 @@ export const commandMap = {
   'EditorCompletion.selectCurrent': EditorCompletionWidget.selectCurrent,
   'EditorCompletion.selectIndex': EditorCompletionWidget.selectIndex,
   'EditorCompletion.toggleDetails': EditorCompletionWidget.toggleDetails,
+  'EditorRename.accept': EditorRenameWidget.accept,
+  'EditorRename.close': EditorRenameWidget.close,
+  'EditorRename.handleInput': EditorRenameWidget.handleInput,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
   'FindWidget.close': EditorFindWidget.close,
   'FindWidget.focusCloseButton': EditorFindWidget.focusCloseButton,
