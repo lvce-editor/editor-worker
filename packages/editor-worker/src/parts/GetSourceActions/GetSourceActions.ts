@@ -1,5 +1,5 @@
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as Editors from '../Editors/Editors.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
 const filterActions = (sourceActions: readonly any[], languageId: string) => {
   return sourceActions.filter((action) => action.languageId === languageId)
@@ -11,7 +11,7 @@ export const getEditorSourceActions = async (editorId?: number): Promise<readonl
     return []
   }
   const { newState } = Editors.get(editorId)
-  const languageId = newState.languageId
+  const { languageId } = newState
   // @ts-ignore
   const allActions = await RendererWorker.invoke('GetEditorSourceActions.getEditorSourceActions')
   const filtered = filterActions(allActions, languageId)

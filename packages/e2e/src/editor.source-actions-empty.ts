@@ -14,5 +14,6 @@ export const test: Test = async ({ FileSystem, Main, Editor, Locator, expect }) 
 
   // assert
   const emptyMessage = Locator('.EditorMessageText')
+  await expect(emptyMessage).toBeVisible()
   await expect(emptyMessage).toHaveText('No code actions available')
 }
