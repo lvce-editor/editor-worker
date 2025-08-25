@@ -7,6 +7,7 @@ export const keep = [
   'Editor.closeWidget2',
   'Editor.create',
   'Editor.getKeyBindings',
+  'Editor.getSourceActions',
   'Editor.getLines2',
   'Editor.getPositionAtCursor',
   'Editor.getOffsetAtCursor',

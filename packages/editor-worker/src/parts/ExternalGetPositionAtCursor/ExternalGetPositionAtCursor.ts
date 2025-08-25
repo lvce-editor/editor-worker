@@ -4,6 +4,7 @@ import * as Editors from '../Editors/Editors.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
+import { getEditorSourceActions } from '../GetSourceActions/GetSourceActions.ts'
 import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
@@ -96,4 +97,9 @@ export const applyEdits2 = async (editorUid: number, edits: readonly any[]): Pro
   const editor = GetEditor.getEditor(editorUid)
   const newEditor = await ApplyEdit.applyEdit(editor, edits)
   Editors.set(editorUid, editor, newEditor)
+}
+
+export const getSourceActions = async (editorUid: number): Promise<readonly any[]> => {
+  const actions = await getEditorSourceActions()
+  return actions
 }
