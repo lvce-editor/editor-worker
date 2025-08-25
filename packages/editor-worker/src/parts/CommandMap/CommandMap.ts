@@ -335,6 +335,7 @@ export const commandMap = {
   'EditorSourceAction.selectIndex': EditorSourceActionWidget.selectIndex,
   'EditorSourceAction.selectItem': EditorSourceActionWidget.selectItem,
   'EditorSourceAction.toggleDetails': EditorSourceActionWidget.toggleDetails,
+
   'EditorRename.accept': EditorRenameWidget.accept,
   'EditorRename.close': EditorRenameWidget.close,
   'EditorRename.handleInput': EditorRenameWidget.handleInput,
