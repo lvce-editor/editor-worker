@@ -1,14 +1,16 @@
-const provider = {
-  languageId: 'xyz',
-  provideCompletions(textDocument, offset) {
+export const languageId = 'typescript'
+
+const organizeImports = {
+  kind: 'source.organizeImports', // TODO use numeric code action type
+  name: 'Organize Imports',
+  async execute(textDocument) {
+    // TODO
     return []
-  },
-  resolveCompletionItem(textDocument, offset, name, completionItem) {
-    return {}
   },
 }
 
-export const activate = () => {
-  // @ts-ignore
-  vscode.registerCompletionProvider(provider)
+/**
+ */
+export const provideCodeActions = async () => {
+  return [organizeImports]
 }
