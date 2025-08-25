@@ -104,6 +104,7 @@ import * as SetSelections from '../EditorCommand/EditorCommandSetSelections.ts'
 import * as EditorCommandShowHover2 from '../EditorCommand/EditorCommandShowHover2.ts'
 import * as EditorShowHover from '../EditorCommand/EditorCommandShowHover.ts'
 import * as EditorShowSourceActions2 from '../EditorCommand/EditorCommandShowSourceActions2.ts'
+import * as EditorCommandShowSourceActions3 from '../EditorCommand/EditorCommandShowSourceActions3.ts'
 import * as SortLinesAscending from '../EditorCommand/EditorCommandSortLinesAscending.ts'
 import * as EditorTabCompletion from '../EditorCommand/EditorCommandTabCompletion.ts'
 import * as EditorToggleBlockComment from '../EditorCommand/EditorCommandToggleBlockComment.ts'
@@ -295,6 +296,7 @@ export const commandMap = {
   'Editor.showHover2': EditorCommandShowHover2.showHover2,
   'Editor.showSourceActions': EditorShowSourceActions2.showSourceActions,
   'Editor.showSourceActions2': EditorShowSourceActions2.showSourceActions,
+  'Editor.showSourceActions3': EditorCommandShowSourceActions3.showSourceActions,
   'Editor.sortLinesAscending': SortLinesAscending.sortLinesAscending,
   'Editor.tabCompletion': EditorTabCompletion.tabCompletion,
   'Editor.toggleBlockComment': EditorToggleBlockComment.toggleBlockComment,
