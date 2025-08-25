@@ -6,12 +6,12 @@ const filterActions = (sourceActions: readonly any[], languageId: string) => {
 }
 
 // TODO ask extension host worker instead
-export const getEditorSourceActions = async (editorId: number): Promise<readonly any[]> => {
+export const getEditorSourceActions = async (editorId?: number): Promise<readonly any[]> => {
   if (!editorId) {
     return []
   }
   const { newState } = Editors.get(editorId)
-  const {languageId} = newState
+  const { languageId } = newState
   // @ts-ignore
   const allActions = await RendererWorker.invoke('GetEditorSourceActions.getEditorSourceActions')
   const filtered = filterActions(allActions, languageId)
