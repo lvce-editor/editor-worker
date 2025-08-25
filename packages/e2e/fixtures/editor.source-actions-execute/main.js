@@ -3,7 +3,13 @@ const organizeImports = {
   name: 'Organize Imports',
   async execute(textDocument) {
     // TODO
-    return []
+    return [
+      {
+        offset: 0,
+        inserted: 'let x =1',
+        deleted: 100,
+      },
+    ]
   },
 }
 
