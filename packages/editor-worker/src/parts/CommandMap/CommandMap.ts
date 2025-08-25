@@ -49,6 +49,7 @@ import * as EditorCommandHandleContextMenu from '../EditorCommand/EditorCommandH
 import * as HandleDoubleClick from '../EditorCommand/EditorCommandHandleDoubleClick.ts'
 import * as HandleFocus from '../EditorCommand/EditorCommandHandleFocus.ts'
 import * as HandleMouseDown from '../EditorCommand/EditorCommandHandleMouseDown.ts'
+import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
 import * as HandleMouseMove from '../EditorCommand/EditorCommandHandleMouseMove.ts'
 import * as EditorCommandHandleMouseMoveWithAltKey from '../EditorCommand/EditorCommandHandleMouseMoveWithAltKey.ts'
 import * as EditorCommandHandleNativeBeforeInputFromContentEditable from '../EditorCommand/EditorCommandHandleNativeBeforeInputFromContentEditable.ts'
@@ -323,6 +324,16 @@ export const commandMap = {
   'EditorCompletion.selectCurrent': EditorCompletionWidget.selectCurrent,
   'EditorCompletion.selectIndex': EditorCompletionWidget.selectIndex,
   'EditorCompletion.toggleDetails': EditorCompletionWidget.toggleDetails,
+  'EditorSourceAction.close': EditorSourceActionWidget.close,
+  'EditorSourceAction.closeDetails': EditorSourceActionWidget.closeDetails,
+  'EditorSourceAction.focusFirst': EditorSourceActionWidget.focusFirst,
+  'EditorSourceAction.focusIndex': EditorSourceActionWidget.focusIndex,
+  'EditorSourceAction.focusNext': EditorSourceActionWidget.focusNext,
+  'EditorSourceAction.focusPrevious': EditorSourceActionWidget.focusPrevious,
+  'EditorSourceAction.handleWheel': EditorSourceActionWidget.handleWheel,
+  'EditorSourceAction.selectCurrent': EditorSourceActionWidget.selectCurrent,
+  'EditorSourceAction.selectIndex': EditorSourceActionWidget.selectIndex,
+  'EditorSourceAction.toggleDetails': EditorSourceActionWidget.toggleDetails,
   'EditorRename.accept': EditorRenameWidget.accept,
   'EditorRename.close': EditorRenameWidget.close,
   'EditorRename.handleInput': EditorRenameWidget.handleInput,

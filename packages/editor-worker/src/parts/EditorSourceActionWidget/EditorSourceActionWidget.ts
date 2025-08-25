@@ -1,8 +1,10 @@
 import type { SourceActionWidget } from '../SourceActionWidget/SourceActionWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
+import { createFns } from '../CreateFns/CreateFns.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderRename from '../RenderRename/RenderRename.ts'
+import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const render = (widget: SourceActionWidget) => {
   const commands: readonly any[] = RenderRename.renderFull(widget.oldState, widget.newState)
@@ -34,3 +36,33 @@ export const add = (widget: SourceActionWidget) => {
 }
 
 export const remove = RemoveWidget.removeWidget
+
+export const {
+  focusFirst,
+  focusIndex,
+  focusLast,
+  focusNext,
+  focusPrevious,
+  selectCurrent,
+  selectIndex,
+  toggleDetails,
+  closeDetails,
+  handleWheel,
+  close,
+} = createFns(
+  [
+    'focusFirst',
+    'focusIndex',
+    'focusLast',
+    'focusNext',
+    'focusPrevious',
+    'selectCurrent',
+    'selectIndex',
+    'toggleDetails',
+    'closeDetails',
+    'handleWheel',
+    'close',
+  ],
+  'SourceActions',
+  WidgetId.SourceAction,
+)
