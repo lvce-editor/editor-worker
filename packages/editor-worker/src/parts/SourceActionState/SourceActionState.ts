@@ -7,4 +7,5 @@ export interface SourceActionState {
   readonly height: number
   readonly uid: number
   readonly maxHeight: number
+  readonly commands: readonly any[]
 }
