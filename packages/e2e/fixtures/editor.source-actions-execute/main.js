@@ -2,12 +2,11 @@ const organizeImports = {
   kind: 'source.organizeImports', // TODO use numeric code action type
   name: 'Organize Imports',
   async execute(textDocument) {
-    // TODO
     return [
       {
-        offset: 0,
-        inserted: 'let x =1',
-        deleted: 100,
+        startOffset: 0,
+        endOffset: 100,
+        inserted: `import { add } from './add.xyz'`,
       },
     ]
   },

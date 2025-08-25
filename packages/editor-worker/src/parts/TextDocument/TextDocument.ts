@@ -73,7 +73,7 @@ export const getText = (state: any) => {
 }
 
 // TDOO this doesn;t belong here
-export const getSelectionText = (textDocument: any, range: any) => {
+export const getSelectionText = (textDocument: any, range: any): readonly string[] => {
   Assert.object(textDocument)
   const startRowIndex = range.start.rowIndex
   const startColumnIndex = range.start.columnIndex
