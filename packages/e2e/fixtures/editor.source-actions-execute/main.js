@@ -9,8 +9,13 @@ const organizeImports = {
   },
 }
 
-/**
- */
-export const provideCodeActions = async () => {
-  return [organizeImports]
+const codeActionProvider = {
+  async provideCodeActions() {
+    return [organizeImports]
+  },
+}
+
+export const activate = () => {
+  // @ts-ignore
+  vscode.registerCodeActionsProvider(codeActionProvider)
 }
