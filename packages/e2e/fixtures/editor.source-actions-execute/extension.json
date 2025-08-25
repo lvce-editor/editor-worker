@@ -1,0 +1,21 @@
+{
+  "id": "test.source-actions-open",
+  "name": "Source Actions Open",
+  "description": "Test Empty",
+  "activation": ["onLanguage:xyz", "onCompletion:xyz"],
+  "browser": "main.js",
+  "languages": [
+    {
+      "id": "xyz",
+      "extensions": [".xyz"]
+    }
+  ],
+  "codeActions": [
+    {
+      "kind": "source.organizeImports",
+      "name": "Organize Imports",
+      "command": "Editor.organizeImports",
+      "languageId": "xyz"
+    }
+  ]
+}
