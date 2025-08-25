@@ -100,6 +100,6 @@ export const applyEdits2 = async (editorUid: number, edits: readonly any[]): Pro
 }
 
 export const getSourceActions = async (editorUid: number): Promise<readonly any[]> => {
-  const actions = await getEditorSourceActions()
+  const actions = await getEditorSourceActions(editorUid)
   return actions
 }
