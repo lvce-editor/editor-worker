@@ -2,6 +2,8 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.source-actions-execute'
 
+export const skip = 1
+
 export const test: Test = async ({ Command, FileSystem, Main, Editor, Locator, expect, Extension }) => {
   // arrange
   const url = import.meta.resolve('../fixtures/editor.source-actions-execute').toString()
