@@ -16,14 +16,8 @@ export const test: Test = async ({ Command, FileSystem, Main, Editor, Locator, e
   await Command.execute('EditorSourceAction.selectItem', 'Organize Imports')
 
   // assert
-  // const sourceActionItems = Locator('.SourceActionItem')
-  // await expect(sourceActionItems).toHaveCount(1)
-  // const organizeImports = Locator('.SourceActionItem', { hasText: 'Organize Imports' })
-  // await expect(organizeImports).toBeVisible()
-
-  // act
-  // await Command.execute('Editor.organizeImports')
-
-  // assert
-  // await Editor.shouldHaveText(`import { add } from './add.xyz'`)
+  const sourceActions = Locator('.EditorSourceActions')
+  await expect(sourceActions).toBeHidden()
+  const token = Locator('.Token.Unknown')
+  await expect(token).toHaveText(`import { add } from './add.xyz'`)
 }
