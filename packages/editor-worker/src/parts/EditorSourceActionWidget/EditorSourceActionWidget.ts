@@ -1,11 +1,11 @@
+import type { SourceActionWidget } from '../SourceActionWidget/SourceActionWidget.ts'
+import type { WidgetLifeCycleFunction } from '../WidgetLifeCycleFunction/WidgetLifeCycleFunction.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import { createFns } from '../CreateFns/CreateFns.ts'
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderSourceActions from '../RenderSourceActions/RenderSourceActions.ts'
-import type { SourceActionWidget } from '../SourceActionWidget/SourceActionWidget.ts'
 import * as WidgetId from '../WidgetId/WidgetId.ts'
-import type { WidgetLifeCycleFunction } from '../WidgetLifeCycleFunction/WidgetLifeCycleFunction.ts'
 
 export const render: WidgetLifeCycleFunction<SourceActionWidget> = (widget) => {
   const commands = RenderSourceActions.doRender(widget.oldState, widget.newState)

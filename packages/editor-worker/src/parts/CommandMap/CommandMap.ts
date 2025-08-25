@@ -4,6 +4,7 @@ import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import * as AddCursorAbove from '../EditorCommand/EditorCommandAddCursorAbove.ts'
 import * as AddCursorBelow from '../EditorCommand/EditorCommandAddCursorBelow.ts'
+import * as EditorCommandApplyDocumentEdits from '../EditorCommand/EditorCommandApplyDocumentEdits.ts'
 import * as EditorApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as EditorCommandApplyWorkspaceEdit from '../EditorCommand/EditorCommandApplyWorkspaceEdit.ts'
 import * as EditorBlur from '../EditorCommand/EditorCommandBlur.ts'
@@ -104,6 +105,7 @@ import * as SetSelections from '../EditorCommand/EditorCommandSetSelections.ts'
 import * as EditorCommandShowHover2 from '../EditorCommand/EditorCommandShowHover2.ts'
 import * as EditorShowHover from '../EditorCommand/EditorCommandShowHover.ts'
 import * as EditorCommandShowSourceActions3 from '../EditorCommand/EditorCommandShowSourceActions3.ts'
+import * as EditorCommandShowSourceActions2 from '../EditorCommand/EditorCommandShowSourceActions2.ts'
 import * as SortLinesAscending from '../EditorCommand/EditorCommandSortLinesAscending.ts'
 import * as EditorTabCompletion from '../EditorCommand/EditorCommandTabCompletion.ts'
 import * as EditorToggleBlockComment from '../EditorCommand/EditorCommandToggleBlockComment.ts'
@@ -146,7 +148,6 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
-import * as EditorCommandApplyDocumentEdits from '../EditorCommand/EditorCommandApplyDocumentEdits.ts'
 
 export const commandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
@@ -297,8 +298,8 @@ export const commandMap = {
   'Editor.setSelections2': ExternalGetPositionAtCursor.setSelections2,
   'Editor.showHover': EditorShowHover.showHover,
   'Editor.showHover2': EditorCommandShowHover2.showHover2,
-  'Editor.showSourceActions': EditorCommandShowSourceActions3.showSourceActions,
-  'Editor.showSourceActions2': EditorCommandShowSourceActions3.showSourceActions,
+  'Editor.showSourceActions': EditorCommandShowSourceActions2.showSourceActions,
+  'Editor.showSourceActions2': EditorCommandShowSourceActions2.showSourceActions,
   'Editor.showSourceActions3': EditorCommandShowSourceActions3.showSourceActions,
   'Editor.sortLinesAscending': SortLinesAscending.sortLinesAscending,
   'Editor.tabCompletion': EditorTabCompletion.tabCompletion,
