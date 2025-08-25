@@ -206,6 +206,7 @@ export const commandMap = {
   'Editor.getLines2': ExternalGetPositionAtCursor.getLines2,
   'Editor.getOffsetAtCursor': ExternalGetPositionAtCursor.getOffsetAtCursor,
   'Editor.getPositionAtCursor': ExternalGetPositionAtCursor.getPositionAtCursor,
+  'Editor.getSourceActions': ExternalGetPositionAtCursor.getSourceActions,
   'Editor.getProblems': getProblems,
   'Editor.getQuickPickMenuEntries': GetQuickPickMenuEntries.getQuickPickMenuEntries,
   'Editor.getSelections': GetSelections.getSelections,
