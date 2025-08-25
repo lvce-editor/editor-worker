@@ -10,6 +10,7 @@ const organizeImports = {
 }
 
 const codeActionProvider = {
+  languageId: 'typescript',
   async provideCodeActions() {
     return [organizeImports]
   },
