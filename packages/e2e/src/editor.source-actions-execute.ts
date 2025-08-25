@@ -9,9 +9,11 @@ export const test: Test = async ({ Command, FileSystem, Main, Editor, Locator, e
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/src/test.xyz`, `import { add, subtract } from './add.xyz'`)
   await Main.openUri(`${tmpDir}/src/test.xyz`)
+  await Editor.setCursor(0, 0)
   await Editor.openSourceActions()
 
   // act
+  await Command.execute('EditorSourceAction.selectItem', 'Organize Imports')
 
   // assert
   // const sourceActionItems = Locator('.SourceActionItem')
