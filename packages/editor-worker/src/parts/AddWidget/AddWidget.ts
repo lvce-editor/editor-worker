@@ -7,7 +7,6 @@ const isFunctional = (widgetId: number | string): boolean => {
     case WidgetId.Rename:
     case WidgetId.Completion:
     case WidgetId.Find:
-    case WidgetId.SourceAction:
       return true
     default:
       return false
