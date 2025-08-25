@@ -146,6 +146,7 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
+import * as EditorCommandApplyDocumentEdits from '../EditorCommand/EditorCommandApplyDocumentEdits.ts'
 
 export const commandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
@@ -168,6 +169,7 @@ export const commandMap = {
   'Editor.compositionEnd': Composition.compositionEnd,
   'Editor.compositionStart': Composition.compositionStart,
   'Editor.compositionUpdate': Composition.compositionUpdate,
+  'Editor.applyDocumentEdits': EditorCommandApplyDocumentEdits.applyDocumentEdits,
   'Editor.contextMenu': ContextMenu.handleContextMenu,
   'Editor.copy': Copy.copy,
   'Editor.copyLineDown': CopyLineDown.copyLineDown,
