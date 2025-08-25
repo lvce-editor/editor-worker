@@ -201,7 +201,7 @@ export const getKeyBindings = () => {
     },
     {
       key: KeyModifier.CtrlCmd | KeyCode.Period,
-      command: 'Editor.showSourceActions3',
+      command: 'Editor.showSourceActions2',
       when: WhenExpression.FocusEditorText,
     },
     {
