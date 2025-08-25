@@ -49,7 +49,6 @@ import * as EditorCommandHandleContextMenu from '../EditorCommand/EditorCommandH
 import * as HandleDoubleClick from '../EditorCommand/EditorCommandHandleDoubleClick.ts'
 import * as HandleFocus from '../EditorCommand/EditorCommandHandleFocus.ts'
 import * as HandleMouseDown from '../EditorCommand/EditorCommandHandleMouseDown.ts'
-import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
 import * as HandleMouseMove from '../EditorCommand/EditorCommandHandleMouseMove.ts'
 import * as EditorCommandHandleMouseMoveWithAltKey from '../EditorCommand/EditorCommandHandleMouseMoveWithAltKey.ts'
 import * as EditorCommandHandleNativeBeforeInputFromContentEditable from '../EditorCommand/EditorCommandHandleNativeBeforeInputFromContentEditable.ts'
@@ -121,6 +120,7 @@ import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
 import * as EditorRenameWidget from '../EditorRenameWidget/EditorRenameWidget.ts'
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
+import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
@@ -333,6 +333,7 @@ export const commandMap = {
   'EditorSourceAction.handleWheel': EditorSourceActionWidget.handleWheel,
   'EditorSourceAction.selectCurrent': EditorSourceActionWidget.selectCurrent,
   'EditorSourceAction.selectIndex': EditorSourceActionWidget.selectIndex,
+  'EditorSourceAction.selectItem': EditorSourceActionWidget.selectItem,
   'EditorSourceAction.toggleDetails': EditorSourceActionWidget.toggleDetails,
   'EditorRename.accept': EditorRenameWidget.accept,
   'EditorRename.close': EditorRenameWidget.close,
