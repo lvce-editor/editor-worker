@@ -6,7 +6,7 @@ const filterActions = (sourceActions: readonly any[], languageId: string) => {
 }
 
 // TODO ask extension host worker instead
-export const getEditorSourceActions = async (editorId: number): Promise<readonly any[]> => {
+export const getEditorSourceActions = async (editorId?: number): Promise<readonly any[]> => {
   if (!editorId) {
     return []
   }
