@@ -1,9 +1,9 @@
+import { WidgetId } from '@lvce-editor/constants'
 import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import { createFns } from '../CreateFns/CreateFns.ts'
 import * as FindWidgetRender from '../FindWidgetRender/FindWidgetRender.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const render = (widget: IFindWidget) => {
   const commands: readonly any[] = FindWidgetRender.renderFull(widget.oldState, widget.newState)

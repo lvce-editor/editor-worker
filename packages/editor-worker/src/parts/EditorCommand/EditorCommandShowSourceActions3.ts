@@ -1,10 +1,10 @@
+import { WidgetId } from '@lvce-editor/constants'
 import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as SourceActionWidgetFactory from '../SourceActionWidgetFactory/SourceActionWidgetFactory.ts'
 import * as SourceActionWorker from '../SourceActionWorker/SourceActionWorker.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const newStateGenerator = async (state: SourceActionState, parentUid: number): Promise<SourceActionState> => {
   const { uid, x, y, width, height } = state

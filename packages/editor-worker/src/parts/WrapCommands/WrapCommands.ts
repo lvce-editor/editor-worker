@@ -1,8 +1,8 @@
+import { WidgetId } from '@lvce-editor/constants'
 import * as EditorDiagnosticEffect from '../EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as UnwrappedCommands from '../UnwrappedCommands/UnwrappedCommands.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
 import * as WrapWidgetCommand from '../WrapWidgetCommand/WrapWidgetCommand.ts'
 
 const widgetCommands = {

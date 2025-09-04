@@ -1,3 +1,4 @@
+import { WidgetId } from '@lvce-editor/constants'
 import * as EditorCodeGeneratorWidget from '../EditorCodeGeneratorWidget/EditorCodeGeneratorWidget.ts'
 import * as EditorColorPickerWidget from '../EditorColorPickerWidget/EditorColorPickerWidget.ts'
 import * as EditorCompletionDetailWidget from '../EditorCompletionDetailWidget/EditorCompletionDetailWidget.ts'
@@ -6,7 +7,6 @@ import * as EditorFindWidget from '../EditorFindWidget/EditorFindWidget.ts'
 import * as EditorHoverWidget from '../EditorHoverWidget/EditorHoverWidget.ts'
 import * as EditorRenameWidget from '../EditorRenameWidget/EditorRenameWidget.ts'
 import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
 import * as WidgetRegistry from '../WidgetRegistry/WidgetRegistry.ts'
 
 export const registerWidgets = () => {

@@ -1,7 +1,7 @@
+import { WidgetId } from '@lvce-editor/constants'
 import type { CodeGeneratorWidget } from '../CodeGeneratorWidget/CodeGeneratorWidget.ts'
 import * as FocusSource from '../FocusSource/FocusSource.ts'
 import * as Id from '../Id/Id.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const create = (): CodeGeneratorWidget => {
   const completionUid = Id.create()

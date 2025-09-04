@@ -1,3 +1,4 @@
+import { WidgetId } from '@lvce-editor/constants'
 import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as Editors from '../Editors/Editors.ts'
@@ -9,7 +10,6 @@ import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const getPositionAtCursor = (editorUid: number): any => {
   const editor = GetEditor.getEditor(editorUid)

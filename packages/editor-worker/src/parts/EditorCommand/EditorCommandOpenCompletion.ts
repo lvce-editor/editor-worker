@@ -1,10 +1,10 @@
+import { WidgetId } from '@lvce-editor/constants'
 import type { CompletionState } from '../CompletionState/CompletionState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
 import * as CompletionWidgetFactory from '../CompletionWidgetFactory/CompletionWidgetFactory.ts'
 import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 const newStateGenerator = async (state: CompletionState, parentUid: number): Promise<CompletionState> => {
   const { uid, x, y, width, height } = state

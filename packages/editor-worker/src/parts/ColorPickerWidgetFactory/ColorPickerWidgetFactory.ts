@@ -1,6 +1,6 @@
+import { WidgetId } from '@lvce-editor/constants'
 import type { ColorPickerWidget } from '../ColorPickerWidget/ColorPickerWidget.ts'
 import * as Id from '../Id/Id.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
 
 export const create = (): ColorPickerWidget => {
   const completionUid = Id.create()
