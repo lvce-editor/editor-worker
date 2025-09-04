@@ -56,6 +56,8 @@ export const {
   handleReplaceInput,
   handleToggleReplaceFocus,
   toggleReplace,
+  replace,
+  replaceAll,
 } = createFns(
   [
     'close',
@@ -76,6 +78,8 @@ export const {
     'handleReplaceInput',
     'handleToggleReplaceFocus',
     'toggleReplace',
+    'replace',
+    'replaceAll',
   ],
   'FindWidget',
   WidgetId.Find,
