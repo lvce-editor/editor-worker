@@ -1,5 +1,5 @@
 import type { Widget } from '../Widget/Widget.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
+import { WidgetId } from '@lvce-editor/constants'
 
 const isFunctional = (widgetId: number | string): boolean => {
   switch (widgetId) {

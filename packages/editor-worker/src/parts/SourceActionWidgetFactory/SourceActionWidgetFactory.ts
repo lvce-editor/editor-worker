@@ -1,6 +1,6 @@
 import type { SourceActionWidget } from '../SourceActionWidget/SourceActionWidget.ts'
 import * as Id from '../Id/Id.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
+import { WidgetId } from '@lvce-editor/constants'
 
 export const create = (): SourceActionWidget => {
   const completionUid = Id.create()

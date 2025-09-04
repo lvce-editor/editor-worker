@@ -4,7 +4,7 @@ import * as CompletionDetailWidgetFactory from '../CompletionDetailWidgetFactory
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetCompletionDetailBounds from '../GetCompletionDetailBounds/GetCompletionDetailBounds.ts'
 import * as GetCompletionState from '../GetCompletionState/GetCompletionState.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
+import { WidgetId } from '@lvce-editor/constants'
 
 export const openDetails = (editor: any) => {
   const child = GetCompletionState.getCompletionState(editor)

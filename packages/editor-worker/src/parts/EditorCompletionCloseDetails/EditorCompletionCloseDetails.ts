@@ -1,4 +1,4 @@
-import * as WidgetId from '../WidgetId/WidgetId.ts'
+import { WidgetId } from '@lvce-editor/constants'
 
 const isCompletionDetailWidget = (widget: any) => {
   return widget.id === WidgetId.CompletionDetail

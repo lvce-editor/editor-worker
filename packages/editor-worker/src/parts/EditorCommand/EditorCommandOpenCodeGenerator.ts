@@ -2,7 +2,7 @@ import type { CodeGeneratorState } from '../CodeGeneratorState/CodeGeneratorStat
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
 import * as CodeGeneratorWidgetFactory from '../CodeGeneratorWidgetFactory/CodeGeneratorWidgetFactory.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
+import { WidgetId } from '@lvce-editor/constants'
 
 const newStateGenerator = async (state: CodeGeneratorState): Promise<CodeGeneratorState> => {
   const latestState: CodeGeneratorState = {

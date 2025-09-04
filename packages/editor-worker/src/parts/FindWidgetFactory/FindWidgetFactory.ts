@@ -1,6 +1,6 @@
 import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import * as Id from '../Id/Id.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
+import { WidgetId } from '@lvce-editor/constants'
 
 export const create = (): IFindWidget => {
   const uid = Id.create()

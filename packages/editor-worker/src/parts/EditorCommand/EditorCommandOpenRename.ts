@@ -5,7 +5,7 @@ import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as RenameWidgetFactory from '../RenameWidgetFactory/RenameWidgetFactory.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
+import { WidgetId } from '@lvce-editor/constants'
 import * as EditorCommandGetWordAt from './EditorCommandGetWordAt.ts'
 
 const newStateGenerator = async (state: RenameState, parentUid: number): Promise<RenameState> => {

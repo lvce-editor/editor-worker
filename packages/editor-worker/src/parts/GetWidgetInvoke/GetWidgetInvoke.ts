@@ -3,7 +3,7 @@ import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
 import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
 import * as SourceActionWorker from '../SourceActionWorker/SourceActionWorker.ts'
-import * as WidgetId from '../WidgetId/WidgetId.ts'
+import { WidgetId } from '@lvce-editor/constants'
 
 export const getWidgetInvoke = (widgetId: number): any => {
   switch (widgetId) {
