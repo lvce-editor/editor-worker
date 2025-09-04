@@ -1,5 +1,5 @@
-import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 import { WidgetId } from '@lvce-editor/constants'
+import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 
 const isMatchingWidget = (widget: any) => {
   return widget.id === WidgetId.SourceAction

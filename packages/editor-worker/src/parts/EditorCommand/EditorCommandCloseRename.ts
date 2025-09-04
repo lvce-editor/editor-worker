@@ -1,6 +1,6 @@
+import { WidgetId } from '@lvce-editor/constants'
 import * as Editors from '../Editors/Editors.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
-import { WidgetId } from '@lvce-editor/constants'
 
 // TODO duplicate code
 const isRenameWidget = (widget: any) => {

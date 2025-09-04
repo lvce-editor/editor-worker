@@ -1,6 +1,6 @@
+import { WidgetId } from '@lvce-editor/constants'
 import type { RenameWidget } from '../RenameWidget/RenameWidget.ts'
 import * as Id from '../Id/Id.ts'
-import { WidgetId } from '@lvce-editor/constants'
 
 export const create = (): RenameWidget => {
   const completionUid = Id.create()

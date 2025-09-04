@@ -1,6 +1,6 @@
+import { WidgetId } from '@lvce-editor/constants'
 import type { CompletionWidget } from '../CompletionWidget/CompletionWidget.ts'
 import * as Id from '../Id/Id.ts'
-import { WidgetId } from '@lvce-editor/constants'
 
 export const create = (): CompletionWidget => {
   const completionUid = Id.create()
