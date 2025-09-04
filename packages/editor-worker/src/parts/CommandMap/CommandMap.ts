@@ -355,6 +355,7 @@ export const commandMap = {
   'FindWidget.focusToggleReplace': EditorFindWidget.focusToggleReplace,
   'FindWidget.handleBlur': EditorFindWidget.handleBlur,
   'FindWidget.handleFocus': EditorFindWidget.handleFocus,
+  'FindWidget.handleClickButton': EditorFindWidget.handleClickButton,
   'FindWidget.handleInput': EditorFindWidget.handleInput,
   'FindWidget.handleReplaceFocus': EditorFindWidget.handleReplaceFocus,
   'FindWidget.handleReplaceInput': EditorFindWidget.handleReplaceInput,
