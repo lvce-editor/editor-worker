@@ -56,6 +56,7 @@ export const {
   handleReplaceInput,
   handleToggleReplaceFocus,
   toggleReplace,
+  toggleMatchCase,
   replace,
   replaceAll,
 } = createFns(
@@ -78,6 +79,7 @@ export const {
     'handleReplaceInput',
     'handleToggleReplaceFocus',
     'toggleReplace',
+    'toggleMatchCase',
     'replace',
     'replaceAll',
   ],
