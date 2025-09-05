@@ -60,6 +60,7 @@ export const {
   replaceAll,
   toggleMatchCase,
   toggleReplace,
+  toggleUseRegularExpression,
 } = createFns(
   [
     'close',
@@ -84,6 +85,7 @@ export const {
     'replaceAll',
     'toggleMatchCase',
     'toggleReplace',
+    'toggleUseRegularExpression',
   ],
   'FindWidget',
   WidgetId.Find,
