@@ -11,12 +11,5 @@ const newStateGenerator = (state: FindWidgetState, parentUid: number): Promise<F
 
 export const openFind2 = async (editor: any) => {
   const fullFocus = true
-  return AddWidgetToEditor.addWidgetToEditor(
-    WidgetId.ColorPicker,
-    FocusKey.FindWidget,
-    editor,
-    FindWidgetFactory.create,
-    newStateGenerator,
-    fullFocus,
-  )
+  return AddWidgetToEditor.addWidgetToEditor(WidgetId.Find, FocusKey.FindWidget, editor, FindWidgetFactory.create, newStateGenerator, fullFocus)
 }
