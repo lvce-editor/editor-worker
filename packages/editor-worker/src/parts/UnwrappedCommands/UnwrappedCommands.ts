@@ -13,6 +13,7 @@ export const keep = [
   'Editor.getOffsetAtCursor',
   'Editor.getQuickPickMenuEntries',
   'Editor.getSelections',
+  'Editor.hotReload',
   'Editor.getSelections2',
   'Editor.getText',
   'Editor.getWordAt',
