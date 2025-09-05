@@ -59,6 +59,7 @@ export const {
   replace,
   replaceAll,
   toggleMatchCase,
+  toggleMatchWholeWord,
   toggleReplace,
   toggleUseRegularExpression,
 } = createFns(
@@ -84,6 +85,7 @@ export const {
     'replace',
     'replaceAll',
     'toggleMatchCase',
+    'toggleMatchWholeWord',
     'toggleReplace',
     'toggleUseRegularExpression',
   ],
