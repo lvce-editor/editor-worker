@@ -1,4 +1,5 @@
 import { getKeys } from '../Editors/Editors.ts'
+import * as Editors from '../Editors/Editors.ts'
 import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
 import { restoreWidgetState } from '../RestoreWidgetState/RestoreWidgetState.ts'
 import { saveWidgetState } from '../SaveWidgetState/SaveWidgetState.ts'
@@ -25,14 +26,11 @@ export const hotReload = async (): Promise<void> => {
 
   const newEditors = await restoreWidgetState(keys, savedStates)
 
-  if (newEditors) {
-    // TODO set them
+  for (const editor of newEditors) {
+    Editors.set(editor.newState.uid, editor.oldState, editor.newState)
   }
+
+  // TODO ask renderer worker to rerender all editors
+
   isReloading = false
-  // TODO
-  // 1. find all editors
-  // 2. find all widgets
-  // 3. find all workers
-  // 4. reload the workers
-  // 5. update the widgets with data from new workers
 }
