@@ -22,9 +22,9 @@ const saveState = async () => {
     const { widgets } = editor.newState
     for (const widget of widgets) {
       const invoke = getWidgetInvoke(widget.id)
-      const fullKey = `${key}:${widget.uid}`
+      const fullKey = `${key}:${widget.newState.uid}`
       const name = getWidgetName(widget.id)
-      const savedState = await invoke(`${name}.saveState`, widget.uid)
+      const savedState = await invoke(`${name}.saveState`, widget.newState.uid)
       savedStates[fullKey] = savedState
     }
   }
@@ -36,7 +36,7 @@ const relaunchWorkers = async () => {
   await FindWidgetWorker.launch()
 }
 
-const restoreState = async (savedState: any) => {
+const restoreState = async (savedStates: any) => {
   // TODO
 }
 
