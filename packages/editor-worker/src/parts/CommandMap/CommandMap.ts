@@ -365,6 +365,7 @@ export const commandMap = {
   'FindWidget.handleReplaceInput': EditorFindWidget.handleReplaceInput,
   'FindWidget.handleToggleReplaceFocus': EditorFindWidget.handleToggleReplaceFocus,
   'FindWidget.toggleMatchCase': EditorFindWidget.toggleMatchCase,
+  'FindWidget.toggleMatchWholeWord': EditorFindWidget.toggleMatchWholeWord,
   'FindWidget.loadContent': FindWidget.loadContent,
   'FindWidget.toggleReplace': EditorFindWidget.toggleReplace,
   'Font.ensure': Font.ensure,
