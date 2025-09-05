@@ -11,11 +11,6 @@ export const restoreWidgetState = async (keys: readonly string[], savedStates: a
     const newWidgets = []
     for (const widget of widgets) {
       const invoke = getWidgetInvoke(widget.id)
-      // TODO call
-      // 1. create
-      // 2. loadContent (with savedState)
-      // 3. diff
-      // 4. render
       const fullKey = `${key}:${widget.newState.uid}`
       const savedState = savedStates[fullKey] || {}
       const name = getWidgetName(widget.id)
@@ -30,7 +25,7 @@ export const restoreWidgetState = async (keys: readonly string[], savedStates: a
       )
       await invoke(`${name}.loadContent`, widget.newState.uid, savedState)
       const diffResult = await invoke(`${name}.diff2`, widget.newState.uid)
-      const commands = invoke(`${name}.render2`, widget.newState.uid, diffResult)
+      const commands = await invoke(`${name}.render2`, widget.newState.uid, diffResult)
       const newWidget = {
         ...widget,
         newState: { ...widget.newState, commands },
