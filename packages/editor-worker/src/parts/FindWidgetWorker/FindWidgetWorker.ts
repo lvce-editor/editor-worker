@@ -1,16 +1,25 @@
-import type { Rpc } from '@lvce-editor/rpc'
+import { get, set } from '@lvce-editor/rpc-registry'
 import * as LaunchFindWidgetWorker from '../LaunchFindWidgetWorker/LaunchFindWidgetWorker.ts'
 
-let workerPromise: any
+const rpcId = 9002
 
-const getOrCreate = (): Promise<Rpc> => {
-  if (!workerPromise) {
-    workerPromise = LaunchFindWidgetWorker.launchFindWidgetWorker()
+export const launch = async () => {
+  // TODO race condition
+  if (get(rpcId)) {
+    return
   }
-  return workerPromise
+  const rpc = await LaunchFindWidgetWorker.launchFindWidgetWorker()
+  set(rpcId, rpc)
 }
 
 export const invoke = async (method: string, ...params: readonly any[]): Promise<any> => {
-  const worker = await getOrCreate()
-  return await worker.invoke(method, ...params)
+  const rpc = get(rpcId)
+  return await rpc.invoke(method, ...params)
+}
+
+export const dispose = async () => {
+  // const oldPromise = workerPromise
+  // workerPromise = undefined
+  // const rpc = await oldPromise
+  // await rpc.dispose()
 }

@@ -6,6 +6,7 @@ export const loadContent = async (state: FindWidgetState, parentUid: number): Pr
   const { uid } = state
   const editor = GetEditor.getEditor(parentUid)
   const { x, y, width, height } = editor
+  await FindWidgetWorker.launch()
   await FindWidgetWorker.invoke('FindWidget.create', uid, x, y, width, height, parentUid)
   await FindWidgetWorker.invoke('FindWidget.loadContent', uid)
   const diff = await FindWidgetWorker.invoke('FindWidget.diff2', uid)
