@@ -19,7 +19,7 @@ const saveState = async () => {
   const savedStates = Object.create(null)
   for (const key of keys) {
     const editor = get(parseInt(key))
-    const widgets = editor.newState.widgets
+    const { widgets } = editor.newState
     for (const widget of widgets) {
       const invoke = getWidgetInvoke(widget.id)
       const fullKey = `${key}:${widget.uid}`
@@ -52,11 +52,7 @@ export const hotReload = async (): Promise<void> => {
 
   await relaunchWorkers()
 
-  console.log({ savedStates })
-
   await restoreState(savedStates)
-
-  console.log('hot reload')
 
   isReloading = false
   // TODO
