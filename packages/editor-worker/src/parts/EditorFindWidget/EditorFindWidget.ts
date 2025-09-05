@@ -58,6 +58,7 @@ export const {
   handleToggleReplaceFocus,
   replace,
   replaceAll,
+  toggleMatchCase,
   toggleReplace,
 } = createFns(
   [
@@ -81,6 +82,7 @@ export const {
     'handleToggleReplaceFocus',
     'replace',
     'replaceAll',
+    'toggleMatchCase',
     'toggleReplace',
   ],
   'FindWidget',
