@@ -62,6 +62,8 @@ export const {
   toggleMatchWholeWord,
   toggleReplace,
   toggleUseRegularExpression,
+  focusNextElement,
+  focusPreviousElement,
 } = createFns(
   [
     'close',
@@ -88,6 +90,8 @@ export const {
     'toggleMatchWholeWord',
     'toggleReplace',
     'toggleUseRegularExpression',
+    'focusNextElement',
+    'focusPreviousElement',
   ],
   'FindWidget',
   WidgetId.Find,
