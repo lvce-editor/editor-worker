@@ -17,4 +17,5 @@ export const test: Test = async ({ FileSystem, Main, Editor, Locator, expect, Ex
   // assert
   const hover = Locator('.EditorHover')
   await expect(hover).toBeVisible()
+  await expect(hover).toHaveText('def')
 }
