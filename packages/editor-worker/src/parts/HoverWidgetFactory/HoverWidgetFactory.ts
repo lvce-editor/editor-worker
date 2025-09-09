@@ -17,6 +17,7 @@ export const create = (): HoverWidget => {
       documentation: '',
       editorUid: 0,
       lineInfos: [],
+      commands: [],
     },
     newState: {
       uid: uid,
@@ -29,6 +30,7 @@ export const create = (): HoverWidget => {
       documentation: '',
       editorUid: 0,
       lineInfos: [],
+      commands: [],
     },
   }
   return widget

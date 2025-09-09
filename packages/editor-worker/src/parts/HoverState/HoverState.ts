@@ -7,4 +7,5 @@ export interface HoverState extends Rectangle {
   readonly lineInfos: Array<readonly string[]>
   readonly documentation: string
   readonly diagnostics: any[]
+  readonly commands: readonly any[]
 }
