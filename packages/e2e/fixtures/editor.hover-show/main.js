@@ -3,6 +3,7 @@ const provider = {
   provideHover(textDocument, offset) {
     return {
       text: 'abc',
+      documentation: 'def',
     }
   },
 }
