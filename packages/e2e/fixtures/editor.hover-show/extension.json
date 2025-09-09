@@ -1,0 +1,13 @@
+{
+  "id": "test.source-actions-open",
+  "name": "Hover Show Open",
+  "description": "Test Empty",
+  "activation": ["onLanguage:xyz", "onHover:xyz"],
+  "browser": "main.js",
+  "languages": [
+    {
+      "id": "xyz",
+      "extensions": [".xyz"]
+    }
+  ]
+}
