@@ -1,7 +1,7 @@
 import { WidgetId } from '@lvce-editor/constants'
+import type { HoverWidget } from '../HoverWidget/HoverWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import { createFns } from '../CreateFns/CreateFns.ts'
-import type { HoverWidget } from '../HoverWidget/HoverWidget.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderRename from '../RenderRename/RenderRename.ts'
 
@@ -27,7 +27,6 @@ export const render = (widget: HoverWidget) => {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
     }
   }
-  console.log({ wrappedCommands })
   return wrappedCommands
 }
 
