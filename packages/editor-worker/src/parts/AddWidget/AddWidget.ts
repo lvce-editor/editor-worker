@@ -8,6 +8,7 @@ const isFunctional = (widgetId: number | string): boolean => {
     case WidgetId.Completion:
     case WidgetId.Find:
     case WidgetId.SourceAction:
+    case WidgetId.Hover:
       return true
     default:
       return false

@@ -102,7 +102,7 @@ import * as SetDecorations from '../EditorCommand/EditorCommandSetDecorations.ts
 import * as SetDelta from '../EditorCommand/EditorCommandSetDelta.ts'
 import * as SetLanguageId from '../EditorCommand/EditorCommandSetLanguageId.ts'
 import * as SetSelections from '../EditorCommand/EditorCommandSetSelections.ts'
-import * as EditorCommandShowHover2 from '../EditorCommand/EditorCommandShowHover2.ts'
+import { showHover3 } from '../EditorCommand/EditorCommandShowHover3.ts'
 import * as EditorShowHover from '../EditorCommand/EditorCommandShowHover.ts'
 import * as EditorCommandShowSourceActions3 from '../EditorCommand/EditorCommandShowSourceActions3.ts'
 import * as SortLinesAscending from '../EditorCommand/EditorCommandSortLinesAscending.ts'
@@ -297,7 +297,7 @@ export const commandMap = {
   'Editor.setSelections': SetSelections.setSelections,
   'Editor.setSelections2': ExternalGetPositionAtCursor.setSelections2,
   'Editor.showHover': EditorShowHover.showHover,
-  'Editor.showHover2': EditorCommandShowHover2.showHover2,
+  'Editor.showHover2': showHover3,
   'Editor.showSourceActions': EditorCommandShowSourceActions3.showSourceActions,
   'Editor.showSourceActions2': EditorCommandShowSourceActions3.showSourceActions,
   'Editor.showSourceActions3': EditorCommandShowSourceActions3.showSourceActions,
