@@ -64,6 +64,7 @@ export const {
   toggleUseRegularExpression,
   focusNextElement,
   focusPreviousElement,
+  togglePreserveCase,
 } = createFns(
   [
     'close',
@@ -92,6 +93,7 @@ export const {
     'toggleUseRegularExpression',
     'focusNextElement',
     'focusPreviousElement',
+    'togglePreserveCase',
   ],
   'FindWidget',
   WidgetId.Find,
