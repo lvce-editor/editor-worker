@@ -96,7 +96,7 @@
     }
   },
   "dependencies": {
-    "@lvce-editor/constants": "^1.18.0"
+    "@lvce-editor/constants": "^1.19.0"
   },
   "devDependencies": {
     "@lvce-editor/assert": "^1.4.0",
