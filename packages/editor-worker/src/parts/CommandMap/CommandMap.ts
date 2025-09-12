@@ -371,6 +371,7 @@ export const commandMap = {
   'FindWidget.toggleUseRegularExpression': EditorFindWidget.toggleUseRegularExpression,
   'FindWidget.focusNextElement': EditorFindWidget.focusNextElement,
   'FindWidget.focusPreviousElement': EditorFindWidget.focusPreviousElement,
+  'FindWidget.togglePreserveCase': EditorFindWidget.togglePreserveCase,
   'Font.ensure': Font.ensure,
   'HandleMessagePort.handleMessagePort': HandleMessagePort.handleMessagePort,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
