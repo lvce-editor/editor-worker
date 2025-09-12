@@ -27,12 +27,12 @@ const getTextChanges = (editor: any, changes: readonly any[]) => {
   return textChanges
 }
 
-export const applyWorkspaceEdit = async (editor: any, changes: readonly any[]) => {
+export const applyWorkspaceEdit = async (editor: any, changes: readonly any[]): Promise<any> => {
   Assert.object(editor)
   Assert.array(changes)
   const textChanges = getTextChanges(editor, changes)
   if (textChanges.length === 0) {
-    return
+    return editor
   }
   // TODO
   // for now only apply edits to single file, if it matches the uri
