@@ -25,7 +25,7 @@ test('undo - inserted character', () => {
     ],
     lineCache: [],
   }
-  const newEditor = EditorCommandUndo.undo(editor)
+  const newEditor = await EditorCommandUndo.undo(editor)
   expect(newEditor.lines).toEqual([''])
 })
 
