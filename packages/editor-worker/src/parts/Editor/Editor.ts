@@ -3,6 +3,7 @@ import * as Assert from '../Assert/Assert.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorStates from '../Editors/Editors.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
+import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
@@ -97,10 +98,12 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     autoClosingRanges,
   }
   EditorStates.set(editor.uid, editor, newEditor)
+  const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
   const newWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditor, changes)
   const newEditor2 = {
     ...newEditor,
     widgets: newWidgets,
+    incrementalEdits,
   }
   return newEditor2
 }
@@ -150,8 +153,14 @@ export const scheduleDocument = async (editor, changes) => {
     lines: newLines,
     invalidStartIndex,
   }
+  const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
+
   // TODO change event should be emitted after rendering
-  return newEditor
+  const finalEditor = {
+    ...newEditor,
+    incrementalEdits,
+  }
+  return finalEditor
   // RendererProcess.send([
   //   /* Viewlet.invoke */ 'Viewlet.send',
   //   /* id */ 'EditorText',

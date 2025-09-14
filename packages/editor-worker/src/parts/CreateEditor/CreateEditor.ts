@@ -3,6 +3,7 @@ import * as Assert from '../Assert/Assert.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditorState from '../Editors/Editors.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
+import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
@@ -35,7 +36,7 @@ const emptyEditor = {
   diagnostics: [],
   highlightedLine: -1,
   debugEnabled: false,
-  incrementalEdits: [],
+  incrementalEdits: emptyIncrementalEdits,
 }
 
 export const createEditor = async ({
@@ -130,7 +131,7 @@ export const createEditor = async ({
     widgets: [],
     focusKey: FocusKey.Empty,
     diagnosticsEnabled,
-    incrementalEdits: [],
+    incrementalEdits: emptyIncrementalEdits,
   }
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds(editor, x, y, width, height, 9)

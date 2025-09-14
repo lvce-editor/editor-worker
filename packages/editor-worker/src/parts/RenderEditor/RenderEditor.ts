@@ -7,7 +7,6 @@ import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtual
 import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
 import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
-import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
@@ -29,7 +28,7 @@ const renderLines = {
     )
   },
   async apply(oldState: State, newState: State) {
-    const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(oldState, newState)
+    const { incrementalEdits } = newState
     if (incrementalEdits !== emptyIncrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
     }
