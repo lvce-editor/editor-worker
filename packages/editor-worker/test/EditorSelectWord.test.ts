@@ -7,6 +7,7 @@ test('editorSelectWord', () => {
     lines: ['abcde', 'abcde'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 5, 0, 5),
+    lineCache: [],
   }
   expect(EditorSelectWord.selectWord(editor, 0, 5)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 5),
@@ -17,6 +18,7 @@ test('editorSelectWord - with numbers', () => {
   const editor = {
     lines: ['11111', '22222'],
     selections: EditorSelection.fromRange(0, 0, 0, 0),
+    lineCache: [],
   }
   expect(EditorSelectWord.selectWord(editor, 0, 0)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 5),
@@ -28,6 +30,7 @@ test('editorSelectWord - with umlaut', () => {
     lines: ['füße'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
+    lineCache: [],
   }
   expect(EditorSelectWord.selectWord(editor, 0, 0)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 4),
@@ -39,6 +42,7 @@ test('editorSelectWord - with accent', () => {
     lines: ['tàste'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
+    lineCache: [],
   }
   expect(EditorSelectWord.selectWord(editor, 0, 0)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 5),
@@ -54,6 +58,7 @@ test('editorSelectWord - with word before', () => {
     lines: ['abc   '],
     cursor,
     selections: EditorSelection.fromRange(0, 3, 0, 3),
+    lineCache: [],
   }
   expect(EditorSelectWord.selectWord(editor, 0, 3)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 3),
@@ -65,6 +70,7 @@ test('editorSelectWord - with word after', () => {
     lines: ['   def'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 3, 0, 3),
+    lineCache: [],
   }
   expect(EditorSelectWord.selectWord(editor, 0, 3)).toMatchObject({
     selections: EditorSelection.fromRange(0, 3, 0, 6),

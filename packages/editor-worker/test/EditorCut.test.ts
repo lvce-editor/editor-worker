@@ -68,6 +68,7 @@ test.skip('editorCut - no selection', async () => {
     lines: ['line 1', 'line 2', 'line 3', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(1, 1, 1, 1),
+    lineCache: [],
   }
   expect(await EditorCut.cut(editor)).toMatchObject({
     selections: EditorSelection.fromRange(1, 1, 1, 1),

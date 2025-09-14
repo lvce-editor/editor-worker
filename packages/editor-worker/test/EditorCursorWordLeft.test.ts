@@ -7,6 +7,7 @@ test.skip('editorCursorWordLeft', () => {
     lines: ['    <title>Document</title>'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 27, 0, 27),
+    lineCache: [],
   }
   const moved1 = EditorCursorWordLeft.cursorWordLeft(editor)
   expect(moved1).toMatchObject({
@@ -35,6 +36,7 @@ test('editorCursorWordLeft - with dots', () => {
     lines: ['this.is.a.test'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 14, 0, 14),
+    lineCache: [],
   }
   const moved1 = EditorCursorWordLeft.cursorWordLeft(editor)
   expect(moved1).toMatchObject({
@@ -59,6 +61,7 @@ test.skip('editorCursorWordLeft - with selection', () => {
   const editor = {
     lines,
     selections: EditorSelection.fromRange(0, 20, 0, 23),
+    lineCache: [],
   }
   expect(EditorCursorWordLeft.cursorWordLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 17, 0, 17),

@@ -13,6 +13,7 @@ test('cut - empty selection', async () => {
     selections: [0, 0, 0, 0],
     lines: ['a'],
     undoStack: [],
+    lineCache: [],
   }
   const newEditor = await EditorCommandCut.cut(editor)
   expect(newEditor.lines).toEqual([''])
@@ -24,6 +25,7 @@ test('cut - selection', async () => {
     selections: [0, 0, 0, 1],
     lines: ['a'],
     undoStack: [],
+    lineCache: [],
   }
   const newEditor = await EditorCommandCut.cut(editor)
   expect(newEditor.lines).toEqual([''])

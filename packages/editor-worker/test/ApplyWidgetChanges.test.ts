@@ -42,6 +42,7 @@ test('applyWidgetChanges - delete', async () => {
         },
       },
     ],
+    lineCache: [],
   }
   const changes = [
     {
@@ -72,6 +73,7 @@ test('applyWidgetChanges - empty widgets', async () => {
     },
     selections: EditorSelection.fromRange(0, 0, 0, 4),
     widgets: [],
+    lineCache: [],
   }
   const changes = [
     {

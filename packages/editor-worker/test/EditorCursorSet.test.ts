@@ -3,13 +3,17 @@ import * as EditorCursorSet from '../src/parts/EditorCommand/EditorCommandCursor
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 
 test('editorCursorSet - invalid argument - array', () => {
-  const editor = {}
+  const editor = {
+    lineCache: [],
+  }
   // @ts-ignore
   expect(() => EditorCursorSet.cursorSet(editor, [0, 1])).toThrow(new Error('expected value to be of type number'))
 })
 
 test('editorCursorSet', () => {
-  const editor = {}
+  const editor = {
+    lineCache: [],
+  }
   expect(EditorCursorSet.cursorSet(editor, 0, 1)).toMatchObject({
     selections: EditorSelection.fromRange(0, 1, 0, 1),
   })

@@ -7,6 +7,7 @@ test('editorCursorCharacterLeft - at start', () => {
     lines: [''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
+    lineCache: [],
   }
   expect(EditorCursorLeft.cursorCharacterLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 0),
@@ -18,6 +19,7 @@ test('editorCursorCharacterLeft - one after start of line', () => {
     lines: ['a'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 1, 0, 1),
+    lineCache: [],
   }
   expect(EditorCursorLeft.cursorCharacterLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 0),
@@ -29,6 +31,7 @@ test('editorCursorCharacterLeft - with selection', () => {
     lines: ['line 1', 'line 2'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 1),
+    lineCache: [],
   }
 
   expect(EditorCursorLeft.cursorCharacterLeft(editor)).toMatchObject({
@@ -41,6 +44,7 @@ test('editorCursorCharacterLeft - at start of line', () => {
     lines: ['line 1', 'line 2'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(1, 0, 1, 0),
+    lineCache: [],
   }
   expect(EditorCursorLeft.cursorCharacterLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 6, 0, 6),
@@ -53,6 +57,7 @@ test('editorCursorCharacterLeft - emoji - 👮🏽‍♀️', () => {
     lines: ['👮🏽‍♀️'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, columnIndex, 0, columnIndex),
+    lineCache: [],
   }
   expect(EditorCursorLeft.cursorCharacterLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 0),
@@ -64,6 +69,7 @@ test('editorCursorCharacterLeft - unicode - zero width space', () => {
     lines: ['\u200B'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
+    lineCache: [],
   }
   expect(EditorCursorLeft.cursorCharacterLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 0),
