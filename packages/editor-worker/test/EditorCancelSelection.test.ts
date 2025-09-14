@@ -10,6 +10,7 @@ test('editorCancelSelection', () => {
       columnIndex: 4,
     },
     selections: EditorSelection.fromRange(0, 0, 0, 4),
+    lineCache: [],
   }
   expect(EditorCancelSelection.cancelSelection(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 0),
@@ -20,6 +21,7 @@ test('editorCancelSelection - when there is no selection', () => {
   const editor = {
     lines: ['line 1', 'line 2', 'line 3'],
     selections: EditorSelection.fromRange(0, 4, 0, 4),
+    lineCache: [],
   }
   expect(EditorCancelSelection.cancelSelection(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 4, 0, 4),

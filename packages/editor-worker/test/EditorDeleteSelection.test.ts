@@ -26,6 +26,7 @@ test.skip('editorDeleteSelection', () => {
     rowHeight: 10,
     columnWidth: 8,
     tokenizer: TokenizePlainText,
+    lineCache: [],
   }
   EditorDeleteSelection.editorDeleteSelection(editor)
   expect(editor.lines).toEqual(['lne 2'])
@@ -44,6 +45,7 @@ test('editorDeleteSelection - when there is no selection', () => {
       columnIndex: 0,
     },
     selections: [],
+    lineCache: [],
   }
   EditorDeleteSelection.editorDeleteSelection(editor)
   expect(editor.lines).toEqual(['line 1', 'line 2'])

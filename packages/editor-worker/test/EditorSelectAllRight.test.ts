@@ -7,6 +7,7 @@ test('editorSelectAllRight = at start', () => {
     lines: ['1 2 3 4 5'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
+    lineCache: [],
   }
   expect(EditorSelectAllRight.editorSelectAllRight(editor)).toMatchObject({
     lines: ['1 2 3 4 5'],
@@ -19,6 +20,7 @@ test('editorSelectAllRight in middle', () => {
     lines: ['1 2 3 4 5'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 5, 0, 5),
+    lineCache: [],
   }
   expect(EditorSelectAllRight.editorSelectAllRight(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 5, 0, 9),

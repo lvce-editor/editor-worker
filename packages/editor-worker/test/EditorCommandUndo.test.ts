@@ -23,6 +23,7 @@ test('undo - inserted character', () => {
         },
       ],
     ],
+    lineCache: [],
   }
   const newEditor = EditorCommandUndo.undo(editor)
   expect(newEditor.lines).toEqual([''])
@@ -49,6 +50,7 @@ test('undo - deleted character', () => {
         },
       ],
     ],
+    lineCache: [],
   }
   const newEditor = EditorCommandUndo.undo(editor)
   expect(newEditor.lines).toEqual(['a'])
@@ -59,6 +61,7 @@ test('undo - empty undoStack', () => {
     lines: [''],
     selections: new Uint32Array([0, 0, 1, 1]),
     undoStack: [],
+    lineCache: [],
   }
   const newEditor = EditorCommandUndo.undo(editor)
   expect(newEditor).toBe(editor)

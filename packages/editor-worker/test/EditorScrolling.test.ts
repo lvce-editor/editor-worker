@@ -9,6 +9,7 @@ test('setDeltaY - same value', () => {
     height: 0,
     scrollBarHeight: 0,
     itemHeight: 0,
+    lineCache: [],
   }
   const value = 0
   expect(EditorScrolling.setDeltaY(editor, value)).toBe(editor)
@@ -22,6 +23,7 @@ test('setDeltaY - scroll down', () => {
     height: 400,
     scrollBarHeight: 0,
     itemHeight: 20,
+    lineCache: [],
   }
   const value = 100
   expect(EditorScrolling.setDeltaY(editor, value)).toEqual({
@@ -34,5 +36,6 @@ test('setDeltaY - scroll down', () => {
     maxLineY: 25,
     minLineY: 5,
     scrollBarY: 100,
+    lineCache: [],
   })
 })

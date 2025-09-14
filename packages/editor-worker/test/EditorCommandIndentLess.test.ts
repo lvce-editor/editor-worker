@@ -36,6 +36,7 @@ test('editorIndentLess - indented by two spaces', async () => {
     selections: EditorSelection.fromRange(0, 0, 0, 0),
     minLineY: 0,
     undoStack: [],
+    lineCache: [],
   }
   expect(await EditorIndentLess.indentLess(editor)).toMatchObject({
     lines: ['line 1'],

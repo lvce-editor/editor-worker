@@ -6,6 +6,7 @@ test('sortLinesAscending - two unsorted lines', async () => {
     lines: ['b', 'a'],
     selections: new Uint32Array([0, 0, 1, 1]),
     undoStack: [],
+    lineCache: [],
   }
   const newEditor = await EditorCommandSortLinesAscending.sortLinesAscending(editor)
   expect(newEditor.lines).toEqual(['a', 'b'])

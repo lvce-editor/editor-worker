@@ -26,4 +26,5 @@ export interface State {
   readonly focused: boolean
   readonly lineNumbers: boolean
   readonly incrementalEdits: readonly any[]
+  readonly textInfos: readonly any[]
 }

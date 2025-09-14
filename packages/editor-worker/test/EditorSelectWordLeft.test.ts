@@ -7,6 +7,7 @@ test('editorSelectWordLeft', () => {
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 4, 0, 4),
+    lineCache: [],
   }
   expect(EditorSelectWordLeft.selectWordLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 4, 0, 0),
@@ -18,6 +19,7 @@ test('editorSelectWordLeft - with umlaut', () => {
     lines: ['füße'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 4, 0, 4),
+    lineCache: [],
   }
   expect(EditorSelectWordLeft.selectWordLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 4, 0, 0),
@@ -29,6 +31,7 @@ test('editorSelectWordLeft - with accent', () => {
     lines: ['tàste'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 5, 0, 5),
+    lineCache: [],
   }
   expect(EditorSelectWordLeft.selectWordLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 5, 0, 0),

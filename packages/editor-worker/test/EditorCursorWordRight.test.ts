@@ -7,6 +7,7 @@ test('basic', () => {
     lines: ['a'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
+    lineCache: [],
   }
   const newEditor1 = EditorCursorWordRight.cursorWordRight(editor)
   expect(newEditor1.selections).toEqual(new Uint32Array([0, 1, 0, 1]))
@@ -17,6 +18,7 @@ test('editorCursorWordRight', () => {
     lines: ['    <title>Document</title>'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 4, 0, 4),
+    lineCache: [],
   }
   const newEditor1 = EditorCursorWordRight.cursorWordRight(editor)
   expect(newEditor1).toMatchObject({
@@ -41,6 +43,7 @@ test('editorCursorWordRight - with dots', () => {
     lines: ['this.is.a.test'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
+    lineCache: [],
   }
   const newEditor1 = EditorCursorWordRight.cursorWordRight(editor)
   expect(newEditor1).toMatchObject({
@@ -65,6 +68,7 @@ test.skip('editorCursorWordRight - with selection', () => {
     lines: ['<title>Document</title>'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 5),
+    lineCache: [],
   }
   const newEditor1 = EditorCursorWordRight.cursorWordRight(editor)
   expect(newEditor1).toMatchObject({
@@ -77,6 +81,7 @@ test('editorCursorWordRight - at end of line', () => {
     lines: ['line 1', 'line 2'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 6, 0, 6),
+    lineCache: [],
   }
   const newEditor1 = EditorCursorWordRight.cursorWordRight(editor)
   expect(newEditor1).toMatchObject({

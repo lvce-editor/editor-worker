@@ -7,6 +7,7 @@ test('editorSelectCharacterLeft - single character', () => {
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 1, 0, 1),
+    lineCache: [],
   }
   expect(EditorSelectCharacterLeft.selectCharacterLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 1, 0, 0),
@@ -18,6 +19,7 @@ test('editorSelectCharacterLeft - at start of file', () => {
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
+    lineCache: [],
   }
   expect(EditorSelectCharacterLeft.selectCharacterLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 0),
@@ -29,6 +31,7 @@ test('editorSelectCharacterLeft - reversed selection', () => {
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 4, 0, 3),
+    lineCache: [],
   }
   expect(EditorSelectCharacterLeft.selectCharacterLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 4, 0, 2),

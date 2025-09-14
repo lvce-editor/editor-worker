@@ -14,7 +14,9 @@ const EditorSelectionAutoMoveState = await import('../src/parts/EditorSelectionA
 const EditorCommandHandlePointerCaptureLost = await import('../src/parts/EditorCommand/EditorCommandHandlePointerCaptureLost.ts')
 
 test('handlePointerCaptureLost', () => {
-  const editor = {}
+  const editor = {
+    lineCache: [],
+  }
   expect(EditorCommandHandlePointerCaptureLost.handlePointerCaptureLost(editor)).toBe(editor)
   expect(EditorSelectionAutoMoveState.clearEditor).toHaveBeenCalledTimes(1)
 })

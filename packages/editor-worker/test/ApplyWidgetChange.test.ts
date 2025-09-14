@@ -31,6 +31,7 @@ test('applyWidgetChange - type', async () => {
       columnIndex: 4,
     },
     selections: EditorSelection.fromRange(0, 0, 0, 4),
+    lineCache: [],
   }
   const widget = {
     id,
@@ -61,6 +62,7 @@ test('applyWidgetChange - deleteLeft', async () => {
       columnIndex: 4,
     },
     selections: EditorSelection.fromRange(0, 0, 0, 4),
+    lineCache: [],
   }
   const widget = {
     id,
@@ -91,6 +93,7 @@ test('applyWidgetChange - other', async () => {
       columnIndex: 4,
     },
     selections: EditorSelection.fromRange(0, 0, 0, 4),
+    lineCache: [],
   }
   const widget = {
     id,

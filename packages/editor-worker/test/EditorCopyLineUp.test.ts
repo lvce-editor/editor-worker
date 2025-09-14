@@ -8,6 +8,7 @@ test('editorCopyLineUp', async () => {
     selections: new Uint32Array([2, 0, 2, 0]),
     tokenizer: TokenizePlainText,
     undoStack: [],
+    lineCache: [],
   }
   const newEditor = await EditorCopyLineUp.copyLineUp(editor)
   expect(newEditor.lines).toEqual(['line 1', 'line 2', 'line 3', 'line 3'])

@@ -7,6 +7,7 @@ test('editorCursorEnd', () => {
     lines: ['aaaaa'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 4, 0, 4),
+    lineCache: [],
   }
   expect(EditorCursorEnd.cursorEnd(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 5, 0, 5),
@@ -21,6 +22,7 @@ test('editorCursorEnd - with selection', () => {
       columnIndex: 4,
     },
     selections: EditorSelection.fromRange(0, 0, 0, 4),
+    lineCache: [],
   }
   expect(EditorCursorEnd.cursorEnd(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 4, 0, 4),
