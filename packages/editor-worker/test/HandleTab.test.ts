@@ -16,6 +16,7 @@ test('handleTab - no result', async () => {
     primarySelectionIndex: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     undoStack: [],
+    lineCache: [],
   }
   const newEditor = await HandleTab.handleTab(editor)
   // TODO two spaces should be inserted
@@ -33,6 +34,7 @@ test('handleTab - apply result', async () => {
     primarySelectionIndex: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     undoStack: [],
+    lineCache: [],
   }
   const newEditor = await HandleTab.handleTab(editor)
   // TODO

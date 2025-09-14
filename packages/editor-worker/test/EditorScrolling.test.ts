@@ -36,5 +36,6 @@ test('setDeltaY - scroll down', () => {
     maxLineY: 25,
     minLineY: 5,
     scrollBarY: 100,
+    lineCache: [],
   })
 })

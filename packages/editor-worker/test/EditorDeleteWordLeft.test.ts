@@ -89,6 +89,7 @@ test('editorDeleteWordLeft - delete auto closing bracket', async () => {
     selections: EditorSelection.fromRange(0, 1, 0, 1),
     undoStack: [],
     autoClosingRanges: [0, 1, 0, 1],
+    lineCache: [],
   }
   const newState = await EditorDeleteWordLeft.deleteWordLeft(editor)
   expect(newState).toMatchObject({
