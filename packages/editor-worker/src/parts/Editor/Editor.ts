@@ -121,7 +121,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
 }
 // @ts-ignore
-export const scheduleDocumentAndCursorsSelectionIsUndo = (editor, changes) => {
+export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes) => {
   Assert.object(editor)
   Assert.array(changes)
   if (changes.length === 0) {
@@ -141,7 +141,25 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = (editor, changes) => {
     // undoStack: [...editor.undoStack.slice(0, -2)],
     invalidStartIndex,
   }
-  return newEditor
+
+  const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
+
+  // TODO change event should be emitted after rendering
+  const finalEditor = {
+    ...newEditor,
+    incrementalEdits,
+  }
+
+  if (incrementalEdits !== emptyIncrementalEdits) {
+    return finalEditor
+  }
+  const syncIncremental = SyncIncremental.getEnabled()
+  const { textInfos, differences } = await EditorText.getVisible(finalEditor, syncIncremental)
+  return {
+    ...finalEditor,
+    textInfos,
+    differences,
+  }
 }
 
 // @ts-ignore
