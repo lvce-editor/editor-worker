@@ -1,10 +1,14 @@
 import type { State } from '../State/State.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
+import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
 
 export const getIncrementalEdits = async (oldState: State, newState: State) => {
   if (!newState.undoStack) {
-    return undefined
+    return emptyIncrementalEdits
+  }
+  if (oldState.undoStack === newState.undoStack) {
+    return emptyIncrementalEdits
   }
   const lastChanges = newState.undoStack.at(-1)
   if (lastChanges && lastChanges.length === 1) {
@@ -31,5 +35,5 @@ export const getIncrementalEdits = async (oldState: State, newState: State) => {
       }
     }
   }
-  return undefined
+  return emptyIncrementalEdits
 }
