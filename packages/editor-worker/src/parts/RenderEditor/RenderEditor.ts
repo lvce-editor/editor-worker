@@ -29,7 +29,7 @@ const renderLines = {
     )
   },
   async apply(oldState: State, newState: State) {
-    const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(oldState, newState)
+    const { incrementalEdits } = newState
     if (incrementalEdits !== emptyIncrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
     }
