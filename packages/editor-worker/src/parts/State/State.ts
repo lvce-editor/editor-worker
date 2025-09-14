@@ -25,4 +25,5 @@ export interface State {
   readonly minimumSliderSize: number
   readonly focused: boolean
   readonly lineNumbers: boolean
+  readonly incrementalEdits: readonly any[]
 }

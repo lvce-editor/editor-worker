@@ -33,6 +33,7 @@ const emptyEditor = {
   diagnostics: [],
   highlightedLine: -1,
   debugEnabled: false,
+  incrementalEdits: [],
 }
 
 export const createEditor = async ({
@@ -126,6 +127,7 @@ export const createEditor = async ({
     widgets: [],
     focusKey: FocusKey.Empty,
     diagnosticsEnabled,
+    incrementalEdits: [],
   }
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds(editor, x, y, width, height, 9)
@@ -144,6 +146,9 @@ export const createEditor = async ({
     focused: true,
   }
   EditorState.set(id, emptyEditor, newEditor4)
+
+  // TODO only sync when needed
+  // e.g. it might not always be necessary to send text to extension host worker
   // @ts-ignore
   await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, languageId, content)
 
