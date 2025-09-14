@@ -3,11 +3,13 @@ import * as Assert from '../Assert/Assert.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditorState from '../Editors/Editors.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
+import * as EditorText from '../EditorText/EditorText.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
+import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 const emptyEditor = {
@@ -145,10 +147,16 @@ export const createEditor = async ({
   } else {
     newEditor3 = EditorScrolling.setDeltaY(newEditor2, 0)
   }
+
+  const syncIncremental = SyncIncremental.getEnabled()
+  const { textInfos, differences } = await EditorText.getVisible(newEditor3, syncIncremental)
   const newEditor4 = {
     ...newEditor3,
     focused: true,
+    textInfos,
+    differences,
   }
+
   EditorState.set(id, emptyEditor, newEditor4)
 
   // TODO only sync when needed

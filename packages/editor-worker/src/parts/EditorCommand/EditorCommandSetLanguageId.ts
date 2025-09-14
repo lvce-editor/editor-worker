@@ -1,4 +1,6 @@
+import * as EditorText from '../EditorText/EditorText.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
+import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 
@@ -19,12 +21,22 @@ export const setLanguageId = async (editor: any, languageId: string, tokenizePat
   if (!latest) {
     return editor
   }
+
+  const syncIncremental = SyncIncremental.getEnabled()
+  const { textInfos, differences } = await EditorText.getVisible(editor, syncIncremental)
+  const newEditor4 = {
+    ...latest,
+    focused: true,
+    textInfos,
+    differences,
+  }
+
   // TODO don't update editor if tokenizer was already loaded
   // TODO update syntax highlighting
   // TODO get edits
 
   return {
-    ...latest,
+    ...newEditor4,
     languageId,
     invalidStartIndex: 0,
     tokenizerId: newTokenizerId,
