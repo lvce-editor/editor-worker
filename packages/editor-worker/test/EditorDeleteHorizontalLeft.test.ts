@@ -8,6 +8,7 @@ test('editorDeleteCharacterHorizontalLeft - single character - no selection', as
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 1, 0, 1),
     undoStack: [],
+    lineCache: [],
   }
   expect(await EditorDeleteHorizontalLeft.editorDeleteHorizontalLeft(editor, () => 1)).toMatchObject({
     lines: ['ine 1', 'line 2'],
@@ -20,6 +21,7 @@ test('editorDeleteCharacterHorizontalLeft - multiple selections', async () => {
     lines: ['line 1', 'line 2'],
     selections: EditorSelection.fromRanges([0, 0, 0, 4], [1, 0, 1, 4]),
     undoStack: [],
+    lineCache: [],
   }
   expect(await EditorDeleteHorizontalLeft.editorDeleteHorizontalLeft(editor, () => 1)).toMatchObject({
     lines: [' 1', ' 2'],
