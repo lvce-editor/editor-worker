@@ -3,9 +3,12 @@ import * as Assert from '../Assert/Assert.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorStates from '../Editors/Editors.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
+import * as EditorText from '../EditorText/EditorText.ts'
+import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
+import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as EditorSelection from './EditorSelection.ts'
 
@@ -99,13 +102,23 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
   EditorStates.set(editor.uid, editor, newEditor)
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
+
   const newWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditor, changes)
   const newEditor2 = {
     ...newEditor,
     widgets: newWidgets,
     incrementalEdits,
   }
-  return newEditor2
+  if (incrementalEdits !== emptyIncrementalEdits) {
+    return newEditor2
+  }
+  const syncIncremental = SyncIncremental.getEnabled()
+  const { textInfos, differences } = await EditorText.getVisible(newEditor2, syncIncremental)
+  return {
+    ...newEditor2,
+    textInfos,
+    differences,
+  }
 }
 // @ts-ignore
 export const scheduleDocumentAndCursorsSelectionIsUndo = (editor, changes) => {
@@ -160,7 +173,17 @@ export const scheduleDocument = async (editor, changes) => {
     ...newEditor,
     incrementalEdits,
   }
-  return finalEditor
+
+  if (incrementalEdits !== emptyIncrementalEdits) {
+    return finalEditor
+  }
+  const syncIncremental = SyncIncremental.getEnabled()
+  const { textInfos, differences } = await EditorText.getVisible(finalEditor, syncIncremental)
+  return {
+    ...finalEditor,
+    textInfos,
+    differences,
+  }
   // RendererProcess.send([
   //   /* Viewlet.invoke */ 'Viewlet.send',
   //   /* id */ 'EditorText',
