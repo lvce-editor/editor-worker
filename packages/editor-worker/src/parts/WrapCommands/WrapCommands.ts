@@ -25,11 +25,16 @@ const wrapCommand =
         effect.apply(newEditor)
       }
     }
+    // TODO if editor did not change, no need to update furthur
+
+    // TODO combine neweditor with latest editor?
+
     Editors.set(editorUid, oldInstance.newState, newEditor)
-    // TODO if possible, rendering should be sync
-    const commands = await RenderEditor.renderEditor(editorUid)
-    newEditor.commands = commands
-    return newEditor
+    const commands = RenderEditor.renderEditor(editorUid)
+    return {
+      ...newEditor,
+      commands,
+    }
   }
 
 export const wrapCommands = (commands: any) => {

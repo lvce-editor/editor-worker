@@ -1,7 +1,6 @@
 import type { State } from '../State/State.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
-import * as EditorText from '../EditorText/EditorText.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
 import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
@@ -11,7 +10,6 @@ import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectio
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
-import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
 const renderLines = {
   isEqual(oldState: State, newState: State) {
@@ -27,13 +25,12 @@ const renderLines = {
       oldState.debugEnabled === newState.debugEnabled
     )
   },
-  async apply(oldState: State, newState: State) {
+  apply(oldState: State, newState: State) {
     const { incrementalEdits } = newState
     if (incrementalEdits !== emptyIncrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
     }
-    const syncIncremental = SyncIncremental.getEnabled()
-    const { textInfos, differences } = await EditorText.getVisible(newState, syncIncremental)
+    const { textInfos, differences } = newState
     newState.differences = differences
     const { highlightedLine, minLineY } = newState
     const relativeLine = highlightedLine - minLineY
@@ -184,7 +181,7 @@ const renderWidgets = {
 
 const render = [renderLines, renderSelections, renderScrollBarX, renderScrollBarY, renderFocus, renderDecorations, renderGutterInfo, renderWidgets]
 
-export const renderEditor = async (id: number) => {
+export const renderEditor = (id: number) => {
   const instance = Editors.get(id)
   if (!instance) {
     return []
@@ -194,7 +191,7 @@ export const renderEditor = async (id: number) => {
   Editors.set(id, newState, newState)
   for (const item of render) {
     if (!item.isEqual(oldState, newState)) {
-      const result = await item.apply(oldState, newState)
+      const result = item.apply(oldState, newState)
       // @ts-ignore
       if (item.multiple) {
         commands.push(...result)
