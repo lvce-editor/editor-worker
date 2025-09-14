@@ -10,6 +10,8 @@ import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacte
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 const emptyEditor = {
+  textInfos: [],
+  differences: [],
   uri: '',
   languageId: '', // TODO use numeric language id?
   lines: [],
@@ -71,6 +73,7 @@ export const createEditor = async ({
   Assert.string(content)
   const charWidth = MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const editor = {
+    textInfos: [],
     uri,
     isAutoClosingBracketsEnabled,
     isAutoClosingTagsEnabled,

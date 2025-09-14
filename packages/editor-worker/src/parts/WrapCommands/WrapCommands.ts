@@ -20,7 +20,6 @@ const wrapCommand =
   async (editorUid: number, ...args: any[]) => {
     const oldInstance = Editors.get(editorUid)
     const newEditor = await fn(oldInstance.newState, ...args)
-
     for (const effect of effects) {
       if (effect.isActive(oldInstance.newState, newEditor)) {
         effect.apply(newEditor)
