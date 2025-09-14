@@ -8,6 +8,7 @@ test('deleteCharacterRight', async () => {
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
     undoStack: [],
+    lineCache: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     lines: [''],
@@ -21,6 +22,7 @@ test('deleteCharacterRight - with selection', async () => {
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 1, 1, 2),
     undoStack: [],
+    lineCache: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     lines: ['lne 2'],
@@ -34,6 +36,7 @@ test('deleteCharacterRight - empty line', async () => {
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
     undoStack: [],
+    lineCache: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     lines: ['next line'],
@@ -46,6 +49,7 @@ test('deleteCharacterRight - merge lines', async () => {
     lines: ['line 1', 'line 2'],
     selections: EditorSelection.fromRange(0, 6, 0, 6),
     undoStack: [],
+    lineCache: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     lines: ['line 1line 2'],
@@ -59,6 +63,7 @@ test('deleteCharacterRight - emoji - 👮🏽‍♀️', async () => {
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
     undoStack: [],
+    lineCache: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 0),
@@ -72,6 +77,7 @@ test('deleteCharacterRight - multiple words', async () => {
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 5, 0, 5),
     undoStack: [],
+    lineCache: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     lines: ['sampl text'],
