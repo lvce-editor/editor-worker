@@ -2,13 +2,10 @@ import pluginTypeScript from '@babel/preset-typescript'
 import { babel } from '@rollup/plugin-babel'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import { join } from 'path'
-import { rollup } from 'rollup'
-import { root } from './root.js'
+import { rollup, type RollupOptions } from 'rollup'
+import { root } from './root.ts'
 
-/**
- * @type {import('rollup').RollupOptions}
- */
-const options = {
+const options: RollupOptions = {
   input: join(root, 'packages/editor-worker/src/editorWorkerMain.ts'),
   preserveEntrySignatures: 'strict',
   treeshake: {
@@ -34,8 +31,8 @@ const options = {
   ],
 }
 
-export const bundleJs = async () => {
+export const bundleJs = async (): Promise<void> => {
   const input = await rollup(options)
-  // @ts-ignore
-  await input.write(options.output)
+  const output = Array.isArray(options.output) ? options.output[0] : options.output
+  await input.write(output!)
 }
