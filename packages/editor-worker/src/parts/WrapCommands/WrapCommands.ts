@@ -21,6 +21,7 @@ const wrapCommand =
     const oldInstance = Editors.get(editorUid)
     const newEditor = await fn(oldInstance.newState, ...args)
 
+    console.log({ effects })
     for (const effect of effects) {
       if (effect.isActive(oldInstance.newState, newEditor)) {
         effect.apply(newEditor)
@@ -28,7 +29,11 @@ const wrapCommand =
     }
     Editors.set(editorUid, oldInstance.newState, newEditor)
     // TODO if possible, rendering should be sync
+    console.log('start render', fn.name)
+    const s = performance.now()
     const commands = await RenderEditor.renderEditor(editorUid)
+    const e = performance.now()
+    console.log('finish render', e - s)
     newEditor.commands = commands
     return newEditor
   }
