@@ -24,8 +24,12 @@ export const setLanguageId = async (editor: any, languageId: string, tokenizePat
 
   const syncIncremental = SyncIncremental.getEnabled()
   const { textInfos, differences } = await EditorText.getVisible(editor, syncIncremental)
+  const latest2 = GetEditor.getEditor(editor.uid)
+  if (!latest2) {
+    return editor
+  }
   const newEditor4 = {
-    ...latest,
+    ...latest2,
     focused: true,
     textInfos,
     differences,
