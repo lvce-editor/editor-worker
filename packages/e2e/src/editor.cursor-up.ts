@@ -17,12 +17,11 @@ content 2`,
   await Editor.setCursor(1, 1)
 
   // assert
-  const cursor = Locator('.EditorCursor')
-  await expect(cursor).toHaveCSS('translate', /^(6|7|8|9|10).*?px 20px$/)
+  await Editor.shouldHaveSelections(new Uint32Array([1, 1, 1, 1]))
 
   // act
   await Editor.cursorUp()
 
   // assert
-  await expect(cursor).toHaveCSS('translate', /^(6|7|8|9|10).*?px$/)
+  await Editor.shouldHaveSelections(new Uint32Array([0, 1, 0, 1]))
 }
