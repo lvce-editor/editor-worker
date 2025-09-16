@@ -45,6 +45,7 @@ import * as EditorFormat from '../EditorCommand/EditorCommandFormat.ts'
 import * as GetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as EditorGoToDefinition from '../EditorCommand/EditorCommandGoToDefinition.ts'
 import * as EditorGoToTypeDefinition from '../EditorCommand/EditorCommandGoToTypeDefinition.ts'
+import { handleClickAtPosition } from '../EditorCommand/EditorCommandHandleClickAtPosition.ts'
 import * as ContextMenu from '../EditorCommand/EditorCommandHandleContextMenu.ts'
 import * as EditorCommandHandleContextMenu from '../EditorCommand/EditorCommandHandleContextMenu.ts'
 import * as HandleDoubleClick from '../EditorCommand/EditorCommandHandleDoubleClick.ts'
@@ -170,6 +171,7 @@ export const commandMap = {
   'Editor.compositionEnd': Composition.compositionEnd,
   'Editor.compositionStart': Composition.compositionStart,
   'Editor.compositionUpdate': Composition.compositionUpdate,
+  'Editor.handleClickAtPosition': handleClickAtPosition,
   'Editor.applyDocumentEdits': EditorCommandApplyDocumentEdits.applyDocumentEdits,
   'Editor.contextMenu': ContextMenu.handleContextMenu,
   'Editor.copy': Copy.copy,
