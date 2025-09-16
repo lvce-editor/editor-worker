@@ -1,5 +1,4 @@
-import * as KeyCode from '../KeyCode/KeyCode.ts'
-import * as KeyModifier from '../KeyModifier/KeyModifier.ts'
+import { KeyModifier, KeyCode } from '@lvce-editor/constants'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
 
 export const getKeyBindings = () => {
