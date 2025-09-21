@@ -19,8 +19,9 @@ const wrapCommand =
   (fn: any) =>
   async (editorUid: number, ...args: any[]) => {
     const oldInstance = Editors.get(editorUid)
-    const newEditor = await fn(oldInstance.newState, ...args)
-    if (oldInstance.newState === newEditor) {
+    const state = oldInstance.newState
+    const newEditor = await fn(state, ...args)
+    if (state === newEditor) {
       return newEditor
     }
     for (const effect of effects) {
@@ -32,7 +33,7 @@ const wrapCommand =
 
     // TODO combine neweditor with latest editor?
 
-    Editors.set(editorUid, oldInstance.newState, newEditor)
+    Editors.set(editorUid, state, newEditor)
     const commands = RenderEditor.renderEditor(editorUid)
     return {
       ...newEditor,
