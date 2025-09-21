@@ -1,7 +1,6 @@
+import { WhenExpression } from '@lvce-editor/constants'
 import type { Widget } from '../Widget/Widget.ts'
 import * as HasWidget from '../HasWidget/HasWidget.ts'
-import * as SetAdditionalFocus from '../SetAdditionalFocus/SetAdditionalFocus.ts'
-import * as SetFocus from '../SetFocus/SetFocus.ts'
 
 export const addWidgetToEditor = async <K, T extends Widget<K>>(
   widgetId: number,
@@ -26,14 +25,14 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
     newState,
   }
   const newWidgets = [...widgets, latestWidget]
-  // TODO avoid side effect, apply focus shift during render
-  await (fullFocus ? SetFocus.setFocus(focusKey) : SetAdditionalFocus.setAdditionalFocus(focusKey))
   const newFocus = !fullFocus
+
   const newEditor = {
     ...editor,
     widgets: newWidgets,
-    focusKey,
     focused: newFocus,
+    focus: fullFocus ? focusKey : WhenExpression.FocusEditorText,
+    additionalFocus: fullFocus ? 0 : focusKey,
   }
   return newEditor
 }

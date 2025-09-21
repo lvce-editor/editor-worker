@@ -7,7 +7,6 @@ import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagno
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
 import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
@@ -84,12 +83,28 @@ const renderFocus = {
     return oldState.focused === newState.focused
   },
   apply(oldState: State, newState: State) {
-    // TODO avoid side effect
-    if (newState.focused) {
-      const FocusEditorText = 12
-      RendererWorker.invoke('Focus.setFocus', FocusEditorText)
-    }
     return [/* method */ 'setFocused', newState.focused]
+  },
+}
+
+const renderFocusContext = {
+  isEqual(oldState: State, newState: State) {
+    return oldState.focus === newState.focus
+  },
+  apply(oldState: State, newState: State) {
+    return ['Viewlet.setFocusContext', newState.uid, newState.focus]
+  },
+}
+
+const renderAdditionalFocusContext = {
+  isEqual(oldState: State, newState: State) {
+    return newState.additionalFocus === newState.additionalFocus
+  },
+  apply(oldState: State, newState: State) {
+    if (newState.additionalFocus) {
+      return ['Focus.setAdditionalFocus', newState.uid, newState.additionalFocus]
+    }
+    return ['Focus.unsetAdditionalFocus', newState.uid, newState.additionalFocus]
   },
 }
 
@@ -174,12 +189,24 @@ const renderWidgets = {
       }
     }
     const allCommands = [...addCommands, ...changeCommands, ...removeCommands]
-    return allCommands
+    const filteredCommands = allCommands.filter((item) => item[0] !== 'Viewlet.setFocusContext')
+    return filteredCommands
   },
   multiple: true,
 }
 
-const render = [renderLines, renderSelections, renderScrollBarX, renderScrollBarY, renderFocus, renderDecorations, renderGutterInfo, renderWidgets]
+const render = [
+  renderLines,
+  renderSelections,
+  renderScrollBarX,
+  renderScrollBarY,
+  renderFocus,
+  renderDecorations,
+  renderGutterInfo,
+  renderWidgets,
+  renderFocusContext,
+  renderAdditionalFocusContext,
+]
 
 export const renderEditor = (id: number) => {
   const instance = Editors.get(id)
