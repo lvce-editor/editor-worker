@@ -1,3 +1,4 @@
+import { WhenExpression } from '@lvce-editor/constants'
 import type { EditorCreateOptions } from '../EditorCreateOptions/EditorCreateOptions.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as Editor from '../Editor/Editor.ts'
@@ -153,6 +154,7 @@ export const createEditor = async ({
   const newEditor4 = {
     ...newEditor3,
     focused: true,
+    focus: WhenExpression.FocusEditorText,
     textInfos,
     differences,
   }
