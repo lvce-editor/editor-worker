@@ -1,13 +1,12 @@
-import * as FocusKey from '../FocusKey/FocusKey.ts'
+import type { State } from '../State/State.ts'
 
-export const handleBlur = (editor: any): any => {
-  if (editor.focusKey !== FocusKey.Empty) {
+export const handleBlur = (editor: State): State => {
+  if (!editor.focused) {
     return editor
   }
   const newEditor = {
     ...editor,
     focused: false,
-    focusKey: FocusKey.Empty,
   }
   return newEditor
 }
