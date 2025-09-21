@@ -144,9 +144,9 @@ export const createEditor = async ({
   if (lineToReveal && columnToReveal) {
     const delta = lineToReveal * rowHeight
     // TODO scroll to this line
-    newEditor3 = EditorScrolling.setDeltaY(newEditor2, delta)
+    newEditor3 = await EditorScrolling.setDeltaY(newEditor2, delta)
   } else {
-    newEditor3 = EditorScrolling.setDeltaY(newEditor2, 0)
+    newEditor3 = await EditorScrolling.setDeltaY(newEditor2, 0)
   }
 
   const syncIncremental = SyncIncremental.getEnabled()
