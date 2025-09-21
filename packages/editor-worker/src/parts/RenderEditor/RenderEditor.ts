@@ -1,4 +1,3 @@
-import { WhenExpression } from '@lvce-editor/constants'
 import type { State } from '../State/State.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
