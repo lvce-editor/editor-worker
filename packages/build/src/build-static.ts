@@ -40,4 +40,18 @@ const editorWorkerUrl = \`${remoteUrl}\``
   await writeFile(rendererWorkerPath, newContent)
 }
 
+const rendererProcessPath = join(root, 'dist', commitHash, 'packages', 'renderer-process', 'dist', 'rendererProcessMain.js')
+
+const replace = async ({ uri, occurrence, replacement }) => {
+  const content = await readFile(uri, 'utf8')
+  const newContent = content.replace(occurrence, replacement)
+  await writeFile(uri, newContent)
+}
+
+await replace({
+  uri: rendererProcessPath,
+  occurrence: `const editorWorkerUrl = \`${remoteUrl}\``,
+  replacement: 'const editorWorkerUrl = `${assetDir}/packages/editor-worker/dist/editorWorkerMain.js`',
+})
+
 await cp(join(root, 'dist'), join(root, '.tmp', 'static'), { recursive: true })
