@@ -10,6 +10,7 @@ import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import { updateDiagnostics } from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as EditorSelection from './EditorSelection.ts'
 
 // TODO
@@ -110,15 +111,31 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     incrementalEdits,
   }
   if (incrementalEdits !== emptyIncrementalEdits) {
+    if (editor.diagnosticsEnabled) {
+      const latest = EditorStates.get(editor.uid)
+      EditorStates.set(editor.uid, latest.oldState, newEditor2)
+      // TODO merge wiht editing changes if there are any
+      const updated = await updateDiagnostics(newEditor2)
+      return updated
+    }
     return newEditor2
   }
   const syncIncremental = SyncIncremental.getEnabled()
   const { textInfos, differences } = await EditorText.getVisible(newEditor2, syncIncremental)
-  return {
+
+  const newEditor3 = {
     ...newEditor2,
     textInfos,
     differences,
   }
+  const latest = EditorStates.get(editor.uid)
+  if (editor.diagnosticsEnabled) {
+    EditorStates.set(editor.uid, latest.oldState, newEditor3)
+    // TODO merge wiht editing changes if there are any
+    const updated = await updateDiagnostics(newEditor3)
+    return updated
+  }
+  return newEditor3
 }
 // @ts-ignore
 export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes) => {
