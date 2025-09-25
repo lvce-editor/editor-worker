@@ -330,6 +330,7 @@ export const commandMap = {
   'EditorCompletion.selectCurrent': EditorCompletionWidget.selectCurrent,
   'EditorCompletion.selectIndex': EditorCompletionWidget.selectIndex,
   'EditorCompletion.toggleDetails': EditorCompletionWidget.toggleDetails,
+  'EditorCompletion.handlePointerDown': EditorCompletionWidget.handlePointerDown,
   'EditorSourceAction.close': EditorSourceActionWidget.close,
   'EditorSourceAction.closeDetails': EditorSourceActionWidget.closeDetails,
   'EditorSourceAction.focusFirst': EditorSourceActionWidget.focusFirst,
