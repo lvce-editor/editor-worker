@@ -23,8 +23,10 @@ export const test: Test = async ({ Editor, Settings, Main, FileSystem, Workspace
       columnIndex: 1,
       endRowIndex: 1,
       endColumnIndex: 4,
-      type: 'error',
+      type: 'error', // TODO use numeric diagnostic type
       message: 'error',
+      // TODO maybe add error code property
+      // TODO maybe add error source property
     },
   ])
 }
