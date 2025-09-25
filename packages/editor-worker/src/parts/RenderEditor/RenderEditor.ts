@@ -102,9 +102,9 @@ const renderAdditionalFocusContext = {
   },
   apply(oldState: State, newState: State) {
     if (newState.additionalFocus) {
-      return ['Focus.setAdditionalFocus', newState.uid, newState.additionalFocus]
+      return ['Viewlet.setAdditionalFocus', newState.uid, newState.additionalFocus]
     }
-    return ['Focus.unsetAdditionalFocus', newState.uid, newState.additionalFocus]
+    return ['viewlet.unsetAdditionalFocus', newState.uid, newState.additionalFocus]
   },
 }
 
