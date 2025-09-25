@@ -26,7 +26,7 @@ export const getVisibleDiagnostics = (editor: any, diagnostics: readonly Diagnos
       charWidth,
       endLineDifference,
     )
-    const y = GetY.getY(rowIndex, minLineY, rowHeight)
+    const y = GetY.getY(rowIndex, minLineY, rowHeight) - rowHeight
     visibleDiagnostics.push({
       x,
       y,
