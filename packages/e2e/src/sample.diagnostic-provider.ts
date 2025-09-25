@@ -1,8 +1,10 @@
+import type { Test } from '@lvce-editor/test-with-playwright'
+
 export const name = 'sample.diagnostic-provider'
 
 export const skip = true
 
-export const test = async ({ Main, Panel, FileSystem, Workspace, Extension, Locator, expect }) => {
+export const test: Test = async ({ Main, Panel, FileSystem, Workspace, Extension, Locator, expect }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/test.js`, `abcdefgh`)
@@ -11,6 +13,7 @@ export const test = async ({ Main, Panel, FileSystem, Workspace, Extension, Loca
   await Main.openUri(`${tmpDir}/test.js`)
 
   // act
+  // @ts-ignore
   await Panel.open()
 
   // assert
