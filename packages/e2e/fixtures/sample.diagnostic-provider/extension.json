@@ -1,6 +1,6 @@
 {
   "browser": "main.js",
-  "activation": ["onDiagnostics:xyz"],
+  "activation": ["onDiagnostic:xyz"],
   "languages": [
     {
       "id": "xyz",
