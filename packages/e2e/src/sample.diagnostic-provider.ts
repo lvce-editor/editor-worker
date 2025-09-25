@@ -3,7 +3,8 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 export const name = 'sample.diagnostic-provider'
 
 export const skip = 1
-export const test: Test = async ({ Editor, Settings, Main, Panel, FileSystem, Workspace, Extension, Locator, expect }) => {
+
+export const test: Test = async ({ Editor, Settings, Main, FileSystem, Workspace, Extension }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/test.xyz`, `abcdefgh`)
@@ -15,7 +16,6 @@ export const test: Test = async ({ Editor, Settings, Main, Panel, FileSystem, Wo
   await Main.openUri(`${tmpDir}/test.xyz`)
 
   // assert
-
   // @ts-ignore
   await Editor.shouldHaveDiagnostics([
     {
@@ -27,14 +27,4 @@ export const test: Test = async ({ Editor, Settings, Main, Panel, FileSystem, Wo
       message: 'error',
     },
   ])
-
-  // TODO verify diagnostics squiggles are visible
-
-  // act
-  // await Panel.open()
-
-  // assert
-  // const problems = Locator(`.Viewlet.Problems`)
-  // await expect(problems).toBeVisible()
-  // await expect(problems).toHaveText('No problems have been detected in the workspace.')
 }
