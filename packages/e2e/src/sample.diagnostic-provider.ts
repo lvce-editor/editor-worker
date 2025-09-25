@@ -1,6 +1,6 @@
 export const name = 'sample.diagnostic-provider'
 
-export const skip = true
+export const skip = 1
 
 export const test = async ({ Main, Panel, FileSystem, Workspace, Extension, Locator, expect }) => {
   // arrange
