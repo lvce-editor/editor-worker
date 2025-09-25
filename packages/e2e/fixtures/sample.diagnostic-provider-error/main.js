@@ -1,16 +1,7 @@
 const diagnosticProvider = {
   languageId: 'xyz',
   provideDiagnostics(textDocument, offset) {
-    return [
-      {
-        rowIndex: 1,
-        columnIndex: 1,
-        endRowIndex: 1,
-        endColumnIndex: 4,
-        message: 'error',
-        type: 'error',
-      },
-    ]
+    throw new TypeError(`x is not a function`)
   },
 }
 
