@@ -98,7 +98,7 @@ const renderFocusContext = {
 
 const renderAdditionalFocusContext = {
   isEqual(oldState: State, newState: State) {
-    return newState.additionalFocus === newState.additionalFocus
+    return oldState.additionalFocus === newState.additionalFocus
   },
   apply(oldState: State, newState: State) {
     if (newState.additionalFocus) {
