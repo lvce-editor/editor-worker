@@ -5,10 +5,10 @@ export const name = 'sample.diagnostic-provider-empty'
 export const test = async ({ Main, Panel, FileSystem, Workspace, Extension, SideBar, Locator, expect }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
-  await FileSystem.writeFile(`${tmpDir}/test.js`, `abcdefgh`)
+  await FileSystem.writeFile(`${tmpDir}/test.xyz`, `abcdefgh`)
   await Workspace.setPath(tmpDir)
   await Extension.addWebExtension(new URL(`../fixtures/${name}`, import.meta.url).toString())
-  await Main.openUri(`${tmpDir}/test.js`)
+  await Main.openUri(`${tmpDir}/test.xyz`)
 
   // act
   await Panel.open()
