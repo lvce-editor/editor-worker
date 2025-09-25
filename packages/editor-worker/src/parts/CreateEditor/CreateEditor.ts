@@ -168,6 +168,6 @@ export const createEditor = async ({
 
   // TODO await promise
   if (diagnosticsEnabled) {
-    UpdateDiagnostics.updateDiagnostics(newEditor4)
+    await UpdateDiagnostics.updateDiagnostics(newEditor4)
   }
 }
