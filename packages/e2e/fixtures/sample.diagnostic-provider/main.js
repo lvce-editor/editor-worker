@@ -1,5 +1,5 @@
 const diagnosticProvider = {
-  languageId: 'javascript',
+  languageId: 'xyz',
   provideDiagnostics(textDocument, offset) {
     return [
       {
@@ -15,5 +15,6 @@ const diagnosticProvider = {
 }
 
 export const activate = () => {
+  console.log('activate')
   vscode.registerDiagnosticProvider(diagnosticProvider)
 }
