@@ -8,6 +8,9 @@ const createFn = (key: string, name: string, widgetId: number) => {
   }
   const fn = async (editor: any, ...args: readonly any[]) => {
     const childIndex = editor.widgets.findIndex(isWidget)
+    if (childIndex === -1) {
+      return editor
+    }
     // TODO scroll up/down if necessary
     const childWidget = editor.widgets[childIndex]
     const state = childWidget.newState
