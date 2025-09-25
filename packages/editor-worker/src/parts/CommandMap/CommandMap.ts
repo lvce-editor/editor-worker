@@ -217,6 +217,7 @@ export const commandMap = {
   'Editor.getQuickPickMenuEntries': GetQuickPickMenuEntries.getQuickPickMenuEntries,
   'Editor.getSelections': GetSelections.getSelections,
   'Editor.getSelections2': ExternalGetPositionAtCursor.getSelections2,
+  'Editor.getDiagnostics': ExternalGetPositionAtCursor.getDiagnostics,
   'Editor.getText': GetText.getText,
   'Editor.getUri': ExternalGetPositionAtCursor.getUri,
   'Editor.getWordAt': GetWordAt.getWordAt,
