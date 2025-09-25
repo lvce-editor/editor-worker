@@ -15,6 +15,7 @@ export const keep = [
   'Editor.getSelections',
   'Editor.hotReload',
   'Editor.getSelections2',
+  'Editor.getDiagnostics',
   'Editor.getText',
   'Editor.getWordAt',
   'Editor.getWordAt2',

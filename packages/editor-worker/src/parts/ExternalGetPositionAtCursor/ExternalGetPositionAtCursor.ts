@@ -103,3 +103,9 @@ export const getSourceActions = async (editorUid: number): Promise<readonly any[
   const actions = await getEditorSourceActions(editorUid)
   return actions
 }
+
+export const getDiagnostics = async (editorUid: number): Promise<readonly any[]> => {
+  const editor = GetEditor.getEditor(editorUid)
+  const { diagnostics } = editor
+  return diagnostics
+}
