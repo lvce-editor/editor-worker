@@ -55,6 +55,7 @@ export const {
   closeDetails,
   handleWheel,
   close,
+  handlePointerDown,
 } = createFns(
   [
     'handleEditorType',
@@ -74,6 +75,7 @@ export const {
     'closeDetails',
     'handleWheel',
     'close',
+    'handlePointerDown',
   ],
   'Completions',
   WidgetId.Completion,
