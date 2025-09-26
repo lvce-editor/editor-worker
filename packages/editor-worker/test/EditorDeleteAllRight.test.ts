@@ -1,8 +1,8 @@
 import { expect, test } from '@jest/globals'
+import { createDefaultState } from '../src/parts/CreateDefaultState/CreateDefaultState.ts'
 import * as EditorDeleteAllRight from '../src/parts/EditorCommand/EditorCommandDeleteAllRight.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
-import { createDefaultState } from '../src/parts/CreateDefaultState/CreateDefaultState.ts'
 
 test('editorDeleteAllRight - at start', async () => {
   const editor = createDefaultState({

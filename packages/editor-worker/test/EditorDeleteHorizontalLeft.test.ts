@@ -1,7 +1,7 @@
 import { expect, test } from '@jest/globals'
+import { createDefaultState } from '../src/parts/CreateDefaultState/CreateDefaultState.ts'
 import * as EditorDeleteHorizontalLeft from '../src/parts/EditorCommand/EditorCommandDeleteHorizontalLeft.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
-import { createDefaultState } from '../src/parts/CreateDefaultState/CreateDefaultState.ts'
 
 test('editorDeleteCharacterHorizontalLeft - single character - no selection', async () => {
   const editor = createDefaultState({

@@ -1,13 +1,12 @@
 import { expect, test } from '@jest/globals'
+import { createDefaultState } from '../src/parts/CreateDefaultState/CreateDefaultState.ts'
 import * as EditorCommandSortLinesAscending from '../src/parts/EditorCommand/EditorCommandSortLinesAscending.ts'
 
 test('sortLinesAscending - two unsorted lines', async () => {
-  const editor = {
+  const editor = createDefaultState({
     lines: ['b', 'a'],
     selections: new Uint32Array([0, 0, 1, 1]),
-    undoStack: [],
-    lineCache: [],
-  }
+  })
   const newEditor = await EditorCommandSortLinesAscending.sortLinesAscending(editor)
   expect(newEditor.lines).toEqual(['a', 'b'])
 })
