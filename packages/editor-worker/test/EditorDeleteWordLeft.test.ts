@@ -33,13 +33,12 @@ test('editorDeleteWordLeft - merge lines', async () => {
 })
 
 test.skip('editorDeleteWordLeft - no word left', async () => {
-  const editor = {
+  const editor = createDefaultState({
     lines: ['1   '],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 4, 0, 4),
-    lineCache: [],
     tokenizer: TokenizePlainText,
-  }
+  })
   const newState = await EditorDeleteWordLeft.deleteWordLeft(editor)
   expect(newState).toMatchObject({
     lines: [''],

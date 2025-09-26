@@ -13,11 +13,10 @@ test('sortLinesAscending - two unsorted lines', async () => {
 
 // TODO
 test.skip('sortLinesAscending - with underscores - https://github.com/microsoft/vscode/issues/48123', async () => {
-  const editor = {
+  const editor = createDefaultState({
     lines: ['a_b.txt', 'a_b_c.txt'],
     selections: new Uint32Array([0, 0, 1, 9]),
-    undoStack: [],
-  }
+  })
   const newEditor = await EditorCommandSortLinesAscending.sortLinesAscending(editor)
   expect(newEditor.lines).toEqual(['a_b.txt', 'a_b_c.txt'])
 })

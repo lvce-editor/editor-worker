@@ -30,12 +30,11 @@ test('editorDeleteAllLeft in middle', async () => {
 })
 
 test.skip('editorDeleteAllLeft - with selection', () => {
-  const editor = {
+  const editor = createDefaultState({
     lines: ['line 1', 'line 2'],
     selections: EditorSelection.fromRange(0, 1, 1, 2),
-    lineCache: [],
     tokenizer: TokenizePlainText,
-  }
+  })
   expect(EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     line: ['lne 2'],
     selections: EditorSelection.fromRange(0, 1, 0, 1),

@@ -17,13 +17,11 @@ test('editorDeleteWordRight', async () => {
 })
 
 test.skip('editorDeleteWordRight - when there is not word right', async () => {
-  const editor = {
+  const editor = createDefaultState({
     lines: ['sample   '],
     selections: EditorSelection.fromRange(0, 7, 0, 7),
     tokenizer: TokenizePlainText,
-    undoStack: [],
-    lineCache: [],
-  }
+  })
   expect(await EditorDeleteWordRight.deleteWordRight(editor)).toMatchObject({
     lines: ['sample  '],
     selections: EditorSelection.fromRange(0, 7, 0, 7),
