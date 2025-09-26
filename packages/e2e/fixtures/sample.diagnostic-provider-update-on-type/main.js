@@ -1,13 +1,13 @@
 const diagnosticProvider = {
   languageId: 'xyz',
   provideDiagnostics(textDocument, offset) {
-    // TODO the range of the diagnostic should match the text length in the editor
+    const { text } = textDocument
     return [
       {
         rowIndex: 1,
         columnIndex: 1,
         endRowIndex: 1,
-        endColumnIndex: 4,
+        endColumnIndex: text.length,
         message: 'error',
         type: 'error',
       },
