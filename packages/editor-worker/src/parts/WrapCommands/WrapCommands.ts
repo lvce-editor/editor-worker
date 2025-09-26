@@ -1,5 +1,4 @@
 import { WidgetId } from '@lvce-editor/constants'
-import * as EditorDiagnosticEffect from '../EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as UnwrappedCommands from '../UnwrappedCommands/UnwrappedCommands.ts'
@@ -13,8 +12,6 @@ const widgetCommands = {
 // TODO wrap commands globally, not per editor
 // TODO only store editor state in editor worker, not in renderer worker also
 
-const effects = [EditorDiagnosticEffect.editorDiagnosticEffect]
-
 const wrapCommand =
   (fn: any) =>
   async (editorUid: number, ...args: any[]) => {
@@ -23,11 +20,6 @@ const wrapCommand =
     const newEditor = await fn(state, ...args)
     if (state === newEditor) {
       return newEditor
-    }
-    for (const effect of effects) {
-      if (effect.isActive(oldInstance.newState, newEditor)) {
-        effect.apply(newEditor)
-      }
     }
     // TODO if editor did not change, no need to update furthur
 
