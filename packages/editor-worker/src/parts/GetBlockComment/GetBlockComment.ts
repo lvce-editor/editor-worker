@@ -1,3 +1,4 @@
+import { activateByEvent } from '../ActivateByEvent/ActivateByEvent.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as Languages from '../Languages/Languages.ts'
 
@@ -7,8 +8,9 @@ export const getBlockComment = async (editor: any, offset: number) => {
   // uri, language id, offset
   // and the extension returns a matching block comment or undefined
   try {
+    await activateByEvent(`onLanguage:${editor.languageId}`)
     // @ts-ignore
-    const blockComment = await ExtensionHostWorker.invoke(`ExensionHostLanguages.getBlockComment`, editor.languageId, editor.uri, offset)
+    const blockComment = await ExtensionHostWorker.invoke(`ExtensionHostCommment.execute`, editor.languageId, editor.uri, offset)
     if (blockComment) {
       return blockComment
     }
