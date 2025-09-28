@@ -39,8 +39,9 @@ export const updateDiagnostics = async (newState: any): Promise<any> => {
   } catch (error) {
     // @ts-ignore
     if (error && error.message.includes('No diagnostic provider found')) {
-      return
+      return newState
     }
     console.error(`Failed to update diagnostics: ${error}`)
+    return newState
   }
 }
