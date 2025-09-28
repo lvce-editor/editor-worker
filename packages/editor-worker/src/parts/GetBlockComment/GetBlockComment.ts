@@ -10,7 +10,7 @@ export const getBlockComment = async (editor: any, offset: number) => {
   try {
     await activateByEvent(`onLanguage:${editor.languageId}`)
     // @ts-ignore
-    const blockComment = await ExtensionHostWorker.invoke(`ExtensionHostCommment.execute`, editor.languageId, editor.uri, offset)
+    const blockComment = await ExtensionHostWorker.invoke(`ExtensionHostCommment.execute`, editor.uid, offset)
     if (blockComment) {
       return blockComment
     }
