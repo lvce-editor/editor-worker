@@ -59,6 +59,7 @@ export default [
       'unicorn/no-array-method-this-argument': 'off',
       'unicorn/no-await-expression-member': 'off',
       'jest/no-restricted-jest-methods': 'off',
+      'unicorn/no-immediate-mutation': 'off',
     },
   },
 ]
