@@ -2,8 +2,6 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.completion-open-on-type'
 
-export const skip = 1
-
 export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Editor, Locator, expect }) => {
   // arrange
   const extensionUri = import.meta.resolve('../fixtures/editor.completion-open-on-type')
@@ -18,7 +16,6 @@ export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Edito
   await Editor.type('t')
 
   // assert
-  // TODO completions should be open
   const completions = Locator('.EditorCompletion')
   await expect(completions).toBeVisible()
   const items = Locator('.EditorCompletionItem')
