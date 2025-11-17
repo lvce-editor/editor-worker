@@ -5,6 +5,7 @@ import * as Editor from '../Editor/Editor.ts'
 import * as EditorState from '../Editors/Editors.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import { emptyEditor } from '../EmptyEditor/EmptyEditor.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
@@ -14,35 +15,6 @@ import { getLanguages } from '../GetLanguages/GetLanguages.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
-
-const emptyEditor = {
-  textInfos: [],
-  differences: [],
-  uri: '',
-  languageId: '', // TODO use numeric language id?
-  lines: [],
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0,
-  tokenizerId: 0,
-  minLineY: 0,
-  decorations: [],
-  embeds: [],
-  deltaX: 0,
-  focused: false,
-  deltaY: 0,
-  scrollBarHeight: 0,
-  longestLineWidth: 0,
-  maxLineY: 0,
-  undoStack: [],
-  lineCache: [],
-  selections: new Uint32Array(),
-  diagnostics: [],
-  highlightedLine: -1,
-  debugEnabled: false,
-  incrementalEdits: emptyIncrementalEdits,
-}
 
 export const createEditor = async ({
   id,
