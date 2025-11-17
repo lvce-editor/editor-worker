@@ -5,12 +5,9 @@ export const applyWidgetChanges = async (editor: any, changes: any) => {
   if (widgets.length === 0) {
     return widgets
   }
-  const newWidgets = []
+  let latestEditor = editor
   for (const widget of widgets) {
-    const newWidget = await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)
-    if (newWidget.newState) {
-      newWidgets.push(newWidget)
-    }
+    latestEditor = await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)
   }
-  return newWidgets
+  return latestEditor
 }

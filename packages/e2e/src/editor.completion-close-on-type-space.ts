@@ -8,6 +8,7 @@ export const test: Test = async ({ Settings, Extension, FileSystem, Workspace, M
   // arrange
   await Settings.update({
     'editor.completionsOnType': true,
+    'editor.diagnostics': false,
   })
   const extensionUri = import.meta.resolve('../fixtures/editor.completion-close-on-type-space')
   await Extension.addWebExtension(extensionUri)
