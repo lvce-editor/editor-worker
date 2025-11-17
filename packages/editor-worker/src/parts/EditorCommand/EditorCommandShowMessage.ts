@@ -1,5 +1,5 @@
 import * as Assert from '../Assert/Assert.ts'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 // @ts-ignore
 // import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'

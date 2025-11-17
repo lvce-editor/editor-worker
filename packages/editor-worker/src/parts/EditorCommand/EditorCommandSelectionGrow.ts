@@ -1,5 +1,5 @@
 import * as Editor from '../Editor/Editor.ts'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 // import * as ExtensionHostSelection from '../ExtensionHost/ExtensionHostSelection.ts'
 
 const getNewSelections = async (editor: any, selections: any) => {
