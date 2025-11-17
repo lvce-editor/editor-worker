@@ -1,7 +1,9 @@
 import * as config from '@lvce-editor/eslint-config'
+import * as actions from '@lvce-editor/eslint-plugin-github-actions'
 
 export default [
   ...config.default,
+  ...actions.default,
   {
     ignores: [
       'dist',
@@ -17,7 +19,7 @@ export default [
   },
   {
     rules: {
-      // '@typescript-eslint/explicit-function-return-type': 'error',
+      'github-actions/permissions': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
