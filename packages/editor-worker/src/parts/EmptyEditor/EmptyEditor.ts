@@ -1,0 +1,30 @@
+import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
+
+export const emptyEditor = {
+  textInfos: [],
+  differences: [],
+  uri: '',
+  languageId: '', // TODO use numeric language id?
+  lines: [],
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
+  tokenizerId: 0,
+  minLineY: 0,
+  decorations: [],
+  embeds: [],
+  deltaX: 0,
+  focused: false,
+  deltaY: 0,
+  scrollBarHeight: 0,
+  longestLineWidth: 0,
+  maxLineY: 0,
+  undoStack: [],
+  lineCache: [],
+  selections: new Uint32Array(),
+  diagnostics: [],
+  highlightedLine: -1,
+  debugEnabled: false,
+  incrementalEdits: emptyIncrementalEdits,
+}
