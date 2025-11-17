@@ -1,4 +1,16 @@
 import { expect, test } from '@jest/globals'
+import { MockRpc } from '@lvce-editor/rpc'
+import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
+
+const mockRpc = MockRpc.create({
+  commandMap: {},
+  invoke: async (method: string) => {
+    return undefined
+  },
+})
+ExtensionHost.set(mockRpc)
+RendererWorker.set(mockRpc)
+
 import * as EditorDeleteWordRight from '../src/parts/EditorCommand/EditorCommandDeleteWordRight.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
@@ -10,6 +22,10 @@ test('editorDeleteWordRight', async () => {
     tokenizer: TokenizePlainText,
     lineCache: [],
     undoStack: [],
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   expect(await EditorDeleteWordRight.deleteWordRight(editor)).toMatchObject({
     lines: ['sample '],
@@ -24,6 +40,10 @@ test.skip('editorDeleteWordRight - when there is not word right', async () => {
     tokenizer: TokenizePlainText,
     undoStack: [],
     lineCache: [],
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   expect(await EditorDeleteWordRight.deleteWordRight(editor)).toMatchObject({
     lines: ['sample  '],
