@@ -1,25 +1,19 @@
-import * as GetPortTuple from '../GetPortTuple/GetPortTuple.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 
-export const sendMessagePortToSyntaxHighlightingWorker = async (): Promise<MessagePort> => {
+export const sendMessagePortToSyntaxHighlightingWorker = async (port: MessagePort): Promise<void> => {
   try {
-    const { port1, port2 } = GetPortTuple.getPortTuple()
-
     await RendererWorker.invokeAndTransfer(
       // @ts-ignore
       'SendMessagePortToSyntaxHighlightingWorker.sendMessagePortToSyntaxHighlightingWorker',
-      port1,
+      port,
       'HandleMessagePort.handleMessagePort2',
     )
-    return port2
   } catch {
-    const { port1, port2 } = GetPortTuple.getPortTuple()
     await RendererWorker.invokeAndTransfer(
       // @ts-ignore
       'SendMessagePortToSyntaxHighlightingWorker.sendMessagePortToSyntaxHighlightingWorker',
-      port1,
+      port,
       'HandleMessagePort.handleMessagePort',
     )
-    return port2
   }
 }
