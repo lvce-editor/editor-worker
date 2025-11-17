@@ -1,5 +1,5 @@
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as Assert from '../Assert/Assert.ts'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as EditorPasteText from './EditorCommandPasteText.ts'
 
 export const paste = async (editor: any) => {

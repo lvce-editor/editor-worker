@@ -1,7 +1,7 @@
 import type { Rpc } from '@lvce-editor/rpc-registry'
 import { MessagePortRpcParent } from '@lvce-editor/rpc'
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as GetPortTuple from '../GetPortTuple/GetPortTuple.ts'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as RendererWorkerIpcParentType from '../RendererWorkerIpcParentType/RendererWorkerIpcParentType.ts'
 
 export const launchWorker = async (name: string, url: string, intializeCommand?: string): Promise<Rpc> => {
