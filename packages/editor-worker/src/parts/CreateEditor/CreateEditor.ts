@@ -13,6 +13,7 @@ import * as FocusKey from '../FocusKey/FocusKey.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
+import * as Preferences from '../Preferences/Preferences.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
@@ -148,4 +149,11 @@ export const createEditor = async ({
   if (diagnosticsEnabled) {
     await UpdateDiagnostics.updateDiagnostics(newEditor4)
   }
+
+  const completionsOnTypeRaw = await Preferences.get('editor.completionsOnType')
+  const completionsOnType = Boolean(completionsOnTypeRaw)
+  EditorState.set(id, emptyEditor, {
+    ...newEditor4,
+    completionsOnType,
+  })
 }
