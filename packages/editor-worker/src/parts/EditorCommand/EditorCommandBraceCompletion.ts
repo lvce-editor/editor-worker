@@ -1,6 +1,6 @@
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
-import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { editorReplaceSelections } from './EditorCommandReplaceSelection.ts'
 import * as EditorShowMessage from './EditorCommandShowMessage.ts'

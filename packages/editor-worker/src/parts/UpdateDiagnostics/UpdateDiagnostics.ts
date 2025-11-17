@@ -1,9 +1,9 @@
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as EditorState from '../Editors/Editors.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
-import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 export const updateDiagnostics = async (newState: any): Promise<any> => {

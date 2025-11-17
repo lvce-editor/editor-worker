@@ -1,8 +1,8 @@
-import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 // @ts-ignore
 // @ts-ignore
 // @ts-ignore
 import { RendererWorker } from '@lvce-editor/rpc-registry'
+import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { VError } from '../VError/VError.ts'
 import * as EditorFormat from './EditorCommandFormat.ts'
