@@ -2,7 +2,10 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.completion-open-on-type'
 
-export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Editor, Locator, expect }) => {
+export const test: Test = async ({ Settings, Extension, FileSystem, Workspace, Main, Editor, Locator, expect }) => {
+  await Settings.update({
+    'editor.completionsOnType': true,
+  })
   // arrange
   const extensionUri = import.meta.resolve('../fixtures/editor.completion-open-on-type')
   await Extension.addWebExtension(extensionUri)
