@@ -60,6 +60,8 @@ export default [
       'unicorn/no-await-expression-member': 'off',
       'jest/no-restricted-jest-methods': 'off',
       'unicorn/no-immediate-mutation': 'off',
+      'unicorn/empty-brace-spaces': 'off',
+      'unicorn/no-nested-ternary': 'off',
     },
   },
 ]
