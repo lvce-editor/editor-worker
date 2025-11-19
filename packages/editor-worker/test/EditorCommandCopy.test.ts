@@ -1,10 +1,6 @@
 import { beforeAll, expect, jest, test } from '@jest/globals'
-
-jest.unstable_mockModule('../src/parts/ClipBoard/ClipBoard.ts', () => ({
-  writeText: jest.fn().mockImplementation(() => {
-    throw new Error('not implemented')
-  }),
-}))
+import { MockRpc } from '@lvce-editor/rpc'
+import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
 
 beforeAll(() => {
   // TODO remove this when using newer node version
@@ -14,7 +10,23 @@ beforeAll(() => {
   }
 })
 
-const ClipBoard = await import('../src/parts/ClipBoard/ClipBoard.ts')
+let writeTextSpy: jest.Mock | undefined
+
+const mockRpc = MockRpc.create({
+  commandMap: {},
+  invoke: async (method: string, ...args: any[]) => {
+    if (method === 'ClipBoard.writeText') {
+      if (writeTextSpy) {
+        return writeTextSpy(...args)
+      }
+      throw new Error('not implemented')
+    }
+    return undefined
+  },
+})
+ExtensionHost.set(mockRpc)
+RendererWorker.set(mockRpc)
+
 const EditorCopy = await import('../src/parts/EditorCommand/EditorCommandCopy.ts')
 
 beforeAll(() => {
@@ -29,8 +41,7 @@ beforeAll(() => {
 })
 
 test('editorCopy', async () => {
-  // @ts-ignore
-  const spy = ClipBoard.writeText.mockImplementation(() => {})
+  writeTextSpy = jest.fn().mockImplementation(() => {})
   const editor = {
     uri: '/tmp/foo-fiiHjX/test.txt',
     languageId: 'plaintext',
@@ -60,13 +71,12 @@ test('editorCopy', async () => {
   }
 
   expect(await EditorCopy.copy(editor)).toBe(editor)
-  expect(spy).toHaveBeenCalledTimes(1)
-  expect(spy).toHaveBeenCalledWith('line 1\nline 2\nline 3')
+  expect(writeTextSpy).toHaveBeenCalledTimes(1)
+  expect(writeTextSpy).toHaveBeenCalledWith('line 1\nline 2\nline 3')
 })
 
 test.skip('editorCopy - error from clipboard - document is not focused', async () => {
-  // @ts-ignore
-  ClipBoard.writeText.mockImplementation(() => {
+  writeTextSpy = jest.fn().mockImplementation(() => {
     throw new DOMException('Document is not focused.')
   })
   // @ts-ignore
