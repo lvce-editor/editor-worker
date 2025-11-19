@@ -1,16 +1,15 @@
 import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 import * as TextSegmenter from '../TextSegmenter/TextSegmenter.ts'
 
-// @ts-ignore
 export const getAccurateColumnIndexUnicode = async (
-  line,
-  guess,
-  averageCharWidth,
-  eventX,
-  fontWeight,
-  fontSize,
-  fontFamily,
-  letterSpacing,
+  line: string,
+  guess: number,
+  averageCharWidth: number,
+  eventX: number,
+  fontWeight: number,
+  fontSize: number,
+  fontFamily: string,
+  letterSpacing: number,
 ): Promise<number> => {
   const segmenter = TextSegmenter.create()
   const segments = segmenter.getSegments(line)

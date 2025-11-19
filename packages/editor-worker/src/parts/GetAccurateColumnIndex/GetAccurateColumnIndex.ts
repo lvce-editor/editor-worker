@@ -6,14 +6,12 @@ import * as IsAscii from '../IsAscii/IsAscii.ts'
 import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
 
-// @ts-ignore
-const guessOffset = (eventX, averageCharWidth) => {
+const guessOffset = (eventX: number, averageCharWidth: number): number => {
   const guess = Math.round(eventX / averageCharWidth)
   return guess
 }
 
-// @ts-ignore
-const normalizeGuess = (line, guess, tabSize) => {
+const normalizeGuess = (line: string, guess: number, tabSize: number): number => {
   let normalizedGuess = guess
   for (let i = 0; i < guess; i++) {
     if (line[i] === Character.Tab) {
@@ -23,17 +21,16 @@ const normalizeGuess = (line, guess, tabSize) => {
   return normalizedGuess
 }
 
-// @ts-ignore
 export const getAccurateColumnIndex = async (
-  line,
-  fontWeight,
-  fontSize,
-  fontFamily,
-  letterSpacing,
-  isMonospaceFont,
-  charWidth,
-  tabSize,
-  eventX,
+  line: string,
+  fontWeight: number,
+  fontSize: number,
+  fontFamily: string,
+  letterSpacing: number,
+  isMonospaceFont: boolean,
+  charWidth: number,
+  tabSize: number,
+  eventX: number,
 ): Promise<number> => {
   Assert.string(line)
   Assert.number(fontWeight)
