@@ -1,6 +1,10 @@
 {
   "name": "@lvce-editor/editor-worker",
   "version": "0.0.0-dev",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:lvce-editor/editor-worker.git"
+  },
   "license": "MIT",
   "author": "Lvce Editor",
   "type": "module",
