@@ -51,17 +51,9 @@ test('applyWidgetChanges - delete', async () => {
       deleted: ['a'],
     },
   ]
-  expect(await ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toEqual([
-    {
-      id,
-      oldState: {
-        updated: false,
-      },
-      newState: {
-        updated: true,
-      },
-    },
-  ])
+  expect(await ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toEqual({
+    updated: true,
+  })
 })
 
 test('applyWidgetChanges - empty widgets', async () => {
