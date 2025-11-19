@@ -2,7 +2,7 @@ import * as Assert from '../Assert/Assert.ts'
 import * as Clamp from '../Clamp/Clamp.ts'
 import * as GetAccurateColumnIndex from '../GetAccurateColumnIndex/GetAccurateColumnIndex.ts'
 
-export const at = (editor: any, eventX: number, eventY: number) => {
+export const at = async (editor: any, eventX: number, eventY: number) => {
   Assert.object(editor)
   Assert.number(eventX)
   Assert.number(eventY)
@@ -18,7 +18,7 @@ export const at = (editor: any, eventX: number, eventY: number) => {
   const difference = differences[rowIndex]
   const clampedRowIndex = Clamp.clamp(rowIndex, 0, lines.length - 1)
   const line = lines[clampedRowIndex]
-  const columnIndex = GetAccurateColumnIndex.getAccurateColumnIndex(
+  const columnIndex = await GetAccurateColumnIndex.getAccurateColumnIndex(
     line,
     fontWeight,
     fontSize,

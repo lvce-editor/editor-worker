@@ -21,7 +21,7 @@ export const handleMouseMoveWithAltKey = async (editor, x, y) => {
   Assert.object(editor)
   Assert.number(x)
   Assert.number(y)
-  const position = EditorPosition.at(editor, x, y)
+  const position = await EditorPosition.at(editor, x, y)
   const documentOffset = TextDocument.offsetAt(editor, position.rowIndex, position.columnIndex)
   try {
     const definition = await Definition.getDefinition(editor, documentOffset)

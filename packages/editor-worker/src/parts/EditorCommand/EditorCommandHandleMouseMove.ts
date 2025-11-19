@@ -17,7 +17,7 @@ const showHover = async (editor: any, position: any) => {
 
 const onHoverIdle = async () => {
   const { x, y, editor } = EditorHoverState.get()
-  const position = EditorPosition.at(editor, x, y)
+  const position = await EditorPosition.at(editor, x, y)
   await showHover(editor, position)
 }
 

@@ -67,11 +67,11 @@ const continueScrollingAndMovingSelection = async () => {
 }
 
 // @ts-ignore
-export const moveSelectionPx = (editor, x, y) => {
+export const moveSelectionPx = async (editor, x, y) => {
   Assert.object(editor)
   Assert.number(x)
   Assert.number(y)
-  const position = EditorPosition.at(editor, x, y)
+  const position = await EditorPosition.at(editor, x, y)
   if (!EditorSelectionAutoMoveState.hasListener() && (position.rowIndex < editor.minLineY || position.rowIndex > editor.maxLineY)) {
     RequestAnimationFrame.requestAnimationFrame(continueScrollingAndMovingSelection)
     EditorSelectionAutoMoveState.setEditor(editor)

@@ -3,7 +3,7 @@ import * as GetTabCount from '../GetTabCount/GetTabCount.ts'
 import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
 
-export const getX = (
+export const getX = async (
   line: string,
   column: number,
   fontWeight: number,
@@ -16,7 +16,7 @@ export const getX = (
   width: number,
   averageCharWidth: number,
   difference = 0,
-) => {
+): Promise<number> => {
   if (!line) {
     return 0
   }
@@ -38,9 +38,14 @@ export const getX = (
   const normalizedLine = NormalizeText.normalizeText(line, normalize, tabSize)
   const tabCount = GetTabCount.getTabCount(line.slice(0, column))
   const partialText = normalizedLine.slice(0, column + tabCount)
-  return (
-    MeasureTextWidth.measureTextWidth(partialText, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, averageCharWidth) -
-    halfCursorWidth +
-    difference
+  const textWidth = await MeasureTextWidth.measureTextWidth(
+    partialText,
+    fontWeight,
+    fontSize,
+    fontFamily,
+    letterSpacing,
+    isMonospaceFont,
+    averageCharWidth,
   )
+  return textWidth - halfCursorWidth + difference
 }

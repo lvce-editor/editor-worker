@@ -2,7 +2,7 @@ import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
 import * as GetX from '../GetX/GetX.ts'
 import * as GetY from '../GetY/GetY.ts'
 
-export const getDiagnosticDecoration = (
+export const getDiagnosticDecoration = async (
   lines: readonly string[],
   minLineY: number,
   rowHeight: number,
@@ -20,7 +20,7 @@ export const getDiagnosticDecoration = (
   const { rowIndex, columnIndex, endColumnIndex, type } = diagnostic
   const y = GetY.getY(rowIndex, minLineY, rowHeight)
   const line = lines[rowIndex]
-  const startX = GetX.getX(
+  const startX = await GetX.getX(
     line,
     columnIndex,
     fontWeight,
@@ -33,7 +33,7 @@ export const getDiagnosticDecoration = (
     width,
     averageCharWidth,
   )
-  const endX = GetX.getX(
+  const endX = await GetX.getX(
     line,
     endColumnIndex,
     fontWeight,

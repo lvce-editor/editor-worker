@@ -26,7 +26,7 @@ export const updateDiagnostics = async (newState: any): Promise<any> => {
     if (!latest) {
       return newState
     }
-    const decorations = GetVisibleDiagnostics.getVisibleDiagnostics(latest.newState, diagnostics)
+    const decorations = await GetVisibleDiagnostics.getVisibleDiagnostics(latest.newState, diagnostics)
     const newEditor = {
       ...latest.newState,
       diagnostics,

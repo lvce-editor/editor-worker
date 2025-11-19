@@ -1,7 +1,7 @@
 import * as MeasureTextWidthFast from '../MeasureTextWidthFast/MeasureTextWidthFast.ts'
 import * as MeasureTextWidthSlow from '../MeasureTextWidthSlow/MeasureTextWidthSlow.ts'
 
-export const measureTextWidth = (
+export const measureTextWidth = async (
   text: string,
   fontWeight: number,
   fontSize: number,
@@ -9,9 +9,9 @@ export const measureTextWidth = (
   letterSpacing: number,
   isMonoSpaceFont: boolean,
   charWidth: number,
-): number => {
+): Promise<number> => {
   if (isMonoSpaceFont) {
-    return MeasureTextWidthFast.measureTextWidthFast(text, charWidth)
+    return await MeasureTextWidthFast.measureTextWidthFast(text, charWidth)
   }
-  return MeasureTextWidthSlow.measureTextWidthSlow(text, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)
+  return await MeasureTextWidthSlow.measureTextWidthSlow(text, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)
 }

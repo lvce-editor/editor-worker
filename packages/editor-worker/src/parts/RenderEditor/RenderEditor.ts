@@ -47,8 +47,8 @@ const renderSelections = {
       oldState.deltaX === newState.deltaX
     )
   },
-  apply(oldState: any, newState: any) {
-    const { cursorInfos, selectionInfos } = EditorSelection.getVisible(newState)
+  apply: async (oldState: any, newState: any) => {
+    const { cursorInfos, selectionInfos } = await EditorSelection.getVisible(newState)
     const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos)
     const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos)
     return [/* method */ 'setSelections', cursorsDom, selectionsDom]
@@ -208,7 +208,7 @@ const render = [
   renderAdditionalFocusContext,
 ]
 
-export const renderEditor = (id: number) => {
+export const renderEditor = async (id: number) => {
   const instance = Editors.get(id)
   if (!instance) {
     return []
@@ -218,7 +218,7 @@ export const renderEditor = (id: number) => {
   Editors.set(id, newState, newState)
   for (const item of render) {
     if (!item.isEqual(oldState, newState)) {
-      const result = item.apply(oldState, newState)
+      const result = await item.apply(oldState, newState)
       // @ts-ignore
       if (item.multiple) {
         commands.push(...result)
