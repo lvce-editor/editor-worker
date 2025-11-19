@@ -11,7 +11,7 @@
     "dev": "node packages/build/src/dev.ts",
     "format": "prettier --write .",
     "postinstall": "lerna bootstrap --ci",
-    "lint": "eslint .",
+    "lint": "eslint . && prettier --check .",
     "test": "lerna run test",
     "type-check": "tsc -b"
   },
