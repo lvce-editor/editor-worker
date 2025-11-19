@@ -1,14 +1,17 @@
-import { beforeEach, expect, jest, test } from '@jest/globals'
+import { beforeAll, expect, test } from '@jest/globals'
 
-beforeEach(() => {
-  jest.resetAllMocks()
-})
-
-jest.unstable_mockModule('../src/parts/MeasureTextWidth/MeasureTextWidth.ts', () => {
-  return {
-    measureTextWidth() {
-      return 18
-    },
+beforeAll(() => {
+  // @ts-ignore
+  globalThis.OffscreenCanvas = class {
+    getContext() {
+      return {
+        measureText() {
+          return {
+            width: 18,
+          }
+        },
+      }
+    }
   }
 })
 

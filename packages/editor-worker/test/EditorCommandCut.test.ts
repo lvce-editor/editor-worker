@@ -1,21 +1,18 @@
-import { expect, jest, test } from '@jest/globals'
+import { expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
 import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
 
 const mockRpc = MockRpc.create({
   commandMap: {},
   invoke: async (method: string) => {
+    if (method === 'ClipBoard.writeText') {
+      return undefined
+    }
     return undefined
   },
 })
 ExtensionHost.set(mockRpc)
 RendererWorker.set(mockRpc)
-
-jest.unstable_mockModule('../src/parts/ClipBoard/ClipBoard.ts', () => {
-  return {
-    writeText: jest.fn(),
-  }
-})
 
 const EditorCommandCut = await import('../src/parts/EditorCommand/EditorCommandCut.ts')
 
