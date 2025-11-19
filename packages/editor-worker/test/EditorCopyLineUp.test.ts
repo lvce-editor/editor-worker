@@ -1,4 +1,16 @@
 import { expect, test } from '@jest/globals'
+import { MockRpc } from '@lvce-editor/rpc'
+import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
+
+const mockRpc = MockRpc.create({
+  commandMap: {},
+  invoke: async (method: string) => {
+    return undefined
+  },
+})
+ExtensionHost.set(mockRpc)
+RendererWorker.set(mockRpc)
+
 import * as EditorCopyLineUp from '../src/parts/EditorCommand/EditorCommandCopyLineUp.ts'
 import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
 
@@ -9,6 +21,10 @@ test('editorCopyLineUp', async () => {
     tokenizer: TokenizePlainText,
     undoStack: [],
     lineCache: [],
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   const newEditor = await EditorCopyLineUp.copyLineUp(editor)
   expect(newEditor.lines).toEqual(['line 1', 'line 2', 'line 3', 'line 3'])

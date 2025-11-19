@@ -1,4 +1,15 @@
 import { expect, jest, test } from '@jest/globals'
+import { MockRpc } from '@lvce-editor/rpc'
+import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
+
+const mockRpc = MockRpc.create({
+  commandMap: {},
+  invoke: async (method: string) => {
+    return undefined
+  },
+})
+ExtensionHost.set(mockRpc)
+RendererWorker.set(mockRpc)
 
 jest.unstable_mockModule('../src/parts/TabCompletion/TabCompletion.ts', () => {
   return {
@@ -17,6 +28,10 @@ test('handleTab - no result', async () => {
     selections: new Uint32Array([0, 0, 0, 0]),
     undoStack: [],
     lineCache: [],
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   const newEditor = await HandleTab.handleTab(editor)
   // TODO two spaces should be inserted
@@ -35,6 +50,10 @@ test('handleTab - apply result', async () => {
     selections: new Uint32Array([0, 0, 0, 0]),
     undoStack: [],
     lineCache: [],
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   const newEditor = await HandleTab.handleTab(editor)
   // TODO

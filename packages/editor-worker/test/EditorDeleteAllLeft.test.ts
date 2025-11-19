@@ -1,4 +1,16 @@
 import { expect, test } from '@jest/globals'
+import { MockRpc } from '@lvce-editor/rpc'
+import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
+
+const mockRpc = MockRpc.create({
+  commandMap: {},
+  invoke: async (method: string) => {
+    return undefined
+  },
+})
+ExtensionHost.set(mockRpc)
+RendererWorker.set(mockRpc)
+
 import * as EditorDeleteAllLeft from '../src/parts/EditorCommand/EditorCommandDeleteAllLeft.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
@@ -10,6 +22,10 @@ test('editorDeleteAllLeft', async () => {
     lineCache: [],
     tokenizer: TokenizePlainText,
     undoStack: [],
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: [''],
@@ -25,6 +41,10 @@ test('editorDeleteAllLeft in middle', async () => {
     lineCache: [],
     tokenizer: TokenizePlainText,
     undoStack: [],
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: [' 4 5'],
@@ -38,6 +58,10 @@ test.skip('editorDeleteAllLeft - with selection', () => {
     selections: EditorSelection.fromRange(0, 1, 1, 2),
     lineCache: [],
     tokenizer: TokenizePlainText,
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   expect(EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     line: ['lne 2'],
@@ -52,6 +76,10 @@ test('editorDeleteAllLeft - at start of line', async () => {
     lineCache: [],
     tokenizer: TokenizePlainText,
     undoStack: [],
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: ['12'],
@@ -71,6 +99,10 @@ test('editorDeleteAllLeft - at start of file', async () => {
     lineCache: [],
     tokenizer: TokenizePlainText,
     undoStack: [],
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: ['1', '2'],

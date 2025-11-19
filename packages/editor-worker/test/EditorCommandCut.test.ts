@@ -1,4 +1,15 @@
 import { expect, jest, test } from '@jest/globals'
+import { MockRpc } from '@lvce-editor/rpc'
+import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
+
+const mockRpc = MockRpc.create({
+  commandMap: {},
+  invoke: async (method: string) => {
+    return undefined
+  },
+})
+ExtensionHost.set(mockRpc)
+RendererWorker.set(mockRpc)
 
 jest.unstable_mockModule('../src/parts/ClipBoard/ClipBoard.ts', () => {
   return {
@@ -14,6 +25,10 @@ test('cut - empty selection', async () => {
     lines: ['a'],
     undoStack: [],
     lineCache: [],
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   const newEditor = await EditorCommandCut.cut(editor)
   expect(newEditor.lines).toEqual([''])
@@ -26,6 +41,10 @@ test('cut - selection', async () => {
     lines: ['a'],
     undoStack: [],
     lineCache: [],
+    invalidStartIndex: 0,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    decorations: [],
   }
   const newEditor = await EditorCommandCut.cut(editor)
   expect(newEditor.lines).toEqual([''])
