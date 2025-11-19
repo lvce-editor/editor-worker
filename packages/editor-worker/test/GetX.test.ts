@@ -17,7 +17,7 @@ beforeAll(() => {
 
 const GetX = await import('../src/parts/GetX/GetX.ts')
 
-test('getX - empty line', () => {
+test('getX - empty line', async () => {
   const line = ''
   const column = 0
   const fontWeight = 400
@@ -31,7 +31,7 @@ test('getX - empty line', () => {
   const averageCharWidth = 9
   const difference = 0
   expect(
-    GetX.getX(
+    await GetX.getX(
       line,
       column,
       fontWeight,
@@ -48,7 +48,7 @@ test('getX - empty line', () => {
   ).toBe(0)
 })
 
-test('getX - first column', () => {
+test('getX - first column', async () => {
   const line = 'test'
   const column = 0
   const fontWeight = 400
@@ -62,7 +62,7 @@ test('getX - first column', () => {
   const averageCharWidth = 9
   const difference = 0
   expect(
-    GetX.getX(
+    await GetX.getX(
       line,
       column,
       fontWeight,
@@ -79,7 +79,7 @@ test('getX - first column', () => {
   ).toBe(0)
 })
 
-test('getX - enough space', () => {
+test('getX - enough space', async () => {
   const line = 'test'
   const column = 4
   const fontWeight = 400
@@ -93,7 +93,7 @@ test('getX - enough space', () => {
   const averageCharWidth = 9
   const difference = 0
   expect(
-    GetX.getX(
+    await GetX.getX(
       line,
       column,
       fontWeight,
@@ -110,7 +110,7 @@ test('getX - enough space', () => {
   ).toBe(25)
 })
 
-test.skip('getX - measure text width', () => {
+test.skip('getX - measure text width', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const line = 'test'
   const column = 1
@@ -125,7 +125,7 @@ test.skip('getX - measure text width', () => {
   const averageCharWidth = 9
   const difference = 0
   expect(
-    GetX.getX(
+    await GetX.getX(
       line,
       column,
       fontWeight,

@@ -5,7 +5,7 @@ import * as GetTextMeasureContext from '../GetTextMeasureContext/GetTextMeasureC
 
 // TODO for text editor, could dispose measuring canvas after editor has been initialized to free up offscreencanvas space
 
-export const measureTextWidthSlow = (
+export const measureTextWidthSlow = async (
   text: string,
   fontWeight: number,
   fontSize: number,
@@ -13,7 +13,7 @@ export const measureTextWidthSlow = (
   letterSpacing: number,
   isMonoSpaceFont: boolean,
   charWidth: number,
-): number => {
+): Promise<number> => {
   Assert.string(text)
   Assert.number(fontWeight)
   Assert.number(fontSize)

@@ -2,7 +2,7 @@ import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as GetDiagnosticDecoration from '../GetDiagnosticDecoration/GetDiagnosticDecoration.ts'
 
-export const getDiagnosticDecorations = (editor: any, diagnostics: readonly Diagnostic[]): readonly any[] => {
+export const getDiagnosticDecorations = async (editor: any, diagnostics: readonly Diagnostic[]): Promise<readonly any[]> => {
   Assert.object(editor)
   Assert.array(diagnostics)
   const decorations = []
@@ -11,7 +11,7 @@ export const getDiagnosticDecorations = (editor: any, diagnostics: readonly Diag
   const averageCharWidth = charWidth
   const halfCursorWidth = cursorWidth / 2
   for (const diagnostic of diagnostics) {
-    const decoration = GetDiagnosticDecoration.getDiagnosticDecoration(
+    const decoration = await GetDiagnosticDecoration.getDiagnosticDecoration(
       lines,
       minLineY,
       rowHeight,

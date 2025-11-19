@@ -125,7 +125,7 @@ const getSelectionArray = (visibleSelections: any) => {
   return selectionsArray
 }
 
-export const getVisible = (editor: any) => {
+export const getVisible = async (editor: any) => {
   const visibleCursors = []
   const visibleSelections = []
   // // TODO binary search
@@ -162,7 +162,7 @@ export const getVisible = (editor: any) => {
     const relativeEndLineRow = selectionEndRow - minLineY
     const endLineDifference = differences[relativeEndLineRow]
     const endLine = lines[selectionEndRow]
-    const endLineEndX = GetX.getX(
+    const endLineEndX = await GetX.getX(
       endLine,
       selectionEndColumn,
       fontWeight,
@@ -185,7 +185,7 @@ export const getVisible = (editor: any) => {
     const startLineYRelative = selectionStartRow - minLineY
     const startLineDifference = differences[startLineYRelative]
     if (selectionStartRow === selectionEndRow) {
-      const startX = GetX.getX(
+      const startX = await GetX.getX(
         endLine,
         selectionStartColumn,
         fontWeight,
@@ -209,7 +209,7 @@ export const getVisible = (editor: any) => {
     } else {
       if (selectionStartRow >= minLineY) {
         const startLine = lines[selectionStartRow]
-        const startLineStartX = GetX.getX(
+        const startLineStartX = await GetX.getX(
           startLine,
           selectionStartColumn,
           fontWeight,
@@ -223,7 +223,7 @@ export const getVisible = (editor: any) => {
           averageCharWidth,
           startLineDifference,
         )
-        const startLineEndX = GetX.getX(
+        const startLineEndX = await GetX.getX(
           startLine,
           startLine.length,
           fontWeight,
@@ -251,7 +251,7 @@ export const getVisible = (editor: any) => {
         const currentLineY = GetY.getY(i, minLineY, rowHeight)
         const relativeLine = i - minLineY
         const difference = differences[relativeLine]
-        const selectionWidth = GetX.getX(
+        const selectionWidth = await GetX.getX(
           currentLine,
           currentLine.length,
           fontWeight,

@@ -1,6 +1,6 @@
 import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 
-export const getAccurateColumnIndexAscii = (
+export const getAccurateColumnIndexAscii = async (
   line: string,
   guess: number,
   averageCharWidth: number,
@@ -11,9 +11,17 @@ export const getAccurateColumnIndexAscii = (
   letterSpacing: number,
   isMonospaceFont: boolean,
   charWidth: number,
-) => {
+): Promise<number> => {
   for (let i = guess; i < line.length; i++) {
-    const width = MeasureTextWidth.measureTextWidth(line.slice(0, i), fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth)
+    const width = await MeasureTextWidth.measureTextWidth(
+      line.slice(0, i),
+      fontWeight,
+      fontSize,
+      fontFamily,
+      letterSpacing,
+      isMonospaceFont,
+      charWidth,
+    )
     if (eventX - width < averageCharWidth / 2) {
       return i
     }

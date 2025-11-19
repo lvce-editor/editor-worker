@@ -33,7 +33,7 @@ const GetAccurateColumnIndex = await import('../src/parts/GetAccurateColumnIndex
 
 // Note: These tests pass individually but may fail when run with other tests
 // due to global OffscreenCanvas mock conflicts. They work correctly in isolation.
-test.skip('getAccurateColumnIndex - at start of line', () => {
+test.skip('getAccurateColumnIndex - at start of line', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const line = ''
   const fontWeight = 400
@@ -46,11 +46,21 @@ test.skip('getAccurateColumnIndex - at start of line', () => {
   const eventX = 0
   measureTextMap.set('a', 9)
   expect(
-    GetAccurateColumnIndex.getAccurateColumnIndex(line, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth, tabSize, eventX),
+    await GetAccurateColumnIndex.getAccurateColumnIndex(
+      line,
+      fontWeight,
+      fontSize,
+      fontFamily,
+      letterSpacing,
+      isMonospaceFont,
+      charWidth,
+      tabSize,
+      eventX,
+    ),
   ).toBe(0)
 })
 
-test.skip('getAccurateColumnIndex - match exactly after first letter', () => {
+test.skip('getAccurateColumnIndex - match exactly after first letter', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const line = 'b'
   const fontWeight = 400
@@ -64,11 +74,21 @@ test.skip('getAccurateColumnIndex - match exactly after first letter', () => {
   measureTextMap.set('a', 9)
   measureTextMap.set('b', 9)
   expect(
-    GetAccurateColumnIndex.getAccurateColumnIndex(line, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth, tabSize, eventX),
+    await GetAccurateColumnIndex.getAccurateColumnIndex(
+      line,
+      fontWeight,
+      fontSize,
+      fontFamily,
+      letterSpacing,
+      isMonospaceFont,
+      charWidth,
+      tabSize,
+      eventX,
+    ),
   ).toBe(0)
 })
 
-test.skip('getAccurateColumnIndex - before first letter', () => {
+test.skip('getAccurateColumnIndex - before first letter', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const line = 'b'
   const fontWeight = 400
@@ -82,11 +102,21 @@ test.skip('getAccurateColumnIndex - before first letter', () => {
   measureTextMap.set('a', 9)
   measureTextMap.set('b', 9)
   expect(
-    GetAccurateColumnIndex.getAccurateColumnIndex(line, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth, tabSize, eventX),
+    await GetAccurateColumnIndex.getAccurateColumnIndex(
+      line,
+      fontWeight,
+      fontSize,
+      fontFamily,
+      letterSpacing,
+      isMonospaceFont,
+      charWidth,
+      tabSize,
+      eventX,
+    ),
   ).toBe(0)
 })
 
-test.skip('getAccurateColumnIndex - almost at first letter', () => {
+test.skip('getAccurateColumnIndex - almost at first letter', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const line = 'b'
   const fontWeight = 400
@@ -100,11 +130,21 @@ test.skip('getAccurateColumnIndex - almost at first letter', () => {
   measureTextMap.set('a', 9)
   measureTextMap.set('b', 9)
   expect(
-    GetAccurateColumnIndex.getAccurateColumnIndex(line, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth, tabSize, eventX),
+    await GetAccurateColumnIndex.getAccurateColumnIndex(
+      line,
+      fontWeight,
+      fontSize,
+      fontFamily,
+      letterSpacing,
+      isMonospaceFont,
+      charWidth,
+      tabSize,
+      eventX,
+    ),
   ).toBe(1)
 })
 
-test.skip('getAccurateColumnIndex - almost at second letter', () => {
+test.skip('getAccurateColumnIndex - almost at second letter', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const line = 'bc'
   const fontWeight = 400
@@ -120,11 +160,21 @@ test.skip('getAccurateColumnIndex - almost at second letter', () => {
   measureTextMap.set('c', 9)
   measureTextMap.set('bc', 18)
   expect(
-    GetAccurateColumnIndex.getAccurateColumnIndex(line, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth, tabSize, eventX),
+    await GetAccurateColumnIndex.getAccurateColumnIndex(
+      line,
+      fontWeight,
+      fontSize,
+      fontFamily,
+      letterSpacing,
+      isMonospaceFont,
+      charWidth,
+      tabSize,
+      eventX,
+    ),
   ).toBe(2)
 })
 
-test.skip('getAccurateColumnIndex - at second letter', () => {
+test.skip('getAccurateColumnIndex - at second letter', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const line = 'bc'
   const fontWeight = 400
@@ -139,11 +189,21 @@ test.skip('getAccurateColumnIndex - at second letter', () => {
   measureTextMap.set('b', 9)
   measureTextMap.set('c', 9)
   expect(
-    GetAccurateColumnIndex.getAccurateColumnIndex(line, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth, tabSize, eventX),
+    await GetAccurateColumnIndex.getAccurateColumnIndex(
+      line,
+      fontWeight,
+      fontSize,
+      fontFamily,
+      letterSpacing,
+      isMonospaceFont,
+      charWidth,
+      tabSize,
+      eventX,
+    ),
   ).toBe(2)
 })
 
-test.skip('getAccurateColumnIndex - emoji', () => {
+test.skip('getAccurateColumnIndex - emoji', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const line = '👮🏽‍♀️👮🏽‍♀️👮🏽‍♀️👮🏽‍♀️👮🏽‍♀️'
   const fontWeight = 400
@@ -162,11 +222,21 @@ test.skip('getAccurateColumnIndex - emoji', () => {
   measureTextMap.set('👮🏽‍♀️👮🏽‍♀️👮🏽‍♀️', 57)
   measureTextMap.set('👮🏽‍♀️👮🏽‍♀️👮🏽‍♀️👮🏽‍♀️', 78)
   expect(
-    GetAccurateColumnIndex.getAccurateColumnIndex(line, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth, tabSize, eventX),
+    await GetAccurateColumnIndex.getAccurateColumnIndex(
+      line,
+      fontWeight,
+      fontSize,
+      fontFamily,
+      letterSpacing,
+      isMonospaceFont,
+      charWidth,
+      tabSize,
+      eventX,
+    ),
   ).toBe('👮🏽‍♀️'.length * 4)
 })
 
-test.skip('getAccurateColumnIndex - normalize tab', () => {
+test.skip('getAccurateColumnIndex - normalize tab', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const line = '\ttest'
   const fontWeight = 400
@@ -180,11 +250,21 @@ test.skip('getAccurateColumnIndex - normalize tab', () => {
   measureTextMap.set('a', 9)
   measureTextMap.set('  tes', 45)
   expect(
-    GetAccurateColumnIndex.getAccurateColumnIndex(line, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth, tabSize, eventX),
+    await GetAccurateColumnIndex.getAccurateColumnIndex(
+      line,
+      fontWeight,
+      fontSize,
+      fontFamily,
+      letterSpacing,
+      isMonospaceFont,
+      charWidth,
+      tabSize,
+      eventX,
+    ),
   ).toBe(4)
 })
 
-test.skip('getAccurateColumnIndex - line starting with tab', () => {
+test.skip('getAccurateColumnIndex - line starting with tab', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const line = '\ttry'
   const fontWeight = 400
@@ -199,6 +279,16 @@ test.skip('getAccurateColumnIndex - line starting with tab', () => {
   measureTextMap.set('  tes', 45)
   measureTextMap.set('  try', 50)
   expect(
-    GetAccurateColumnIndex.getAccurateColumnIndex(line, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth, tabSize, eventX),
+    await GetAccurateColumnIndex.getAccurateColumnIndex(
+      line,
+      fontWeight,
+      fontSize,
+      fontFamily,
+      letterSpacing,
+      isMonospaceFont,
+      charWidth,
+      tabSize,
+      eventX,
+    ),
   ).toBe(4)
 })

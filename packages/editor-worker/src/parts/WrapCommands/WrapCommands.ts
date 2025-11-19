@@ -26,7 +26,7 @@ const wrapCommand =
     // TODO combine neweditor with latest editor?
 
     Editors.set(editorUid, state, newEditor)
-    const commands = RenderEditor.renderEditor(editorUid)
+    const commands = await RenderEditor.renderEditor(editorUid)
     return {
       ...newEditor,
       commands,

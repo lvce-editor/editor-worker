@@ -1,9 +1,15 @@
 import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 
-export const measureTabWidth = (label: string, fontWeight: number, fontSize: number, fontFamily: string, letterSpacing: number): number => {
+export const measureTabWidth = async (
+  label: string,
+  fontWeight: number,
+  fontSize: number,
+  fontFamily: string,
+  letterSpacing: number,
+): Promise<number> => {
   const isMonospaceFont = false
   const charWidth = 0
-  const width = MeasureTextWidth.measureTextWidth(label, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth)
+  const width = await MeasureTextWidth.measureTextWidth(label, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth)
   const padding = 5
   const fileIconWidth = 16
   const fileIconGap = 4

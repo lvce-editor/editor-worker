@@ -16,7 +16,7 @@ beforeAll(() => {
   }
 })
 
-test('monospace', () => {
+test('monospace', async () => {
   const text = 'a'
   const fontWeight = 400
   const fontSize = 16
@@ -24,10 +24,10 @@ test('monospace', () => {
   const letterSpacing = 0.5
   const isMonoSpaceFont = true
   const charWidth = 9
-  expect(MeasureTextWidth.measureTextWidth(text, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)).toBe(9)
+  expect(await MeasureTextWidth.measureTextWidth(text, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)).toBe(9)
 })
 
-test.skip('other', () => {
+test.skip('other', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const text = 'a'
   const fontWeight = 400
@@ -36,10 +36,10 @@ test.skip('other', () => {
   const letterSpacing = 0.5
   const isMonoSpaceFont = false
   const charWidth = 9
-  expect(MeasureTextWidth.measureTextWidth(text, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)).toBe(8.5)
+  expect(await MeasureTextWidth.measureTextWidth(text, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)).toBe(8.5)
 })
 
-test('error - letterSpacing is not of type number', () => {
+test('error - letterSpacing is not of type number', async () => {
   const text = 'a'
   const fontWeight = 400
   const fontSize = 16
@@ -47,7 +47,7 @@ test('error - letterSpacing is not of type number', () => {
   const letterSpacing = '0.5' as any
   const isMonoSpaceFont = false
   const charWidth = 9
-  expect(() => MeasureTextWidth.measureTextWidth(text, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)).toThrow(
+  await expect(MeasureTextWidth.measureTextWidth(text, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)).rejects.toThrow(
     new Error('letterSpacing must be of type number'),
   )
 })

@@ -17,7 +17,7 @@ beforeAll(() => {
 
 const GetAccurateColumnIndexAscii = await import('../src/parts/GetAccurateColumnIndexAscii/GetAccurateColumnIndexAscii.ts')
 
-test('getAccurateColumnIndexAscii - at end of line', () => {
+test('getAccurateColumnIndexAscii - at end of line', async () => {
   const line = 'abc'
   const guess = 3
   const averageCharWidth = 9
@@ -29,7 +29,7 @@ test('getAccurateColumnIndexAscii - at end of line', () => {
   const isMonospaceFont = false
   const charWidth = 9
   expect(
-    GetAccurateColumnIndexAscii.getAccurateColumnIndexAscii(
+    await GetAccurateColumnIndexAscii.getAccurateColumnIndexAscii(
       line,
       guess,
       averageCharWidth,
@@ -44,7 +44,7 @@ test('getAccurateColumnIndexAscii - at end of line', () => {
   ).toBe(3)
 })
 
-test.skip('getAccurateColumnIndexAscii - in the middle of line', () => {
+test.skip('getAccurateColumnIndexAscii - in the middle of line', async () => {
   // Skipped: Global OffscreenCanvas mock conflicts with other test files when run together
   const line = 'abcd'
   const guess = 1
@@ -57,7 +57,7 @@ test.skip('getAccurateColumnIndexAscii - in the middle of line', () => {
   const isMonospaceFont = false
   const charWidth = 9
   expect(
-    GetAccurateColumnIndexAscii.getAccurateColumnIndexAscii(
+    await GetAccurateColumnIndexAscii.getAccurateColumnIndexAscii(
       line,
       guess,
       averageCharWidth,

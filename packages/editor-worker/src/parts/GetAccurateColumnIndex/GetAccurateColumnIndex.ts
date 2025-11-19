@@ -24,7 +24,17 @@ const normalizeGuess = (line, guess, tabSize) => {
 }
 
 // @ts-ignore
-export const getAccurateColumnIndex = (line, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth, tabSize, eventX) => {
+export const getAccurateColumnIndex = async (
+  line,
+  fontWeight,
+  fontSize,
+  fontFamily,
+  letterSpacing,
+  isMonospaceFont,
+  charWidth,
+  tabSize,
+  eventX,
+): Promise<number> => {
   Assert.string(line)
   Assert.number(fontWeight)
   Assert.number(fontSize)
@@ -40,13 +50,13 @@ export const getAccurateColumnIndex = (line, fontWeight, fontSize, fontFamily, l
   const normalizedGuess = normalizeGuess(line, guess, tabSize)
   const text = line.slice(0, normalizedGuess)
   const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-  const actual = MeasureTextWidth.measureTextWidth(normalizedText, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth)
+  const actual = await MeasureTextWidth.measureTextWidth(normalizedText, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth)
   const isAscii = IsAscii.isAscii(line)
   if (isAscii) {
     if (Math.abs(eventX - actual) < charWidth / 2) {
       return normalizedGuess
     }
-    return GetAccurateColumnIndexAscii.getAccurateColumnIndexAscii(
+    return await GetAccurateColumnIndexAscii.getAccurateColumnIndexAscii(
       line,
       normalizedGuess,
       charWidth,
@@ -59,7 +69,7 @@ export const getAccurateColumnIndex = (line, fontWeight, fontSize, fontFamily, l
       charWidth,
     )
   }
-  return GetAccurateColumnIndexUnicode.getAccurateColumnIndexUnicode(
+  return await GetAccurateColumnIndexUnicode.getAccurateColumnIndexUnicode(
     line,
     normalizedGuess,
     charWidth,
