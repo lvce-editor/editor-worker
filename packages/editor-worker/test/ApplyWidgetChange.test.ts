@@ -49,9 +49,7 @@ test('applyWidgetChange - type', async () => {
       deleted: [],
     },
   ]
-  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual({
-    updated: true,
-  })
+  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual(undefined)
 })
 
 test('applyWidgetChange - deleteLeft', async () => {
@@ -80,9 +78,7 @@ test('applyWidgetChange - deleteLeft', async () => {
       deleted: ['a'],
     },
   ]
-  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual({
-    updated: true,
-  })
+  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual(undefined)
 })
 
 test('applyWidgetChange - other', async () => {

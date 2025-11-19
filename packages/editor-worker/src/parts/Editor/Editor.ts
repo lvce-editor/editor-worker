@@ -103,10 +103,10 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   EditorStates.set(editor.uid, editor, newEditor)
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
 
-  const newWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditor, changes)
+  const editorWithNewWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditor, changes)
   const newEditor2 = {
     ...newEditor,
-    widgets: newWidgets,
+    ...editorWithNewWidgets,
     incrementalEdits,
   }
   if (incrementalEdits !== emptyIncrementalEdits) {
