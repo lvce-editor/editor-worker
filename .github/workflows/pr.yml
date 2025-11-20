@@ -46,12 +46,6 @@ jobs:
         run: npm run e2e:headless
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
-      - name: install playwright dependencies 2
-        working-directory: ./packages/memory
-        run: npx playwright install chromium
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        env:
-          PLAYWRIGHT_BROWSERS_PATH: 0
       - name: measure
         working-directory: ./packages/memory
         run: npm run measure
