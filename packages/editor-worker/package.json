@@ -54,10 +54,10 @@
   "devDependencies": {
     "@jest/globals": "^30.2.0",
     "@lvce-editor/assert": "^1.4.0",
-    "@lvce-editor/constants": "^1.36.0",
+    "@lvce-editor/constants": "^1.37.0",
     "@lvce-editor/i18n": "^2.1.0",
     "@lvce-editor/rpc": "^4.20.0",
-    "@lvce-editor/rpc-registry": "^4.3.0",
+    "@lvce-editor/rpc-registry": "^4.7.0",
     "@lvce-editor/verror": "^1.7.0",
     "@lvce-editor/virtual-dom-worker": "^3.6.0",
     "jest": "^30.2.0",
