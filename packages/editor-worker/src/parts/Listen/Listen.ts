@@ -6,7 +6,6 @@ import { setFactory } from '../TextMeasurementWorker/TextMeasurementWorker.ts'
 
 export const listen = async () => {
   setFactory(createTextMeasurementWorkerRpc)
-
   const rpc = await WebWorkerRpcClient.create({
     commandMap: CommandMap.commandMap,
   })
