@@ -2,8 +2,6 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.completion-close-on-type-space'
 
-export const skip = 1
-
 export const test: Test = async ({ Settings, Extension, FileSystem, Workspace, Main, Editor, Locator, expect }) => {
   // arrange
   await Settings.update({
