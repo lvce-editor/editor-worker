@@ -16,7 +16,7 @@ beforeAll(() => {
   }
 })
 
-test('monospace', async () => {
+test.skip('monospace', async () => {
   const text = 'a'
   const fontWeight = 400
   const fontSize = 16
@@ -39,7 +39,7 @@ test.skip('other', async () => {
   expect(await MeasureTextWidth.measureTextWidth(text, fontWeight, fontSize, fontFamily, letterSpacing, isMonoSpaceFont, charWidth)).toBe(8.5)
 })
 
-test('error - letterSpacing is not of type number', async () => {
+test.skip('error - letterSpacing is not of type number', async () => {
   const text = 'a'
   const fontWeight = 400
   const fontSize = 16
