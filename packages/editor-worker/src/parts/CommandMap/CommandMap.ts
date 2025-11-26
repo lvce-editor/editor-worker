@@ -131,6 +131,7 @@ import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
 import * as GetKeys from '../GetKeys/GetKeys.ts'
 import { getMenuEntries } from '../GetMenuEntries/GetMenuEntries.ts'
+import { getMenuIds } from '../GetMenuIds/GetMenuIds.ts'
 import { getProblems } from '../GetProblems/GetProblems.ts'
 import * as GetQuickPickMenuEntries from '../GetQuickPickMenuEntries/GetQuickPickMenuEntries.ts'
 import * as GetSelections from '../GetSelections/GetSelections.ts'
@@ -178,6 +179,7 @@ export const commandMap = {
   'Editor.copy': Copy.copy,
   'Editor.copyLineDown': CopyLineDown.copyLineDown,
   'Editor.copyLineUp': CopyLineUp.copyLineUp,
+  'Editor.getMenuIds': getMenuIds,
   'Editor.create': CreateEditor.createEditor,
   'Editor.cursorCharacterLeft': CursorCharacterLeft.cursorCharacterLeft,
   'Editor.cursorCharacterRight': CursorCharacterRight.cursorCharacterRight,
