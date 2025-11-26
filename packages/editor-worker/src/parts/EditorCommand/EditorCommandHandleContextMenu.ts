@@ -2,6 +2,9 @@ import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as MenuEntryId from '../MenuEntryId/MenuEntryId.ts'
 
 export const handleContextMenu = async (editor: any, button: any, x: number, y: number) => {
-  await RendererWorker.showContextMenu(/* x */ x, /* y */ y, /* id */ MenuEntryId.Editor)
+  const { uid } = editor
+  await RendererWorker.showContextMenu2(uid, MenuEntryId.Editor, /* x */ x, /* y */ y, {
+    menuId: MenuEntryId.Editor,
+  })
   return editor
 }
