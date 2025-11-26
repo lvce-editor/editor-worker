@@ -214,6 +214,7 @@ export const commandMap = {
   'Editor.getLanguageId': ExternalGetPositionAtCursor.getLanguageId,
   'Editor.getLines2': ExternalGetPositionAtCursor.getLines2,
   'Editor.getMenuEntries': getMenuEntries,
+  'Editor.getMenuEntries2': getMenuEntries,
   'Editor.getOffsetAtCursor': ExternalGetPositionAtCursor.getOffsetAtCursor,
   'Editor.getPositionAtCursor': ExternalGetPositionAtCursor.getPositionAtCursor,
   'Editor.getSourceActions': ExternalGetPositionAtCursor.getSourceActions,
