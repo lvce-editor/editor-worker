@@ -3,9 +3,9 @@ import * as EditorSelectUp from '../src/parts/EditorCommand/EditorCommandSelectU
 
 test('selectUp', () => {
   const editor = {
+    lineCache: [],
     lines: ['1', '2'],
     selections: new Uint32Array([1, 0, 1, 0]),
-    lineCache: [],
   }
   const newEditor = EditorSelectUp.selectUp(editor)
   expect(newEditor.selections).toEqual(new Uint32Array([0, 0, 1, 0]))
@@ -13,9 +13,9 @@ test('selectUp', () => {
 
 test('selectUp - already at top', () => {
   const editor = {
+    lineCache: [],
     lines: ['1', '2'],
     selections: new Uint32Array([0, 0, 1, 0]),
-    lineCache: [],
   }
   const newEditor = EditorSelectUp.selectUp(editor)
   expect(newEditor.selections).toEqual(new Uint32Array([0, 0, 1, 0]))
@@ -23,9 +23,9 @@ test('selectUp - already at top', () => {
 
 test('selectUp - keep indent', () => {
   const editor = {
+    lineCache: [],
     lines: ['11', '22'],
     selections: new Uint32Array([1, 1, 1, 1]),
-    lineCache: [],
   }
   const newEditor = EditorSelectUp.selectUp(editor)
   expect(newEditor.selections).toEqual(new Uint32Array([0, 1, 1, 1]))

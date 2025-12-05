@@ -40,8 +40,8 @@ export const safeTokenizeLine = (languageId: string, tokenizeLine: any, line: st
   } catch (error) {
     console.error(error)
     return {
-      tokens: [/* type */ 0, /* length */ line.length],
       lineState: lineStateAtStart,
+      tokens: [/* type */ 0, /* length */ line.length],
     }
   }
 }

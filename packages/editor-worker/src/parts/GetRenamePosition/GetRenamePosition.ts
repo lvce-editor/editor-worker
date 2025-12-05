@@ -8,9 +8,9 @@ export const getRenamePosition = (editor: any) => {
   const { x } = cursor
   const y = cursor.y + paddingTop
   return {
-    y,
-    x,
-    width,
     height,
+    width,
+    x,
+    y,
   }
 }

@@ -7,7 +7,7 @@ test('tokenizeLine', () => {
     state: 0,
   }
   expect(TokenizePlainText.tokenizeLine(line, lineState)).toEqual({
-    tokens: [1, 3],
     state: 0,
+    tokens: [1, 3],
   })
 })

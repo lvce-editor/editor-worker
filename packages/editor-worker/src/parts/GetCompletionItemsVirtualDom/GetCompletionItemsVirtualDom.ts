@@ -8,15 +8,15 @@ export const getCompletionItemsVirtualDom = (visibleItems: any[]): readonly Virt
   if (visibleItems.length === 0) {
     return [
       {
-        type: VirtualDomElements.Div,
         childCount: 1,
+        type: VirtualDomElements.Div,
       },
       text(EditorStrings.noResults()),
     ]
   }
   const root = {
-    type: VirtualDomElements.Div,
     childCount: visibleItems.length,
+    type: VirtualDomElements.Div,
   }
   const dom = [root, ...visibleItems.flatMap(GetCompletionItemVirtualDom.getCompletionItemVirtualDom)]
   return dom

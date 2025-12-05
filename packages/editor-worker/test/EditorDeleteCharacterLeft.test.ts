@@ -16,15 +16,15 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test('editorDeleteCharacterLeft', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['a'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 1, 0, 1),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newState = await EditorDeleteCharacterLeft.deleteCharacterLeft(editor)
   expect(newState).toMatchObject({
@@ -35,14 +35,14 @@ test('editorDeleteCharacterLeft', async () => {
 
 test('editorDeleteCharacterLeft - when line is empty', async () => {
   const editor = {
-    lines: [''],
-    selections: EditorSelection.fromRange(0, 0, 0, 0),
-    undoStack: [],
-    lineCache: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: [''],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
+    undoStack: [],
   }
   const newState = await EditorDeleteCharacterLeft.deleteCharacterLeft(editor)
   expect(newState).toMatchObject({
@@ -53,15 +53,15 @@ test('editorDeleteCharacterLeft - when line is empty', async () => {
 
 test('editorDeleteCharacterLeft - merge lines', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['11111', '22222'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(1, 0, 1, 0),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newState = await EditorDeleteCharacterLeft.deleteCharacterLeft(editor)
   expect(newState).toMatchObject({
@@ -72,15 +72,15 @@ test('editorDeleteCharacterLeft - merge lines', async () => {
 
 test('line below show not disappear', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['11111', '22222', '33333'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(1, 3, 1, 3),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newState = await EditorDeleteCharacterLeft.deleteCharacterLeft(editor)
   expect(newState).toMatchObject({
@@ -91,15 +91,15 @@ test('line below show not disappear', async () => {
 
 test('line below show not disappear 2', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['11111', '22222', '33333'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(1, 5, 1, 5),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newState = await EditorDeleteCharacterLeft.deleteCharacterLeft(editor)
   expect(newState).toMatchObject({
@@ -110,14 +110,14 @@ test('line below show not disappear 2', async () => {
 
 test('editorDeleteCharacterLeft - with selection', async () => {
   const editor = {
-    lines: ['line 1', 'line 2'],
-    selections: EditorSelection.fromRange(0, 1, 1, 2),
-    undoStack: [],
-    lineCache: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['line 1', 'line 2'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: EditorSelection.fromRange(0, 1, 1, 2),
+    undoStack: [],
   }
   const newState = await EditorDeleteCharacterLeft.deleteCharacterLeft(editor)
   expect(newState).toMatchObject({
@@ -131,15 +131,15 @@ test('editorDeleteCharacterLeft - with selection', async () => {
 test('editorDeleteCharacterLeft - emoji - 👮🏽‍♀️', async () => {
   const columnIndex = '👮🏽‍♀️'.length
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['👮🏽‍♀️'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, columnIndex, 0, columnIndex),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newState = await EditorDeleteCharacterLeft.deleteCharacterLeft(editor)
   expect(newState).toMatchObject({
@@ -150,16 +150,16 @@ test('editorDeleteCharacterLeft - emoji - 👮🏽‍♀️', async () => {
 
 test('editorDeleteCharacterLeft - delete auto closing bracket', async () => {
   const editor = {
+    autoClosingRanges: [0, 1, 0, 1],
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['{}'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 1, 0, 1),
     undoStack: [],
-    autoClosingRanges: [0, 1, 0, 1],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newState = await EditorDeleteCharacterLeft.deleteCharacterLeft(editor)
   expect(newState).toMatchObject({
@@ -170,16 +170,16 @@ test('editorDeleteCharacterLeft - delete auto closing bracket', async () => {
 
 test('editorDeleteCharacterLeft - delete multiple auto closing bracket', async () => {
   const editor = {
+    autoClosingRanges: [0, 1, 0, 1, 1, 1, 1, 1],
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['{}', '{}'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: new Uint32Array([0, 1, 0, 1, 1, 1, 1, 1]),
     undoStack: [],
-    autoClosingRanges: [0, 1, 0, 1, 1, 1, 1, 1],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newState = await EditorDeleteCharacterLeft.deleteCharacterLeft(editor)
   expect(newState).toMatchObject({

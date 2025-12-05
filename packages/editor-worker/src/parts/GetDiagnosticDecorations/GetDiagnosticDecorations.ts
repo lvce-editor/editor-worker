@@ -6,7 +6,7 @@ export const getDiagnosticDecorations = async (editor: any, diagnostics: readonl
   Assert.object(editor)
   Assert.array(diagnostics)
   const decorations = []
-  const { minLineY, rowHeight, lines, fontSize, fontFamily, fontWeight, letterSpacing, cursorWidth, tabSize, width, charWidth, isMonospaceFont } =
+  const { charWidth, cursorWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, lines, minLineY, rowHeight, tabSize, width } =
     editor
   const averageCharWidth = charWidth
   const halfCursorWidth = cursorWidth / 2

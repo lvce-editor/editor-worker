@@ -9,12 +9,12 @@ const combineResults = (results: any) => {
 
 export const executeTabCompletionProvider = async (editor: any, offset: number): Promise<TabCompletionResult | undefined> => {
   return ExtensionHostEditor.execute({
+    args: [offset],
+    combineResults,
     editor,
     event: ExtensionHostActivationEvent.OnTabCompletion,
     method: ExtensionHostCommandType.TabCompletionExecuteTabCompletionProvider,
-    args: [offset],
     noProviderFoundMessage: 'No tab completion provider found',
-    combineResults,
     noProviderFoundResult: undefined,
   })
 }

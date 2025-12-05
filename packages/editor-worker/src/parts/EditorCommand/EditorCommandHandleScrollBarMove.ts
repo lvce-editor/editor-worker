@@ -18,7 +18,7 @@ const getNewPercent = (state, relativeY) => {
 
 // @ts-ignore
 export const handleScrollBarMove = (state, eventY) => {
-  const { y, finalDeltaY, handleOffset } = state
+  const { finalDeltaY, handleOffset, y } = state
   const relativeY = eventY - y - handleOffset
   const newPercent = getNewPercent(state, relativeY)
   const newDeltaY = newPercent * finalDeltaY

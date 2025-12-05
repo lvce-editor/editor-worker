@@ -3,13 +3,13 @@ import * as GetCompletionItemVirtualDom from '../src/parts/GetCompletionItemVirt
 
 test('focused', () => {
   const visibleItem = {
-    top: 0,
-    label: 'test',
-    symbolName: 'test',
-    highlights: [],
-    focused: true,
     deprecated: true,
     fileIcon: '',
+    focused: true,
+    highlights: [],
+    label: 'test',
+    symbolName: 'test',
+    top: 0,
   }
   expect(GetCompletionItemVirtualDom.getCompletionItemVirtualDom(visibleItem)).toEqual([
     {

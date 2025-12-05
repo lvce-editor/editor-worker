@@ -6,21 +6,21 @@ export const create = (): ColorPickerWidget => {
   const completionUid = Id.create()
   const widget: ColorPickerWidget = {
     id: WidgetId.ColorPicker,
-    oldState: {
-      uid: completionUid,
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      commands: [],
-    },
     newState: {
+      commands: [],
+      height: 0,
       uid: completionUid,
+      width: 0,
       x: 0,
       y: 0,
-      width: 0,
-      height: 0,
+    },
+    oldState: {
       commands: [],
+      height: 0,
+      uid: completionUid,
+      width: 0,
+      x: 0,
+      y: 0,
     },
   }
   return widget

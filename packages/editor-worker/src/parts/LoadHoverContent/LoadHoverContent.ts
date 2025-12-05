@@ -8,14 +8,14 @@ export const loadHoverContent = async (state: HoverState): Promise<HoverState> =
   if (!hoverInfo) {
     return state
   }
-  const { lineInfos, documentation, x, y, matchingDiagnostics } = hoverInfo
+  const { documentation, lineInfos, matchingDiagnostics, x, y } = hoverInfo
   return {
     ...state,
-    lineInfos,
+    diagnostics: matchingDiagnostics,
     documentation,
+    lineInfos,
+    width: 600,
     x,
     y,
-    width: 600,
-    diagnostics: matchingDiagnostics,
   }
 }

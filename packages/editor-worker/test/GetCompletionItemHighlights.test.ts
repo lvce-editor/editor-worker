@@ -4,8 +4,8 @@ import * as GetCompletionItemHighlights from '../src/parts/GetCompletionItemHigh
 
 test('getHighlights', () => {
   const item = {
-    label: 'abc',
     flags: CompletionItemFlags.None,
+    label: 'abc',
     matches: [8, 0, 1],
   }
   expect(GetCompletionItemHighlights.getHighlights(item)).toEqual([0, 1])

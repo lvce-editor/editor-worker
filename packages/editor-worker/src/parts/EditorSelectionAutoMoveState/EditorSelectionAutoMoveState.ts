@@ -5,8 +5,8 @@ const state = {
   currentEditor: undefined,
   hasListener: false,
   position: {
-    rowIndex: 0,
     columnIndex: 0,
+    rowIndex: 0,
   },
 }
 

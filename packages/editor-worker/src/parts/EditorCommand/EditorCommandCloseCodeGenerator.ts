@@ -14,7 +14,7 @@ export const closeCodeGenerator = (editor: any) => {
   const newWidgets = RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.CodeGenerator)
   return {
     ...editor,
-    widgets: newWidgets,
     focused: true,
+    widgets: newWidgets,
   }
 }

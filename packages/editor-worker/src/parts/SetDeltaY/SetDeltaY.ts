@@ -6,7 +6,7 @@ import * as GetNumberOfVisibleItems from '../GetNumberOfVisibleItems/GetNumberOf
 export const setDeltaY = <K, T extends VirtualListState<K>>(state: T, value: number): T => {
   Assert.object(state)
   Assert.number(value)
-  const { itemHeight, finalDeltaY, deltaY, height, headerHeight } = state
+  const { deltaY, finalDeltaY, headerHeight, height, itemHeight } = state
   const listHeight = height - headerHeight
   const newDeltaY = Clamp.clamp(value, 0, finalDeltaY)
   if (deltaY === newDeltaY) {
@@ -18,7 +18,7 @@ export const setDeltaY = <K, T extends VirtualListState<K>>(state: T, value: num
   return {
     ...state,
     deltaY: newDeltaY,
-    minLineY,
     maxLineY,
+    minLineY,
   }
 }

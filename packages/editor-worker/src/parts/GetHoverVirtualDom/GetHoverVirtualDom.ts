@@ -6,15 +6,15 @@ import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 const hoverProblemMessage: VirtualDomNode = {
-  type: VirtualDomElements.Span,
-  className: ClassNames.HoverProblemMessage,
   childCount: 1,
+  className: ClassNames.HoverProblemMessage,
+  type: VirtualDomElements.Span,
 }
 
 const hoverProblemDetail: VirtualDomNode = {
-  type: VirtualDomElements.Span,
-  className: ClassNames.HoverProblemDetail,
   childCount: 1,
+  className: ClassNames.HoverProblemDetail,
+  type: VirtualDomElements.Span,
 }
 
 const getChildCount = (lineInfos: any, documentation: any, diagnostics: any): number => {
@@ -24,15 +24,15 @@ const getChildCount = (lineInfos: any, documentation: any, diagnostics: any): nu
 export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnostics: any): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = []
   dom.push({
-    type: VirtualDomElements.Div,
-    className: 'Viewlet EditorHover',
     childCount: getChildCount(lineInfos, documentation, diagnostics) + 1,
+    className: 'Viewlet EditorHover',
+    type: VirtualDomElements.Div,
   })
   if (diagnostics && diagnostics.length > 0) {
     dom.push({
-      type: VirtualDomElements.Div,
-      className: `${ClassNames.HoverDisplayString} ${ClassNames.HoverProblem}`,
       childCount: diagnostics.length * 2,
+      className: `${ClassNames.HoverDisplayString} ${ClassNames.HoverProblem}`,
+      type: VirtualDomElements.Div,
     })
     for (const diagnostic of diagnostics) {
       dom.push(hoverProblemMessage, text(diagnostic.message), hoverProblemDetail, text(`${diagnostic.source} (${diagnostic.code})`))
@@ -43,9 +43,9 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
     const lineInfosDom = GetLineInfosVirtualDom.getLineInfosVirtualDom(lineInfos)
     dom.push(
       {
-        type: VirtualDomElements.Div,
-        className: ClassNames.HoverDisplayString,
         childCount: lineInfos.length,
+        className: ClassNames.HoverDisplayString,
+        type: VirtualDomElements.Div,
       },
       ...lineInfosDom,
     )
@@ -54,19 +54,19 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
   if (documentation) {
     dom.push(
       {
-        type: VirtualDomElements.Div,
-        className: ClassNames.HoverDocumentation,
         childCount: 1,
+        className: ClassNames.HoverDocumentation,
+        type: VirtualDomElements.Div,
       },
       text(documentation),
     )
   }
 
   dom.push({
-    type: VirtualDomElements.Div,
-    className: 'Sash SashVertical SashResize',
     childCount: 0,
+    className: 'Sash SashVertical SashResize',
     onPointerDown: DomEventListenerFunctions.HandleSashPointerDown,
+    type: VirtualDomElements.Div,
   })
 
   return dom

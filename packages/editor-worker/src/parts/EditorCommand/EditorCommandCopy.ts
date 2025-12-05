@@ -8,24 +8,24 @@ const getSelectionRange = (lines, copyFullLine, startRowIndex, startColumnIndex,
   if (copyFullLine) {
     const lineLength = lines[endRowIndex].length
     return {
-      start: {
-        rowIndex: startRowIndex,
-        columnIndex: 0,
-      },
       end: {
-        rowIndex: startRowIndex,
         columnIndex: lineLength,
+        rowIndex: startRowIndex,
+      },
+      start: {
+        columnIndex: 0,
+        rowIndex: startRowIndex,
       },
     }
   }
   return {
-    start: {
-      rowIndex: startRowIndex,
-      columnIndex: startColumnIndex,
-    },
     end: {
-      rowIndex: endRowIndex,
       columnIndex: endColumnIndex,
+      rowIndex: endRowIndex,
+    },
+    start: {
+      columnIndex: startColumnIndex,
+      rowIndex: startRowIndex,
     },
   }
 }

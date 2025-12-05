@@ -16,15 +16,15 @@ import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlain
 
 test('editorCopyLineUp', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['line 1', 'line 2', 'line 3'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     selections: new Uint32Array([2, 0, 2, 0]),
     tokenizer: TokenizePlainText,
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newEditor = await EditorCopyLineUp.copyLineUp(editor)
   expect(newEditor.lines).toEqual(['line 1', 'line 2', 'line 3', 'line 3'])

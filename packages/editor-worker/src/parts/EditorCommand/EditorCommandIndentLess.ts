@@ -14,17 +14,17 @@ const getChanges = (selections) => {
   }
   for (const rowToIndent of rowsToIndentLess) {
     changes.push({
-      start: {
-        rowIndex: rowToIndent,
-        columnIndex: 0,
-      },
+      deleted: ['  '],
       end: {
-        rowIndex: rowToIndent,
         columnIndex: 2,
+        rowIndex: rowToIndent,
       },
       inserted: [''],
-      deleted: ['  '],
       origin: EditOrigin.IndentLess,
+      start: {
+        columnIndex: 0,
+        rowIndex: rowToIndent,
+      },
     })
   }
   return changes

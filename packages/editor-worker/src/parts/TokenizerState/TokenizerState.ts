@@ -1,12 +1,12 @@
 const state = {
-  tokenizers: Object.create(null),
-  tokenizePaths: Object.create(null),
-  listeners: [],
-  pending: Object.create(null),
   /**
    * @type {number[]}
    */
   connectedEditors: [],
+  listeners: [],
+  pending: Object.create(null),
+  tokenizePaths: Object.create(null),
+  tokenizers: Object.create(null),
 }
 
 export const has = (languageId: any) => {

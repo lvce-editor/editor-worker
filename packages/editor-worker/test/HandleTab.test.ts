@@ -18,15 +18,15 @@ test.skip('handleTab - no result', async () => {
   // Skipped: Cannot spy on ES module exports (read-only properties)
   const getTabCompletionSpy = jest.spyOn(TabCompletion, 'getTabCompletion').mockResolvedValue(undefined)
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['a'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newEditor = await HandleTab.handleTab(editor)
   // TODO two spaces should be inserted
@@ -42,15 +42,15 @@ test.skip('handleTab - apply result', async () => {
     type: 2,
   })
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['button'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newEditor = await HandleTab.handleTab(editor)
   // TODO

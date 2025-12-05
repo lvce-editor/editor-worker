@@ -8,7 +8,7 @@ const sentLines = Object.create(null)
 export const getTokensViewport2 = async (editor: any, startLineIndex: any, endLineIndex: any, syncIncremental: boolean) => {
   if (SyntaxHighlightingState.getEnabled()) {
     if (syncIncremental) {
-      const { invalidStartIndex, lines, languageId, id } = editor
+      const { id, invalidStartIndex, languageId, lines } = editor
       let hasLinesToSend = true
       let linesToSend = lines
       if (sentLines[id] === lines) {
@@ -18,8 +18,8 @@ export const getTokensViewport2 = async (editor: any, startLineIndex: any, endLi
         sentLines[id] = lines
       }
       const slimEditor = {
-        languageId,
         invalidStartIndex,
+        languageId,
       }
       return SyntaxHighlightingWorker.invoke(
         'GetTokensViewport.getTokensViewport',

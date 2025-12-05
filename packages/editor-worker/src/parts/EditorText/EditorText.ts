@@ -119,8 +119,8 @@ const getStartDefaults = (tokens: any, minOffset: any) => {
     }
   }
   return {
-    start,
     end,
+    start,
     startIndex,
   }
 }
@@ -142,7 +142,7 @@ const getLineInfoEmbeddedFull = (
   const embeddedTokens = embeddedResult.result.tokens
   const embeddedTokenMap = embeddedResult.TokenMap
   const tokensLength = embeddedTokens.length
-  let { startIndex, start, end } = getStartDefaults(embeddedTokens, minOffset)
+  let { end, start, startIndex } = getStartDefaults(embeddedTokens, minOffset)
   const difference = getDifference(start, averageCharWidth, deltaX)
   for (let i = startIndex; i < tokensLength; i += 2) {
     const tokenType = embeddedTokens[i]
@@ -159,8 +159,8 @@ const getLineInfoEmbeddedFull = (
     }
   }
   return {
-    lineInfo,
     difference,
+    lineInfo,
   }
 }
 
@@ -169,15 +169,15 @@ const getOffsets = (deltaX: any, width: any, averageCharWidth: any) => {
   // and use fast measurements for monospace ascii text
   if (deltaX === 0) {
     return {
-      minOffset: 0,
       maxOffset: Math.ceil(width / averageCharWidth),
+      minOffset: 0,
     }
   }
   const minOffset = Math.ceil(deltaX / averageCharWidth)
   const maxOffset = minOffset + Math.ceil(width / averageCharWidth)
   return {
-    minOffset,
     maxOffset,
+    minOffset,
   }
 }
 
@@ -211,7 +211,7 @@ const getLineInfoDefault = (
     }
   }
   const { tokens } = tokenResults
-  let { startIndex, start, end } = getStartDefaults(tokens, minOffset)
+  let { end, start, startIndex } = getStartDefaults(tokens, minOffset)
   const difference = getDifference(start, averageCharWidth, deltaX)
   const tokensLength = tokens.length
   for (let i = startIndex; i < tokensLength; i += 2) {
@@ -244,8 +244,8 @@ const getLineInfoDefault = (
     }
   }
   return {
-    lineInfo,
     difference,
+    lineInfo,
   }
 }
 
@@ -262,7 +262,7 @@ const getLineInfo = (
   deltaX: any,
   averageCharWidth: any,
 ) => {
-  const { minOffset, maxOffset } = getOffsets(deltaX, width, averageCharWidth)
+  const { maxOffset, minOffset } = getOffsets(deltaX, width, averageCharWidth)
   if (embeddedResults.length > 0 && tokenResults.embeddedResultIndex !== undefined) {
     const embeddedResult = embeddedResults[tokenResults.embeddedResultIndex]
     if (embeddedResult?.isFull) {
@@ -300,14 +300,14 @@ const getLineInfosViewport = (
 ) => {
   const result = []
   const differences = []
-  const { lines, decorations, languageId } = editor
+  const { decorations, languageId, lines } = editor
   const tokenMap = TokenMaps.get(languageId)
   let offset = minLineOffset
   const tabSize = 2
   for (let i = minLineY; i < maxLineY; i++) {
     const line = lines[i]
     const normalize = NormalizeText.shouldNormalizeText(line)
-    const { lineInfo, difference } = getLineInfo(
+    const { difference, lineInfo } = getLineInfo(
       line,
       tokens[i - minLineY],
       embeddedResults,
@@ -325,8 +325,8 @@ const getLineInfosViewport = (
     offset += line.length + 1
   }
   return {
-    result,
     differences,
+    result,
   }
 }
 
@@ -336,13 +336,13 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
   // invalidStartIndex, lineCache, etc. just for testing editorType
   // editor.invalidStartIndex = changes[0].start.rowIndex
   // @ts-ignore
-  const { minLineY, numberOfVisibleLines, lines, width, deltaX, fontWeight, fontSize, fontFamily, letterSpacing, charWidth } = editor
+  const { charWidth, deltaX, fontFamily, fontSize, fontWeight, letterSpacing, lines, minLineY, numberOfVisibleLines, width } = editor
   const maxLineY = Math.min(minLineY + numberOfVisibleLines, lines.length)
   // @ts-ignore
-  const { tokens, tokenizersToLoad, embeddedResults } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
+  const { embeddedResults, tokenizersToLoad, tokens } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
   const minLineOffset = TextDocument.offsetAtSync(editor, minLineY, 0)
   const averageCharWidth = charWidth
-  const { result, differences } = getLineInfosViewport(
+  const { differences, result } = getLineInfosViewport(
     editor,
     tokens,
     embeddedResults,
@@ -357,7 +357,7 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
     LoadTokenizers.loadTokenizers(tokenizersToLoad)
   }
   return {
-    textInfos: result,
     differences,
+    textInfos: result,
   }
 }

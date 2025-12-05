@@ -16,15 +16,15 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test('deleteCharacterRight', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['a'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     lines: [''],
@@ -34,15 +34,15 @@ test('deleteCharacterRight', async () => {
 
 test('deleteCharacterRight - with selection', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['line 1', 'line 2'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 1, 1, 2),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     lines: ['lne 2'],
@@ -52,15 +52,15 @@ test('deleteCharacterRight - with selection', async () => {
 
 test('deleteCharacterRight - empty line', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['', 'next line'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     lines: ['next line'],
@@ -70,14 +70,14 @@ test('deleteCharacterRight - empty line', async () => {
 
 test('deleteCharacterRight - merge lines', async () => {
   const editor = {
-    lines: ['line 1', 'line 2'],
-    selections: EditorSelection.fromRange(0, 6, 0, 6),
-    undoStack: [],
-    lineCache: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['line 1', 'line 2'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: EditorSelection.fromRange(0, 6, 0, 6),
+    undoStack: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     lines: ['line 1line 2'],
@@ -87,33 +87,33 @@ test('deleteCharacterRight - merge lines', async () => {
 
 test('deleteCharacterRight - emoji - 👮🏽‍♀️', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['👮🏽‍♀️'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
-    selections: EditorSelection.fromRange(0, 0, 0, 0),
     lines: [''],
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
   })
 })
 
 test('deleteCharacterRight - multiple words', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['sample text'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 5, 0, 5),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   expect(await EditorDeleteCharacterRight.deleteCharacterRight(editor)).toMatchObject({
     lines: ['sampl text'],

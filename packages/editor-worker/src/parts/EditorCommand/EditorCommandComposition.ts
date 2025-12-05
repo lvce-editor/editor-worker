@@ -2,8 +2,8 @@ import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 
 export const state = {
-  isComposing: false,
   compositionText: '',
+  isComposing: false,
 }
 
 export const compositionStart = (editor: any, event: any) => {
@@ -20,17 +20,17 @@ const getCompositionChanges = (selections: any, data: any) => {
     const selectionEndColumn = selections[i + 3]
     const startColumnIndex = selectionStartColumn - state.compositionText.length
     changes.push({
-      start: {
-        rowIndex: selectionStartRow,
-        columnIndex: startColumnIndex,
-      },
+      deleted: [state.compositionText],
       end: {
-        rowIndex: selectionEndRow,
         columnIndex: selectionEndColumn,
+        rowIndex: selectionEndRow,
       },
       inserted: [data],
-      deleted: [state.compositionText],
       origin: EditOrigin.CompositionUpdate,
+      start: {
+        columnIndex: startColumnIndex,
+        rowIndex: selectionStartRow,
+      },
     })
   }
   return changes

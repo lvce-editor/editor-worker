@@ -24,8 +24,8 @@ export const getWordMatchAtPosition = (lines: string[], rowIndex: number, column
   const end = getWordEndIndex(line, columnIndex)
   const word = line.slice(start, end)
   return {
-    start,
     end,
+    start,
     word,
   }
 }

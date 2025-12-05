@@ -2,10 +2,10 @@ import * as ExtensionHostEditor from '../ExtensionHostEditor/ExtensionHostEditor
 
 export const getFormattingEdits = async (editor: any): Promise<readonly any[]> => {
   const edits = await ExtensionHostEditor.execute({
+    args: [],
     editor,
     event: 'onFormatting',
     method: 'ExtensionHostFormatting.executeFormattingProvider',
-    args: [],
   })
   return edits
 }

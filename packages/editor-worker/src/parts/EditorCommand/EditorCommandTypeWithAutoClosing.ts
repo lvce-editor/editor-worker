@@ -11,11 +11,10 @@ import * as EditorTypeWithAutoClosingTag from './EditorCommandTypeWithAutoClosin
 export const typeWithAutoClosing = async (editor: any, text: string) => {
   const { isAutoClosingBracketsEnabled, isAutoClosingQuotesEnabled, isAutoClosingTagsEnabled } = editor
   switch (text) {
-    case Bracket.CurlyOpen:
-    case Bracket.RoundOpen:
-    case Bracket.SquareOpen:
-      if (isAutoClosingBracketsEnabled) {
-        return EditorTypeWithAutoClosingBracket.typeWithAutoClosingBracket(editor, text)
+    // case AutoClosing.ClosingAngleBracket: // TODO support auto closing when typing closing angle bracket of start tag
+    case AutoClosing.Slash:
+      if (isAutoClosingTagsEnabled) {
+        return EditorTypeWithAutoClosingTag.typeWithAutoClosingTag(editor, text)
       }
       break
     case Bracket.CurlyClose:
@@ -25,17 +24,18 @@ export const typeWithAutoClosing = async (editor: any, text: string) => {
         return EditorTypeWithAutoClosingEndBracket.typeWithAutoClosingEndBracket(editor, text)
       }
       break
-    case Quote.DoubleQuote:
-    case Quote.SingleQuote:
-    case Quote.BackTick:
-      if (isAutoClosingQuotesEnabled) {
-        return EditorTypeWithAutoClosingQuote.typeWithAutoClosingQuote(editor, text)
+    case Bracket.CurlyOpen:
+    case Bracket.RoundOpen:
+    case Bracket.SquareOpen:
+      if (isAutoClosingBracketsEnabled) {
+        return EditorTypeWithAutoClosingBracket.typeWithAutoClosingBracket(editor, text)
       }
       break
-    // case AutoClosing.ClosingAngleBracket: // TODO support auto closing when typing closing angle bracket of start tag
-    case AutoClosing.Slash:
-      if (isAutoClosingTagsEnabled) {
-        return EditorTypeWithAutoClosingTag.typeWithAutoClosingTag(editor, text)
+    case Quote.BackTick:
+    case Quote.DoubleQuote:
+    case Quote.SingleQuote:
+      if (isAutoClosingQuotesEnabled) {
+        return EditorTypeWithAutoClosingQuote.typeWithAutoClosingQuote(editor, text)
       }
       break
     default:

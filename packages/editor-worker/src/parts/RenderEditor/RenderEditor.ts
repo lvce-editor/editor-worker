@@ -11,6 +11,18 @@ import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 const renderLines = {
+  apply(oldState: State, newState: State) {
+    const { incrementalEdits } = newState
+    if (incrementalEdits !== emptyIncrementalEdits) {
+      return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
+    }
+    const { differences, textInfos } = newState
+    newState.differences = differences
+    const { highlightedLine, minLineY } = newState
+    const relativeLine = highlightedLine - minLineY
+    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
+    return [/* method */ 'setText', dom]
+  },
   isEqual(oldState: State, newState: State) {
     return (
       oldState.lines === newState.lines &&
@@ -24,21 +36,15 @@ const renderLines = {
       oldState.debugEnabled === newState.debugEnabled
     )
   },
-  apply(oldState: State, newState: State) {
-    const { incrementalEdits } = newState
-    if (incrementalEdits !== emptyIncrementalEdits) {
-      return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
-    }
-    const { textInfos, differences } = newState
-    newState.differences = differences
-    const { highlightedLine, minLineY } = newState
-    const relativeLine = highlightedLine - minLineY
-    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
-    return [/* method */ 'setText', dom]
-  },
 }
 
 const renderSelections = {
+  apply: async (oldState: any, newState: any) => {
+    const { cursorInfos, selectionInfos } = await EditorSelection.getVisible(newState)
+    const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos)
+    const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos)
+    return [/* method */ 'setSelections', cursorsDom, selectionsDom]
+  },
   isEqual(oldState: any, newState: any) {
     return (
       oldState.selections === newState.selections &&
@@ -47,83 +53,74 @@ const renderSelections = {
       oldState.deltaX === newState.deltaX
     )
   },
-  apply: async (oldState: any, newState: any) => {
-    const { cursorInfos, selectionInfos } = await EditorSelection.getVisible(newState)
-    const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos)
-    const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos)
-    return [/* method */ 'setSelections', cursorsDom, selectionsDom]
-  },
 }
 
 const renderScrollBarY = {
-  isEqual(oldState: State, newState: State) {
-    return oldState.deltaY === newState.deltaY && oldState.scrollBarHeight === newState.scrollBarHeight
-  },
   apply(oldState: State, newState: State) {
     const scrollBarY = ScrollBarFunctions.getScrollBarY(newState.deltaY, newState.finalDeltaY, newState.height, newState.scrollBarHeight)
     const translate = `0 ${scrollBarY}px`
     const heightPx = `${newState.scrollBarHeight}px`
     return [/* method */ 'setScrollBar', translate, heightPx]
   },
+  isEqual(oldState: State, newState: State) {
+    return oldState.deltaY === newState.deltaY && oldState.scrollBarHeight === newState.scrollBarHeight
+  },
 }
 
 const renderScrollBarX = {
-  isEqual(oldState: State, newState: State) {
-    return oldState.longestLineWidth === newState.longestLineWidth && oldState.deltaX === newState.deltaX
-  },
   apply(oldState: State, newState: State) {
     const scrollBarWidth = ScrollBarFunctions.getScrollBarSize(newState.width, newState.longestLineWidth, newState.minimumSliderSize)
     const scrollBarX = (newState.deltaX / newState.longestLineWidth) * newState.width
     return [/* method */ 'setScrollBarHorizontal', /* scrollBarX */ scrollBarX, /* scrollBarWidth */ scrollBarWidth, /* deltaX */ newState.deltaX]
   },
+  isEqual(oldState: State, newState: State) {
+    return oldState.longestLineWidth === newState.longestLineWidth && oldState.deltaX === newState.deltaX
+  },
 }
 
 const renderFocus = {
-  isEqual(oldState: State, newState: State) {
-    return oldState.focused === newState.focused
-  },
   apply(oldState: State, newState: State) {
     return [/* method */ 'setFocused', newState.focused]
+  },
+  isEqual(oldState: State, newState: State) {
+    return oldState.focused === newState.focused
   },
 }
 
 const renderFocusContext = {
-  isEqual(oldState: State, newState: State) {
-    return oldState.focus === newState.focus
-  },
   apply(oldState: State, newState: State) {
     return ['Viewlet.setFocusContext', newState.uid, newState.focus]
+  },
+  isEqual(oldState: State, newState: State) {
+    return oldState.focus === newState.focus
   },
 }
 
 const renderAdditionalFocusContext = {
-  isEqual(oldState: State, newState: State) {
-    return oldState.additionalFocus === newState.additionalFocus
-  },
   apply(oldState: State, newState: State) {
     if (newState.additionalFocus) {
       return ['Viewlet.setAdditionalFocus', newState.uid, newState.additionalFocus]
     }
     return ['viewlet.unsetAdditionalFocus', newState.uid, newState.additionalFocus]
   },
+  isEqual(oldState: State, newState: State) {
+    return oldState.additionalFocus === newState.additionalFocus
+  },
 }
 
 const renderDecorations = {
-  isEqual(oldState: State, newState: State) {
-    return oldState.decorations === newState.decorations
-  },
   apply(oldState: State, newState: State) {
     const dom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(newState.decorations)
     return ['setDecorationsDom', dom]
   },
+  isEqual(oldState: State, newState: State) {
+    return oldState.decorations === newState.decorations
+  },
 }
 
 const renderGutterInfo = {
-  isEqual(oldState: State, newState: State) {
-    return oldState.minLineY === newState.minLineY && oldState.maxLineY === newState.maxLineY
-  },
   apply(oldState: State, newState: State) {
-    const { minLineY, maxLineY, lineNumbers } = newState
+    const { lineNumbers, maxLineY, minLineY } = newState
     const gutterInfos = []
     if (lineNumbers) {
       for (let i = minLineY; i < maxLineY; i++) {
@@ -133,12 +130,12 @@ const renderGutterInfo = {
     const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos)
     return ['renderGutter', dom]
   },
+  isEqual(oldState: State, newState: State) {
+    return oldState.minLineY === newState.minLineY && oldState.maxLineY === newState.maxLineY
+  },
 }
 
 const renderWidgets = {
-  isEqual(oldState: any, newState: any) {
-    return oldState.widgets === newState.widgets
-  },
   apply(oldState: any, newState: any) {
     const addedWidgets = []
     const changedWidgets = []
@@ -192,6 +189,9 @@ const renderWidgets = {
     const filteredCommands = allCommands.filter((item) => item[0] !== 'Viewlet.setFocusContext')
     return filteredCommands
   },
+  isEqual(oldState: any, newState: any) {
+    return oldState.widgets === newState.widgets
+  },
   multiple: true,
 }
 
@@ -213,7 +213,7 @@ export const renderEditor = async (id: number) => {
   if (!instance) {
     return []
   }
-  const { oldState, newState } = instance
+  const { newState, oldState } = instance
   const commands = []
   Editors.set(id, newState, newState)
   for (const item of render) {

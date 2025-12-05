@@ -4,10 +4,10 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test('editorSelectWordRight', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
   }
   expect(EditorSelectWordRight.selectWordRight(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 4),
@@ -16,10 +16,10 @@ test('editorSelectWordRight', () => {
 
 test('editorSelectWordRight - with umlaut', () => {
   const editor = {
+    lineCache: [],
     lines: ['füße'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
   }
   expect(EditorSelectWordRight.selectWordRight(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 4),
@@ -28,10 +28,10 @@ test('editorSelectWordRight - with umlaut', () => {
 
 test('editorSelectWordRight - with accent', () => {
   const editor = {
+    lineCache: [],
     lines: ['tàste'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
   }
   expect(EditorSelectWordRight.selectWordRight(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 5),

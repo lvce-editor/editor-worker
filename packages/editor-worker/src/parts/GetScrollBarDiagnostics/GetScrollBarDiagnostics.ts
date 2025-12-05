@@ -5,8 +5,8 @@ export const getScrollBarDiagnostics = (editor: any, diagnostics: readonly Diagn
   const scrollBarDecorations: ScrollBarDiagnostic[] = []
   for (const diagnostic of diagnostics) {
     scrollBarDecorations.push({
-      top: (diagnostic.rowIndex / editor.lines.length) * editor.height,
       height: 2,
+      top: (diagnostic.rowIndex / editor.lines.length) * editor.height,
     })
   }
   return scrollBarDecorations

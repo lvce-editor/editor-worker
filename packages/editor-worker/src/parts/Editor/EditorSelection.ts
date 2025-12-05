@@ -2,27 +2,27 @@ import * as Assert from '../Assert/Assert.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 
 const getSelectionFromChange = (change: any) => {
-  const { start, inserted } = change
+  const { inserted, start } = change
   const startRowIndex = start.rowIndex
   const startColumnIndex = start.columnIndex
   const insertedLength = inserted.length
   if (insertedLength === 1) {
     const newPosition = {
-      rowIndex: startRowIndex + insertedLength - 1,
       columnIndex: inserted.at(-1).length + startColumnIndex,
+      rowIndex: startRowIndex + insertedLength - 1,
     }
     return {
-      start: newPosition,
       end: newPosition,
+      start: newPosition,
     }
   }
   const newPosition = {
-    rowIndex: startRowIndex + insertedLength - 1,
     columnIndex: startColumnIndex,
+    rowIndex: startRowIndex + insertedLength - 1,
   }
   return {
-    start: newPosition,
     end: newPosition,
+    start: newPosition,
   }
 }
 

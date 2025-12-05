@@ -8,12 +8,12 @@ const combineResults = (results: any) => {
 
 export const executeDiagnosticProvider = (editor: any): Promise<readonly Diagnostic[]> => {
   return ExtensionHostEditor.execute({
+    args: [],
+    combineResults,
     editor,
     event: ExtensionHostActivationEvent.OnDiagnostic,
     method: 'ExtensionHost.executeDiagnosticProvider',
-    args: [],
     noProviderFoundMessage: 'no diagnostic provider found',
     noProviderResult: [],
-    combineResults,
   })
 }

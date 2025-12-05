@@ -4,7 +4,7 @@ import * as SafeTokenizeLine from '../SafeTokenizeLine/SafeTokenizeLine.ts'
 
 export const getLineInfos = (lines: readonly string[], tokenizer: any, languageId: string) => {
   const lineInfos: Array<readonly string[]> = []
-  const { tokenizeLine, initialLineState, hasArrayReturn, TokenMap } = tokenizer
+  const { hasArrayReturn, initialLineState, tokenizeLine, TokenMap } = tokenizer
   let currentLineState = GetInitialLineState.getInitialLineState(initialLineState)
   for (const line of lines) {
     const result = SafeTokenizeLine.safeTokenizeLine(languageId, tokenizeLine, line, currentLineState, hasArrayReturn)

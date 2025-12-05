@@ -1,5 +1,5 @@
 export interface DebugHighlight {
-  readonly uri: string
-  readonly rowIndex: number
   readonly columnIndex: number
+  readonly rowIndex: number
+  readonly uri: string
 }

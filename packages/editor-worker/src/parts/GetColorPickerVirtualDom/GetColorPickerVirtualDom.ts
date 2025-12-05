@@ -6,40 +6,40 @@ import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts
 export const getColorPickerVirtualDom = () => {
   return [
     {
-      type: VirtualDomElements.Div,
+      childCount: 3,
       className: MergeClassNames.mergeClassNames(ClassNames.Viewlet, ClassNames.ColorPicker),
       onPointerDown: DomEventListenerFunctions.HandlePointerDown,
-      childCount: 3,
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
+      childCount: 3,
       className: ClassNames.ColorPickerRectangle,
-      childCount: 3,
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
+      childCount: 0,
       className: ClassNames.ColorPickerBackgroundColor,
-      childCount: 0,
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
+      childCount: 0,
       className: ClassNames.ColorPickerLight,
-      childCount: 0,
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
+      childCount: 0,
       className: ClassNames.ColorPickerDark,
-      childCount: 0,
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
+      childCount: 0,
       className: ClassNames.ColorPickerSlider,
-      childCount: 0,
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
-      className: ClassNames.ColorPickerSliderThumb,
       childCount: 0,
+      className: ClassNames.ColorPickerSliderThumb,
+      type: VirtualDomElements.Div,
     },
   ]
 }

@@ -7,7 +7,7 @@ import * as SourceActionWidgetFactory from '../SourceActionWidgetFactory/SourceA
 import * as SourceActionWorker from '../SourceActionWorker/SourceActionWorker.ts'
 
 const newStateGenerator = async (state: SourceActionState, parentUid: number): Promise<SourceActionState> => {
-  const { uid, x, y, width, height } = state
+  const { height, uid, width, x, y } = state
   const { newState } = Editors.get(parentUid)
   const { languageId } = newState
   await SourceActionWorker.invoke('SourceActions.create', uid, x, y, width, height, parentUid, languageId)

@@ -13,12 +13,12 @@ const getErrorMessage = (error) => {
 // @ts-ignore
 const getMatchingClosingBrace = (brace) => {
   switch (brace) {
-    case '{':
-      return '}'
     case '(':
       return ')'
     case '[':
       return ']'
+    case '{':
+      return '}'
     default:
       return '???'
   }

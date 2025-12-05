@@ -6,8 +6,8 @@ test('getNewDeltaPercent - clicked at top', () => {
   const scrollBarHeight = 20
   const relativeY = 1
   expect(ScrollBarFunctions.getNewDeltaPercent(height, scrollBarHeight, relativeY)).toEqual({
-    percent: 0,
     handleOffset: 1,
+    percent: 0,
   })
 })
 
@@ -16,8 +16,8 @@ test('getNewDeltaPercent - clicked in middle', () => {
   const scrollBarHeight = 20
   const relativeY = 20
   expect(ScrollBarFunctions.getNewDeltaPercent(height, scrollBarHeight, relativeY)).toEqual({
-    percent: 0.125,
     handleOffset: 10,
+    percent: 0.125,
   })
 })
 
@@ -26,7 +26,7 @@ test('getNewDeltaPercent - clicked at bottom', () => {
   const scrollBarHeight = 20
   const relativeY = 91
   expect(ScrollBarFunctions.getNewDeltaPercent(height, scrollBarHeight, relativeY)).toEqual({
-    percent: 1,
     handleOffset: 11,
+    percent: 1,
   })
 })

@@ -14,19 +14,19 @@ export const getEditorRowsVirtualDom = (textInfos: any, differences: any, lineNu
       className += ' ' + ClassNames.EditorRowHighlighted
     }
     dom.push({
-      type: VirtualDomElements.Div,
+      childCount: textInfo.length / 2,
       className,
       translate: Px.px(difference),
-      childCount: textInfo.length / 2,
+      type: VirtualDomElements.Div,
     })
     for (let j = 0; j < textInfo.length; j += 2) {
       const tokenText = textInfo[j]
       const className = textInfo[j + 1]
       dom.push(
         {
-          type: VirtualDomElements.Span,
-          className,
           childCount: 1,
+          className,
+          type: VirtualDomElements.Span,
         },
         text(tokenText),
       )

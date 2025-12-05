@@ -4,7 +4,7 @@ export const name = 'viewlet.editor-type'
 
 export const skip = 1
 
-export const test: Test = async ({ FileSystem, Workspace, Main, Editor }) => {
+export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, `abc`)

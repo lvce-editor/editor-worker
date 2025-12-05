@@ -5,29 +5,18 @@ export const getDecorationClassName = (type: any) => {
   switch (type) {
     case DecorationType.Link:
       return DecorationClassName.Link
-    case DecorationType.Ts2816:
-    case DecorationType.Ts2817:
-    case DecorationType.Ts2824:
-    case DecorationType.Ts2825:
-    case DecorationType.Ts2856:
-    case DecorationType.Ts2857:
-    case DecorationType.Ts3072:
-    case DecorationType.Ts3073:
-    case DecorationType.Ts3077:
-    case DecorationType.Ts3088:
-      return DecorationClassName.Function
-    case DecorationType.Ts1792:
-    case DecorationType.Ts1793:
-      return DecorationClassName.Parameter
-    case DecorationType.Ts512:
-    case DecorationType.Ts513:
-    case DecorationType.Ts769:
     case DecorationType.Ts1024:
     case DecorationType.Ts1536:
     case DecorationType.Ts1537:
     case DecorationType.Ts1544:
     case DecorationType.Ts1545:
+    case DecorationType.Ts512:
+    case DecorationType.Ts513:
+    case DecorationType.Ts769:
       return DecorationClassName.Type
+    case DecorationType.Ts1792:
+    case DecorationType.Ts1793:
+      return DecorationClassName.Parameter
     case DecorationType.Ts2048:
     case DecorationType.Ts2049:
     case DecorationType.Ts2056:
@@ -47,6 +36,17 @@ export const getDecorationClassName = (type: any) => {
     case DecorationType.Ts257:
     case DecorationType.Ts272:
       return DecorationClassName.Class
+    case DecorationType.Ts2816:
+    case DecorationType.Ts2817:
+    case DecorationType.Ts2824:
+    case DecorationType.Ts2825:
+    case DecorationType.Ts2856:
+    case DecorationType.Ts2857:
+    case DecorationType.Ts3072:
+    case DecorationType.Ts3073:
+    case DecorationType.Ts3077:
+    case DecorationType.Ts3088:
+      return DecorationClassName.Function
     default:
       return `Unknown-${type}`
   }

@@ -17,15 +17,15 @@ import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlain
 
 test('editorDeleteAllLeft', async () => {
   const editor = {
-    lines: ['1 2 3 4 5'],
-    selections: EditorSelection.fromRange(0, 9, 0, 9),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
-    undoStack: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['1 2 3 4 5'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: EditorSelection.fromRange(0, 9, 0, 9),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
   }
   expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: [''],
@@ -35,16 +35,16 @@ test('editorDeleteAllLeft', async () => {
 
 test('editorDeleteAllLeft in middle', async () => {
   const editor = {
-    lines: ['1 2 3 4 5'],
-    primarySelectionIndex: 0,
-    selections: EditorSelection.fromRange(0, 5, 0, 5),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
-    undoStack: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['1 2 3 4 5'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 5, 0, 5),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
   }
   expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: [' 4 5'],
@@ -54,14 +54,14 @@ test('editorDeleteAllLeft in middle', async () => {
 
 test.skip('editorDeleteAllLeft - with selection', () => {
   const editor = {
-    lines: ['line 1', 'line 2'],
-    selections: EditorSelection.fromRange(0, 1, 1, 2),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['line 1', 'line 2'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: EditorSelection.fromRange(0, 1, 1, 2),
+    tokenizer: TokenizePlainText,
   }
   expect(EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     line: ['lne 2'],
@@ -71,15 +71,15 @@ test.skip('editorDeleteAllLeft - with selection', () => {
 
 test('editorDeleteAllLeft - at start of line', async () => {
   const editor = {
-    lines: ['1', '2'],
-    selections: EditorSelection.fromRange(1, 0, 1, 0),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
-    undoStack: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['1', '2'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: EditorSelection.fromRange(1, 0, 1, 0),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
   }
   expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: ['12'],
@@ -89,20 +89,20 @@ test('editorDeleteAllLeft - at start of line', async () => {
 
 test('editorDeleteAllLeft - at start of file', async () => {
   const cursor = {
-    rowIndex: 0,
     columnIndex: 0,
+    rowIndex: 0,
   }
   const editor = {
-    lines: ['1', '2'],
     cursor,
-    selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
-    undoStack: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['1', '2'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
   }
   expect(await EditorDeleteAllLeft.deleteAllLeft(editor)).toMatchObject({
     lines: ['1', '2'],

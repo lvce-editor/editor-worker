@@ -17,7 +17,7 @@ export const getDiagnosticDecoration = async (
   averageCharWidth: number,
   diagnostic: Diagnostic,
 ) => {
-  const { rowIndex, columnIndex, endColumnIndex, type } = diagnostic
+  const { columnIndex, endColumnIndex, rowIndex, type } = diagnostic
   const y = GetY.getY(rowIndex, minLineY, rowHeight)
   const line = lines[rowIndex]
   const startX = await GetX.getX(
@@ -48,10 +48,10 @@ export const getDiagnosticDecoration = async (
   )
   const decorationWidth = endX - startX
   return {
-    x: startX,
-    y,
-    width: decorationWidth,
     height: rowHeight,
     type,
+    width: decorationWidth,
+    x: startX,
+    y,
   }
 }

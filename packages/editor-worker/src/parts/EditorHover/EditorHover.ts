@@ -5,14 +5,14 @@ export const loadContent = async (editorUid: number, state: any, position: any) 
   if (!hoverInfo) {
     return state
   }
-  const { lineInfos, documentation, x, y, matchingDiagnostics } = hoverInfo
+  const { documentation, lineInfos, matchingDiagnostics, x, y } = hoverInfo
   return {
     ...state,
-    lineInfos,
+    diagnostics: matchingDiagnostics,
     documentation,
+    lineInfos,
     x,
     y,
-    diagnostics: matchingDiagnostics,
   }
 }
 

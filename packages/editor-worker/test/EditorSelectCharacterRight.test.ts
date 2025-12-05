@@ -4,10 +4,10 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test('editorSelectCharacterRight - no selection', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
   }
   expect(EditorSelectCharacterRight.selectCharacterRight(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 1),
@@ -16,10 +16,10 @@ test('editorSelectCharacterRight - no selection', () => {
 
 test.skip('editorSelectCharacterRight - no selection and at end of line', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 6, 0, 6),
-    lineCache: [],
   }
   expect(EditorSelectCharacterRight.selectCharacterRight(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 6, 1, 1),
@@ -28,9 +28,9 @@ test.skip('editorSelectCharacterRight - no selection and at end of line', () => 
 
 test('editorSelectCharacterRight - has selection - single line', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2', ''],
     selections: EditorSelection.fromRange(0, 0, 0, 1),
-    lineCache: [],
   }
   expect(EditorSelectCharacterRight.selectCharacterRight(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 2),
@@ -39,10 +39,10 @@ test('editorSelectCharacterRight - has selection - single line', () => {
 
 test.skip('editorSelectCharacterRight - has selection - nothing more to select', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 2, 1),
-    lineCache: [],
   }
   expect(EditorSelectCharacterRight.selectCharacterRight(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 2, 1),
@@ -51,10 +51,10 @@ test.skip('editorSelectCharacterRight - has selection - nothing more to select',
 
 test.skip('editorSelectCharacterRight - has selection - merge selections', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRanges([0, 0, 0, 6], [1, 0, 0, 6]),
-    lineCache: [],
   }
   expect(EditorSelectCharacterRight.selectCharacterRight(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 2, 1),

@@ -4,7 +4,7 @@ export const name = 'sample.diagnostic-provider-update-on-type'
 
 export const skip = 1
 
-export const test: Test = async ({ Editor, Settings, Main, FileSystem, Workspace, Extension }) => {
+export const test: Test = async ({ Editor, Extension, FileSystem, Main, Settings, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/test.xyz`, `abc`)
@@ -21,12 +21,12 @@ export const test: Test = async ({ Editor, Settings, Main, FileSystem, Workspace
   // @ts-ignore
   await Editor.shouldHaveDiagnostics([
     {
-      rowIndex: 1,
       columnIndex: 1,
-      endRowIndex: 1,
       endColumnIndex: 7,
-      type: 'error', // TODO use numeric diagnostic type
+      endRowIndex: 1,
       message: 'error',
+      rowIndex: 1,
+      type: 'error', // TODO use numeric diagnostic type
     },
   ])
 }

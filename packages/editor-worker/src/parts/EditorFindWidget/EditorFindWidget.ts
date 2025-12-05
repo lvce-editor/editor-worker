@@ -42,8 +42,10 @@ export const {
   focusCloseButton,
   focusFind,
   focusNext,
+  focusNextElement,
   focusNextMatchButton,
   focusPrevious,
+  focusPreviousElement,
   focusPreviousMatchButton,
   focusReplace,
   focusReplaceAllButton,
@@ -60,11 +62,9 @@ export const {
   replaceAll,
   toggleMatchCase,
   toggleMatchWholeWord,
+  togglePreserveCase,
   toggleReplace,
   toggleUseRegularExpression,
-  focusNextElement,
-  focusPreviousElement,
-  togglePreserveCase,
 } = createFns(
   [
     'close',

@@ -21,19 +21,19 @@ const getChanges = (editor, getDelta) => {
       // @ts-ignore
       const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
       const start = {
-        rowIndex: selectionStartRow,
         columnIndex: selectionStartColumn,
+        rowIndex: selectionStartRow,
       }
       const positionRight = EditorGetPositionRight.editorGetPositionRight(start, lines, getDelta)
       changes.push({
-        start: start,
+        deleted: TextDocument.getSelectionText(editor, {
+          end: positionRight,
+          start: start,
+        }),
         end: positionRight,
         inserted: [''],
-        deleted: TextDocument.getSelectionText(editor, {
-          start: start,
-          end: positionRight,
-        }),
         origin: EditOrigin.DeleteHorizontalRight,
+        start: start,
       })
     }
     return changes

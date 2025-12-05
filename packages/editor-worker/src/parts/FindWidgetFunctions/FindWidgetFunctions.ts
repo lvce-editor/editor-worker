@@ -5,7 +5,7 @@ import * as GetEditor from '../GetEditor/GetEditor.ts'
 export const loadContent = async (state: FindWidgetState, parentUid: number): Promise<FindWidgetState> => {
   const { uid } = state
   const editor = GetEditor.getEditor(parentUid)
-  const { x, y, width, height } = editor
+  const { height, width, x, y } = editor
   await FindWidgetWorker.launch()
   await FindWidgetWorker.invoke('FindWidget.create', uid, x, y, width, height, parentUid)
   await FindWidgetWorker.invoke('FindWidget.loadContent', uid)

@@ -18,14 +18,14 @@ const EditorCommandCut = await import('../src/parts/EditorCommand/EditorCommandC
 
 test('cut - empty selection', async () => {
   const editor = {
-    selections: [0, 0, 0, 0],
-    lines: ['a'],
-    undoStack: [],
-    lineCache: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['a'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: [0, 0, 0, 0],
+    undoStack: [],
   }
   const newEditor = await EditorCommandCut.cut(editor)
   expect(newEditor.lines).toEqual([''])
@@ -34,14 +34,14 @@ test('cut - empty selection', async () => {
 
 test('cut - selection', async () => {
   const editor = {
-    selections: [0, 0, 0, 1],
-    lines: ['a'],
-    undoStack: [],
-    lineCache: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['a'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: [0, 0, 0, 1],
+    undoStack: [],
   }
   const newEditor = await EditorCommandCut.cut(editor)
   expect(newEditor.lines).toEqual([''])

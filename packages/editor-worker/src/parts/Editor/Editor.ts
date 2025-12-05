@@ -94,11 +94,11 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
 
   const newEditor = {
     ...partialNewEditor,
+    autoClosingRanges,
+    invalidStartIndex,
     lines: newLines,
     selections: newSelections,
     undoStack: [...editor.undoStack, changes],
-    invalidStartIndex,
-    autoClosingRanges,
   }
   EditorStates.set(editor.uid, editor, newEditor)
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
@@ -113,11 +113,11 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     return newEditor2
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { textInfos, differences } = await EditorText.getVisible(newEditor2, syncIncremental)
+  const { differences, textInfos } = await EditorText.getVisible(newEditor2, syncIncremental)
   return {
     ...newEditor2,
-    textInfos,
     differences,
+    textInfos,
   }
 }
 // @ts-ignore
@@ -136,10 +136,10 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes)
   const invalidStartIndex = Math.min(editor.invalidStartIndex, changes[0].start.rowIndex)
   const newEditor = {
     ...partialNewEditor,
-    lines: newLines,
-    selections: newSelections,
     // undoStack: [...editor.undoStack.slice(0, -2)],
     invalidStartIndex,
+    lines: newLines,
+    selections: newSelections,
   }
 
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
@@ -154,11 +154,11 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes)
     return finalEditor
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { textInfos, differences } = await EditorText.getVisible(finalEditor, syncIncremental)
+  const { differences, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
   return {
     ...finalEditor,
-    textInfos,
     differences,
+    textInfos,
   }
 }
 
@@ -180,9 +180,9 @@ export const scheduleDocument = async (editor, changes) => {
 
   const newEditor = {
     ...editor,
-    undoStack: [...editor.undoStack, changes],
-    lines: newLines,
     invalidStartIndex,
+    lines: newLines,
+    undoStack: [...editor.undoStack, changes],
   }
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
 
@@ -196,11 +196,11 @@ export const scheduleDocument = async (editor, changes) => {
     return finalEditor
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { textInfos, differences } = await EditorText.getVisible(finalEditor, syncIncremental)
+  const { differences, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
   return {
     ...finalEditor,
-    textInfos,
     differences,
+    textInfos,
   }
   // RendererProcess.send([
   //   /* Viewlet.invoke */ 'Viewlet.send',
@@ -228,21 +228,21 @@ export const setBounds = (editor: any, x: number, y: number, width: number, heig
   const finalDeltaY = finalY * itemHeight
   return {
     ...editor,
+    columnWidth,
+    finalDeltaY,
+    finalY,
+    height,
+    maxLineY,
+    numberOfVisibleLines,
+    width,
     x,
     y,
-    width,
-    height,
-    columnWidth,
-    numberOfVisibleLines,
-    maxLineY,
-    finalY,
-    finalDeltaY,
   }
 }
 
 export const setText = (editor: any, text: string) => {
   const lines = SplitLines.splitLines(text)
-  const { itemHeight, numberOfVisibleLines, minimumSliderSize } = editor
+  const { itemHeight, minimumSliderSize, numberOfVisibleLines } = editor
   const total = lines.length
   const maxLineY = Math.min(numberOfVisibleLines, total)
   const finalY = Math.max(total - numberOfVisibleLines, 0)
@@ -251,10 +251,10 @@ export const setText = (editor: any, text: string) => {
   const scrollBarHeight = ScrollBarFunctions.getScrollBarSize(editor.height, contentHeight, minimumSliderSize)
   return {
     ...editor,
+    finalDeltaY,
+    finalY,
     lines,
     maxLineY,
-    finalY,
-    finalDeltaY,
     scrollBarHeight,
   }
 }

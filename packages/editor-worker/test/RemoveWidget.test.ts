@@ -9,10 +9,10 @@ test('remove widget', () => {
   interface TestWidget extends Widget<TestState> {}
   const widget: TestWidget = {
     id: 'test',
-    oldState: {
+    newState: {
       uid: 123,
     },
-    newState: {
+    oldState: {
       uid: 123,
     },
   }

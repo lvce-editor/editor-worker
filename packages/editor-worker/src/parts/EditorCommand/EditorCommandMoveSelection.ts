@@ -40,12 +40,12 @@ const editorMoveSelectionForwards = (anchor, position) => {
 // @ts-ignore
 const getNewSelections = (anchor, position) => {
   switch (compare(position, anchor)) {
-    case CompareResultType.LessThan:
-      return editorMoveSelectionBackwards(anchor, position)
     case CompareResultType.Equal:
       return editorMoveSelectionEqual(anchor, position)
     case CompareResultType.GreaterThan:
       return editorMoveSelectionForwards(anchor, position)
+    case CompareResultType.LessThan:
+      return editorMoveSelectionBackwards(anchor, position)
     default:
       throw new Error('unexpected comparison result')
   }

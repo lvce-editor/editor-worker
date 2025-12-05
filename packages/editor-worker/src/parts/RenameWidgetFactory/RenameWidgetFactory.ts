@@ -6,21 +6,21 @@ export const create = (): RenameWidget => {
   const completionUid = Id.create()
   const renameWidget: RenameWidget = {
     id: WidgetId.Rename,
-    oldState: {
-      uid: completionUid,
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      commands: [],
-    },
     newState: {
+      commands: [],
+      height: 0,
       uid: completionUid,
+      width: 0,
       x: 0,
       y: 0,
-      width: 0,
-      height: 0,
+    },
+    oldState: {
       commands: [],
+      height: 0,
+      uid: completionUid,
+      width: 0,
+      x: 0,
+      y: 0,
     },
   }
   return renameWidget

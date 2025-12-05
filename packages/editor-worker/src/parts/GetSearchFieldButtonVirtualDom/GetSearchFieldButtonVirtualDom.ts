@@ -5,21 +5,21 @@ import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export const getSearchFieldButtonVirtualDom = (button: ISearchFieldButton) => {
-  const { icon, checked, title } = button
+  const { checked, icon, title } = button
   return [
     {
-      type: VirtualDomElements.Div,
-      className: MergeClassNames.mergeClassNames(ClassNames.SearchFieldButton, checked ? ClassNames.SearchFieldButtonChecked : ''),
-      title,
-      role: AriaRoles.CheckBox,
       ariaChecked: checked,
-      tabIndex: 0,
       childCount: 1,
+      className: MergeClassNames.mergeClassNames(ClassNames.SearchFieldButton, checked ? ClassNames.SearchFieldButtonChecked : ''),
+      role: AriaRoles.CheckBox,
+      tabIndex: 0,
+      title,
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
-      className: MergeClassNames.mergeClassNames(ClassNames.MaskIcon, icon),
       childCount: 0,
+      className: MergeClassNames.mergeClassNames(ClassNames.MaskIcon, icon),
+      type: VirtualDomElements.Div,
     },
   ]
 }

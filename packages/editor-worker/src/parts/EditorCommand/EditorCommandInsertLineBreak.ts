@@ -30,16 +30,16 @@ const getChanges = (lines: string[], selections: any, languageConfiguration: any
   for (let i = 0; i < selections.length; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
     const start = {
-      rowIndex: selectionStartRow,
       columnIndex: selectionStartColumn,
+      rowIndex: selectionStartRow,
     }
     const end = {
-      rowIndex: selectionEndRow,
       columnIndex: selectionEndColumn,
+      rowIndex: selectionEndRow,
     }
     const range = {
-      start,
       end,
+      start,
     }
 
     if (EditorSelection.isEmpty(selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn)) {
@@ -48,30 +48,30 @@ const getChanges = (lines: string[], selections: any, languageConfiguration: any
       const indent = TextDocument.getIndent(before)
       if (shouldIncreaseIndent(before, increaseIndentRegex)) {
         changes.push({
-          start: start,
+          deleted: TextDocument.getSelectionText({ lines }, range),
           end: end,
           inserted: ['', indent + '  ', indent],
-          deleted: TextDocument.getSelectionText({ lines }, range),
           origin: EditOrigin.InsertLineBreak,
+          start: start,
         })
         selectionChanges.push(selectionStartRow + 1, indent.length + 2, selectionStartRow + 1, indent.length + 2)
       } else {
         changes.push({
-          start: start,
+          deleted: TextDocument.getSelectionText({ lines }, range),
           end: end,
           inserted: ['', indent],
-          deleted: TextDocument.getSelectionText({ lines }, range),
           origin: EditOrigin.InsertLineBreak,
+          start: start,
         })
         selectionChanges.push(selectionStartRow + 1, indent.length, selectionStartRow + 1, indent.length)
       }
     } else {
       changes.push({
-        start: start,
+        deleted: TextDocument.getSelectionText({ lines }, range),
         end: end,
         inserted: ['', ''],
-        deleted: TextDocument.getSelectionText({ lines }, range),
         origin: EditOrigin.InsertLineBreak,
+        start: start,
       })
       selectionChanges.push(selectionStartRow + 1, 0, selectionStartRow + 1, 0)
     }

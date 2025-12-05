@@ -4,11 +4,11 @@ import type { Widget } from '../Widget/Widget.ts'
 const isFunctional = (widgetId: number | string): boolean => {
   switch (widgetId) {
     case WidgetId.ColorPicker:
-    case WidgetId.Rename:
     case WidgetId.Completion:
     case WidgetId.Find:
-    case WidgetId.SourceAction:
     case WidgetId.Hover:
+    case WidgetId.Rename:
+    case WidgetId.SourceAction:
       return true
     default:
       return false

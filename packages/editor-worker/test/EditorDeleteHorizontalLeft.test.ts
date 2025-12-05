@@ -16,15 +16,15 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test('editorDeleteCharacterHorizontalLeft - single character - no selection', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['line 1', 'line 2'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 1, 0, 1),
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   expect(await EditorDeleteHorizontalLeft.editorDeleteHorizontalLeft(editor, () => 1)).toMatchObject({
     lines: ['ine 1', 'line 2'],
@@ -34,14 +34,14 @@ test('editorDeleteCharacterHorizontalLeft - single character - no selection', as
 
 test('editorDeleteCharacterHorizontalLeft - multiple selections', async () => {
   const editor = {
-    lines: ['line 1', 'line 2'],
-    selections: EditorSelection.fromRanges([0, 0, 0, 4], [1, 0, 1, 4]),
-    undoStack: [],
-    lineCache: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['line 1', 'line 2'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: EditorSelection.fromRanges([0, 0, 0, 4], [1, 0, 1, 4]),
+    undoStack: [],
   }
   expect(await EditorDeleteHorizontalLeft.editorDeleteHorizontalLeft(editor, () => 1)).toMatchObject({
     lines: [' 1', ' 2'],

@@ -6,23 +6,23 @@ export const create = (): CompletionDetailWidget => {
   const completionUid = Id.create()
   const completionWidget: CompletionDetailWidget = {
     id: WidgetId.CompletionDetail,
-    oldState: {
-      content: '',
-      uid: completionUid,
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      borderSize: 1,
-    },
     newState: {
+      borderSize: 1,
       content: '',
+      height: 0,
       uid: completionUid,
+      width: 0,
       x: 0,
       y: 0,
-      width: 0,
-      height: 0,
+    },
+    oldState: {
       borderSize: 1,
+      content: '',
+      height: 0,
+      uid: completionUid,
+      width: 0,
+      x: 0,
+      y: 0,
     },
   }
   return completionWidget

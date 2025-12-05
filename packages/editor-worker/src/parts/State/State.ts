@@ -1,32 +1,32 @@
 export interface State {
-  readonly uri: string
-  readonly languageId: string
-  readonly lines: readonly string[]
-  readonly x: number
-  readonly y: number
-  readonly width: number
-  readonly height: number
-  readonly minLineY: number
-  readonly maxLineY: number
+  readonly additionalFocus: number
+  readonly debugEnabled: boolean
+  readonly decorations: any
   readonly deltaX: number
   readonly deltaY: number
-  readonly uid: number
-  readonly undoStack: readonly any[]
   // TODO should be immutable
   differences: any[]
-  readonly debugEnabled: boolean
-  readonly highlightedLine: number
-  readonly tokenizerId: any
-  readonly decorations: any
   readonly embeds: any
-  readonly scrollBarHeight: number
   readonly finalDeltaY: number
-  readonly longestLineWidth: number
-  readonly minimumSliderSize: number
-  readonly focused: boolean
-  readonly lineNumbers: boolean
-  readonly incrementalEdits: readonly any[]
-  readonly textInfos: readonly any[]
   readonly focus: number
-  readonly additionalFocus: number
+  readonly focused: boolean
+  readonly height: number
+  readonly highlightedLine: number
+  readonly incrementalEdits: readonly any[]
+  readonly languageId: string
+  readonly lineNumbers: boolean
+  readonly lines: readonly string[]
+  readonly longestLineWidth: number
+  readonly maxLineY: number
+  readonly minimumSliderSize: number
+  readonly minLineY: number
+  readonly scrollBarHeight: number
+  readonly textInfos: readonly any[]
+  readonly tokenizerId: any
+  readonly uid: number
+  readonly undoStack: readonly any[]
+  readonly uri: string
+  readonly width: number
+  readonly x: number
+  readonly y: number
 }

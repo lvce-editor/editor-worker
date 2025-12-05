@@ -8,7 +8,7 @@ import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 export const setDeltaY = async (state: any, value: number) => {
   Assert.object(state)
   Assert.number(value)
-  const { finalDeltaY, deltaY, numberOfVisibleLines, height, scrollBarHeight, itemHeight } = state
+  const { deltaY, finalDeltaY, height, itemHeight, numberOfVisibleLines, scrollBarHeight } = state
   const newDeltaY = Clamp.clamp(value, 0, finalDeltaY)
   if (deltaY === newDeltaY) {
     return state
@@ -18,19 +18,19 @@ export const setDeltaY = async (state: any, value: number) => {
   const scrollBarY = ScrollingFunctions.getScrollBarY(newDeltaY, finalDeltaY, height, scrollBarHeight)
   const newEditor1 = {
     ...state,
-    minLineY: newMinLineY,
-    maxLineY: newMaxLineY,
     deltaY: newDeltaY,
+    maxLineY: newMaxLineY,
+    minLineY: newMinLineY,
     scrollBarY,
   }
   const syncIncremental = SyncIncremental.getEnabled()
 
-  const { textInfos, differences } = await EditorText.getVisible(newEditor1, syncIncremental)
+  const { differences, textInfos } = await EditorText.getVisible(newEditor1, syncIncremental)
 
   const newEditor2 = {
     ...newEditor1,
-    textInfos,
     differences,
+    textInfos,
   }
   return newEditor2
 }

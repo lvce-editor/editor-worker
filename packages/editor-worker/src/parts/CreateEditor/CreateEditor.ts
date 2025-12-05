@@ -18,35 +18,35 @@ import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 export const createEditor = async ({
-  id,
-  content,
-  savedDeltaY,
-  rowHeight,
-  fontSize,
-  hoverEnabled,
-  letterSpacing,
-  tabSize,
-  links,
-  lineNumbers,
-  formatOnSave,
-  isAutoClosingBracketsEnabled,
-  isAutoClosingTagsEnabled,
-  isAutoClosingQuotesEnabled,
-  isQuickSuggestionsEnabled,
+  columnToReveal,
   completionTriggerCharacters,
-  savedSelections,
+  content,
+  diagnosticsEnabled,
+  fontFamily,
+  fontSize,
+  fontWeight,
+  formatOnSave,
+  height,
+  hoverEnabled,
+  id,
+  isAutoClosingBracketsEnabled,
+  isAutoClosingQuotesEnabled,
+  isAutoClosingTagsEnabled,
+  isMonospaceFont,
+  isQuickSuggestionsEnabled,
   languageId,
+  letterSpacing,
+  lineNumbers,
+  lineToReveal,
+  links,
+  rowHeight,
+  savedDeltaY,
+  savedSelections,
+  tabSize,
+  uri,
+  width,
   x,
   y,
-  width,
-  height,
-  fontWeight,
-  fontFamily,
-  isMonospaceFont,
-  uri,
-  diagnosticsEnabled,
-  lineToReveal,
-  columnToReveal,
 }: EditorCreateOptions) => {
   Assert.number(id)
   Assert.string(content)
@@ -129,13 +129,13 @@ export const createEditor = async ({
   }
 
   const syncIncremental = SyncIncremental.getEnabled()
-  const { textInfos, differences } = await EditorText.getVisible(newEditor3, syncIncremental)
+  const { differences, textInfos } = await EditorText.getVisible(newEditor3, syncIncremental)
   const newEditor4 = {
     ...newEditor3,
-    focused: true,
-    focus: WhenExpression.FocusEditorText,
-    textInfos,
     differences,
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+    textInfos,
   }
 
   EditorState.set(id, emptyEditor, newEditor4)

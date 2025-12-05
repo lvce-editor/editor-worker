@@ -10,16 +10,8 @@ export const create = () => {
       const segments = segmenter.segment(line)
       return segments.containing(index)
     },
-    visualIndex(line: string, index: number) {
-      const segments = segmenter.segment(line)
-      let currentVisualIndex = 0
-      for (const segment of segments) {
-        if (segment.index >= index) {
-          return currentVisualIndex
-        }
-        currentVisualIndex++
-      }
-      return currentVisualIndex
+    getSegments(line: string) {
+      return segmenter.segment(line)
     },
     modelIndex(line: string, visualIndex: number) {
       const segments = segmenter.segment(line)
@@ -32,8 +24,16 @@ export const create = () => {
       }
       return line.length
     },
-    getSegments(line: string) {
-      return segmenter.segment(line)
+    visualIndex(line: string, index: number) {
+      const segments = segmenter.segment(line)
+      let currentVisualIndex = 0
+      for (const segment of segments) {
+        if (segment.index >= index) {
+          return currentVisualIndex
+        }
+        currentVisualIndex++
+      }
+      return currentVisualIndex
     },
   }
 }

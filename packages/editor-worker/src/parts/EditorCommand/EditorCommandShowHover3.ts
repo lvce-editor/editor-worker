@@ -7,7 +7,7 @@ import * as HoverWidgetFactory from '../HoverWidgetFactory/HoverWidgetFactory.ts
 import * as HoverWorker from '../HoverWorker/HoverWorker.ts'
 
 const newStateGenerator = async (state: HoverState, parentUid: number): Promise<HoverState> => {
-  const { uid, x, y, width, height } = state
+  const { height, uid, width, x, y } = state
   const { newState } = Editors.get(parentUid)
   const { languageId } = newState
   await HoverWorker.invoke('Hover.create', uid, x, y, width, height, parentUid, languageId)

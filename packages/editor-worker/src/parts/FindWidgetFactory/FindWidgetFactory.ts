@@ -6,23 +6,23 @@ export const create = (): IFindWidget => {
   const uid = Id.create()
   const widget: IFindWidget = {
     id: WidgetId.Find,
-    oldState: {
-      uid,
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      commands: [],
-      editorUid: 0,
-    },
     newState: {
-      uid,
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
       commands: [],
       editorUid: 0,
+      height: 0,
+      uid,
+      width: 0,
+      x: 0,
+      y: 0,
+    },
+    oldState: {
+      commands: [],
+      editorUid: 0,
+      height: 0,
+      uid,
+      width: 0,
+      x: 0,
+      y: 0,
     },
   }
   return widget

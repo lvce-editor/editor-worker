@@ -7,8 +7,8 @@ export const handleFocus = (editor: State): State => {
   }
   return {
     ...editor,
-    focused: true,
-    focus: WhenExpression.FocusEditorText,
     additionalFocus: 0,
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
   }
 }

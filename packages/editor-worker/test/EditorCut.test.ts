@@ -25,19 +25,19 @@ test.skip('editorCut', async () => {
   // @ts-ignore
   Command.execute.mockImplementation(() => {})
   const editor = {
-    lines: ['line 1', 'line 2', 'line 3', ''],
-    primarySelectionIndex: 0,
-    selections: EditorSelection.fromRange(1, 1, 2, 2),
-    x: 20,
-    y: 10,
-    rowHeight: 10,
     columnWidth: 8,
     lineCache: [],
+    lines: ['line 1', 'line 2', 'line 3', ''],
+    primarySelectionIndex: 0,
+    rowHeight: 10,
+    selections: EditorSelection.fromRange(1, 1, 2, 2),
     undoStack: [],
+    x: 20,
+    y: 10,
   }
   expect(await EditorCut.cut(editor)).toMatchObject({
-    selections: EditorSelection.fromRange(1, 1, 2, 2),
     lines: ['line 1', 'lne 3', ''],
+    selections: EditorSelection.fromRange(1, 1, 2, 2),
   })
 
   //   expect(Command.execute).toHaveBeenCalledTimes(1)
@@ -55,14 +55,14 @@ test.skip('editorCut - error with clipboard', async () => {
     throw new Error('Writing to clipboard not allowed')
   })
   const editor = {
-    lines: ['line 1', 'line 2', 'line 3', ''],
-    selections: EditorSelection.fromRange(1, 1, 2, 2),
-    x: 20,
-    y: 10,
-    rowHeight: 10,
     columnWidth: 8,
     lineCache: [],
+    lines: ['line 1', 'line 2', 'line 3', ''],
+    rowHeight: 10,
+    selections: EditorSelection.fromRange(1, 1, 2, 2),
     undoStack: [],
+    x: 20,
+    y: 10,
   }
   await expect(EditorCut.cut(editor)).rejects.toThrow(new Error('Writing to clipboard not allowed'))
 })
@@ -71,14 +71,14 @@ test.skip('editorCut - no selection', async () => {
   // @ts-ignore
   Command.execute.mockImplementation(() => {})
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2', 'line 3', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(1, 1, 1, 1),
-    lineCache: [],
   }
   expect(await EditorCut.cut(editor)).toMatchObject({
-    selections: EditorSelection.fromRange(1, 1, 1, 1),
     lines: ['line 1', 'line 2', 'line 3', ''],
+    selections: EditorSelection.fromRange(1, 1, 1, 1),
   })
   // expect(Command.execute).not.toHaveBeenCalled()
 })

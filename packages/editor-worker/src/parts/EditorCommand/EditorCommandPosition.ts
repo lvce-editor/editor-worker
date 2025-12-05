@@ -6,12 +6,12 @@ export const at = async (editor: any, eventX: number, eventY: number) => {
   Assert.object(editor)
   Assert.number(eventX)
   Assert.number(eventY)
-  const { y, deltaY, rowHeight, fontSize, fontWeight, fontFamily, letterSpacing, lines, tabSize, differences, isMonospaceFont, charWidth } = editor
+  const { charWidth, deltaY, differences, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, lines, rowHeight, tabSize, y } = editor
   const rowIndex = Math.floor((eventY - y + deltaY) / rowHeight)
   if (rowIndex < 0) {
     return {
-      rowIndex: 0,
       columnIndex: 0,
+      rowIndex: 0,
     }
   }
   // @ts-ignore
@@ -30,8 +30,8 @@ export const at = async (editor: any, eventX: number, eventY: number) => {
     eventX,
   )
   return {
-    rowIndex: clampedRowIndex,
     columnIndex,
+    rowIndex: clampedRowIndex,
   }
 }
 

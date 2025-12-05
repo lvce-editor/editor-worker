@@ -10,8 +10,8 @@ const handleSingleClickDefault = (editor: any, position: any) => {
   const widgets = closeWidgetsMaybe(editor.widgets)
   return {
     ...editor,
-    selections: new Uint32Array([position.rowIndex, position.columnIndex, position.rowIndex, position.columnIndex]),
     focused: true,
+    selections: new Uint32Array([position.rowIndex, position.columnIndex, position.rowIndex, position.columnIndex]),
     widgets,
   }
 }

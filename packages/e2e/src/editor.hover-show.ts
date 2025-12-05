@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.hover-show'
 
-export const test: Test = async ({ FileSystem, Main, Editor, Locator, expect, Extension }) => {
+export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main }) => {
   // arrange
   const url = new URL('../fixtures/editor.hover-show', import.meta.url).toString()
   await Extension.addWebExtension(url)

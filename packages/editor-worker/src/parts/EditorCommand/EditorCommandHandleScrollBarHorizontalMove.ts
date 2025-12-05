@@ -22,7 +22,7 @@ const getNewPercent = (size, scrollBarSize, relativeX) => {
 
 // @ts-ignore
 export const handleScrollBarHorizontalMove = (state, eventX) => {
-  const { x, width, longestLineWidth, handleOffsetX } = state
+  const { handleOffsetX, longestLineWidth, width, x } = state
   const spaceRight = 20 // TODO make this configurable
   const normalizedEventX = Clamp.clamp(eventX, x, x + width)
   if (width > longestLineWidth) {

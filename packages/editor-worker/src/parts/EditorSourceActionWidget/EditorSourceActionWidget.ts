@@ -38,18 +38,18 @@ export const add = (widget: SourceActionWidget) => {
 export const remove = RemoveWidget.removeWidget
 
 export const {
+  close,
+  closeDetails,
   focusFirst,
   focusIndex,
   focusLast,
   focusNext,
   focusPrevious,
+  handleWheel,
   selectCurrent,
   selectIndex,
   selectItem,
   toggleDetails,
-  closeDetails,
-  handleWheel,
-  close,
 } = createFns(
   [
     'focusFirst',

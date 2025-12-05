@@ -6,9 +6,9 @@ import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 const getLineInfoVirtualDom = (lineInfo: readonly string[]): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = [
     {
-      type: VirtualDomElements.Div,
-      className: ClassNames.HoverEditorRow,
       childCount: lineInfo.length / 2,
+      className: ClassNames.HoverEditorRow,
+      type: VirtualDomElements.Div,
     },
   ]
   for (let i = 0; i < lineInfo.length; i += 2) {
@@ -16,9 +16,9 @@ const getLineInfoVirtualDom = (lineInfo: readonly string[]): readonly VirtualDom
     const tokenClass = lineInfo[i + 1]
     dom.push(
       {
-        type: VirtualDomElements.Span,
-        className: tokenClass,
         childCount: 1,
+        className: tokenClass,
+        type: VirtualDomElements.Span,
       },
       text(tokenText),
     )

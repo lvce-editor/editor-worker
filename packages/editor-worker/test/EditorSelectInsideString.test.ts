@@ -4,9 +4,9 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test('editorSelectInsideString', () => {
   const editor = {
+    lineCache: [],
     lines: ['"line 1"', '"line 2"'],
     selections: EditorSelection.fromRange(0, 1, 0, 1),
-    lineCache: [],
   }
   expect(EditorSelectInsideString.selectInsideString(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 1, 0, 7),
@@ -15,9 +15,9 @@ test('editorSelectInsideString', () => {
 
 test('editorSelectInsideString - with selection', () => {
   const editor = {
+    lineCache: [],
     lines: ['"line 1"', '"line 2"'],
     selections: EditorSelection.fromRange(0, 0, 0, 1),
-    lineCache: [],
   }
   expect(EditorSelectInsideString.selectInsideString(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 1),
@@ -26,9 +26,9 @@ test('editorSelectInsideString - with selection', () => {
 
 test('editorSelectInsideString - partial string', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1"'],
     selections: EditorSelection.fromRange(0, 1, 0, 1),
-    lineCache: [],
   }
   expect(EditorSelectInsideString.selectInsideString(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 1, 0, 6),

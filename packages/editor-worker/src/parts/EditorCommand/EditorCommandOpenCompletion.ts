@@ -7,7 +7,7 @@ import * as Editors from '../Editors/Editors.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 
 const newStateGenerator = async (state: CompletionState, parentUid: number): Promise<CompletionState> => {
-  const { uid, x, y, width, height } = state
+  const { height, uid, width, x, y } = state
   const { newState } = Editors.get(parentUid)
   const { languageId } = newState
   await CompletionWorker.invoke('Completions.create', uid, x, y, width, height, parentUid, languageId)

@@ -9,16 +9,16 @@ test('applyEdits - one single line edit', () => {
   expect(
     TextDocument.applyEdits(textDocument, [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 0,
-        },
+        deleted: [''],
         end: {
-          rowIndex: 0,
           columnIndex: 0,
+          rowIndex: 0,
         },
         inserted: ['a'],
-        deleted: [''],
+        start: {
+          columnIndex: 0,
+          rowIndex: 0,
+        },
       },
     ]),
   ).toEqual(['a'])
@@ -31,16 +31,16 @@ test('applyEdits - one multi line edit', () => {
   expect(
     TextDocument.applyEdits(textDocument, [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 1,
-        },
+        deleted: ['ine 1', 'li'],
         end: {
-          rowIndex: 1,
           columnIndex: 2,
+          rowIndex: 1,
         },
         inserted: ['a'],
-        deleted: ['ine 1', 'li'],
+        start: {
+          columnIndex: 1,
+          rowIndex: 0,
+        },
       },
     ]),
   ).toEqual(['lane 2'])
@@ -53,16 +53,16 @@ test('applyEdits - new line inserted', () => {
   expect(
     TextDocument.applyEdits(textDocument, [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 0,
-        },
+        deleted: [''],
         end: {
-          rowIndex: 0,
           columnIndex: 0,
+          rowIndex: 0,
         },
         inserted: ['', ''],
-        deleted: [''],
+        start: {
+          columnIndex: 0,
+          rowIndex: 0,
+        },
       },
     ]),
   ).toEqual(['', 'line 1', 'line 2'])
@@ -75,16 +75,16 @@ test('applyEdits - multiple new lines inserted', () => {
   expect(
     TextDocument.applyEdits(textDocument, [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 0,
-        },
+        deleted: [''],
         end: {
-          rowIndex: 0,
           columnIndex: 0,
+          rowIndex: 0,
         },
         inserted: ['', '', '', ''],
-        deleted: [''],
+        start: {
+          columnIndex: 0,
+          rowIndex: 0,
+        },
       },
     ]),
   ).toEqual(['', '', '', 'line 1', 'line 2'])
@@ -97,16 +97,16 @@ test('applyEdits - virtual space insertion', () => {
   expect(
     TextDocument.applyEdits(textDocument, [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 5,
-        },
+        deleted: [''],
         end: {
-          rowIndex: 0,
           columnIndex: 5,
+          rowIndex: 0,
         },
         inserted: ['a'],
-        deleted: [''],
+        start: {
+          columnIndex: 5,
+          rowIndex: 0,
+        },
       },
     ]),
   ).toEqual(['     a'])
@@ -119,17 +119,17 @@ test('applyEdits - new line inserted in middle', () => {
   expect(
     TextDocument.applyEdits(textDocument, [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 2,
-        },
+        deleted: [''],
         end: {
-          rowIndex: 0,
           columnIndex: 2,
+          rowIndex: 0,
         },
         inserted: ['', ''],
-        deleted: [''],
         origin: EditOrigin.InsertLineBreak,
+        start: {
+          columnIndex: 2,
+          rowIndex: 0,
+        },
       },
     ]),
   ).toEqual(['  ', '  11111', '22222'])
@@ -142,18 +142,18 @@ test('applyEdits - multiple insertions in one line', () => {
   expect(
     TextDocument.applyEdits(textDocument, [
       {
-        start: { rowIndex: 1, columnIndex: 4 },
-        end: { rowIndex: 1, columnIndex: 4 },
-        inserted: ['<!--'],
         deleted: [''],
+        end: { columnIndex: 4, rowIndex: 1 },
+        inserted: ['<!--'],
         origin: EditOrigin.ToggleBlockComment,
+        start: { columnIndex: 4, rowIndex: 1 },
       },
       {
-        start: { rowIndex: 1, columnIndex: 20 },
-        end: { rowIndex: 1, columnIndex: 20 },
-        inserted: ['-->'],
         deleted: [''],
+        end: { columnIndex: 20, rowIndex: 1 },
+        inserted: ['-->'],
         origin: EditOrigin.ToggleBlockComment,
+        start: { columnIndex: 20, rowIndex: 1 },
       },
     ]),
   ).toEqual(['  <body>', '    <!--sample test -->', '  </body>'])
@@ -166,11 +166,11 @@ test('applyEdits - single deletion in one line', () => {
   expect(
     TextDocument.applyEdits(textDocument, [
       {
-        start: { rowIndex: 1, columnIndex: 4 },
-        end: { rowIndex: 1, columnIndex: 8 },
-        inserted: [],
         deleted: ['<!--'],
+        end: { columnIndex: 8, rowIndex: 1 },
+        inserted: [],
         origin: EditOrigin.ToggleBlockComment,
+        start: { columnIndex: 4, rowIndex: 1 },
       },
     ]),
   ).toEqual(['  <body>', '    sample test-->', '  </body>'])
@@ -183,18 +183,18 @@ test('applyEdits - multiple deletions in one line', () => {
   expect(
     TextDocument.applyEdits(textDocument, [
       {
-        start: { rowIndex: 1, columnIndex: 4 },
-        end: { rowIndex: 1, columnIndex: 8 },
-        inserted: [''],
         deleted: ['<!--'],
+        end: { columnIndex: 8, rowIndex: 1 },
+        inserted: [''],
         origin: EditOrigin.ToggleBlockComment,
+        start: { columnIndex: 4, rowIndex: 1 },
       },
       {
-        start: { rowIndex: 1, columnIndex: 15 },
-        end: { rowIndex: 1, columnIndex: 18 },
-        inserted: [''],
         deleted: ['-->'],
+        end: { columnIndex: 18, rowIndex: 1 },
+        inserted: [''],
         origin: EditOrigin.ToggleBlockComment,
+        start: { columnIndex: 15, rowIndex: 1 },
       },
     ]),
   ).toEqual(['  <body>', '    sample test', '  </body>'])
@@ -206,18 +206,18 @@ test('applyEdits - deletions in multiple lines', () => {
   }
   const edits = [
     {
-      start: { rowIndex: 1, columnIndex: 4 },
-      end: { rowIndex: 1, columnIndex: 8 },
-      inserted: [''],
       deleted: ['<!--'],
+      end: { columnIndex: 8, rowIndex: 1 },
+      inserted: [''],
       origin: EditOrigin.ToggleBlockComment,
+      start: { columnIndex: 4, rowIndex: 1 },
     },
     {
-      start: { rowIndex: 2, columnIndex: 0 },
-      end: { rowIndex: 2, columnIndex: 3 },
-      inserted: [''],
       deleted: ['-->'],
+      end: { columnIndex: 3, rowIndex: 2 },
+      inserted: [''],
       origin: EditOrigin.ToggleBlockComment,
+      start: { columnIndex: 0, rowIndex: 2 },
     },
   ]
   expect(TextDocument.applyEdits(textDocument, edits)).toEqual(['  <body>', '    sample test', '', '  </body>'])
@@ -232,8 +232,8 @@ test('positionAt - in first line', () => {
       4,
     ),
   ).toEqual({
-    rowIndex: 0,
     columnIndex: 4,
+    rowIndex: 0,
   })
 })
 
@@ -246,8 +246,8 @@ test('positionAt - at end of first line', () => {
       5,
     ),
   ).toEqual({
-    rowIndex: 0,
     columnIndex: 5,
+    rowIndex: 0,
   })
 })
 
@@ -260,8 +260,8 @@ test('positionAt - at start of second line', () => {
       6,
     ),
   ).toEqual({
-    rowIndex: 1,
     columnIndex: 0,
+    rowIndex: 1,
   })
 })
 
@@ -272,16 +272,16 @@ test('applyEdits - issue with pasting many lines', () => {
   expect(
     TextDocument.applyEdits(textDocument, [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 0,
-        },
+        deleted: [''],
         end: {
-          rowIndex: 0,
           columnIndex: 0,
+          rowIndex: 0,
         },
         inserted: [...Array.from({ length: 150_000 }).fill('a')],
-        deleted: [''],
+        start: {
+          columnIndex: 0,
+          rowIndex: 0,
+        },
       },
     ]),
   ).toEqual([...Array.from({ length: 150_000 }).fill('a')])
@@ -289,53 +289,53 @@ test('applyEdits - issue with pasting many lines', () => {
 
 test('applyEdits - virtual space', () => {
   const textDocument = {
-    uri: '/test/test.txt',
+    columnWidth: 9,
+    cursor: {
+      columnIndex: 6,
+      rowIndex: 3,
+    },
+    deltaY: 0,
+    finalDeltaY: 0,
+    finalY: 0,
+    fontSize: 15,
+    height: 645,
+    id: 1,
     languageId: 'plaintext',
     lines: ['line 1', 'line 2', 'line 3'],
-    cursor: {
-      rowIndex: 3,
-      columnIndex: 6,
-    },
+    maxLineY: 3,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    rowHeight: 20,
     selections: [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 0,
-        },
         end: {
-          rowIndex: 3,
           columnIndex: 6,
+          rowIndex: 3,
+        },
+        start: {
+          columnIndex: 0,
+          rowIndex: 0,
         },
       },
     ],
-    id: 1,
-    deltaY: 0,
-    minLineY: 0,
-    maxLineY: 3,
-    numberOfVisibleLines: 32,
-    finalY: 0,
-    finalDeltaY: 0,
-    height: 645,
+    uri: '/test/test.txt',
     x: 0,
     y: 55,
-    columnWidth: 9,
-    rowHeight: 20,
-    fontSize: 15,
   }
   expect(
     TextDocument.applyEdits(textDocument, [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 0,
-        },
+        deleted: ['line 1', 'line 2', 'line 3'],
         end: {
-          rowIndex: 3,
           columnIndex: 6,
+          rowIndex: 3,
         },
         inserted: ['line 1,line 2,line 3'],
-        deleted: ['line 1', 'line 2', 'line 3'],
         origin: EditOrigin.EditorPasteText,
+        start: {
+          columnIndex: 0,
+          rowIndex: 0,
+        },
       },
     ]),
   ).toEqual(['line 1,line 2,line 3'])
@@ -343,48 +343,48 @@ test('applyEdits - virtual space', () => {
 
 test('applyEdits - issue with inserting multiple lines', () => {
   const editor = {
-    uri: '/test/test.txt',
+    completionTriggerCharacters: [],
+    cursor: {
+      columnIndex: 6,
+      rowIndex: 3,
+    },
+    deltaY: 0,
+    finalDeltaY: 0,
+    finalY: 0,
+    height: 645,
+    id: 1,
+    invalidStartIndex: 3,
     languageId: 'plaintext',
     lines: ['line 1', 'line 2', 'line 3'],
-    cursor: {
-      rowIndex: 3,
-      columnIndex: 6,
-    },
-    completionTriggerCharacters: [],
+    maxLineY: 3,
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     selections: [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 0,
-        },
         end: {
-          rowIndex: 3,
           columnIndex: 6,
+          rowIndex: 3,
+        },
+        start: {
+          columnIndex: 0,
+          rowIndex: 0,
         },
       },
     ],
-    id: 1,
-    deltaY: 0,
-    minLineY: 0,
-    maxLineY: 3,
-    numberOfVisibleLines: 32,
-    finalY: 0,
-    finalDeltaY: 0,
-    height: 645,
+    undoStack: [],
+    uri: '/test/test.txt',
+    validLines: [],
     x: 0,
     y: 55,
-    undoStack: [],
-    validLines: [],
-    invalidStartIndex: 3,
   }
   expect(
     TextDocument.applyEdits(editor, [
       {
-        start: { rowIndex: 0, columnIndex: 0 },
-        end: { rowIndex: 3, columnIndex: 6 },
-        inserted: ['line 1', 'line 2', 'line 3'],
         deleted: ['line 1', 'line 2', 'line 3'],
+        end: { columnIndex: 6, rowIndex: 3 },
+        inserted: ['line 1', 'line 2', 'line 3'],
         origin: EditOrigin.EditorPasteText,
+        start: { columnIndex: 0, rowIndex: 0 },
       },
     ]),
   ).toEqual(['line 1', 'line 2', 'line 3'])
@@ -392,20 +392,20 @@ test('applyEdits - issue with inserting multiple lines', () => {
 
 test('applyEdits - insert multiline snippet', () => {
   const editor = {
-    lines: ['  '],
     cursor: {
-      rowIndex: 0,
       columnIndex: 2,
+      rowIndex: 0,
     },
+    lines: ['  '],
     selections: [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 2,
-        },
         end: {
-          rowIndex: 0,
           columnIndex: 2,
+          rowIndex: 0,
+        },
+        start: {
+          columnIndex: 2,
+          rowIndex: 0,
         },
       },
     ],
@@ -413,17 +413,17 @@ test('applyEdits - insert multiline snippet', () => {
   }
   const newLines = TextDocument.applyEdits(editor, [
     {
-      start: {
-        rowIndex: 0,
-        columnIndex: 2,
-      },
+      deleted: [''],
       end: {
-        rowIndex: 0,
         columnIndex: 2,
+        rowIndex: 0,
       },
       inserted: ['<div>', '    test', '  </div>'],
-      deleted: [''],
       origin: EditOrigin.EditorSnippet,
+      start: {
+        columnIndex: 2,
+        rowIndex: 0,
+      },
     },
   ])
   expect(newLines).toEqual(['  <div>', '    test', '  </div>'])
@@ -431,20 +431,20 @@ test('applyEdits - insert multiline snippet', () => {
 
 test('applyEdits - replace multiple lines', () => {
   const editor = {
-    lines: ['h1 {', '  font-size: 20px', '}'],
     cursor: {
-      rowIndex: 0,
       columnIndex: 2,
+      rowIndex: 0,
     },
+    lines: ['h1 {', '  font-size: 20px', '}'],
     selections: [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 2,
-        },
         end: {
-          rowIndex: 0,
           columnIndex: 2,
+          rowIndex: 0,
+        },
+        start: {
+          columnIndex: 2,
+          rowIndex: 0,
         },
       },
     ],
@@ -452,17 +452,17 @@ test('applyEdits - replace multiple lines', () => {
   }
   const newLines = TextDocument.applyEdits(editor, [
     {
-      start: {
-        rowIndex: 0,
-        columnIndex: 0,
-      },
+      deleted: ['h1 {', '  font-size: 20px', '}'],
       end: {
-        rowIndex: 3,
         columnIndex: 0,
+        rowIndex: 3,
       },
       inserted: ['h1 {', '  font-size: 20px;', '}', ''],
-      deleted: ['h1 {', '  font-size: 20px', '}'],
       origin: EditOrigin.Format,
+      start: {
+        columnIndex: 0,
+        rowIndex: 0,
+      },
     },
   ])
   expect(newLines).toEqual(['h1 {', '  font-size: 20px;', '}', ''])
@@ -470,20 +470,20 @@ test('applyEdits - replace multiple lines', () => {
 
 test('applyEdits - replace multiple lines', () => {
   const editor = {
-    lines: ['h1 {', '  font-size: 20px', '}'],
     cursor: {
-      rowIndex: 0,
       columnIndex: 2,
+      rowIndex: 0,
     },
+    lines: ['h1 {', '  font-size: 20px', '}'],
     selections: [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 2,
-        },
         end: {
-          rowIndex: 0,
           columnIndex: 2,
+          rowIndex: 0,
+        },
+        start: {
+          columnIndex: 2,
+          rowIndex: 0,
         },
       },
     ],
@@ -491,17 +491,17 @@ test('applyEdits - replace multiple lines', () => {
   }
   const newLines = TextDocument.applyEdits(editor, [
     {
-      start: {
-        rowIndex: 0,
-        columnIndex: 0,
-      },
+      deleted: ['h1 {', '  font-size: 20px', '}'],
       end: {
-        rowIndex: 3,
         columnIndex: 0,
+        rowIndex: 3,
       },
       inserted: ['h1 {', '  font-size: 20px;', '}', ''],
-      deleted: ['h1 {', '  font-size: 20px', '}'],
       origin: EditOrigin.Format,
+      start: {
+        columnIndex: 0,
+        rowIndex: 0,
+      },
     },
   ])
   expect(newLines).toEqual(['h1 {', '  font-size: 20px;', '}', ''])
@@ -509,20 +509,20 @@ test('applyEdits - replace multiple lines', () => {
 
 test('applyEdits - two lines deleted and two lines inserted', () => {
   const editor = {
-    lines: ['b', 'a', ''],
     cursor: {
-      rowIndex: 0,
       columnIndex: 0,
+      rowIndex: 0,
     },
+    lines: ['b', 'a', ''],
     selections: [
       {
-        start: {
-          rowIndex: 0,
-          columnIndex: 0,
-        },
         end: {
-          rowIndex: 0,
           columnIndex: 0,
+          rowIndex: 0,
+        },
+        start: {
+          columnIndex: 0,
+          rowIndex: 0,
         },
       },
     ],
@@ -530,30 +530,30 @@ test('applyEdits - two lines deleted and two lines inserted', () => {
   }
   const newLines = TextDocument.applyEdits(editor, [
     {
-      start: {
-        rowIndex: 0,
-        columnIndex: 0,
-      },
+      deleted: ['b', ''],
       end: {
-        rowIndex: 1,
         columnIndex: 0,
+        rowIndex: 1,
       },
       inserted: ['a', 'b', ''],
-      deleted: ['b', ''],
       origin: EditOrigin.Unknown,
+      start: {
+        columnIndex: 0,
+        rowIndex: 0,
+      },
     },
     {
-      start: {
-        rowIndex: 1,
-        columnIndex: 0,
-      },
+      deleted: ['a', ''],
       end: {
-        rowIndex: 2,
         columnIndex: 0,
+        rowIndex: 2,
       },
       inserted: [''],
-      deleted: ['a', ''],
       origin: EditOrigin.Unknown,
+      start: {
+        columnIndex: 0,
+        rowIndex: 1,
+      },
     },
   ])
   expect(newLines).toEqual(['a', 'b', ''])
@@ -561,11 +561,11 @@ test('applyEdits - two lines deleted and two lines inserted', () => {
 
 test('applyEdits - one line replaced by two', () => {
   const editor = {
-    lines: [`import 'b'`],
     cursor: {
-      rowIndex: 0,
       columnIndex: 0,
+      rowIndex: 0,
     },
+    lines: [`import 'b'`],
     selections: [],
     undoStack: [],
   }
@@ -590,11 +590,11 @@ test('applyEdits - one line replaced by two', () => {
 
 test('applyEdits - one line deleted', () => {
   const editor = {
-    lines: [`b`],
     cursor: {
-      rowIndex: 0,
       columnIndex: 0,
+      rowIndex: 0,
     },
+    lines: [`b`],
     selections: [],
     undoStack: [],
   }
@@ -619,11 +619,11 @@ test('applyEdits - one line deleted', () => {
 
 test('applyEdits - multiple document edits', () => {
   const editor = {
-    lines: [`import 'b'`, `import 'a'`, ``, `let   x = 1`, ``, ``, ``, `export {}`],
     cursor: {
-      rowIndex: 0,
       columnIndex: 0,
+      rowIndex: 0,
     },
+    lines: [`import 'b'`, `import 'a'`, ``, `let   x = 1`, ``, ``, ``, `export {}`],
     selections: [],
     undoStack: [],
   }

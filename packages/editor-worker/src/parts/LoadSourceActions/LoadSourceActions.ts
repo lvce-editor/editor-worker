@@ -7,15 +7,15 @@ export const loadSourceActions = async (editor: any, state: SourceActionState): 
   // TODO request source actions information from extensions
   const sourceActions = await GetSourceActions.getEditorSourceActions()
   // TODO avoid side effect
-  const { x, y, width, height } = GetSourceActionWidgetPosition.getSourceActionWidgetPosition(editor, sourceActions.length)
+  const { height, width, x, y } = GetSourceActionWidgetPosition.getSourceActionWidgetPosition(editor, sourceActions.length)
   return {
     ...state,
-    sourceActions,
-    x,
-    y,
-    width,
+    focusedIndex: 0,
     height,
     maxHeight: 150,
-    focusedIndex: 0,
+    sourceActions,
+    width,
+    x,
+    y,
   }
 }

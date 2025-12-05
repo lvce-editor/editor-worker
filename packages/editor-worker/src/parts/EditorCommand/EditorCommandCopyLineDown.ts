@@ -9,15 +9,15 @@ export const copyLineDown = (editor: any) => {
   const rowIndex = selections[0]
   Assert.number(rowIndex)
   const position = {
-    rowIndex,
     columnIndex: 0,
+    rowIndex,
   }
   const changes = [
     {
-      start: position,
+      deleted: [''],
       end: position,
       inserted: [TextDocument.getLine(editor, rowIndex), ''],
-      deleted: [''],
+      start: position,
     },
   ]
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes)

@@ -5,21 +5,21 @@ import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 export const getEditorMessageVirtualDom = (message: string): readonly VirtualDomNode[] => {
   const dom: readonly VirtualDomNode[] = [
     {
-      type: VirtualDomElements.Div,
+      childCount: 2,
       className: 'Viewlet EditorMessage',
       tabIndex: -1,
-      childCount: 2,
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
-      className: 'EditorMessageText',
       childCount: 1,
+      className: 'EditorMessageText',
+      type: VirtualDomElements.Div,
     },
     text(message),
     {
-      type: VirtualDomElements.Div,
-      className: 'EditorMessageTriangle',
       childCount: 0,
+      className: 'EditorMessageTriangle',
+      type: VirtualDomElements.Div,
     },
   ]
   return dom
