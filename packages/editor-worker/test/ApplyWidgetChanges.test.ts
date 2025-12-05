@@ -8,13 +8,13 @@ const id = 1
 
 beforeEach(() => {
   WidgetRegistry.set(id, {
-    handleEditorType(editor: any, state: any) {
+    handleEditorDeleteLeft(editor: any, state: any) {
       return {
         ...state,
         updated: true,
       }
     },
-    handleEditorDeleteLeft(editor: any, state: any) {
+    handleEditorType(editor: any, state: any) {
       return {
         ...state,
         updated: true,
@@ -25,30 +25,30 @@ beforeEach(() => {
 
 test('applyWidgetChanges - delete', async () => {
   const editor = {
-    lines: ['line 1', 'line 2', 'line 3'],
     cursor: {
-      rowIndex: 0,
       columnIndex: 4,
+      rowIndex: 0,
     },
+    lineCache: [],
+    lines: ['line 1', 'line 2', 'line 3'],
     selections: EditorSelection.fromRange(0, 0, 0, 4),
     widgets: [
       {
         id: id,
-        oldState: {
+        newState: {
           updated: false,
         },
-        newState: {
+        oldState: {
           updated: false,
         },
       },
     ],
-    lineCache: [],
   }
   const changes = [
     {
-      origin: EditOrigin.DeleteLeft,
-      inserted: [''],
       deleted: ['a'],
+      inserted: [''],
+      origin: EditOrigin.DeleteLeft,
     },
   ]
   expect(await ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toEqual({
@@ -58,20 +58,20 @@ test('applyWidgetChanges - delete', async () => {
 
 test('applyWidgetChanges - empty widgets', async () => {
   const editor = {
-    lines: ['line 1', 'line 2', 'line 3'],
     cursor: {
-      rowIndex: 0,
       columnIndex: 4,
+      rowIndex: 0,
     },
+    lineCache: [],
+    lines: ['line 1', 'line 2', 'line 3'],
     selections: EditorSelection.fromRange(0, 0, 0, 4),
     widgets: [],
-    lineCache: [],
   }
   const changes = [
     {
-      origin: EditOrigin.DeleteLeft,
-      inserted: [''],
       deleted: ['a'],
+      inserted: [''],
+      origin: EditOrigin.DeleteLeft,
     },
   ]
   expect(await ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toEqual([])

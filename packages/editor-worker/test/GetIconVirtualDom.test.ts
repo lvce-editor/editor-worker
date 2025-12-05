@@ -5,9 +5,9 @@ import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomE
 test('getIconVirtualDom', () => {
   const dom = GetIconVirtualDom.getIconVirtualDom('Test')
   expect(dom).toEqual({
-    type: VirtualDomElements.Div,
+    childCount: 0,
     className: 'MaskIcon MaskIconTest',
     role: 'none',
-    childCount: 0,
+    type: VirtualDomElements.Div,
   })
 })

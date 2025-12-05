@@ -1,6 +1,6 @@
 export const state = {
-  touchOffsetY: 0,
   deltaY: 0,
+  touchOffsetY: 0,
 }
 
 // @ts-ignore

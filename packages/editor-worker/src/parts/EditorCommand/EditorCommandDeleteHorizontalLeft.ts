@@ -7,7 +7,7 @@ import * as EditorDelta from './EditorCommandDelta.ts'
 import { editorReplaceSelections } from './EditorCommandReplaceSelection.ts'
 
 const deleteLeftWithAutoClose = (editor: any) => {
-  const { selections, lines } = editor
+  const { lines, selections } = editor
   for (let i = 0; i < selections.length; i += 4) {
     selections[i + 1]++
     selections[i + 3]++
@@ -17,7 +17,7 @@ const deleteLeftWithAutoClose = (editor: any) => {
 }
 
 export const editorDeleteHorizontalLeft = (editor: any, getDelta: any) => {
-  const { autoClosingRanges = [], selections, lines } = editor
+  const { autoClosingRanges = [], lines, selections } = editor
   if (IsAllAutoClosingPairDelete.isAllAutoClosingPairDelete(autoClosingRanges, selections)) {
     return deleteLeftWithAutoClose(editor)
   }

@@ -11,8 +11,8 @@ export const updateWidget = (editor: any, widgetId: number, newState: any): any 
   const childWidget = editor.widgets[childIndex]
   const newWidget = {
     ...childWidget,
-    oldState: childWidget.newState,
     newState,
+    oldState: childWidget.newState,
   }
   const newWidgets = [...editor.widgets.slice(0, childIndex), newWidget, ...editor.widgets.slice(childIndex + 1)]
   return {

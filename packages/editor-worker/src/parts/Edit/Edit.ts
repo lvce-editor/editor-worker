@@ -1,12 +1,12 @@
 export interface Position {
-  readonly rowIndex: number
   readonly columnIndex: number
+  readonly rowIndex: number
 }
 
 export interface Edit {
-  readonly inserted: readonly string[]
   readonly deleted: readonly string[]
-  readonly start: Position
   readonly end: Position
+  readonly inserted: readonly string[]
   readonly origin: string
+  readonly start: Position
 }

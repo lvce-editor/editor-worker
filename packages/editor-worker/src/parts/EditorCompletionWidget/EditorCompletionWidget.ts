@@ -39,6 +39,8 @@ export const remove = (widget: CompletionWidget) => {
 }
 
 export const {
+  close,
+  closeDetails,
   focusFirst,
   focusIndex,
   focusLast,
@@ -48,14 +50,12 @@ export const {
   handleEditorClick,
   handleEditorDeleteLeft,
   handleEditorType,
+  handlePointerDown,
+  handleWheel,
   openDetails,
   selectCurrent,
   selectIndex,
   toggleDetails,
-  closeDetails,
-  handleWheel,
-  close,
-  handlePointerDown,
 } = createFns(
   [
     'handleEditorType',

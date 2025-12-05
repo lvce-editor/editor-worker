@@ -4,7 +4,7 @@ export const name = 'editor.completion-open-on-type'
 
 export const skip = 1
 
-export const test: Test = async ({ Extension, FileSystem, Workspace, Main, Editor, Locator, expect }) => {
+export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main, Workspace }) => {
   // arrange
   const extensionUri = import.meta.resolve('../fixtures/editor.completion-open-on-type')
   await Extension.addWebExtension(extensionUri)

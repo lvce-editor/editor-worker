@@ -7,25 +7,25 @@ export const create = (): CodeGeneratorWidget => {
   const completionUid = Id.create()
   const widget: CodeGeneratorWidget = {
     id: WidgetId.CodeGenerator,
-    oldState: {
-      uid: completionUid,
-      questions: [],
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      focused: false,
-      focusSource: FocusSource.Unknown,
-    },
     newState: {
-      uid: completionUid,
-      questions: [],
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
       focused: true,
       focusSource: FocusSource.Script,
+      height: 0,
+      questions: [],
+      uid: completionUid,
+      width: 0,
+      x: 0,
+      y: 0,
+    },
+    oldState: {
+      focused: false,
+      focusSource: FocusSource.Unknown,
+      height: 0,
+      questions: [],
+      uid: completionUid,
+      width: 0,
+      x: 0,
+      y: 0,
     },
   }
   return widget

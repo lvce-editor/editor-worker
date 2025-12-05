@@ -4,10 +4,10 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test('editorCursorDown', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
   }
   expect(EditorCursorDown.cursorDown(editor)).toMatchObject({
     selections: EditorSelection.fromRange(1, 0, 1, 0),
@@ -16,10 +16,10 @@ test('editorCursorDown', () => {
 
 test('editorCursorDown - with selection', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2', 'line 3'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(1, 0, 1, 1),
-    lineCache: [],
   }
   expect(EditorCursorDown.cursorDown(editor)).toMatchObject({
     selections: EditorSelection.fromRange(2, 1, 2, 1),
@@ -28,10 +28,10 @@ test('editorCursorDown - with selection', () => {
 
 test.skip('editorCursorDown - with emoji - 👮🏽‍♀️', () => {
   const editor = {
+    lineCache: [],
     lines: ['👮🏽‍♀️👮🏽‍♀️👮🏽‍♀️', 'abc'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 21, 0, 21),
-    lineCache: [],
   }
   expect(EditorCursorDown.cursorDown(editor)).toMatchObject({
     selections: EditorSelection.fromRange(1, 3, 1, 3),
@@ -40,9 +40,9 @@ test.skip('editorCursorDown - with emoji - 👮🏽‍♀️', () => {
 
 test('editorCursorDown - line below is shorter', () => {
   const editor = {
+    lineCache: [],
     lines: ['abcd', 'a'],
     selections: EditorSelection.fromRange(0, 4, 0, 4),
-    lineCache: [],
   }
   expect(EditorCursorDown.cursorDown(editor)).toMatchObject({
     selections: EditorSelection.fromRange(1, 4, 1, 4),

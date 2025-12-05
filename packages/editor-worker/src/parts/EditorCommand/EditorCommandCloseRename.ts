@@ -8,7 +8,7 @@ const isRenameWidget = (widget: any) => {
 }
 
 export const closeRename = async (editor: any) => {
-  const { widgets, uid } = editor
+  const { uid, widgets } = editor
   const renameWidgetIndex = widgets.findIndex(isRenameWidget)
   if (renameWidgetIndex === -1) {
     return editor

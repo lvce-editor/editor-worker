@@ -8,12 +8,12 @@ const combineResults = (results: any) => {
 
 export const executeRenameProvider = async (editor: any, offset: number, newName: string) => {
   return ExtensionHostEditor.execute({
+    args: [offset, newName],
+    combineResults,
     editor,
     event: ExtensionHostActivationEvent.OnRename,
     method: ExtensionHostCommandType.RenameExecuteRename,
-    args: [offset, newName],
     noProviderFoundMessage: 'no rename provider found',
     noProviderFoundResult: [],
-    combineResults,
   })
 }

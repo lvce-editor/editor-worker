@@ -48,9 +48,9 @@ const isNoProviderFoundError = (error: any) => {
 export const goToTypeDefinition = async (editor: any, explicit = true) => {
   return EditorGoTo.goTo({
     editor,
+    getErrorMessage,
     getLocation,
     getNoLocationFoundMessage: GoToTypeDefinitionStrings.getNoLocationFoundMessage,
     isNoProviderFoundError,
-    getErrorMessage,
   })
 }

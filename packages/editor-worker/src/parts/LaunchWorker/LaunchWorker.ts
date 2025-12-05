@@ -10,15 +10,15 @@ export const launchWorker = async (name: string, url: string, intializeCommand?:
   // @ts-ignore
   await RendererWorker.invokeAndTransfer('IpcParent.create', {
     method: RendererWorkerIpcParentType.ModuleWorkerAndWorkaroundForChromeDevtoolsBug,
-    url,
     name: name,
-    raw: true,
     port: port1,
+    raw: true,
+    url,
   })
   const rpc = await MessagePortRpcParent.create({
     commandMap: {},
-    messagePort: port2,
     isMessagePortOpen: true,
+    messagePort: port2,
   })
   port2.start()
   if (intializeCommand) {

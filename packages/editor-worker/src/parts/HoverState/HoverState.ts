@@ -1,11 +1,11 @@
 import type { Rectangle } from '../Rectangle/Rectangle.ts'
 
 export interface HoverState extends Rectangle {
-  readonly uid: number
+  readonly commands: readonly any[]
   readonly content: string
+  readonly diagnostics: any[]
+  readonly documentation: string
   readonly editorUid: number
   readonly lineInfos: Array<readonly string[]>
-  readonly documentation: string
-  readonly diagnostics: any[]
-  readonly commands: readonly any[]
+  readonly uid: number
 }

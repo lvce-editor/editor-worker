@@ -79,8 +79,8 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
   const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
   const newEditor = {
     ...editor,
-    widgets: newWidgets,
     focused: true,
+    widgets: newWidgets,
   }
   Editors.set(editorUid, editor, newEditor)
   await SetFocus.setFocus(WhenExpression.FocusEditorText)

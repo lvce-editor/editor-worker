@@ -6,14 +6,14 @@ export const editorGetPositionRight = (position: any, lines: string, getDelta: a
       return position
     }
     return {
-      rowIndex: rowIndex + 1,
       columnIndex: 0,
+      rowIndex: rowIndex + 1,
     }
   }
   const delta = getDelta(lines[rowIndex], columnIndex)
   return {
-    rowIndex,
     columnIndex: columnIndex + delta,
+    rowIndex,
   }
 }
 

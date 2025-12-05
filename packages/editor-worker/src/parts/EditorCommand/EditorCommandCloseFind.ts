@@ -14,7 +14,7 @@ export const closeFind = (editor: any) => {
   const newWidgets = RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.Find)
   return {
     ...editor,
-    widgets: newWidgets,
     focused: true,
+    widgets: newWidgets,
   }
 }

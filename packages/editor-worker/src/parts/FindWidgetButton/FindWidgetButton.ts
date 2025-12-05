@@ -1,7 +1,7 @@
 export interface FindWidgetButton {
-  readonly label: string
-  readonly icon: string
   readonly disabled: boolean
-  readonly onClick: string
+  readonly icon: string
+  readonly label: string
   readonly name: string
+  readonly onClick: string
 }

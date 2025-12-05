@@ -14,17 +14,17 @@ export const moveLineDown = (editor) => {
   }
   const documentEdits = [
     {
-      type: /* splice */ 2,
-      rowIndex: rowIndex,
       count: 2,
       newLines: [TextDocument.getLine(editor.textDocument, rowIndex + 1), TextDocument.getLine(editor.textDocument, rowIndex)],
+      rowIndex: rowIndex,
+      type: /* splice */ 2,
     },
   ]
   // @ts-ignore
   const cursorEdits = Editor.moveCursors(editor, (editor, cursor) => {
     return {
-      rowIndex: cursor.rowIndex + 1,
       columnIndex: cursor.columnIndex,
+      rowIndex: cursor.rowIndex + 1,
     }
   })
   // @ts-ignore

@@ -29,8 +29,8 @@ export const updateDiagnostics = async (newState: any): Promise<any> => {
     const decorations = await GetVisibleDiagnostics.getVisibleDiagnostics(latest.newState, diagnostics)
     const newEditor = {
       ...latest.newState,
-      diagnostics,
       decorations,
+      diagnostics,
     }
     EditorState.set(newState.id, latest.oldState, newEditor)
     // @ts-ignore

@@ -12,21 +12,21 @@ export const getCodeGeneratorVirtualDom = (state: CodeGeneratorState): readonly 
   const enterCode = EditorStrings.enterCode()
   return [
     {
-      type: VirtualDomElements.Div,
-      className: MergeClassNames.mergeClassNames(ClassNames.Viewlet, ClassNames.CodeGeneratorWidget),
       childCount: 2,
-    },
-    {
-      type: VirtualDomElements.Input,
-      className: MergeClassNames.mergeClassNames(ClassNames.CodeGeneratorInput, ClassNames.InputBox),
-      childCount: 0,
-      placeholder: enterCode,
-      name: InputName.CodeGeneratorInput,
-    },
-    {
+      className: MergeClassNames.mergeClassNames(ClassNames.Viewlet, ClassNames.CodeGeneratorWidget),
       type: VirtualDomElements.Div,
-      className: ClassNames.CodeGeneratorMessage,
+    },
+    {
+      childCount: 0,
+      className: MergeClassNames.mergeClassNames(ClassNames.CodeGeneratorInput, ClassNames.InputBox),
+      name: InputName.CodeGeneratorInput,
+      placeholder: enterCode,
+      type: VirtualDomElements.Input,
+    },
+    {
       childCount: 1,
+      className: ClassNames.CodeGeneratorMessage,
+      type: VirtualDomElements.Div,
     },
     text(escapeToClose),
   ]

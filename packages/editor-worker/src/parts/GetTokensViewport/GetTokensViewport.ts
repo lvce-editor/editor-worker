@@ -12,7 +12,7 @@ const getTokensViewportEmbedded = (langageId: string, lines: string[], lineCache
     const result = lineCache[index + 1]
     const line = lines[index]
     if (result.embeddedLanguage) {
-      const { embeddedLanguage, embeddedLanguageStart, embeddedLanguageEnd } = result
+      const { embeddedLanguage, embeddedLanguageEnd, embeddedLanguageStart } = result
       const embeddedTokenizer = Tokenizer.getTokenizer(embeddedLanguage)
       if (embeddedLanguageStart !== line.length && embeddedTokenizer && embeddedTokenizer !== TokenizePlainText) {
         const isFull = embeddedLanguageStart === 0 && embeddedLanguageEnd === line.length
@@ -27,9 +27,9 @@ const getTokensViewportEmbedded = (langageId: string, lines: string[], lineCache
         topContext = embedResult
         result.embeddedResultIndex = embeddedResults.length
         embeddedResults.push({
+          isFull,
           result: embedResult,
           TokenMap: embeddedTokenizer.TokenMap,
-          isFull,
         })
       } else if (line.length === 0) {
         const embedResult = {
@@ -37,15 +37,15 @@ const getTokensViewportEmbedded = (langageId: string, lines: string[], lineCache
         }
         result.embeddedResultIndex = embeddedResults.length
         embeddedResults.push({
-          result: embedResult,
           isFull: true,
+          result: embedResult,
           TokenMap: [],
         })
       } else {
         tokenizersToLoad.push(embeddedLanguage)
         embeddedResults.push({
-          result: {},
           isFull: false,
+          result: {},
           TokenMap: [],
         })
         topContext = undefined
@@ -55,8 +55,8 @@ const getTokensViewportEmbedded = (langageId: string, lines: string[], lineCache
     }
   }
   return {
-    tokenizersToLoad,
     embeddedResults,
+    tokenizersToLoad,
   }
 }
 
@@ -66,9 +66,9 @@ const getTokenizeEndIndex = (invalidStartIndex: any, endLineIndex: any, tokenize
 
 // TODO only send changed lines to renderer process instead of all lines in viewport
 export const getTokensViewport = (editor: any, startLineIndex: any, endLineIndex: any) => {
-  const { invalidStartIndex, lineCache, tokenizerId, lines, languageId } = editor
+  const { invalidStartIndex, languageId, lineCache, lines, tokenizerId } = editor
   const tokenizer = TokenizerMap.get(tokenizerId)
-  const { hasArrayReturn, tokenizeLine, initialLineState } = tokenizer
+  const { hasArrayReturn, initialLineState, tokenizeLine } = tokenizer
   const tokenizeStartIndex = invalidStartIndex
   const tokenizeEndIndex = getTokenizeEndIndex(invalidStartIndex, endLineIndex, tokenizeStartIndex)
   const tokenizersToLoad: any[] = []
@@ -87,19 +87,19 @@ export const getTokensViewport = (editor: any, startLineIndex: any, endLineIndex
   }
   const visibleLines = lineCache.slice(startLineIndex + 1, endLineIndex + 1)
   if (linesWithEmbed.length > 0) {
-    const { tokenizersToLoad, embeddedResults } = getTokensViewportEmbedded(languageId, lines, lineCache, linesWithEmbed)
+    const { embeddedResults, tokenizersToLoad } = getTokensViewportEmbedded(languageId, lines, lineCache, linesWithEmbed)
     // TODO support lineCache with embedded content
     editor.invalidStartIndex = 0
     return {
-      tokens: visibleLines,
-      tokenizersToLoad,
       embeddedResults,
+      tokenizersToLoad,
+      tokens: visibleLines,
     }
   }
   editor.invalidStartIndex = Math.max(invalidStartIndex, tokenizeEndIndex)
   return {
-    tokens: visibleLines,
-    tokenizersToLoad,
     embeddedResults,
+    tokenizersToLoad,
+    tokens: visibleLines,
   }
 }

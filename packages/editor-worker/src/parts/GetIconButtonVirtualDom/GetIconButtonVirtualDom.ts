@@ -3,21 +3,21 @@ import * as GetIconVirtualDom from '../GetIconVirtualDom/GetIconVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export const getIconButtonVirtualDom = (iconButton: any) => {
-  const { label, icon, disabled, name, onClick } = iconButton
+  const { disabled, icon, label, name, onClick } = iconButton
   let className = ClassNames.IconButton
   if (disabled) {
     className += ' ' + ClassNames.IconButtonDisabled
   }
   return [
     {
-      type: VirtualDomElements.Button,
-      className,
-      title: label,
       ariaLabel: label,
       childCount: 1,
+      className,
       disabled: disabled ? true : undefined,
-      onClick: onClick,
       name: name,
+      onClick: onClick,
+      title: label,
+      type: VirtualDomElements.Button,
     },
     GetIconVirtualDom.getIconVirtualDom(icon),
   ]

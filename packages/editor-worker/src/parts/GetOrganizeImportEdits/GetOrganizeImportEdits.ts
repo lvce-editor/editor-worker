@@ -3,10 +3,10 @@ import * as ExtensionHostEditor from '../ExtensionHostEditor/ExtensionHostEditor
 
 export const getOrganizeImportEdits = async (editor: any): Promise<readonly OffsetBasedEdit[]> => {
   const edits = await ExtensionHostEditor.execute({
+    args: [],
     editor,
     event: 'onLanguage',
     method: 'ExtensionHostOrganizeImports.execute',
-    args: [],
   })
   return edits
 }

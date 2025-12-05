@@ -4,7 +4,7 @@ export const name = 'sample.diagnostic-provider-error'
 
 export const skip = 1
 
-export const test: Test = async ({ Editor, Settings, Main, FileSystem, Workspace, Extension }) => {
+export const test: Test = async ({ Editor, Extension, FileSystem, Main, Settings, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/test.xyz`, `abcdefgh`)

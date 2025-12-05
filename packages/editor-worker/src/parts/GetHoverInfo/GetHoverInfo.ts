@@ -14,8 +14,8 @@ const getHoverPosition = (position: any, selections: any) => {
   const rowIndex = selections[0]
   const columnIndex = selections[1]
   return {
-    rowIndex,
     columnIndex,
+    rowIndex,
   }
 }
 
@@ -55,13 +55,13 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   const instance = Editors.get(editorUid)
   const editor = instance.newState
   const { selections } = editor
-  const { rowIndex, columnIndex } = getHoverPosition(position, selections)
+  const { columnIndex, rowIndex } = getHoverPosition(position, selections)
   const offset = TextDocument.offsetAt(editor, rowIndex, columnIndex)
   const hover = await Hover.getHover(editor, offset)
   if (!hover) {
     return undefined
   }
-  const { displayString, documentation, displayStringLanguageId } = hover
+  const { displayString, displayStringLanguageId, documentation } = hover
   const tokenizerPath = ''
   const lineInfos = await TokenizeCodeBlock.tokenizeCodeBlock(
     displayString,
@@ -81,10 +81,10 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   const diagnostics = editor.diagnostics || []
   const matchingDiagnostics = getMatchingDiagnostics(diagnostics, rowIndex, columnIndex)
   return {
-    lineInfos,
     documentation,
+    lineInfos,
+    matchingDiagnostics,
     x,
     y,
-    matchingDiagnostics,
   }
 }

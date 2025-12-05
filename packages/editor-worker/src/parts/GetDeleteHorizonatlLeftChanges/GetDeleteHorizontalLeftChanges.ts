@@ -11,21 +11,21 @@ export const getChanges = (lines, selections, getDelta) => {
   const deleteSelection = (selectionStartRow: any, selectionStartColumn: any, selectionEndRow: any, selectionEndColumn: any) => {
     const positionLeft = EditorGetPositionLeft.editorGetPositionLeft(selectionStartRow, selectionStartColumn, lines, getDelta)
     const selectionEnd = {
-      rowIndex: selectionEndRow,
       columnIndex: selectionEndColumn,
+      rowIndex: selectionEndRow,
     }
     changes.push({
-      start: positionLeft,
-      end: selectionEnd,
-      inserted: [''],
       deleted: TextDocument.getSelectionText(
         { lines },
         {
-          start: positionLeft,
           end: selectionEnd,
+          start: positionLeft,
         },
       ),
+      end: selectionEnd,
+      inserted: [''],
       origin: EditOrigin.DeleteLeft,
+      start: positionLeft,
     })
   }
   EditorSelection.forEach(selections, deleteSelection)

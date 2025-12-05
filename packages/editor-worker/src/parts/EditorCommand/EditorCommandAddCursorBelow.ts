@@ -16,7 +16,7 @@ const getNewSelections = (selections, linesLength) => {
 
 // @ts-ignore
 export const addCursorBelow = (editor) => {
-  const { selections, lines } = editor
+  const { lines, selections } = editor
   const newSelections = getNewSelections(selections, lines.length)
   return {
     ...editor,

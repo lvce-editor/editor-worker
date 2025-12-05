@@ -7,10 +7,10 @@ export const executeHoverProvider = async (editor: any, offset: number) => {
   Assert.object(editor)
   Assert.number(offset)
   return ExtensionHostEditor.execute({
-    event: ExtensionHostActivationEvent.OnHover,
-    editor,
-    method: ExtensionHostCommandType.HoverExecute,
     args: [offset],
+    editor,
+    event: ExtensionHostActivationEvent.OnHover,
+    method: ExtensionHostCommandType.HoverExecute,
     noProviderFoundMessage: 'No hover provider found',
   })
 }

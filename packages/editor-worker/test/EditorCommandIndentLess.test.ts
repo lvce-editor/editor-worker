@@ -4,10 +4,10 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test.skip('editorIndentLess - already at start of line', () => {
   const editor = {
-    lines: ['line 1'],
-    selections: EditorSelection.fromRange(0, 0, 0, 0),
-    minLineY: 0,
     lineCache: [],
+    lines: ['line 1'],
+    minLineY: 0,
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
   }
   expect(EditorIndentLess.indentLess(editor)).toMatchObject({
     lines: ['line 1'],
@@ -17,10 +17,10 @@ test.skip('editorIndentLess - already at start of line', () => {
 
 test.skip('editorIndentLess - indented by one space', () => {
   const editor = {
-    lines: [' line 1'],
-    selections: EditorSelection.fromRange(0, 0, 0, 0),
-    minLineY: 0,
     lineCache: [],
+    lines: [' line 1'],
+    minLineY: 0,
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
   }
   expect(EditorIndentLess.indentLess(editor)).toMatchObject({
     lines: ['line 1'],
@@ -31,12 +31,12 @@ test.skip('editorIndentLess - indented by one space', () => {
 
 test('editorIndentLess - indented by two spaces', async () => {
   const editor = {
+    lineCache: [],
     lines: ['  line 1'],
+    minLineY: 0,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
-    minLineY: 0,
     undoStack: [],
-    lineCache: [],
   }
   expect(await EditorIndentLess.indentLess(editor)).toMatchObject({
     lines: ['line 1'],
@@ -47,8 +47,8 @@ test('editorIndentLess - indented by two spaces', async () => {
 test.skip('editorIndentLess - indented by tab', async () => {
   const editor = {
     lines: ['\tline 1'],
-    selections: EditorSelection.fromRange(0, 0, 0, 0),
     minLineY: 0,
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
   }
   expect(await EditorIndentLess.indentLess(editor)).toMatchObject({
     lines: ['line 1'],

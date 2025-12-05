@@ -9,7 +9,7 @@ import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
 import * as EditorCommandGetWordAt from './EditorCommandGetWordAt.ts'
 
 const newStateGenerator = async (state: RenameState, parentUid: number): Promise<RenameState> => {
-  const { uid, x, y, width, height } = state
+  const { height, uid, width, x, y } = state
   const { newState } = Editors.get(parentUid)
   const { languageId } = newState
   await RenameWorker.invoke('Rename.create', uid, x, y, width, height, parentUid, languageId)
@@ -23,7 +23,7 @@ const newStateGenerator = async (state: RenameState, parentUid: number): Promise
 }
 
 export const openRename = async (editor: any) => {
-  const { rowIndex, columnIndex } = GetPositionAtCursor.getPositionAtCursor(editor)
+  const { columnIndex, rowIndex } = GetPositionAtCursor.getPositionAtCursor(editor)
   const { word } = EditorCommandGetWordAt.getWordAt(editor, rowIndex, columnIndex)
   if (!word) {
     return editor

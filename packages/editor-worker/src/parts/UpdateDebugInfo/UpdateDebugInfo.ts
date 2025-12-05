@@ -14,7 +14,7 @@ export const updateDebugInfo = async (debugId: number): Promise<void> => {
   if (!instance) {
     return
   }
-  const { oldState, newState } = instance
+  const { newState, oldState } = instance
   const newEditor = {
     ...newState,
     highlightedLine: newInfo.rowIndex,

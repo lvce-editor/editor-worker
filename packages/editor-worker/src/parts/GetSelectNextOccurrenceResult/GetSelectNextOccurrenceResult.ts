@@ -33,13 +33,13 @@ const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
     const columnIndexAfterEnd = columnIndexAfter + word.length
     // @ts-ignore
     const revealRange = {
-      start: {
-        rowIndex,
-        columnIndex: columnIndexAfter,
-      },
       end: {
-        rowIndex,
         columnIndex: columnIndexAfterEnd,
+        rowIndex,
+      },
+      start: {
+        columnIndex: columnIndexAfter,
+        rowIndex,
       },
     }
     const newSelections = EditorSelection.push(selections, rowIndex, columnIndexAfter, rowIndex, columnIndexAfterEnd)
@@ -96,13 +96,13 @@ const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
       const columnEndIndex = columnIndex + word.length
       // @ts-ignore
       const revealRange = {
-        start: {
-          rowIndex: i,
-          columnIndex,
-        },
         end: {
-          rowIndex: i,
           columnIndex: columnEndIndex,
+          rowIndex: i,
+        },
+        start: {
+          columnIndex,
+          rowIndex: i,
         },
       }
       selectionIndex += 4
@@ -146,8 +146,8 @@ export const getSelectNextOccurrenceResult = (editor: any) => {
     }
 
     return {
-      selectionEdits: newSelections,
       revealRange: newSelections.length - 4, // TODO should be primary selection
+      selectionEdits: newSelections,
     }
   }
 

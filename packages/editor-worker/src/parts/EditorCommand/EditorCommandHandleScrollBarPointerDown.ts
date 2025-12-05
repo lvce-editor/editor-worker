@@ -8,7 +8,7 @@ import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts
 // additionally, when clicked on scrollbar, scrollbar position shouldn't move
 
 export const handleScrollBarPointerDown = (state: any, eventY: number): any => {
-  const { y, deltaY, finalDeltaY, height, scrollBarHeight } = state
+  const { deltaY, finalDeltaY, height, scrollBarHeight, y } = state
   const relativeY = eventY - y
   const currentScrollBarY = ScrollBarFunctions.getScrollBarY(deltaY, finalDeltaY, height, scrollBarHeight)
   const diff = relativeY - currentScrollBarY
@@ -18,7 +18,7 @@ export const handleScrollBarPointerDown = (state: any, eventY: number): any => {
       handleOffset: diff,
     }
   }
-  const { percent, handleOffset } = ScrollBarFunctions.getNewDeltaPercent(height, scrollBarHeight, relativeY)
+  const { handleOffset, percent } = ScrollBarFunctions.getNewDeltaPercent(height, scrollBarHeight, relativeY)
   const newDeltaY = percent * finalDeltaY
   return {
     ...Editor.setDeltaYFixedValue(state, newDeltaY),

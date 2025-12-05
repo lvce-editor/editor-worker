@@ -3,15 +3,15 @@ import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 const label1 = {
-  type: VirtualDomElements.Div,
-  className: ClassNames.Label,
   childCount: 1,
+  className: ClassNames.Label,
+  type: VirtualDomElements.Div,
 }
 
 const completionHighlight = {
-  type: VirtualDomElements.Span,
-  className: ClassNames.EditorCompletionItemHighlight,
   childCount: 1,
+  className: ClassNames.EditorCompletionItemHighlight,
+  type: VirtualDomElements.Span,
 }
 
 export const getHighlightedLabelDom = (label: any, highlights: any[]) => {
@@ -20,9 +20,9 @@ export const getHighlightedLabelDom = (label: any, highlights: any[]) => {
   }
   const dom = []
   const labelDom = {
-    type: VirtualDomElements.Div,
-    className: ClassNames.Label,
     childCount: 0,
+    className: ClassNames.Label,
+    type: VirtualDomElements.Div,
   }
   dom.push(labelDom)
   let position = 0

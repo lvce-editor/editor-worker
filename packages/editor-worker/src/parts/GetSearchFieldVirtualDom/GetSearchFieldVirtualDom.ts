@@ -13,27 +13,27 @@ export const getSearchFieldVirtualDom = (
 ) => {
   const dom = [
     {
-      type: VirtualDomElements.Div,
+      childCount: 2,
       className: ClassNames.SearchField,
       role: AriaRoles.None,
-      childCount: 2,
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.TextArea,
-      className: ClassNames.MultilineInputBox,
-      spellcheck: false,
       autocapitalize: 'off',
       autocorrect: 'off',
-      placeholder,
-      name,
-      onInput,
-      onFocus,
       childCount: 0,
+      className: ClassNames.MultilineInputBox,
+      name,
+      onFocus,
+      onInput,
+      placeholder,
+      spellcheck: false,
+      type: VirtualDomElements.TextArea,
     },
     {
-      type: VirtualDomElements.Div,
-      className: ClassNames.SearchFieldButtons,
       childCount: insideButtons.length,
+      className: ClassNames.SearchFieldButtons,
+      type: VirtualDomElements.Div,
     },
     ...insideButtons.flatMap(GetSearchFieldButtonVirtualDom.getSearchFieldButtonVirtualDom),
   ]

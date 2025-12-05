@@ -6,25 +6,25 @@ import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomE
 
 test('getIconVirtualDom', () => {
   const button: ISearchFieldButton = {
-    icon: 'MaskIconTest',
     checked: false,
+    icon: 'MaskIconTest',
     title: 'Test',
   }
   const dom = GetSearchFieldButtonVirtualDom.getSearchFieldButtonVirtualDom(button)
   expect(dom).toEqual([
     {
-      type: VirtualDomElements.Div,
-      className: 'SearchFieldButton',
-      title: 'Test',
-      role: AriaRoles.CheckBox,
       ariaChecked: false,
-      tabIndex: 0,
       childCount: 1,
+      className: 'SearchFieldButton',
+      role: AriaRoles.CheckBox,
+      tabIndex: 0,
+      title: 'Test',
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
-      className: 'MaskIcon MaskIconTest',
       childCount: 0,
+      className: 'MaskIcon MaskIconTest',
+      type: VirtualDomElements.Div,
     },
   ])
 })

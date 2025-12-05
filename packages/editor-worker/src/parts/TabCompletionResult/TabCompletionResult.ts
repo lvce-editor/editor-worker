@@ -1,5 +1,5 @@
 export interface TabCompletionResult {
-  readonly inserted: string
   readonly deleted: number
+  readonly inserted: string
   readonly type: number
 }

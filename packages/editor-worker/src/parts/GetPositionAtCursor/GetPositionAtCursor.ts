@@ -7,9 +7,9 @@ export const getPositionAtCursor = (editor: any) => {
   const x = EditorPosition.x(editor, rowIndex, columnIndex)
   const y = EditorPosition.y(editor, rowIndex)
   return {
+    columnIndex,
+    rowIndex,
     x,
     y,
-    rowIndex,
-    columnIndex,
   }
 }

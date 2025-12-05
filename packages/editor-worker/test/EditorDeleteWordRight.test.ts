@@ -17,15 +17,15 @@ import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlain
 
 test('editorDeleteWordRight', async () => {
   const editor = {
-    lines: ['sample text'],
-    selections: EditorSelection.fromRange(0, 7, 0, 7),
-    tokenizer: TokenizePlainText,
-    lineCache: [],
-    undoStack: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['sample text'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: EditorSelection.fromRange(0, 7, 0, 7),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
   }
   expect(await EditorDeleteWordRight.deleteWordRight(editor)).toMatchObject({
     lines: ['sample '],
@@ -35,15 +35,15 @@ test('editorDeleteWordRight', async () => {
 
 test.skip('editorDeleteWordRight - when there is not word right', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['sample   '],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     selections: EditorSelection.fromRange(0, 7, 0, 7),
     tokenizer: TokenizePlainText,
     undoStack: [],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   expect(await EditorDeleteWordRight.deleteWordRight(editor)).toMatchObject({
     lines: ['sample  '],

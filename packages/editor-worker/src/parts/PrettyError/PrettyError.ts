@@ -16,26 +16,26 @@ const getErrorMessage = (error: any) => {
 const prepareErrorMessageWithCodeFrame = (error: any) => {
   if (!error) {
     return {
+      codeFrame: undefined,
       message: error,
       stack: undefined,
-      codeFrame: undefined,
       type: 'Error',
     }
   }
   const message = getErrorMessage(error)
   if (error.codeFrame) {
     return {
+      codeFrame: error.codeFrame,
       message,
       stack: error.stack,
-      codeFrame: error.codeFrame,
       type: error.constructor.name,
     }
   }
   return {
+    category: error.category,
+    codeFrame: error.originalCodeFrame,
     message,
     stack: error.originalStack,
-    codeFrame: error.originalCodeFrame,
-    category: error.category,
     stderr: error.stderr,
   }
 }

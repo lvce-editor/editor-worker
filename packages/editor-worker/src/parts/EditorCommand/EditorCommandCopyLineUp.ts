@@ -5,15 +5,15 @@ export const copyLineUp = (editor: any) => {
   const { selections } = editor
   const rowIndex = selections[0]
   const position = {
-    rowIndex: rowIndex,
     columnIndex: 0,
+    rowIndex: rowIndex,
   }
   const changes = [
     {
-      start: position,
+      deleted: [''],
       end: position,
       inserted: [TextDocument.getLine(editor, rowIndex), ''],
-      deleted: [''],
+      start: position,
     },
   ]
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes)

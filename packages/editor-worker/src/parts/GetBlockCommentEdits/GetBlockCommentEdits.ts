@@ -37,58 +37,58 @@ export const getBlockCommentEdits = (editor: any, blockComment: string): readonl
   if (startColumnIndex !== -1 && endColumnIndex !== -1) {
     if (startRowIndex === endRowIndex) {
       const change1: Edit = {
-        start: {
-          rowIndex,
-          columnIndex: startColumnIndex,
-        },
+        deleted: [blockCommentStart],
         end: {
-          rowIndex,
           columnIndex: startColumnIndex + blockCommentStart.length,
+          rowIndex,
         },
         inserted: [],
-        deleted: [blockCommentStart],
         origin: EditOrigin.ToggleBlockComment,
+        start: {
+          columnIndex: startColumnIndex,
+          rowIndex,
+        },
       }
       const change2: Edit = {
-        start: {
-          rowIndex,
-          columnIndex: endColumnIndex - blockCommentStart.length,
-        },
+        deleted: [blockCommentEnd],
         end: {
-          rowIndex,
           columnIndex: endColumnIndex - blockCommentStart.length + blockCommentEnd.length,
+          rowIndex,
         },
         inserted: [],
-        deleted: [blockCommentEnd],
         origin: EditOrigin.ToggleBlockComment,
+        start: {
+          columnIndex: endColumnIndex - blockCommentStart.length,
+          rowIndex,
+        },
       }
       changes.push(change1, change2)
     } else {
       const change1: Edit = {
-        start: {
-          rowIndex: startRowIndex,
-          columnIndex: startColumnIndex,
-        },
+        deleted: [blockCommentStart],
         end: {
-          rowIndex: startRowIndex,
           columnIndex: startColumnIndex + blockCommentStart.length,
+          rowIndex: startRowIndex,
         },
         inserted: [],
-        deleted: [blockCommentStart],
         origin: EditOrigin.ToggleBlockComment,
+        start: {
+          columnIndex: startColumnIndex,
+          rowIndex: startRowIndex,
+        },
       }
       const change2: Edit = {
-        start: {
-          rowIndex: endRowIndex,
-          columnIndex: endColumnIndex,
-        },
+        deleted: [blockCommentEnd],
         end: {
-          rowIndex: endRowIndex,
           columnIndex: endColumnIndex + blockCommentEnd.length,
+          rowIndex: endRowIndex,
         },
         inserted: [],
-        deleted: [blockCommentEnd],
         origin: EditOrigin.ToggleBlockComment,
+        start: {
+          columnIndex: endColumnIndex,
+          rowIndex: endRowIndex,
+        },
       }
       changes.push(change1, change2)
 
@@ -117,30 +117,30 @@ export const getBlockCommentEdits = (editor: any, blockComment: string): readonl
       endColumnIndex -= whitespaceAtEnd[0].length
     }
     const change1: Edit = {
-      start: {
-        rowIndex,
-        columnIndex: startColumnIndex,
-      },
+      deleted: [],
       end: {
-        rowIndex,
         columnIndex: startColumnIndex,
+        rowIndex,
       },
       inserted: [blockCommentStart],
-      deleted: [],
       origin: EditOrigin.ToggleBlockComment,
+      start: {
+        columnIndex: startColumnIndex,
+        rowIndex,
+      },
     }
     const change2: Edit = {
-      start: {
-        rowIndex,
-        columnIndex: endColumnIndex + blockCommentStart.length,
-      },
+      deleted: [],
       end: {
-        rowIndex,
         columnIndex: endColumnIndex + blockCommentStart.length,
+        rowIndex,
       },
       inserted: [blockCommentEnd],
-      deleted: [],
       origin: EditOrigin.ToggleBlockComment,
+      start: {
+        columnIndex: endColumnIndex + blockCommentStart.length,
+        rowIndex,
+      },
     }
     changes.push(change1, change2)
     // TextDocument.setLine(

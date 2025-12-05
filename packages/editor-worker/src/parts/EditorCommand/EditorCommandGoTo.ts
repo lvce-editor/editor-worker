@@ -5,7 +5,7 @@ import * as EditorGetWordAt from './EditorCommandGetWordAt.ts'
 import * as EditorShowMessage from './EditorCommandShowMessage.ts'
 
 // @ts-ignore
-export const goTo = async ({ editor, getLocation, getNoLocationFoundMessage, getErrorMessage, isNoProviderFoundError }) => {
+export const goTo = async ({ editor, getErrorMessage, getLocation, getNoLocationFoundMessage, isNoProviderFoundError }) => {
   const { selections } = editor
   const rowIndex = selections[0]
   const columnIndex = selections[1]
@@ -34,10 +34,10 @@ export const goTo = async ({ editor, getLocation, getNoLocationFoundMessage, get
     // TODO open file and scroll to that position and set cursor to that position
 
     const context = {
-      startRowIndex: definition.startRowIndex,
-      startColumnIndex: definition.startColumnIndex,
-      endRowIndex: definition.endRowIndex,
       endColumnIndex: definition.endColumnIndex,
+      endRowIndex: definition.endRowIndex,
+      startColumnIndex: definition.startColumnIndex,
+      startRowIndex: definition.startRowIndex,
     }
     await RendererWorker.invoke(/* Main.openUri */ 'Main.openUri', /* uri */ uri, /* focus */ true, context)
     return editor

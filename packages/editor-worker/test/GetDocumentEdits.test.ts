@@ -5,19 +5,19 @@ import * as GetDocumentEdits from '../src/parts/GetDocumentEdits/GetDocumentEdit
 test('multiple edits', () => {
   const edits: readonly OffsetBasedEdit[] = [
     {
-      startOffset: 0,
       endOffset: 11,
       inserted: "import 'a'\nimport 'b'\n",
+      startOffset: 0,
     },
     {
-      startOffset: 11,
       endOffset: 22,
       inserted: '',
+      startOffset: 11,
     },
     {
-      startOffset: 38,
       endOffset: 47,
       inserted: 'export { }\n',
+      startOffset: 38,
     },
   ]
   const editor = {

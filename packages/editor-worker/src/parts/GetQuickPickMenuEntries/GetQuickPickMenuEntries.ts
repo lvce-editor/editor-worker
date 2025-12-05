@@ -36,14 +36,14 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       label: EditorStrings.editorSelectInsideString(),
     },
     {
+      aliases: ['Indent More', 'DeIndent'],
       id: 'Editor.indent',
       label: EditorStrings.editorIndent(),
-      aliases: ['Indent More', 'DeIndent'],
     },
     {
+      aliases: ['Indent Less', 'DeIndent'],
       id: 'Editor.unindent',
       label: EditorStrings.editorUnindent(),
-      aliases: ['Indent Less', 'DeIndent'],
     },
     {
       id: 'Editor.sortLinesAscending',

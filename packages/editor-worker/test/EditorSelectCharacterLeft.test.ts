@@ -4,10 +4,10 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test('editorSelectCharacterLeft - single character', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 1, 0, 1),
-    lineCache: [],
   }
   expect(EditorSelectCharacterLeft.selectCharacterLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 1, 0, 0),
@@ -16,10 +16,10 @@ test('editorSelectCharacterLeft - single character', () => {
 
 test('editorSelectCharacterLeft - at start of file', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
   }
   expect(EditorSelectCharacterLeft.selectCharacterLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 0, 0, 0),
@@ -28,10 +28,10 @@ test('editorSelectCharacterLeft - at start of file', () => {
 
 test('editorSelectCharacterLeft - reversed selection', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2', ''],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 4, 0, 3),
-    lineCache: [],
   }
   expect(EditorSelectCharacterLeft.selectCharacterLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 4, 0, 2),

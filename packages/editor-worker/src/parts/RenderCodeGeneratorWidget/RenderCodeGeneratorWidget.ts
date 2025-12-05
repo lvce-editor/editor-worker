@@ -3,31 +3,31 @@ import * as GetCodeGeneratorVirtualDom from '../GetCodeGeneratorVirtualDom/GetCo
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
 const renderContent = {
-  isEqual(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
-    return oldState.questions === newState.questions
-  },
   apply(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
     const dom: readonly any[] = GetCodeGeneratorVirtualDom.getCodeGeneratorVirtualDom(newState)
     return [RenderMethod.SetDom2, newState.uid, dom]
   },
+  isEqual(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
+    return oldState.questions === newState.questions
+  },
 }
 
 const renderBounds = {
+  apply(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
+    const { height, width, x, y } = newState
+    return [/* method */ RenderMethod.SetBounds, /* x */ x, /* y */ y, /* width */ width, /* height */ height]
+  },
   isEqual(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
     return oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height
-  },
-  apply(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
-    const { x, y, width, height } = newState
-    return [/* method */ RenderMethod.SetBounds, /* x */ x, /* y */ y, /* width */ width, /* height */ height]
   },
 }
 
 const renderFocus = {
-  isEqual(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
-    return oldState.focused === newState.focused && oldState.focusSource === newState.focusSource
-  },
   apply(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
     return [RenderMethod.Focus, '.CodeGeneratorInput', newState.focusSource]
+  },
+  isEqual(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
+    return oldState.focused === newState.focused && oldState.focusSource === newState.focusSource
   },
 }
 

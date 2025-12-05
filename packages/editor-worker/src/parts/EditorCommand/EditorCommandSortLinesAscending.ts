@@ -30,25 +30,25 @@ const getSortLinesAscendingChanges = (lines, selections) => {
     const selectionEndRow = selections[i + 2]
     const selectionEndColumn = selections[i + 3]
     const start = {
-      rowIndex: selectionStartRow,
       columnIndex: selectionStartColumn,
+      rowIndex: selectionStartRow,
     }
     const end = {
-      rowIndex: selectionEndRow,
       columnIndex: selectionEndColumn,
+      rowIndex: selectionEndRow,
     }
     const selection = {
-      start,
       end,
+      start,
     }
     const selectionLines = lines.slice(startRowIndex, endRowIndex + 1)
     const sortedSelectionLines = getSortedLines(selectionLines)
     changes.push({
-      start: start,
+      deleted: TextDocument.getSelectionText({ lines }, selection),
       end: end,
       inserted: sortedSelectionLines,
-      deleted: TextDocument.getSelectionText({ lines }, selection),
       origin,
+      start: start,
     })
   }
   return changes

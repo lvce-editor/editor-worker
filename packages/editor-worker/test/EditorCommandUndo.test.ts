@@ -16,30 +16,30 @@ import * as EditOrigin from '../src/parts/EditOrigin/EditOrigin.ts'
 
 test('undo - inserted character', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['a'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     selections: new Uint32Array([0, 0, 1, 1]),
     undoStack: [
       [
         {
-          start: {
-            rowIndex: 0,
-            columnIndex: 0,
-          },
+          deleted: [''],
           end: {
-            rowIndex: 0,
             columnIndex: 0,
+            rowIndex: 0,
           },
           inserted: ['a'],
-          deleted: [''],
           origin: EditOrigin.EditorType,
+          start: {
+            columnIndex: 0,
+            rowIndex: 0,
+          },
         },
       ],
     ],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newEditor = await EditorCommandUndo.undo(editor)
   expect(newEditor.lines).toEqual([''])
@@ -47,30 +47,30 @@ test('undo - inserted character', async () => {
 
 test('undo - deleted character', async () => {
   const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: [''],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     selections: new Uint32Array([0, 0, 1, 1]),
     undoStack: [
       [
         {
-          start: {
-            rowIndex: 0,
-            columnIndex: 0,
-          },
+          deleted: ['a'],
           end: {
-            rowIndex: 0,
             columnIndex: 0,
+            rowIndex: 0,
           },
           inserted: [''],
-          deleted: ['a'],
           origin: EditOrigin.EditorType,
+          start: {
+            columnIndex: 0,
+            rowIndex: 0,
+          },
         },
       ],
     ],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newEditor = await EditorCommandUndo.undo(editor)
   expect(newEditor.lines).toEqual(['a'])
@@ -78,14 +78,14 @@ test('undo - deleted character', async () => {
 
 test('undo - empty undoStack', async () => {
   const editor = {
-    lines: [''],
-    selections: new Uint32Array([0, 0, 1, 1]),
-    undoStack: [],
-    lineCache: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: [''],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: new Uint32Array([0, 0, 1, 1]),
+    undoStack: [],
   }
   const newEditor = await EditorCommandUndo.undo(editor)
   expect(newEditor).toBe(editor)

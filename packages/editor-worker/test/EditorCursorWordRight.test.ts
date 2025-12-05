@@ -4,10 +4,10 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test('basic', () => {
   const editor = {
+    lineCache: [],
     lines: ['a'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
   }
   const newEditor1 = EditorCursorWordRight.cursorWordRight(editor)
   expect(newEditor1.selections).toEqual(new Uint32Array([0, 1, 0, 1]))
@@ -15,10 +15,10 @@ test('basic', () => {
 
 test('editorCursorWordRight', () => {
   const editor = {
+    lineCache: [],
     lines: ['    <title>Document</title>'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 4, 0, 4),
-    lineCache: [],
   }
   const newEditor1 = EditorCursorWordRight.cursorWordRight(editor)
   expect(newEditor1).toMatchObject({
@@ -40,10 +40,10 @@ test('editorCursorWordRight', () => {
 
 test('editorCursorWordRight - with dots', () => {
   const editor = {
+    lineCache: [],
     lines: ['this.is.a.test'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
   }
   const newEditor1 = EditorCursorWordRight.cursorWordRight(editor)
   expect(newEditor1).toMatchObject({
@@ -65,10 +65,10 @@ test('editorCursorWordRight - with dots', () => {
 
 test.skip('editorCursorWordRight - with selection', () => {
   const editor = {
+    lineCache: [],
     lines: ['<title>Document</title>'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 5),
-    lineCache: [],
   }
   const newEditor1 = EditorCursorWordRight.cursorWordRight(editor)
   expect(newEditor1).toMatchObject({
@@ -78,10 +78,10 @@ test.skip('editorCursorWordRight - with selection', () => {
 
 test('editorCursorWordRight - at end of line', () => {
   const editor = {
+    lineCache: [],
     lines: ['line 1', 'line 2'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 6, 0, 6),
-    lineCache: [],
   }
   const newEditor1 = EditorCursorWordRight.cursorWordRight(editor)
   expect(newEditor1).toMatchObject({

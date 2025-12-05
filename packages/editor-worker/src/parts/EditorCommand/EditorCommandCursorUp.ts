@@ -2,8 +2,8 @@ import * as EditorCursorVertical from './EditorCommandCursorVertical.ts'
 
 const getEdgePosition = (editor: any) => {
   return {
-    rowIndex: 0,
     columnIndex: 0,
+    rowIndex: 0,
   }
 }
 

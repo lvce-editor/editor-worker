@@ -12,18 +12,18 @@ export const moveLineUp = (editor) => {
   }
   const documentEdits = [
     {
-      type: /* splice */ 2,
-      rowIndex: rowIndex - 1,
       count: 2,
       newLines: [TextDocument.getLine(editor.textDocument, rowIndex), TextDocument.getLine(editor.textDocument, rowIndex - 1)],
+      rowIndex: rowIndex - 1,
+      type: /* splice */ 2,
     },
   ]
   // @ts-ignore
   const cursorEdits = Editor.moveCursors(editor, (editor, cursor) => {
     return {
+      columnIndex: cursor.columnIndex,
       // TODO handle bottom 0
       rowIndex: cursor.rowIndex - 1,
-      columnIndex: cursor.columnIndex,
     }
   })
   // @ts-ignore

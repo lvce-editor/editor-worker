@@ -7,23 +7,23 @@ export const replaceRange = (editor: any, ranges: any, replacement: any, origin:
   for (let i = 0; i < rangesLength; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(ranges, i)
     const start = {
-      rowIndex: selectionStartRow,
       columnIndex: selectionStartColumn,
+      rowIndex: selectionStartRow,
     }
     const end = {
-      rowIndex: selectionEndRow,
       columnIndex: selectionEndColumn,
+      rowIndex: selectionEndRow,
     }
     const selection = {
-      start,
       end,
+      start,
     }
     changes.push({
-      start: start,
+      deleted: TextDocument.getSelectionText(editor, selection),
       end: end,
       inserted: replacement,
-      deleted: TextDocument.getSelectionText(editor, selection),
       origin,
+      start: start,
     })
   }
   return changes

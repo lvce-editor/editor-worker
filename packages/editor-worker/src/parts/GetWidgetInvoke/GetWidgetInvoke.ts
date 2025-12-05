@@ -14,12 +14,12 @@ export const getWidgetInvoke = (widgetId: number): any => {
       return CompletionWorker.invoke
     case WidgetId.Find:
       return FindWidgetWorker.invoke
+    case WidgetId.Hover:
+      return HoverWorker.invoke
     case WidgetId.Rename:
       return RenameWorker.invoke
     case WidgetId.SourceAction:
       return SourceActionWorker.invoke
-    case WidgetId.Hover:
-      return HoverWorker.invoke
     default:
       return undefined
   }

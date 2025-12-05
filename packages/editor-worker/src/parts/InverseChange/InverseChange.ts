@@ -1,12 +1,12 @@
 export const inverseChange = (edit: any) => {
   const endColumnIndex = edit.end.columnIndex - edit.deleted[0].length + edit.inserted[0].length
   return {
-    start: edit.start,
+    deleted: edit.inserted,
     end: {
-      rowIndex: edit.end.rowIndex,
       columnIndex: endColumnIndex,
+      rowIndex: edit.end.rowIndex,
     },
     inserted: edit.deleted,
-    deleted: edit.inserted,
+    start: edit.start,
   }
 }

@@ -5,9 +5,9 @@ test('getIconDom - symbol - default', () => {
   const fileIcon = ''
   const symbolName = 'SymbolDefault'
   expect(GetCompletionItemIconVirtualDom.getIconDom(fileIcon, symbolName)).toEqual({
-    type: 4,
-    className: 'ColoredMaskIcon SymbolDefault',
     childCount: 0,
+    className: 'ColoredMaskIcon SymbolDefault',
+    type: 4,
   })
 })
 
@@ -15,10 +15,10 @@ test('getIconDom - fileIcon', () => {
   const fileIcon = '/test/xyz.svg'
   const symbolName = ''
   expect(GetCompletionItemIconVirtualDom.getIconDom(fileIcon, symbolName)).toEqual({
-    type: 17,
-    className: 'FileIcon',
-    src: '/test/xyz.svg',
-    role: 'none',
     childCount: 0,
+    className: 'FileIcon',
+    role: 'none',
+    src: '/test/xyz.svg',
+    type: 17,
   })
 })

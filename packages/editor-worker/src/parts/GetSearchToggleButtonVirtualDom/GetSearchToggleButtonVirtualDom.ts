@@ -5,21 +5,21 @@ import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts
 export const getSearchToggleButtonVirtualDom = (replaceExpanded: boolean, onClick = ''): readonly VirtualDomNode[] => {
   return [
     {
-      type: VirtualDomElements.Button,
-      className: `IconButton SearchToggleButton ${replaceExpanded ? 'SearchToggleButtonExpanded' : ''}`,
-      title: 'Toggle Replace',
-      ariaLabel: 'Toggle Replace',
       ariaExpanded: replaceExpanded,
-      name: InputName.ToggleReplace,
+      ariaLabel: 'Toggle Replace',
       childCount: 1,
+      className: `IconButton SearchToggleButton ${replaceExpanded ? 'SearchToggleButtonExpanded' : ''}`,
       'data-command': 'toggleReplace',
+      name: InputName.ToggleReplace,
       onClick,
       onFocus: 'handleToggleReplaceFocus',
+      title: 'Toggle Replace',
+      type: VirtualDomElements.Button,
     },
     {
-      type: VirtualDomElements.Div,
-      className: `MaskIcon ${replaceExpanded ? 'MaskIconChevronDown' : 'MaskIconChevronRight'}`,
       childCount: 0,
+      className: `MaskIcon ${replaceExpanded ? 'MaskIconChevronDown' : 'MaskIconChevronRight'}`,
+      type: VirtualDomElements.Div,
     },
   ]
 }

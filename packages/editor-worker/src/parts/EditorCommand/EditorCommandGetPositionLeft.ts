@@ -2,17 +2,17 @@
 export const editorGetPositionLeft = (rowIndex, columnIndex, lines, getDelta) => {
   if (columnIndex === 0) {
     if (rowIndex === 0) {
-      return { rowIndex: 0, columnIndex: 0 }
+      return { columnIndex: 0, rowIndex: 0 }
     }
     return {
-      rowIndex: rowIndex - 1,
       columnIndex: lines[rowIndex - 1].length,
+      rowIndex: rowIndex - 1,
     }
   }
   const delta = getDelta(lines[rowIndex], columnIndex)
   return {
-    rowIndex,
     columnIndex: columnIndex - delta,
+    rowIndex,
   }
 }
 

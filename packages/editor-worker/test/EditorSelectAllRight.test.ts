@@ -4,10 +4,10 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test('editorSelectAllRight = at start', () => {
   const editor = {
+    lineCache: [],
     lines: ['1 2 3 4 5'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
   }
   expect(EditorSelectAllRight.editorSelectAllRight(editor)).toMatchObject({
     lines: ['1 2 3 4 5'],
@@ -17,10 +17,10 @@ test('editorSelectAllRight = at start', () => {
 
 test('editorSelectAllRight in middle', () => {
   const editor = {
+    lineCache: [],
     lines: ['1 2 3 4 5'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 5, 0, 5),
-    lineCache: [],
   }
   expect(EditorSelectAllRight.editorSelectAllRight(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 5, 0, 9),

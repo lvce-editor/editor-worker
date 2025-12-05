@@ -10,15 +10,15 @@ export const getDocumentEdits = (editor: any, edits: readonly OffsetBasedEdit[])
     const start = TextDocument.positionAt(editor, edit.startOffset)
     const end = TextDocument.positionAt(editor, edit.endOffset)
     const deleted = TextDocument.getSelectionText(editor, {
-      start,
       end,
+      start,
     })
     const documentEdit = {
-      start,
+      deleted,
       end,
       inserted: SplitLines.splitLines(edit.inserted),
-      deleted,
       origin: EditOrigin.Format,
+      start,
     }
     if (documentEdit.inserted.length === 0) {
       documentEdit.inserted = ['']

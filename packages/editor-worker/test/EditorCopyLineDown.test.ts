@@ -17,16 +17,16 @@ import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlain
 
 test('editorCopyLineDown - cursor at start of line', async () => {
   const editor = {
-    lines: ['line 1', 'line 2', 'line 3'],
-    primarySelectionIndex: 0,
-    selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
-    undoStack: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['line 1', 'line 2', 'line 3'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
   }
   expect(await EditorCopyLineDown.copyLineDown(editor)).toMatchObject({
     lines: ['line 1', 'line 1', 'line 2', 'line 3'],
@@ -36,16 +36,16 @@ test('editorCopyLineDown - cursor at start of line', async () => {
 
 test('editorCopyLineDown - cursor in middle of line', async () => {
   const editor = {
-    lines: ['line 1', 'line 2', 'line 3'],
-    primarySelectionIndex: 0,
-    selections: EditorSelection.fromRange(0, 3, 0, 3),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
-    undoStack: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['line 1', 'line 2', 'line 3'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 3, 0, 3),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
   }
   expect(await EditorCopyLineDown.copyLineDown(editor)).toMatchObject({
     lines: ['line 1', 'line 1', 'line 2', 'line 3'],

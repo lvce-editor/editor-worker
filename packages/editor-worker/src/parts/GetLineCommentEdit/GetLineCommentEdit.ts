@@ -10,44 +10,44 @@ export const getLineCommentEdit = (rowIndex: number, line: string, lineComment: 
     // TODO also check tab character
     if (line[index + lineComment.length] === ' ') {
       return {
-        inserted: [''],
         deleted: [lineComment + ' '],
-        start: {
-          rowIndex,
-          columnIndex: index,
-        },
         end: {
-          rowIndex,
           columnIndex: index + lineComment.length + 1,
+          rowIndex,
         },
+        inserted: [''],
         origin: EditOrigin.LineComment,
+        start: {
+          columnIndex: index,
+          rowIndex,
+        },
       }
     }
     return {
-      inserted: [''],
       deleted: [lineComment],
-      start: {
-        rowIndex,
-        columnIndex: index,
-      },
       end: {
-        rowIndex,
         columnIndex: index + lineComment.length,
+        rowIndex,
       },
+      inserted: [''],
       origin: EditOrigin.LineComment,
+      start: {
+        columnIndex: index,
+        rowIndex,
+      },
     }
   }
   return {
-    inserted: [`${lineComment} `],
     deleted: [],
-    start: {
-      rowIndex,
-      columnIndex: index,
-    },
     end: {
-      rowIndex,
       columnIndex: index,
+      rowIndex,
     },
+    inserted: [`${lineComment} `],
     origin: EditOrigin.LineComment,
+    start: {
+      columnIndex: index,
+      rowIndex,
+    },
   }
 }

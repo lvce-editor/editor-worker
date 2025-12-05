@@ -15,9 +15,9 @@ export const editorDeleteHorizontalRight = (editor, getDelta) => {
     }
     // @ts-ignore
     const documentEdits = {
-      rowIndex,
       count: 1,
       newLines: [lines[rowIndex].slice(0, columnIndex) + lines[rowIndex].slice(columnIndex)],
+      rowIndex,
       type: /* splice */ 2,
     }
     // @ts-ignore

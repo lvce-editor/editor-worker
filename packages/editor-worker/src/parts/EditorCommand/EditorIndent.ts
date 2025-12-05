@@ -15,10 +15,10 @@ const getDocumentEdits = (line, rowIndex, columnIndex, indent) => {
   if (columnIndex === line.length) {
     return [
       {
-        type: /* splice */ 2,
-        rowIndex: rowIndex + 1,
         count: 0,
         newLines: [indent],
+        rowIndex: rowIndex + 1,
+        type: /* splice */ 2,
       },
     ]
   }
@@ -26,10 +26,10 @@ const getDocumentEdits = (line, rowIndex, columnIndex, indent) => {
   const newLine2 = indent + line.slice(columnIndex)
   return [
     {
-      type: /* splice */ 2,
-      rowIndex,
       count: 1,
       newLines: [newLine1, newLine2],
+      rowIndex,
+      type: /* splice */ 2,
     },
   ]
 }

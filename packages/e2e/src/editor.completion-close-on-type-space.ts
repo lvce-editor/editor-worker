@@ -4,7 +4,7 @@ export const name = 'editor.completion-close-on-type-space'
 
 export const skip = 1
 
-export const test: Test = async ({ Settings, Extension, FileSystem, Workspace, Main, Editor, Locator, expect }) => {
+export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main, Settings, Workspace }) => {
   // arrange
   await Settings.update({
     'editor.completionsOnType': true,

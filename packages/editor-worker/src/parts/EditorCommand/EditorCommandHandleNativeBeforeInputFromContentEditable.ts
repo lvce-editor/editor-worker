@@ -7,22 +7,22 @@ import * as EditorGetSelectionFromNativeRange from './EditorCommandGetSelectionF
 const getChanges = (editor, data, range) => {
   const selection = EditorGetSelectionFromNativeRange.getSelectionFromNativeRange(editor, range)
   const selectionRange = {
-    start: {
-      rowIndex: selection[0],
-      columnIndex: selection[1],
-    },
     end: {
-      rowIndex: selection[2],
       columnIndex: selection[3],
+      rowIndex: selection[2],
+    },
+    start: {
+      columnIndex: selection[1],
+      rowIndex: selection[0],
     },
   }
   const changes = [
     {
-      start: selectionRange.start,
+      deleted: TextDocument.getSelectionText(editor, selectionRange),
       end: selectionRange.end,
       inserted: [data],
-      deleted: TextDocument.getSelectionText(editor, selectionRange),
       origin: EditOrigin.ContentEditableInput,
+      start: selectionRange.start,
     },
   ]
   return changes

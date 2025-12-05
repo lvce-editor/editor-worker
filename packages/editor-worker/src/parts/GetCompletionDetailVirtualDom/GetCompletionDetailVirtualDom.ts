@@ -6,26 +6,26 @@ import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 export const getCompletionDetailVirtualDom = (content: string) => {
   const dom: any[] = [
     {
-      type: VirtualDomElements.Div,
-      className: 'Viewlet EditorCompletionDetails',
       childCount: 2,
+      className: 'Viewlet EditorCompletionDetails',
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
-      className: ClassNames.CompletionDetailContent,
       childCount: 1,
+      className: ClassNames.CompletionDetailContent,
+      type: VirtualDomElements.Div,
     },
     text(content),
     {
-      type: VirtualDomElements.Div,
+      childCount: 1,
       className: ClassNames.CompletionDetailCloseButton,
       onClick: DomEventListenerFunctions.HandleClose,
-      childCount: 1,
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
-      className: `${ClassNames.MaskIcon} ${ClassNames.IconClose}`,
       childCount: 0,
+      className: `${ClassNames.MaskIcon} ${ClassNames.IconClose}`,
+      type: VirtualDomElements.Div,
     },
   ]
   return dom

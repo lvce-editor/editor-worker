@@ -7,7 +7,7 @@ import * as EditorPosition from './EditorCommandPosition.ts'
 
 // @ts-ignore
 const getNewEditor = (editor, position) => {
-  const { minLineY, maxLineY, rowHeight } = editor
+  const { maxLineY, minLineY, rowHeight } = editor
   const diff = maxLineY - minLineY
   if (position.rowIndex < minLineY) {
     const newMinLineY = position.rowIndex
@@ -17,9 +17,9 @@ const getNewEditor = (editor, position) => {
     const newSelections = new Uint32Array([position.rowIndex - 1, position.columnIndex, anchor.rowIndex, anchor.columnIndex])
     return {
       ...editor,
-      minLineY: newMinLineY,
-      maxLineY: newMaxLineY,
       deltaY: newDeltaY,
+      maxLineY: newMaxLineY,
+      minLineY: newMinLineY,
       selections: newSelections,
     }
   }
@@ -32,9 +32,9 @@ const getNewEditor = (editor, position) => {
     const newSelections = new Uint32Array([anchor.rowIndex, anchor.columnIndex, position.rowIndex + 1, position.columnIndex])
     return {
       ...editor,
-      minLineY: newMinLineY,
-      maxLineY: newMaxLineY,
       deltaY: newDeltaY,
+      maxLineY: newMaxLineY,
+      minLineY: newMinLineY,
       selections: newSelections,
     }
   }
@@ -58,7 +58,7 @@ const continueScrollingAndMovingSelection = async () => {
   EditorSelectionAutoMoveState.setEditor(newEditor)
   // @ts-ignore
   const delta = position.rowIndex < editor.minLineY ? -1 : 1
-  EditorSelectionAutoMoveState.setPosition({ rowIndex: position.rowIndex + delta, columnIndex: position.columnIndex })
+  EditorSelectionAutoMoveState.setPosition({ columnIndex: position.columnIndex, rowIndex: position.rowIndex + delta })
   RequestAnimationFrame.requestAnimationFrame(continueScrollingAndMovingSelection)
   // TODO get editor state
   // if editor is disposed, return and remove animation frame

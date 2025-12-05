@@ -6,7 +6,7 @@ import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts
 // @ts-ignore
 export const handleScrollBarHorizontalPointerDown = (state, eventX) => {
   // @ts-ignore
-  const { x, deltaX, width, finalDeltaY, height, scrollBarHeight, longestLineWidth } = state
+  const { deltaX, finalDeltaY, height, longestLineWidth, scrollBarHeight, width, x } = state
   const relativeX = eventX - x
   const scrollBarWidth = ScrollBarFunctions.getScrollBarWidth(width, longestLineWidth)
   const finalDeltaX = width - scrollBarWidth
@@ -18,11 +18,11 @@ export const handleScrollBarHorizontalPointerDown = (state, eventX) => {
       handleOffsetX: diff,
     }
   }
-  const { percent, handleOffset } = ScrollBarFunctions.getNewDeltaPercent(width, scrollBarWidth, relativeX)
+  const { handleOffset, percent } = ScrollBarFunctions.getNewDeltaPercent(width, scrollBarWidth, relativeX)
   const newDeltaX = percent * finalDeltaX
   return {
     ...state,
-    handleOffsetX: handleOffset,
     deltaX: newDeltaX,
+    handleOffsetX: handleOffset,
   }
 }

@@ -3,8 +3,8 @@ import * as EditorCommandGetWordAt from '../src/parts/EditorCommand/EditorComman
 
 test('getWordAt', () => {
   const editor = {
-    lines: ['a'],
     lineCache: [],
+    lines: ['a'],
   }
   const rowIndex = 0
   const columnIndex = 0
@@ -15,8 +15,8 @@ test('getWordAt', () => {
 
 test('EditorCommandgetWordAt', () => {
   const editor = {
-    lines: ['a'],
     lineCache: [],
+    lines: ['a'],
   }
   const rowIndex = 0
   const columnIndex = 1

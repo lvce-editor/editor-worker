@@ -4,10 +4,10 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test.skip('editorCursorWordLeft', () => {
   const editor = {
+    lineCache: [],
     lines: ['    <title>Document</title>'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 27, 0, 27),
-    lineCache: [],
   }
   const moved1 = EditorCursorWordLeft.cursorWordLeft(editor)
   expect(moved1).toMatchObject({
@@ -33,10 +33,10 @@ test.skip('editorCursorWordLeft', () => {
 
 test('editorCursorWordLeft - with dots', () => {
   const editor = {
+    lineCache: [],
     lines: ['this.is.a.test'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 14, 0, 14),
-    lineCache: [],
   }
   const moved1 = EditorCursorWordLeft.cursorWordLeft(editor)
   expect(moved1).toMatchObject({
@@ -59,9 +59,9 @@ test('editorCursorWordLeft - with dots', () => {
 test.skip('editorCursorWordLeft - with selection', () => {
   const lines = ['<title>Document</title>']
   const editor = {
+    lineCache: [],
     lines,
     selections: EditorSelection.fromRange(0, 20, 0, 23),
-    lineCache: [],
   }
   expect(EditorCursorWordLeft.cursorWordLeft(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 17, 0, 17),

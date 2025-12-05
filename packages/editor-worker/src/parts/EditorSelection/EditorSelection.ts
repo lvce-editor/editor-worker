@@ -76,7 +76,7 @@ export const from = (array: any[], getSelection: any) => {
   const newSelections = alloc(array.length * 4)
   let i = 0
   for (const item of array) {
-    const { start, end } = getSelection(item)
+    const { end, start } = getSelection(item)
     newSelections[i++] = start.rowIndex
     newSelections[i++] = start.columnIndex
     newSelections[i++] = end.rowIndex
@@ -131,22 +131,22 @@ export const getVisible = async (editor: any) => {
   // // TODO binary search
 
   const {
-    selections,
-    minLineY,
-    maxLineY,
-    rowHeight,
-    lines,
-    fontSize,
-    fontFamily,
-    fontWeight,
-    letterSpacing,
+    charWidth,
     cursorWidth,
-    tabSize,
-    width,
     differences,
     focused,
-    charWidth,
+    fontFamily,
+    fontSize,
+    fontWeight,
     isMonospaceFont,
+    letterSpacing,
+    lines,
+    maxLineY,
+    minLineY,
+    rowHeight,
+    selections,
+    tabSize,
+    width,
   } = editor
 
   const averageCharWidth = charWidth

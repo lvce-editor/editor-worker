@@ -10,12 +10,12 @@ export const getSelectionsVirtualDom = (selections: any): readonly VirtualDomNod
     const width = selections[i + 2]
     const height = selections[i + 3]
     dom.push({
-      type: VirtualDomElements.Div,
       className: ClassNames.EditorSelection,
+      height,
       left: x,
       top: y,
+      type: VirtualDomElements.Div,
       width,
-      height,
     })
   }
   return dom

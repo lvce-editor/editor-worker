@@ -8,13 +8,13 @@ const combineResults = (results: any) => {
 
 export const executeCompletionProvider = async (editor: any, offset: number) => {
   return ExtensionHostEditor.execute({
+    args: [offset],
+    combineResults,
     editor,
     event: ExtensionHostActivationEvent.OnCompletion,
     method: ExtensionHostCommandType.CompletionExecute,
-    args: [offset],
     noProviderFoundMessage: 'no completion provider found',
     noProviderFoundResult: [],
-    combineResults,
   })
 }
 
@@ -24,12 +24,12 @@ const combineResultsResolve = (items: any) => {
 
 export const executeResolveCompletionItem = async (editor: any, offset: any, name: any, completionItem: any) => {
   return ExtensionHostEditor.execute({
+    args: [offset, name, completionItem],
+    combineResults: combineResultsResolve,
     editor,
     event: ExtensionHostActivationEvent.OnCompletion,
     method: ExtensionHostCommandType.CompletionResolveExecute,
-    args: [offset, name, completionItem],
     noProviderFoundMessage: 'no completion provider found',
     noProviderFoundResult: [],
-    combineResults: combineResultsResolve,
   })
 }

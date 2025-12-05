@@ -4,9 +4,9 @@ import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 const getGutterInfoVirtualDom = (gutterInfo: any) => {
   return [
     {
-      type: VirtualDomElements.Span,
-      className: 'LineNumber',
       childCount: 1,
+      className: 'LineNumber',
+      type: VirtualDomElements.Span,
     },
     text(gutterInfo),
   ]

@@ -7,6 +7,6 @@ export const handleClickAtPosition = async (editor: any, modifier: any, rowIndex
   Assert.number(rowIndex)
   Assert.number(columnIndex)
   const fn = GetClickHandler.getClickHandler(modifier)
-  const newEditor = await fn(editor, { rowIndex, columnIndex })
+  const newEditor = await fn(editor, { columnIndex, rowIndex })
   return newEditor
 }

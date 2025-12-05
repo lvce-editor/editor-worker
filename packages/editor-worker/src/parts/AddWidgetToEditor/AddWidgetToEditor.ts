@@ -29,10 +29,10 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
 
   const newEditor = {
     ...editor,
-    widgets: newWidgets,
-    focused: newFocus,
-    focus: fullFocus ? focusKey : WhenExpression.FocusEditorText,
     additionalFocus: fullFocus ? 0 : focusKey,
+    focus: fullFocus ? focusKey : WhenExpression.FocusEditorText,
+    focused: newFocus,
+    widgets: newWidgets,
   }
   return newEditor
 }

@@ -143,8 +143,8 @@ export const positionAt = (textDocument: any, offset: number) => {
     columnIndex = currentOffset - offset
   }
   return {
-    rowIndex,
     columnIndex,
+    rowIndex,
   }
 }
 

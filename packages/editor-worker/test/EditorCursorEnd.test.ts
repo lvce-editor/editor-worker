@@ -4,10 +4,10 @@ import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.t
 
 test('editorCursorEnd', () => {
   const editor = {
+    lineCache: [],
     lines: ['aaaaa'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 4, 0, 4),
-    lineCache: [],
   }
   expect(EditorCursorEnd.cursorEnd(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 5, 0, 5),
@@ -16,13 +16,13 @@ test('editorCursorEnd', () => {
 
 test('editorCursorEnd - with selection', () => {
   const editor = {
-    lines: ['aaaaa'],
     cursor: {
-      rowIndex: 0,
       columnIndex: 4,
+      rowIndex: 0,
     },
-    selections: EditorSelection.fromRange(0, 0, 0, 4),
     lineCache: [],
+    lines: ['aaaaa'],
+    selections: EditorSelection.fromRange(0, 0, 0, 4),
   }
   expect(EditorCursorEnd.cursorEnd(editor)).toMatchObject({
     selections: EditorSelection.fromRange(0, 4, 0, 4),

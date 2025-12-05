@@ -1,8 +1,8 @@
 import * as Assert from '../Assert/Assert.ts'
 
 interface EditorTuple {
-  readonly oldState: any
   readonly newState: any
+  readonly oldState: any
 }
 
 const editors: Record<number, EditorTuple> = Object.create(null)
@@ -20,7 +20,7 @@ export const set = (id: number, oldEditor: any, newEditor: any): void => {
   Assert.object(oldEditor)
   Assert.object(newEditor)
   editors[id] = {
-    oldState: oldEditor,
     newState: newEditor,
+    oldState: oldEditor,
   }
 }

@@ -17,16 +17,16 @@ import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlain
 
 test('editorDeleteWordLeft', async () => {
   const editor = {
-    lines: ['sample text'],
-    primarySelectionIndex: 0,
-    selections: EditorSelection.fromRange(0, 11, 0, 11),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
-    undoStack: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['sample text'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 11, 0, 11),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
   }
   const newState = await EditorDeleteWordLeft.deleteWordLeft(editor)
   expect(newState).toMatchObject({
@@ -37,16 +37,16 @@ test('editorDeleteWordLeft', async () => {
 
 test('editorDeleteWordLeft - merge lines', async () => {
   const editor = {
-    lines: ['11111', '22222'],
-    primarySelectionIndex: 0,
-    selections: EditorSelection.fromRange(1, 0, 1, 0),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
-    undoStack: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['11111', '22222'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(1, 0, 1, 0),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
   }
   const newState = await EditorDeleteWordLeft.deleteWordLeft(editor)
   expect(newState).toMatchObject({
@@ -57,15 +57,15 @@ test('editorDeleteWordLeft - merge lines', async () => {
 
 test.skip('editorDeleteWordLeft - no word left', async () => {
   const editor = {
-    lines: ['1   '],
-    primarySelectionIndex: 0,
-    selections: EditorSelection.fromRange(0, 4, 0, 4),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['1   '],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 4, 0, 4),
+    tokenizer: TokenizePlainText,
   }
   const newState = await EditorDeleteWordLeft.deleteWordLeft(editor)
   expect(newState).toMatchObject({
@@ -76,16 +76,16 @@ test.skip('editorDeleteWordLeft - no word left', async () => {
 
 test('editorDeleteWordLeft - at start of line', async () => {
   const editor = {
-    lines: ['1', '2'],
-    primarySelectionIndex: 0,
-    selections: EditorSelection.fromRange(1, 0, 1, 0),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
-    undoStack: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['1', '2'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(1, 0, 1, 0),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
   }
   const newState = await EditorDeleteWordLeft.deleteWordLeft(editor)
   expect(newState).toMatchObject({
@@ -96,16 +96,16 @@ test('editorDeleteWordLeft - at start of line', async () => {
 
 test('editorDeleteWordLeft - at start of file', async () => {
   const editor = {
-    lines: ['1', '2'],
-    primarySelectionIndex: 0,
-    selections: EditorSelection.fromRange(0, 0, 0, 0),
-    lineCache: [],
-    tokenizer: TokenizePlainText,
-    undoStack: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['1', '2'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
   }
   const newState = await EditorDeleteWordLeft.deleteWordLeft(editor)
   expect(newState).toMatchObject({
@@ -116,16 +116,16 @@ test('editorDeleteWordLeft - at start of file', async () => {
 
 test('editorDeleteWordLeft - delete auto closing bracket', async () => {
   const editor = {
+    autoClosingRanges: [0, 1, 0, 1],
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
     lines: ['{}'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 1, 0, 1),
     undoStack: [],
-    autoClosingRanges: [0, 1, 0, 1],
-    lineCache: [],
-    invalidStartIndex: 0,
-    minLineY: 0,
-    numberOfVisibleLines: 32,
-    decorations: [],
   }
   const newState = await EditorDeleteWordLeft.deleteWordLeft(editor)
   expect(newState).toMatchObject({

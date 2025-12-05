@@ -6,7 +6,7 @@ import * as GetHighlightedLabelDom from '../GetHighlightedLabelDom/GetHighlighte
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export const getCompletionItemVirtualDom = (visibleItem: any): readonly VirtualDomNode[] => {
-  const { top, label, symbolName, highlights, focused, deprecated, fileIcon } = visibleItem
+  const { deprecated, fileIcon, focused, highlights, label, symbolName, top } = visibleItem
   let className = ClassNames.EditorCompletionItem
   if (focused) {
     className += ' ' + ClassNames.EditorCompletionItemFocused
@@ -16,11 +16,11 @@ export const getCompletionItemVirtualDom = (visibleItem: any): readonly VirtualD
   }
   return [
     {
-      type: VirtualDomElements.Div,
-      role: AriaRoles.Option,
-      className,
-      top,
       childCount: 2,
+      className,
+      role: AriaRoles.Option,
+      top,
+      type: VirtualDomElements.Div,
     },
     GetCompletionItemIconVirtualDom.getIconDom(fileIcon, symbolName),
     ...GetHighlightedLabelDom.getHighlightedLabelDom(label, highlights),

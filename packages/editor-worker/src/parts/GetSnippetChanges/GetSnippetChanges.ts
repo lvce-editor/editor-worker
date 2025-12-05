@@ -16,17 +16,17 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
       const insertedLinesHere = [insertedLines[0], ...insertedLines.slice(1).map((line) => indent + line)]
       const deleted = ['']
       changes.push({
-        start: {
-          rowIndex: selectionStartRow,
-          columnIndex: selectionStartColumn - snippet.deleted,
-        },
+        deleted,
         end: {
-          rowIndex: selectionEndRow,
           columnIndex: selectionEndColumn,
+          rowIndex: selectionEndRow,
         },
         inserted: insertedLinesHere,
-        deleted,
         origin: EditOrigin.EditorSnippet,
+        start: {
+          columnIndex: selectionStartColumn - snippet.deleted,
+          rowIndex: selectionStartRow,
+        },
       })
       const lastInsertedLine = insertedLines.at(-1)
       selectionChanges.push(
@@ -46,34 +46,34 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
         selectionChanges.push(selectionStartRow, cursorColumnIndex, selectionStartRow, cursorColumnIndex)
         // @ts-ignore
         changes.push({
-          start: {
-            rowIndex: selectionStartRow,
-            columnIndex: selectionStartColumn - snippet.deleted,
-          },
+          deleted: [''],
           end: {
-            rowIndex: selectionEndRow,
             columnIndex: selectionEndColumn,
+            rowIndex: selectionEndRow,
           },
           inserted: insertedLines,
-          deleted: [''],
           origin: EditOrigin.EditorSnippet,
+          start: {
+            columnIndex: selectionStartColumn - snippet.deleted,
+            rowIndex: selectionStartRow,
+          },
         })
       } else {
         const inserted = line.replace('$0', '')
         const cursorColumnIndex = selectionEndColumn + 2
         selectionChanges.push(selectionStartRow, cursorColumnIndex, selectionStartRow, cursorColumnIndex)
         changes.push({
-          start: {
-            rowIndex: selectionStartRow,
-            columnIndex: selectionStartColumn - snippet.deleted,
-          },
+          deleted: [''],
           end: {
-            rowIndex: selectionEndRow,
             columnIndex: selectionEndColumn,
+            rowIndex: selectionEndRow,
           },
           inserted: [inserted],
-          deleted: [''],
           origin: EditOrigin.EditorSnippet,
+          start: {
+            columnIndex: selectionStartColumn - snippet.deleted,
+            rowIndex: selectionStartRow,
+          },
         })
       }
     }

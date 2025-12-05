@@ -7,10 +7,10 @@ import * as FocusKey from '../FocusKey/FocusKey.ts'
 const newStateGenerator = async (state: CodeGeneratorState): Promise<CodeGeneratorState> => {
   const latestState: CodeGeneratorState = {
     ...state,
+    height: 45,
+    width: 150,
     x: 100,
     y: 100,
-    width: 150,
-    height: 45,
   }
   return latestState
 }

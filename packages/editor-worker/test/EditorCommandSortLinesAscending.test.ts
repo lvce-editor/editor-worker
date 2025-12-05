@@ -15,14 +15,14 @@ import * as EditorCommandSortLinesAscending from '../src/parts/EditorCommand/Edi
 
 test('sortLinesAscending - two unsorted lines', async () => {
   const editor = {
-    lines: ['b', 'a'],
-    selections: new Uint32Array([0, 0, 1, 1]),
-    undoStack: [],
-    lineCache: [],
+    decorations: [],
     invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['b', 'a'],
     minLineY: 0,
     numberOfVisibleLines: 32,
-    decorations: [],
+    selections: new Uint32Array([0, 0, 1, 1]),
+    undoStack: [],
   }
   const newEditor = await EditorCommandSortLinesAscending.sortLinesAscending(editor)
   expect(newEditor.lines).toEqual(['a', 'b'])

@@ -5,10 +5,10 @@ import * as GetVisibleCompletionItems from '../src/parts/GetVisibleCompletionIte
 test('getVisibleCompletionItems', () => {
   const filteredItems = [
     {
-      label: 'test',
       kind: EditorCompletionType.Property,
-      top: 10,
+      label: 'test',
       matches: [10, 0, 1],
+      top: 10,
     },
   ]
   const itemHeight = 20
