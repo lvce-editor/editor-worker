@@ -7,7 +7,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@lvce-editor/assert": "^1.4.0",
+    "@lvce-editor/assert": "^1.5.1",
     "@lvce-editor/command": "^2.0.0",
     "@lvce-editor/ipc": "^14.6.0",
     "@lvce-editor/json-rpc": "^7.0.0",
