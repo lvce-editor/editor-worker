@@ -36,6 +36,26 @@ test('editorSelectNextOccurrence - no selection and cursor position at start of 
   expect(newEditor.selections).toEqual(EditorSelection.fromRange(0, 0, 0, 4))
 })
 
+test.skip('editorSelectNextOccurrence - word with underscore', () => {
+  const cursor = {
+    columnIndex: 0,
+    rowIndex: 0,
+  }
+  const editor = {
+    cursor,
+    finalDeltaY: 1000,
+    lineCache: [],
+    lines: ['command_exists', ''],
+    maxLineY: 1000,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: EditorSelection.fromRange(0, 8, 0, 8),
+    width: 1000,
+  }
+  const newEditor = EditorSelectNextOccurrence.selectNextOccurrence(editor)
+  expect(newEditor.selections).toEqual(EditorSelection.fromRange(0, 0, 0, 14))
+})
+
 test('editorSelectNextOccurrence - no selection and cursor position at end of word', () => {
   const cursor = {
     columnIndex: 4,
