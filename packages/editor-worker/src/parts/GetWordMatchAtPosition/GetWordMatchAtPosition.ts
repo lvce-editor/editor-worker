@@ -1,8 +1,12 @@
 import * as IsAlphaNumeric from '../IsAlphaNumeric/IsAlphaNumeric.ts'
 
+const isWordChar = (char: string) => {
+  return IsAlphaNumeric.isAlphaNumeric(char) || char === '_'
+}
+
 const getWordStartIndex = (line: string, index: number) => {
   for (let i = index - 1; i >= 0; i--) {
-    if (!IsAlphaNumeric.isAlphaNumeric(line[i])) {
+    if (!isWordChar(line[i])) {
       return i + 1
     }
   }
@@ -11,11 +15,11 @@ const getWordStartIndex = (line: string, index: number) => {
 
 const getWordEndIndex = (line: string, index: number) => {
   for (let i = index; i < line.length; i++) {
-    if (!IsAlphaNumeric.isAlphaNumeric(line[i])) {
+    if (!isWordChar(line[i])) {
       return i
     }
   }
-  return line.length - 1
+  return line.length
 }
 
 export const getWordMatchAtPosition = (lines: string[], rowIndex: number, columnIndex: number) => {
