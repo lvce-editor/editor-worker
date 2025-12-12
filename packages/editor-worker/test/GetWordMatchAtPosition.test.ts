@@ -6,8 +6,8 @@ test('full word', () => {
   const rowIndex = 0
   const columnIndex = 0
   expect(GetWordMatchAtPosition.getWordMatchAtPosition(lines, rowIndex, columnIndex)).toEqual({
-    end: 2,
+    end: 3,
     start: 0,
-    word: 'ab',
+    word: 'abc',
   })
 })
