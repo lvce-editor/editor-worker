@@ -36,7 +36,7 @@ test('editorSelectNextOccurrence - no selection and cursor position at start of 
   expect(newEditor.selections).toEqual(EditorSelection.fromRange(0, 0, 0, 4))
 })
 
-test.skip('editorSelectNextOccurrence - word with underscore', () => {
+test('editorSelectNextOccurrence - word with underscore', () => {
   const cursor = {
     columnIndex: 0,
     rowIndex: 0,
