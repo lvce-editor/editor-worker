@@ -14,5 +14,5 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
   await Command.execute('Editor.selectNextOccurrence')
 
   // assert
-  await Editor.shouldHaveSelections(new Uint32Array([0, 8, 0, 13])) //TODO
+  await Editor.shouldHaveSelections(new Uint32Array([0, 0, 0, 14])) //TODO
 }
