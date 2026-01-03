@@ -18,6 +18,7 @@ import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 export const createEditor = async ({
+  assetDir,
   columnToReveal,
   completionTriggerCharacters,
   content,
@@ -39,6 +40,7 @@ export const createEditor = async ({
   lineNumbers,
   lineToReveal,
   links,
+  platform,
   rowHeight,
   savedDeltaY,
   savedSelections,
@@ -52,7 +54,7 @@ export const createEditor = async ({
   Assert.string(content)
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
-  const languages = await getLanguages()
+  const languages = await getLanguages(platform, assetDir)
   const computedlanguageId = getLanguageId(uri, languages)
   const editor = {
     charWidth,
