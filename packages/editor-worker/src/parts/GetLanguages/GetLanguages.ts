@@ -1,7 +1,7 @@
-import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
+import * as ExtensionManagementWorker from '../ExtensionManagementWorker/ExtensionManagementWorker.ts'
 
 export const getLanguages = async (): Promise<readonly any[]> => {
   // @ts-ignore
-  const languages = await ExtensionHostWorker.invoke('Languages.getLanguages')
+  const languages = await ExtensionManagementWorker.invoke('Languages.getLanguages')
   return languages
 }
