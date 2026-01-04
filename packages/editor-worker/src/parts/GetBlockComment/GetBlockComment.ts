@@ -3,12 +3,13 @@ import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker
 import * as Languages from '../Languages/Languages.ts'
 
 export const getBlockComment = async (editor: any, offset: number) => {
+  const { assetDir, platform } = editor
   // TODO ask extension host worker,
   // execute block comment provider with
   // uri, language id, offset
   // and the extension returns a matching block comment or undefined
   try {
-    await activateByEvent(`onLanguage:${editor.languageId}`)
+    await activateByEvent(`onLanguage:${editor.languageId}`, assetDir, platform)
     // @ts-ignore
     const blockComment = await ExtensionHostWorker.invoke(`ExtensionHostCommment.execute`, editor.uid, offset)
     if (blockComment) {
