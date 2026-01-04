@@ -1,7 +1,6 @@
-import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
+import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 
-export const getLanguages = async (): Promise<readonly any[]> => {
-  // @ts-ignore
-  const languages = await ExtensionHostWorker.invoke('Languages.getLanguages')
+export const getLanguages = async (platform: number, assetDir: string): Promise<readonly any[]> => {
+  const languages = await ExtensionManagementWorker.invoke('Languages.getLanguages', platform, assetDir)
   return languages
 }

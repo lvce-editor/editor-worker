@@ -1,4 +1,5 @@
 export interface EditorCreateOptions {
+  readonly assetDir: string
   readonly columnToReveal?: number
   readonly completionTriggerCharacters: any
   readonly content: string
@@ -20,6 +21,7 @@ export interface EditorCreateOptions {
   readonly lineNumbers: boolean
   readonly lineToReveal?: number
   readonly links: any
+  readonly platform: number
   readonly rowHeight: number
   readonly savedDeltaY: number
   readonly savedSelections: any
