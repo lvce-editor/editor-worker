@@ -7,13 +7,16 @@ const combineResults = (results: any) => {
 }
 
 export const executeDiagnosticProvider = (editor: any): Promise<readonly Diagnostic[]> => {
+  const { assetDir, platform } = editor
   return ExtensionHostEditor.execute({
     args: [],
+    assetDir,
     combineResults,
     editor,
     event: ExtensionHostActivationEvent.OnDiagnostic,
     method: 'ExtensionHost.executeDiagnosticProvider',
     noProviderFoundMessage: 'no diagnostic provider found',
     noProviderResult: [],
+    platform,
   })
 }
