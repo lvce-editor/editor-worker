@@ -57,6 +57,7 @@ export const createEditor = async ({
   const languages = await getLanguages(platform, assetDir)
   const computedlanguageId = getLanguageId(uri, languages)
   const editor = {
+    assetDir,
     charWidth,
     columnWidth: 0,
     completionState: '',
@@ -98,6 +99,7 @@ export const createEditor = async ({
     minLineY: 0,
     numberOfVisiblelines: 0,
     numberOfVisibleLines: 0,
+    platform,
     primarySelectionIndex: 0,
     rowHeight,
     savedSelections,
