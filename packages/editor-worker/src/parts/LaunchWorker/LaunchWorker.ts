@@ -1,26 +1,22 @@
 import type { Rpc } from '@lvce-editor/rpc-registry'
-import { MessagePortRpcParent } from '@lvce-editor/rpc'
+import { TransferMessagePortRpcParent } from '@lvce-editor/rpc'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
-import * as GetPortTuple from '../GetPortTuple/GetPortTuple.ts'
 import * as RendererWorkerIpcParentType from '../RendererWorkerIpcParentType/RendererWorkerIpcParentType.ts'
 
 export const launchWorker = async (name: string, url: string, intializeCommand?: string): Promise<Rpc> => {
-  // TODO use transferMessagePortRpc
-  const { port1, port2 } = GetPortTuple.getPortTuple()
-  // @ts-ignore
-  await RendererWorker.invokeAndTransfer('IpcParent.create', {
-    method: RendererWorkerIpcParentType.ModuleWorkerAndWorkaroundForChromeDevtoolsBug,
-    name: name,
-    port: port1,
-    raw: true,
-    url,
-  })
-  const rpc = await MessagePortRpcParent.create({
+  const rpc = await TransferMessagePortRpcParent.create({
     commandMap: {},
     isMessagePortOpen: true,
-    messagePort: port2,
+    async send(port) {
+      await RendererWorker.invokeAndTransfer('IpcParent.create', {
+        method: RendererWorkerIpcParentType.ModuleWorkerAndWorkaroundForChromeDevtoolsBug,
+        name,
+        port,
+        raw: true,
+        url,
+      })
+    },
   })
-  port2.start()
   if (intializeCommand) {
     await rpc.invoke(intializeCommand)
   }
