@@ -1,4 +1,4 @@
-import type { State } from '../State/State.ts'
+import type { EditorState } from '../State/State.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
@@ -11,7 +11,7 @@ import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 const renderLines = {
-  apply(oldState: State, newState: State) {
+  apply(oldState: EditorState, newState: EditorState) {
     const { incrementalEdits } = newState
     if (incrementalEdits !== emptyIncrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
@@ -23,7 +23,7 @@ const renderLines = {
     const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
     return [/* method */ 'setText', dom]
   },
-  isEqual(oldState: State, newState: State) {
+  isEqual(oldState: EditorState, newState: EditorState) {
     return (
       oldState.lines === newState.lines &&
       oldState.tokenizerId === newState.tokenizerId &&
@@ -56,70 +56,70 @@ const renderSelections = {
 }
 
 const renderScrollBarY = {
-  apply(oldState: State, newState: State) {
+  apply(oldState: EditorState, newState: EditorState) {
     const scrollBarY = ScrollBarFunctions.getScrollBarY(newState.deltaY, newState.finalDeltaY, newState.height, newState.scrollBarHeight)
     const translate = `0 ${scrollBarY}px`
     const heightPx = `${newState.scrollBarHeight}px`
     return [/* method */ 'setScrollBar', translate, heightPx]
   },
-  isEqual(oldState: State, newState: State) {
+  isEqual(oldState: EditorState, newState: EditorState) {
     return oldState.deltaY === newState.deltaY && oldState.scrollBarHeight === newState.scrollBarHeight
   },
 }
 
 const renderScrollBarX = {
-  apply(oldState: State, newState: State) {
+  apply(oldState: EditorState, newState: EditorState) {
     const scrollBarWidth = ScrollBarFunctions.getScrollBarSize(newState.width, newState.longestLineWidth, newState.minimumSliderSize)
     const scrollBarX = (newState.deltaX / newState.longestLineWidth) * newState.width
     return [/* method */ 'setScrollBarHorizontal', /* scrollBarX */ scrollBarX, /* scrollBarWidth */ scrollBarWidth, /* deltaX */ newState.deltaX]
   },
-  isEqual(oldState: State, newState: State) {
+  isEqual(oldState: EditorState, newState: EditorState) {
     return oldState.longestLineWidth === newState.longestLineWidth && oldState.deltaX === newState.deltaX
   },
 }
 
 const renderFocus = {
-  apply(oldState: State, newState: State) {
+  apply(oldState: EditorState, newState: EditorState) {
     return [/* method */ 'setFocused', newState.focused]
   },
-  isEqual(oldState: State, newState: State) {
+  isEqual(oldState: EditorState, newState: EditorState) {
     return oldState.focused === newState.focused
   },
 }
 
 const renderFocusContext = {
-  apply(oldState: State, newState: State) {
+  apply(oldState: EditorState, newState: EditorState) {
     return ['Viewlet.setFocusContext', newState.uid, newState.focus]
   },
-  isEqual(oldState: State, newState: State) {
+  isEqual(oldState: EditorState, newState: EditorState) {
     return oldState.focus === newState.focus
   },
 }
 
 const renderAdditionalFocusContext = {
-  apply(oldState: State, newState: State) {
+  apply(oldState: EditorState, newState: EditorState) {
     if (newState.additionalFocus) {
       return ['Viewlet.setAdditionalFocus', newState.uid, newState.additionalFocus]
     }
     return ['viewlet.unsetAdditionalFocus', newState.uid, newState.additionalFocus]
   },
-  isEqual(oldState: State, newState: State) {
+  isEqual(oldState: EditorState, newState: EditorState) {
     return oldState.additionalFocus === newState.additionalFocus
   },
 }
 
 const renderDecorations = {
-  apply(oldState: State, newState: State) {
+  apply(oldState: EditorState, newState: EditorState) {
     const dom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(newState.decorations)
     return ['setDecorationsDom', dom]
   },
-  isEqual(oldState: State, newState: State) {
+  isEqual(oldState: EditorState, newState: EditorState) {
     return oldState.decorations === newState.decorations
   },
 }
 
 const renderGutterInfo = {
-  apply(oldState: State, newState: State) {
+  apply(oldState: EditorState, newState: EditorState) {
     const { lineNumbers, maxLineY, minLineY } = newState
     const gutterInfos = []
     if (lineNumbers) {
@@ -130,7 +130,7 @@ const renderGutterInfo = {
     const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos)
     return ['renderGutter', dom]
   },
-  isEqual(oldState: State, newState: State) {
+  isEqual(oldState: EditorState, newState: EditorState) {
     return oldState.minLineY === newState.minLineY && oldState.maxLineY === newState.maxLineY
   },
 }

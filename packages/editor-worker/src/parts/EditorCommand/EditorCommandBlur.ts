@@ -1,6 +1,6 @@
-import type { State } from '../State/State.ts'
+import type { EditorState } from '../State/State.ts'
 
-export const handleBlur = (editor: State): State => {
+export const handleBlur = (editor: EditorState): EditorState => {
   if (!editor.focused) {
     return editor
   }
