@@ -31,6 +31,8 @@ export const keep = [
   'Editor.getProblems',
   'Editor.getKeys',
   'Editor.getMenuIds',
+  'Editor.getMenuEntries',
+  'Editor.getMenuEntries2',
   'Font.ensure',
   'HandleMessagePort.handleMessagePort',
   'Hover.getHoverInfo',
