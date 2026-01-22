@@ -1,7 +1,7 @@
 import { WhenExpression } from '@lvce-editor/constants'
-import type { State } from '../State/State.ts'
+import type { EditorState } from '../State/State.ts'
 
-export const handleFocus = (editor: State): State => {
+export const handleFocus = (editor: EditorState): EditorState => {
   if (editor.focused && editor.focus === WhenExpression.FocusEditorText) {
     return editor
   }

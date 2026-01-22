@@ -1,4 +1,4 @@
-export interface State {
+export interface EditorState {
   readonly additionalFocus: number
   readonly debugEnabled: boolean
   readonly decorations: any
