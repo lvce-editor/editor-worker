@@ -6,6 +6,7 @@ import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits.ts'
+import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
@@ -100,12 +101,18 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     selections: newSelections,
     undoStack: [...editor.undoStack, changes],
   }
-  EditorStates.set(editor.uid, editor, newEditor)
-  const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
-
-  const editorWithNewWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditor, changes)
-  const newEditor2 = {
+  // Update link decorations after text changes
+  const linkDecorations = LinkDetection.detectAllLinksAsDecorations(newEditor)
+  const newEditorWithDecorations = {
     ...newEditor,
+    decorations: linkDecorations,
+  }
+  EditorStates.set(editor.uid, editor, newEditorWithDecorations)
+  const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditorWithDecorations)
+
+  const editorWithNewWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditorWithDecorations, changes)
+  const newEditor2 = {
+    ...newEditorWithDecorations,
     ...editorWithNewWidgets,
     incrementalEdits,
   }
