@@ -13,5 +13,6 @@ export const getLineInfos = (lines: readonly string[], tokenizer: any, languageI
     lineInfos.push(lineInfo)
     currentLineState = result
   }
+  console.log({ lineInfos })
   return lineInfos
 }

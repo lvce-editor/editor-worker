@@ -32,9 +32,9 @@ export const updateDiagnostics = async (newState: any): Promise<any> => {
     const linkDecorations = LinkDetection.detectAllLinksAsDecorations(latest.newState)
     const newEditor = {
       ...latest.newState,
-      decorations: linkDecorations, // Text-level decorations for CSS classes (links, etc.)
+      decorations: linkDecorations, // Text-level decorations (flat array) for CSS classes
       diagnostics,
-      visualDecorations, // Visual decorations for squiggly underlines
+      visualDecorations, // Visual decorations (objects with x, y, width, height) for squiggly underlines
     }
     EditorState.set(newState.id, latest.oldState, newEditor)
     // @ts-ignore
