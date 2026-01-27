@@ -4,6 +4,6 @@
  * @param regex The regex pattern to use (should have global flag)
  * @returns Array of regex matches
  */
-export const getRegexMatches = (text: string, regex: RegExp): RegExpMatchArray[] => {
+export const getRegexMatches = (text: string, regex: RegExp): readonly RegExpMatchArray[] => {
   return [...text.matchAll(regex)]
 }
