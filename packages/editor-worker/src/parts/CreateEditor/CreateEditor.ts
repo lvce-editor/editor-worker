@@ -150,7 +150,7 @@ export const createEditor = async ({
     textInfos,
   }
 
-  console.log({ newEditor4 })
+  console.error({ newEditor4 })
   EditorState.set(id, emptyEditor, newEditor4)
 
   // TODO only sync when needed
