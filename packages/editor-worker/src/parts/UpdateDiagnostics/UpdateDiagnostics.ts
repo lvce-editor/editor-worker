@@ -4,8 +4,8 @@ import * as ExtensionHostCommandType from '../ExtensionHostCommandType/Extension
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
-import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import * as UpdateDiagnosticsWithLinks from './UpdateDiagnosticsWithLinks.ts'
 
 export const updateDiagnostics = async (newState: any): Promise<any> => {
   try {
@@ -28,11 +28,13 @@ export const updateDiagnostics = async (newState: any): Promise<any> => {
       return newState
     }
     const visualDecorations = await GetVisibleDiagnostics.getVisibleDiagnostics(latest.newState, diagnostics)
-    // Re-detect link decorations after text changes
-    const linkDecorations = LinkDetection.detectAllLinksAsDecorations(latest.newState)
+    // Get diagnostic decorations from visual decorations (if any)
+    const diagnosticDecorations = visualDecorations.flatMap((deco: any) => [deco.offset, deco.length, deco.type, deco.modifiers || 0])
+    // Merge link decorations with diagnostic decorations
+    const mergedDecorations = UpdateDiagnosticsWithLinks.mergeLinksWithDiagnosticDecorations(latest.newState, diagnosticDecorations)
     const newEditor = {
       ...latest.newState,
-      decorations: linkDecorations, // Text-level decorations (flat array) for CSS classes
+      decorations: mergedDecorations, // Text-level decorations (flat array) for CSS classes
       diagnostics,
       visualDecorations, // Visual decorations (objects with x, y, width, height) for squiggly underlines
     }
