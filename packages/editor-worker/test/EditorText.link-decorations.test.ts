@@ -66,7 +66,7 @@ test('getVisible - link decorations split tokens correctly', async () => {
   expect(linkTokens[0].text).toBe('https://example.com')
 })
 
-test('getVisible - decorations that don\'t align with token boundaries', async () => {
+test("getVisible - decorations that don't align with token boundaries", async () => {
   const editor = {
     averageCharWidth: 9,
     charWidth: 9,

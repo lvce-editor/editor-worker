@@ -296,7 +296,7 @@ const getLineInfoDefault = (
 
     const relativeStart = decorationOffset - lineOffset
     const relativeEnd = relativeStart + decorationLength
-    
+
     // Only include decorations that overlap with this line
     if (relativeStart < line.length && relativeEnd > 0) {
       const decorationClassName = GetDecorationClassName.getDecorationClassName(decorationType)
@@ -456,10 +456,6 @@ const getLineInfosViewport = (
   const result = []
   const differences = []
   const { decorations, languageId, lines } = editor
-  if (decorations && decorations.length > 0) {
-    // eslint-disable-next-line no-console
-    console.log('[DEBUG getLineInfosViewport]', { decorations, minLineY, maxLineY, minLineOffset })
-  }
   const tokenMap = TokenMaps.get(languageId)
   let offset = minLineOffset
   const tabSize = 2
