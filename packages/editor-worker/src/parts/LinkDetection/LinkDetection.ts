@@ -59,3 +59,38 @@ export const detectAllLinksAsDecorations = (editor: any): number[] => {
 
   return decorations
 }
+
+/**
+ * Gets the URL text at a given offset in the editor if it's a link
+ * @param editor The editor
+ * @param offset The offset in the document
+ * @returns The URL string if the offset is on a link, or undefined
+ */
+export const getUrlAtOffset = (editor: any, offset: number): string | undefined => {
+  const { decorations, lines } = editor
+
+  // Iterate through decorations in groups of 4 (offset, length, type, modifiers)
+  for (let i = 0; i < decorations.length; i += 4) {
+    const decorationOffset = decorations[i]
+    const decorationLength = decorations[i + 1]
+    const decorationType = decorations[i + 2]
+
+    // Check if this decoration is a link and if the offset falls within it
+    if (decorationType === DecorationType.Link && offset >= decorationOffset && offset < decorationOffset + decorationLength) {
+      // Extract the URL text from the editor content
+      let currentOffset = 0
+      for (const line of lines) {
+        const lineLength = line.length + 1 // +1 for newline
+        if (currentOffset + lineLength > decorationOffset) {
+          // The link starts in this line
+          const linkStartInLine = decorationOffset - currentOffset
+          const url = line.slice(linkStartInLine, linkStartInLine + decorationLength)
+          return url
+        }
+        currentOffset += lineLength
+      }
+    }
+  }
+
+  return undefined
+}
