@@ -1,0 +1,12 @@
+{
+  "id": "test.link-detection",
+  "name": "Link Detection Test",
+  "description": "Test link detection in editor",
+  "activation": ["onLanguage:txt"],
+  "languages": [
+    {
+      "id": "txt",
+      "extensions": [".txt"]
+    }
+  ]
+}
