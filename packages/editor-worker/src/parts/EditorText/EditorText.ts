@@ -222,10 +222,11 @@ const getLineInfoDefault = (
     let extraClassName = ''
     if (decorationOffset !== undefined && decorationOffset - lineOffset === start) {
       // @ts-ignore
-      const decorationLength = decorations[++decorationIndex]
-      const decorationType = decorations[++decorationIndex]
+      const decorationLength = decorations[decorationIndex + 1]
+      const decorationType = decorations[decorationIndex + 2]
       // @ts-ignore
-      const decorationModifiers = decorations[++decorationIndex]
+      const decorationModifiers = decorations[decorationIndex + 3]
+      decorationIndex += 4
       //   decorationIndex,
       //   decorationLength,
       //   decorationType,
