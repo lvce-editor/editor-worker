@@ -4,8 +4,6 @@ export const name = 'editor.link-detection'
 
 export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main }) => {
   // arrange
-  const url = new URL('../fixtures/editor.link-detection', import.meta.url).toString()
-  await Extension.addWebExtension(url)
   const tmpDir = await FileSystem.getTmpDir()
 
   // Create a test file with URLs
