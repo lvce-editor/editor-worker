@@ -7,13 +7,11 @@ import { openExternal } from './OpenExternal.ts'
 // cursor should appear at mousedown position immediately
 export const handleSingleClickWithAlt = async (editor: any, position: any) => {
   const { columnIndex, rowIndex } = position
-  console.log({ columnIndex, rowIndex })
 
   // Check if the click is on a link
   const offset = TextDocument.offsetAt(editor, rowIndex, columnIndex)
   const url = LinkDetection.getUrlAtOffset(editor, offset)
 
-  console.log({ url })
   if (url) {
     // Open the link
     await openExternal(url)
