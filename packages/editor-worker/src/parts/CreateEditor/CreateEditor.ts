@@ -12,6 +12,7 @@ import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
+import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
@@ -132,10 +133,17 @@ export const createEditor = async ({
     newEditor3 = await EditorScrolling.setDeltaY(newEditor2, 0)
   }
 
-  const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(newEditor3, syncIncremental)
-  const newEditor4 = {
+  // Detect links and initialize decorations
+  const linkDecorations = LinkDetection.detectAllLinksAsDecorations(newEditor3)
+  const newEditor3WithLinks = {
     ...newEditor3,
+    decorations: linkDecorations,
+  }
+
+  const syncIncremental = SyncIncremental.getEnabled()
+  const { differences, textInfos } = await EditorText.getVisible(newEditor3WithLinks, syncIncremental)
+  const newEditor4 = {
+    ...newEditor3WithLinks,
     differences,
     focus: WhenExpression.FocusEditorText,
     focused: true,

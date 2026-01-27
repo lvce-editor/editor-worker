@@ -307,11 +307,27 @@ const getLineInfosViewport = (
   for (let i = minLineY; i < maxLineY; i++) {
     const line = lines[i]
     const normalize = NormalizeText.shouldNormalizeText(line)
+
+    // Use decorations that were pre-computed (includes links and diagnostics)
+    // Filter decorations to only include those for this line
+    const lineDecorations: number[] = []
+    for (let j = 0; j < decorations.length; j += 4) {
+      const decorationOffset = decorations[j]
+      const decorationLength = decorations[j + 1]
+      const decorationType = decorations[j + 2]
+      const decorationModifiers = decorations[j + 3]
+
+      // Include decoration if it starts within this line
+      if (decorationOffset >= offset && decorationOffset < offset + line.length) {
+        lineDecorations.push(decorationOffset, decorationLength, decorationType, decorationModifiers)
+      }
+    }
+
     const { difference, lineInfo } = getLineInfo(
       line,
       tokens[i - minLineY],
       embeddedResults,
-      decorations,
+      lineDecorations,
       tokenMap,
       offset,
       normalize,
