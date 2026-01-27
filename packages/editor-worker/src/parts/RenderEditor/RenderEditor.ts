@@ -21,7 +21,6 @@ const renderLines = {
     const { highlightedLine, minLineY } = newState
     const relativeLine = highlightedLine - minLineY
     const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
-    console.error({ dom })
     return [/* method */ 'setText', dom]
   },
   isEqual(oldState: EditorState, newState: EditorState) {
