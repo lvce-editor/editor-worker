@@ -1,6 +1,6 @@
 import type { Link } from './Link.js'
 import * as DecorationType from '../DecorationType/DecorationType.ts'
-import { getRegexMatches } from './getRegexMatches.js'
+import { getRegexMatches } from './getRegexMatches.ts'
 
 // URL matching regex pattern - matches common URL schemes
 // Supports: http://, https://, ftp://, ftps://, file://
