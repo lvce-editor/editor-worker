@@ -95,8 +95,14 @@ test('detectAllLinksAsDecorations finds links in editor', () => {
   // First line: link at offset 6, length 19
   // Second line: offset is (25 + 1) = 26, link starts at position 4, so offset 30, length 15
   expect(decorations).toEqual([
-    6, 19, 1, 0,  // offset, length, DecorationType.Link, modifiers
-    30, 15, 1, 0,
+    6,
+    19,
+    1,
+    0, // offset, length, DecorationType.Link, modifiers
+    30,
+    15,
+    1,
+    0,
   ])
 })
 
@@ -106,7 +112,13 @@ test('detectAllLinksAsDecorations handles multiple links per line', () => {
   }
   const decorations = LinkDetection.detectAllLinksAsDecorations(editor)
   expect(decorations).toEqual([
-    6, 19, 1, 0,   // first link
-    30, 15, 1, 0,  // second link
+    6,
+    19,
+    1,
+    0, // first link
+    30,
+    15,
+    1,
+    0, // second link
   ])
 })
