@@ -17,8 +17,8 @@ export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locato
   // act
   await Editor.setCursor(1, 2) // Position on the https://example.com line
 
-  // assert - Check that the link has the decorationLink class
-  const tokensWithLink = Locator('.decorationLink')
+  // assert - Check that the link has the Link class
+  const tokensWithLink = Locator('.Token.Link')
 
   await expect(tokensWithLink).toBeVisible()
 }
