@@ -203,6 +203,7 @@ const getLineInfoDefault = (
   maxOffset: any,
 ) => {
   const lineInfo = []
+  console.log({ decorations })
   let decorationIndex = 0
   for (; decorationIndex < decorations.length; decorationIndex += 4) {
     const decorationOffset = decorations[decorationIndex]

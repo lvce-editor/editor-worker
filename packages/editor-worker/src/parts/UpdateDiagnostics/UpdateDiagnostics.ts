@@ -4,6 +4,7 @@ import * as ExtensionHostCommandType from '../ExtensionHostCommandType/Extension
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
+import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 export const updateDiagnostics = async (newState: any): Promise<any> => {
@@ -26,11 +27,14 @@ export const updateDiagnostics = async (newState: any): Promise<any> => {
     if (!latest) {
       return newState
     }
-    const decorations = await GetVisibleDiagnostics.getVisibleDiagnostics(latest.newState, diagnostics)
+    const visualDecorations = await GetVisibleDiagnostics.getVisibleDiagnostics(latest.newState, diagnostics)
+    // Re-detect link decorations after text changes
+    const linkDecorations = LinkDetection.detectAllLinksAsDecorations(latest.newState)
     const newEditor = {
       ...latest.newState,
-      decorations,
+      decorations: linkDecorations, // Text-level decorations for CSS classes (links, etc.)
       diagnostics,
+      visualDecorations, // Visual decorations for squiggly underlines
     }
     EditorState.set(newState.id, latest.oldState, newEditor)
     // @ts-ignore
