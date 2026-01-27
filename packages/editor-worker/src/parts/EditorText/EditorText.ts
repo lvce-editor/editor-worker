@@ -205,7 +205,7 @@ const getLineInfoDefault = (
 ) => {
   const lineInfo = []
   let decorationIndex = 0
-  for (; decorationIndex < decorations.length; decorationIndex += 3) {
+  for (; decorationIndex < decorations.length; decorationIndex += 4) {
     const decorationOffset = decorations[decorationIndex]
     if (decorationOffset >= lineOffset) {
       break
