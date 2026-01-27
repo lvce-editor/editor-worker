@@ -286,21 +286,20 @@ const getLineInfoDefault = (
   maxOffset: any,
 ) => {
   const lineInfo = []
-  
+
   // Build decoration map for this line (position -> decoration class)
   const decorationMap = new Map<number, { end: number; className: string }>()
   for (let j = 0; j < decorations.length; j += 4) {
     const decorationOffset = decorations[j]
     const decorationLength = decorations[j + 1]
     const decorationType = decorations[j + 2]
-    
+
     const relativeStart = decorationOffset - lineOffset
     const relativeEnd = relativeStart + decorationLength
     
     // Only include decorations that overlap with this line
     if (relativeStart < line.length && relativeEnd > 0) {
       const decorationClassName = GetDecorationClassName.getDecorationClassName(decorationType)
-      console.log('[EditorText] decoration', { line, decorationOffset, decorationLength, decorationType, lineOffset, relativeStart, relativeEnd, decorationClassName })
       if (decorationClassName) {
         decorationMap.set(Math.max(0, relativeStart), {
           className: decorationClassName,
@@ -309,17 +308,17 @@ const getLineInfoDefault = (
       }
     }
   }
-  
+
   const { tokens } = tokenResults
   let { end, start, startIndex } = getStartDefaults(tokens, minOffset)
   const difference = getDifference(start, averageCharWidth, deltaX)
   const tokensLength = tokens.length
-  
+
   for (let i = startIndex; i < tokensLength; i += 2) {
     const tokenType = tokens[i]
     const tokenLength = tokens[i + 1]
     const tokenEnd = start + tokenLength
-    
+
     // Check if any decorations overlap with this token
     let hasOverlap = false
     for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
@@ -328,22 +327,22 @@ const getLineInfoDefault = (
         break
       }
     }
-    
+
     if (hasOverlap) {
       // Token has decoration overlap - split into parts
       let currentPos = start
-      
+
       while (currentPos < tokenEnd) {
         // Find if current position is inside a decoration
         let activeDecoration: { end: number; className: string } | null = null
-        
+
         for (const [decorationStart, decoration] of decorationMap) {
           if (decorationStart <= currentPos && decoration.end > currentPos) {
             activeDecoration = decoration
             break
           }
         }
-        
+
         if (activeDecoration) {
           // Render decorated part
           const partEnd = Math.min(tokenEnd, activeDecoration.end)
@@ -361,7 +360,7 @@ const getLineInfoDefault = (
               nextDecorationStart = Math.min(nextDecorationStart, decorationStart)
             }
           }
-          
+
           // Render non-decorated part
           const partEnd = nextDecorationStart
           const text = line.slice(currentPos, partEnd)
@@ -378,14 +377,14 @@ const getLineInfoDefault = (
       const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
       lineInfo.push(normalizedText, className)
     }
-    
+
     start = tokenEnd
     end = tokenEnd
     if (end >= maxOffset) {
       break
     }
   }
-  
+
   return {
     difference,
     lineInfo,
@@ -457,6 +456,10 @@ const getLineInfosViewport = (
   const result = []
   const differences = []
   const { decorations, languageId, lines } = editor
+  if (decorations && decorations.length > 0) {
+    // eslint-disable-next-line no-console
+    console.log('[DEBUG getLineInfosViewport]', { decorations, minLineY, maxLineY, minLineOffset })
+  }
   const tokenMap = TokenMaps.get(languageId)
   let offset = minLineOffset
   const tabSize = 2
@@ -512,7 +515,7 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
   const maxLineY = Math.min(minLineY + numberOfVisibleLines, lines.length)
   // @ts-ignore
   const { embeddedResults, tokenizersToLoad, tokens } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
-  const minLineOffset = TextDocument.offsetAtSync(editor, minLineY, 0)
+  const minLineOffset = await TextDocument.offsetAtSync(editor, minLineY, 0)
   const averageCharWidth = charWidth
   const { differences, result } = getLineInfosViewport(
     editor,
