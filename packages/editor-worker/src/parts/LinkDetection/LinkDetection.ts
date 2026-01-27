@@ -1,5 +1,6 @@
 import type { Link } from './Link.js'
-import { getRegexMatches } from './getRegexMatches.js'
+import * as DecorationType from '../DecorationType/DecorationType.ts'
+import { getRegexMatches } from './getRegexMatches.ts'
 
 // URL matching regex pattern - matches common URL schemes
 // Supports: http://, https://, ftp://, ftps://, file://
@@ -34,4 +35,27 @@ export const detectLinks = (text: string): Link[] => {
   }
 
   return links
+}
+
+/**
+ * Detects all links in an editor and returns them as decorations
+ * @param editor The editor containing lines to scan
+ * @returns Flat array of decorations in format [offset, length, type, modifiers, ...]
+ */
+export const detectAllLinksAsDecorations = (editor: any): number[] => {
+  const decorations: number[] = []
+  const { lines } = editor
+  let offset = 0
+
+  for (const line of lines) {
+    const links = detectLinks(line)
+    for (const link of links) {
+      const linkOffset = offset + link.start
+      // Add link decoration: offset, length, type, modifiers
+      decorations.push(linkOffset, link.length, DecorationType.Link, 0)
+    }
+    offset += line.length + 1 // +1 for newline
+  }
+
+  return decorations
 }

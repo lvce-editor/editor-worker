@@ -1,7 +1,7 @@
 export interface EditorState {
   readonly additionalFocus: number
   readonly debugEnabled: boolean
-  readonly decorations: any
+  readonly decorations: any // Text-level decorations (flat array) for CSS classes like Link, Type, etc.
   readonly deltaX: number
   readonly deltaY: number
   // TODO should be immutable
@@ -26,6 +26,7 @@ export interface EditorState {
   readonly uid: number
   readonly undoStack: readonly any[]
   readonly uri: string
+  readonly visualDecorations?: any // Visual decorations (objects) for diagnostic squiggly underlines
   readonly width: number
   readonly x: number
   readonly y: number
