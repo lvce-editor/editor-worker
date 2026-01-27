@@ -91,7 +91,7 @@ test('handles word boundaries', () => {
   const result = getRegexMatches('test testing tested test', regex)
   expect(result).toHaveLength(2)
   expect(result[0]?.index).toBe(0)
-  expect(result[1]?.index).toBe(21)
+  expect(result[1]?.index).toBe(20)
 })
 
 test('returns correct input property on matches', () => {
