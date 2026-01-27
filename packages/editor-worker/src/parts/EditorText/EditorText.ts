@@ -1,5 +1,6 @@
 import * as GetDecorationClassName from '../GetDecorationClassName/GetDecorationClassName.ts'
 import * as GetTokensViewport2 from '../GetTokensViewport2/GetTokensViewport2.ts'
+import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as LoadTokenizers from '../LoadTokenizers/LoadTokenizers.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
