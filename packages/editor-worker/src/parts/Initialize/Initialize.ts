@@ -1,6 +1,7 @@
 import { setFactory } from '../CompletionWorker/CompletionWorker.ts'
 import { initializeExtensionHost } from '../InitializeExtensionHost/InitializeExtensionHost.ts'
 import { initializeExtensionManagementWorker } from '../InitializeExtensionManagementWorker/InitializeExtensionManagementWorker.ts'
+import { initializeOpenerWorker } from '../InitializeOpenerWorker/InitializeOpenerWorker.ts'
 import { initializeSyntaxHighlighting } from '../InitializeSyntaxHighlighting/InitializeSyntaxHighlighting.ts'
 import { initializeTextMeasurementWorker } from '../InitializeTextMeasurementWorker/InitializeTextMeasurementWorker.ts'
 import { launchCompletionWorker } from '../LaunchCompletionWorker/LaunchCompletionWorker.ts'
@@ -12,5 +13,6 @@ export const intialize = async (syntaxHighlightingEnabled: boolean, syncIncremen
     initializeExtensionHost(),
     initializeExtensionManagementWorker(),
     initializeTextMeasurementWorker(),
+    initializeOpenerWorker(),
   ])
 }
