@@ -1,9 +1,9 @@
 import { LazyTransferMessagePortRpcParent } from '@lvce-editor/rpc'
-import { MainAreaWorker, RendererWorker } from '@lvce-editor/rpc-registry'
+import { TextMeasurementWorker } from '@lvce-editor/rpc-registry'
 
 const send = (port: MessagePort): Promise<void> => {
   // @ts-ignore
-  return RendererWorker.sendMessagePortToMainAreaWorker(port)
+  return RendererWorker.sendMessagePortToTextMeasurementWorker(port)
 }
 
 export const initializeOpenerWorker = async (): Promise<void> => {
@@ -12,7 +12,7 @@ export const initializeOpenerWorker = async (): Promise<void> => {
       commandMap: {},
       send,
     })
-    MainAreaWorker.set(rpc)
+    TextMeasurementWorker.set(rpc)
   } catch {
     // ignore
   }
