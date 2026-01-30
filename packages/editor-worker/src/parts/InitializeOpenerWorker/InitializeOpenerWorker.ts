@@ -1,5 +1,5 @@
 import { LazyTransferMessagePortRpcParent } from '@lvce-editor/rpc'
-import { OpenerWorker } from '@lvce-editor/rpc-registry'
+import { OpenerWorker, RendererWorker } from '@lvce-editor/rpc-registry'
 
 const send = (port: MessagePort): Promise<void> => {
   return RendererWorker.sendMessagePortToOpenerWorker(port)
