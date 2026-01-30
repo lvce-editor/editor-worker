@@ -24,12 +24,7 @@ test('openExternal - should call OpenerWorker.openUrl with url', async () => {
 
 test('openExternal - should handle different URL schemes', async () => {
   openUrlSpy = jest.fn().mockImplementation(() => {})
-  const urls = [
-    'https://github.com',
-    'http://localhost:3000',
-    'file:///path/to/file',
-    'mailto:test@example.com',
-  ]
+  const urls = ['https://github.com', 'http://localhost:3000', 'file:///path/to/file', 'mailto:test@example.com']
   for (const url of urls) {
     await openExternal(url)
   }
