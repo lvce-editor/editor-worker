@@ -1,5 +1,5 @@
 import { LazyTransferMessagePortRpcParent } from '@lvce-editor/rpc'
-import { MainAreaWorker } from '@lvce-editor/rpc-registry'
+import { MainAreaWorker, RendererWorker } from '@lvce-editor/rpc-registry'
 
 const send = (port: MessagePort): Promise<void> => {
   // @ts-ignore
