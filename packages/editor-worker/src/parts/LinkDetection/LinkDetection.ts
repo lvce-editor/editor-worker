@@ -5,8 +5,9 @@ import { getRegexMatches } from './getRegexMatches.ts'
 // URL matching regex pattern - matches common URL schemes
 // Supports: http://, https://, ftp://, ftps://, file://
 // Also matches URLs without explicit scheme (www.example.com)
+// Excludes trailing quotes which are commonly used in JSON strings
 const URL_PATTERN =
-  /(?:(?:https?|ftp|ftps|file):\/\/)?(?:www\.)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\/[^\s]*)?/g
+  /(?:(?:https?|ftp|ftps|file):\/\/)?(?:www\.)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\/[^\s"']*)?/g
 
 // Regex to check if URL has a scheme (http://, https://, ftp://, etc.)
 const HAS_SCHEME_PATTERN = /^(?:https?|ftp|ftps|file):\/\//
