@@ -1,6 +1,10 @@
-import { RendererWorker } from '@lvce-editor/rpc-registry'
+import { OpenerWorker } from '@lvce-editor/rpc-registry'
 
-export const showFilePicker = async (): Promise<string | undefined> => {
-  const [filePath] = await RendererWorker.invoke('ElectronDialog.showOpenDialog', 'Save File', ['openFile', 'dontAddToRecent', 'showHiddenFiles'])
+export const showFilePicker = async (): Promise<string> => {
+  const dialogTitle = 'Save File' // TODO use i18n string
+  const { canceled, filePath } = await OpenerWorker.invoke('Open.showSaveDialog', dialogTitle, [])
+  if (canceled) {
+    return ''
+  }
   return filePath
 }
