@@ -12,7 +12,11 @@ export const save = async (editor: any): Promise<any> => {
     const newEditor = await getNewEditor(editor)
     const content = TextDocument.getText(newEditor)
     if (isUntitledFile(uri)) {
-      await saveUntitledFile(uri, content, platform)
+      const pickedFilePath = await saveUntitledFile(uri, content, platform)
+      if (pickedFilePath) {
+        return { ...newEditor, uri: pickedFilePath }
+      }
+      return newEditor
     } else {
       await saveNormalFile(uri, content)
     }
