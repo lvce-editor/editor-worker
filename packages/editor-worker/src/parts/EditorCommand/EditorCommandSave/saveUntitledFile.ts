@@ -1,5 +1,9 @@
+import { RendererWorker } from '@lvce-editor/rpc-registry'
+
 export const saveUntitledFile = async (uri: string, content: string) => {
-  // TODO implement saving untitled files
-  // For now we just throw an error
-  throw new Error('Saving untitled files is not implemented yet')
+  const [filePath] = await RendererWorker.invoke('ElectronDialog.showOpenDialog', 'Save File', ['openFile', 'dontAddToRecent', 'showHiddenFiles'])
+  if (!filePath) {
+    return
+  }
+  await RendererWorker.invoke('FileSystem.writeFile', filePath, content)
 }
