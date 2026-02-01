@@ -1,36 +1,21 @@
-// @ts-ignore
-// @ts-ignore
-// @ts-ignore
-import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { VError } from '../VError/VError.ts'
-import * as EditorFormat from './EditorCommandFormat.ts'
-// import * as FileSystem from '../FileSystem/FileSystem.ts'
+import { getNewEditor } from './EditorCommandSave/getNewEditor.ts'
+import { isUntitledFile } from './EditorCommandSave/isUntitledFile.ts'
+import { saveNormalFile } from './EditorCommandSave/saveNormalFile.ts'
+import { saveUntitledFile } from './EditorCommandSave/saveUntitledFile.ts'
 
-const getFormatOnSave = () => {
-  // TODO query setting on editor creation
-  // const value = Preferences.get('editor.formatOnSave')
-  // return Boolean(value)
-  return false
-}
-
-// @ts-ignore
-const getNewEditor = async (editor) => {
-  const formatOnSave = getFormatOnSave()
-  if (formatOnSave) {
-    return EditorFormat.format(editor)
-  }
-  return editor
-}
-
-// @ts-ignore
-export const save = async (editor) => {
+export const save = async (editor: any): Promise<any> => {
   try {
     const { uri } = editor
     const newEditor = await getNewEditor(editor)
     const content = TextDocument.getText(newEditor)
-    await RendererWorker.invoke('FileSystem.writeFile', uri, content)
+    if (isUntitledFile(uri)) {
+      await saveUntitledFile(uri, content)
+    } else {
+      await saveNormalFile(uri, content)
+    }
     return newEditor
   } catch (error) {
     // @ts-ignore

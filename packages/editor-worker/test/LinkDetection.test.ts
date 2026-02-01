@@ -122,3 +122,18 @@ test('detectAllLinksAsDecorations handles multiple links per line', () => {
     0, // second link
   ])
 })
+
+test('handles URL in JSON with trailing double quote', () => {
+  const links = LinkDetection.detectLinks('"resolved": "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.28.6.tgz",')
+  expect(links).toEqual([{ length: 68, start: 13 }])
+  // The URL should not include the trailing quote
+  const url = '"resolved": "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.28.6.tgz",'.slice(13, 13 + 68)
+  expect(url).toBe('https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.28.6.tgz')
+})
+
+test('handles URL in JSON with trailing single quote', () => {
+  const links = LinkDetection.detectLinks("'url': 'https://example.com/package-1.0.0.tar.gz',")
+  expect(links).toEqual([{ length: 40, start: 8 }])
+  const url = "'url': 'https://example.com/package-1.0.0.tar.gz',".slice(8, 8 + 40)
+  expect(url).toBe('https://example.com/package-1.0.0.tar.gz')
+})
