@@ -1,7 +1,8 @@
 import { RendererWorker } from '@lvce-editor/rpc-registry'
+import { showFilePicker } from './showFilePicker.js'
 
 export const saveUntitledFile = async (uri: string, content: string) => {
-  const [filePath] = await RendererWorker.invoke('ElectronDialog.showOpenDialog', 'Save File', ['openFile', 'dontAddToRecent', 'showHiddenFiles'])
+  const filePath = await showFilePicker()
   if (!filePath) {
     return
   }
