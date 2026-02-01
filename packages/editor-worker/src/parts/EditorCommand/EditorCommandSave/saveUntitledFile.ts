@@ -8,5 +8,6 @@ export const saveUntitledFile = async (uri: string, content: string, platform: n
   }
   await RendererWorker.invoke('FileSystem.writeFile', filePath, content)
   await RendererWorker.invoke('Layout.handleWorkspaceRefresh')
+  await RendererWorker.invoke('Main.handleUriChange', uri, filePath)
   return filePath
 }
