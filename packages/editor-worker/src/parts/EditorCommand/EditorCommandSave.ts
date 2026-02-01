@@ -8,11 +8,11 @@ import { saveUntitledFile } from './EditorCommandSave/saveUntitledFile.ts'
 
 export const save = async (editor: any): Promise<any> => {
   try {
-    const { uri } = editor
+    const { platform, uri } = editor
     const newEditor = await getNewEditor(editor)
     const content = TextDocument.getText(newEditor)
     if (isUntitledFile(uri)) {
-      await saveUntitledFile(uri, content)
+      await saveUntitledFile(uri, content, platform)
     } else {
       await saveNormalFile(uri, content)
     }
