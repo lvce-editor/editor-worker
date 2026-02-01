@@ -6,6 +6,7 @@ import { openExternal } from './OpenExternal.ts'
 // TODO first change cursor position, then run go to definition
 // cursor should appear at mousedown position immediately
 export const handleSingleClickWithAlt = async (editor: any, position: any) => {
+  const { platform } = editor
   const { columnIndex, rowIndex } = position
 
   // Check if the click is on a link
@@ -14,7 +15,7 @@ export const handleSingleClickWithAlt = async (editor: any, position: any) => {
 
   if (url) {
     // Open the link
-    await openExternal(url)
+    await openExternal(url, platform)
     return editor
   }
 
