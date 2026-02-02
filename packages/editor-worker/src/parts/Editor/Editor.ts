@@ -110,12 +110,12 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     decorations: linkDecorations,
   }
   EditorStates.set(editor.uid, editor, newEditorWithDecorations)
-  
+
   // Notify main-area-worker about modified status change
   if (!editor.modified) {
     await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri)
   }
-  
+
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditorWithDecorations)
 
   const editorWithNewWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditorWithDecorations, changes)
