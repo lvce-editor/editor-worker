@@ -14,13 +14,13 @@ export const save = async (editor: any): Promise<any> => {
     if (isUntitledFile(uri)) {
       const pickedFilePath = await saveUntitledFile(uri, content, platform)
       if (pickedFilePath) {
-        return { ...newEditor, uri: pickedFilePath }
+        return { ...newEditor, modified: false, uri: pickedFilePath }
       }
       return newEditor
     } else {
       await saveNormalFile(uri, content)
     }
-    return newEditor
+    return { ...newEditor, modified: false }
   } catch (error) {
     // @ts-ignore
     const betterError = new VError(error, `Failed to save file "${editor.uri}"`)

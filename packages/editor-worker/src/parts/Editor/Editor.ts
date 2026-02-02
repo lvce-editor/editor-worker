@@ -10,6 +10,7 @@ import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
+import * as TabModifiedStatusChange from '../TabModifiedStatusChange/TabModifiedStatusChange.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as EditorSelection from './EditorSelection.ts'
 
@@ -98,6 +99,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     autoClosingRanges,
     invalidStartIndex,
     lines: newLines,
+    modified: true,
     selections: newSelections,
     undoStack: [...editor.undoStack, changes],
   }
@@ -108,6 +110,12 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     decorations: linkDecorations,
   }
   EditorStates.set(editor.uid, editor, newEditorWithDecorations)
+  
+  // Notify main-area-worker about modified status change
+  if (!editor.modified) {
+    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri)
+  }
+  
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditorWithDecorations)
 
   const editorWithNewWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditorWithDecorations, changes)
