@@ -111,11 +111,6 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
   EditorStates.set(editor.uid, editor, newEditorWithDecorations)
 
-  // Notify main-area-worker about modified status change
-  if (!editor.modified) {
-    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri)
-  }
-
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditorWithDecorations)
 
   const editorWithNewWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditorWithDecorations, changes)
@@ -129,11 +124,18 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
   const syncIncremental = SyncIncremental.getEnabled()
   const { differences, textInfos } = await EditorText.getVisible(newEditor2, syncIncremental)
-  return {
+  const newEditorWithDifferences = {
     ...newEditor2,
     differences,
     textInfos,
   }
+
+  // Notify main-area-worker about modified status change after editor state update
+  if (!editor.modified) {
+    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri)
+  }
+
+  return newEditorWithDifferences
 }
 // @ts-ignore
 export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes) => {
