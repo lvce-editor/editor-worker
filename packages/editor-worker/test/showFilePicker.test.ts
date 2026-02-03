@@ -5,41 +5,41 @@ const showFilePicker = await import('../src/parts/EditorCommand/EditorCommandSav
 
 test('showFilePicker - returns file path', async () => {
   using mockRpc = OpenerWorker.registerMockRpc({
-    'ElectronDialog.showOpenDialog': async () => {
-      return ['file.txt']
+    'Open.showSaveDialog': async () => {
+      return { canceled: false, filePath: 'file.txt' }
     },
   })
 
-  const result = await showFilePicker.showFilePicker()
+  const result = await showFilePicker.showFilePicker(0)
 
   expect(result).toBe('file.txt')
   expect(mockRpc.invocations).toHaveLength(1)
-  expect(mockRpc.invocations[0]).toEqual(['ElectronDialog.showOpenDialog', 'Save File', ['openFile', 'dontAddToRecent', 'showHiddenFiles']])
+  expect(mockRpc.invocations[0]).toEqual(['Open.showSaveDialog', 'Save File', [], 0])
 })
 
 test('showFilePicker - returns undefined when no file selected', async () => {
   using mockRpc = OpenerWorker.registerMockRpc({
-    'ElectronDialog.showOpenDialog': async () => {
-      return []
+    'Open.showSaveDialog': async () => {
+      return { canceled: true, filePath: '' }
     },
   })
 
-  const result = await showFilePicker.showFilePicker()
+  const result = await showFilePicker.showFilePicker(0)
 
-  expect(result).toBeUndefined()
+  expect(result).toBe('')
   expect(mockRpc.invocations).toHaveLength(1)
 })
 
 test('showFilePicker - passes correct dialog options', async () => {
   using mockRpc = OpenerWorker.registerMockRpc({
-    'ElectronDialog.showOpenDialog': async (...params: any[]) => {
-      return ['result.ts']
+    'Open.showSaveDialog': async (...params: any[]) => {
+      return { canceled: false, filePath: 'result.ts' }
     },
   })
 
-  const result = await showFilePicker.showFilePicker()
+  const result = await showFilePicker.showFilePicker(0)
 
   expect(result).toBe('result.ts')
   expect(mockRpc.invocations).toHaveLength(1)
-  expect(mockRpc.invocations[0]).toEqual(['ElectronDialog.showOpenDialog', 'Save File', ['openFile', 'dontAddToRecent', 'showHiddenFiles']])
+  expect(mockRpc.invocations[0]).toEqual(['Open.showSaveDialog', 'Save File', [], 0])
 })
