@@ -1,12 +1,6 @@
 import { WidgetId } from '@lvce-editor/constants'
 import * as Editors from '../Editors/Editors.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
-import * as WrapWidgetCommand from '../WrapWidgetCommand/WrapWidgetCommand.ts'
-
-const widgetCommands = {
-  'ColorPicker.handleSliderPointerDown': WidgetId.ColorPicker,
-  'ColorPicker.handleSliderPointerMove': WidgetId.ColorPicker,
-} as any
 
 // TODO wrap commands globally, not per editor
 // TODO only store editor state in editor worker, not in renderer worker also
