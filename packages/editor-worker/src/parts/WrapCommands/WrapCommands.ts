@@ -1,4 +1,3 @@
-import { WidgetId } from '@lvce-editor/constants'
 import * as Editors from '../Editors/Editors.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 
