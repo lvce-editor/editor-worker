@@ -131,8 +131,9 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     textInfos,
   }
 
-  // If modified status changed, rerender before updating the tab
+  // If modified status changed, set editor state, rerender, then update the tab
   if (!editor.modified) {
+    EditorStates.set(editor.uid, editor, newEditorWithDifferences)
     await RendererWorker.invoke('Editor.rerender')
     await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri)
   }
