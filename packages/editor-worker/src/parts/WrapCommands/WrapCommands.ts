@@ -1,7 +1,6 @@
 import { WidgetId } from '@lvce-editor/constants'
 import * as Editors from '../Editors/Editors.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
-import * as UnwrappedCommands from '../UnwrappedCommands/UnwrappedCommands.ts'
 import * as WrapWidgetCommand from '../WrapWidgetCommand/WrapWidgetCommand.ts'
 
 const widgetCommands = {
@@ -32,15 +31,3 @@ export const wrapCommand =
       commands,
     }
   }
-
-export const wrapCommands = (commands: any) => {
-  for (const [key, value] of Object.entries(commands)) {
-    if (UnwrappedCommands.keep.includes(key)) {
-      continue
-    }
-    // TODO avoid wrapping functions twice
-    const innerWrappedWidgetId = widgetCommands[key]
-    const innerWrappedFn = innerWrappedWidgetId ? WrapWidgetCommand.wrapWidgetCommand(innerWrappedWidgetId, value) : value
-    commands[key] = wrapCommand(innerWrappedFn)
-  }
-}
