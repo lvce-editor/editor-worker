@@ -231,7 +231,9 @@ export const commandMap = {
   'Editor.goToDefinition': wrapCommand(EditorGoToDefinition.goToDefinition),
   'Editor.goToTypeDefinition': wrapCommand(EditorGoToTypeDefinition.goToTypeDefinition),
   'Editor.handleBeforeInput': wrapCommand(HandleBeforeInput.handleBeforeInput),
-  'Editor.handleBeforeInputFromContentEditable': wrapCommand(EditorCommandHandleNativeBeforeInputFromContentEditable.handleBeforeInputFromContentEditable),
+  'Editor.handleBeforeInputFromContentEditable': wrapCommand(
+    EditorCommandHandleNativeBeforeInputFromContentEditable.handleBeforeInputFromContentEditable,
+  ),
   'Editor.handleBlur': wrapCommand(EditorBlur.handleBlur),
   'Editor.handleClickAtPosition': handleClickAtPosition,
   'Editor.handleContextMenu': wrapCommand(EditorCommandHandleContextMenu.handleContextMenu),
@@ -392,4 +394,4 @@ export const commandMap = {
   'Initialize.initialize': Initialize.intialize,
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
     SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
-} as any
+}
