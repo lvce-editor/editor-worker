@@ -7,6 +7,7 @@ import * as EditorText from '../EditorText/EditorText.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
@@ -130,8 +131,9 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     textInfos,
   }
 
-  // Notify main-area-worker about modified status change after editor state update
+  // If modified status changed, rerender before updating the tab
   if (!editor.modified) {
+    await RendererWorker.invoke('Editor.rerender')
     await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri)
   }
 
