@@ -20,6 +20,7 @@ export interface EditorState {
   readonly maxLineY: number
   readonly minimumSliderSize: number
   readonly minLineY: number
+  readonly modified: boolean
   readonly scrollBarHeight: number
   readonly textInfos: readonly any[]
   readonly tokenizerId: any

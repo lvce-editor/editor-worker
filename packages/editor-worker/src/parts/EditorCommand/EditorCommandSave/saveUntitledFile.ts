@@ -1,10 +1,13 @@
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import { showFilePicker } from './showFilePicker.ts'
 
-export const saveUntitledFile = async (uri: string, content: string) => {
-  const filePath = await showFilePicker()
+export const saveUntitledFile = async (uri: string, content: string, platform: number): Promise<string | undefined> => {
+  const filePath = await showFilePicker(platform)
   if (!filePath) {
     return
   }
   await RendererWorker.invoke('FileSystem.writeFile', filePath, content)
+  await RendererWorker.invoke('Layout.handleWorkspaceRefresh')
+  await RendererWorker.invoke('Main.handleUriChange', uri, filePath)
+  return filePath
 }

@@ -98,6 +98,7 @@ export const createEditor = async ({
     maxLineY: 0,
     minimumSliderSize: 20,
     minLineY: 0,
+    modified: false,
     numberOfVisiblelines: 0,
     numberOfVisibleLines: 0,
     platform,
