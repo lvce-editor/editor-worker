@@ -1,10 +1,10 @@
 import { expect, test } from '@jest/globals'
-import { RendererWorker } from '@lvce-editor/rpc-registry'
+import { OpenerWorker } from '@lvce-editor/rpc-registry'
 
 const showFilePicker = await import('../src/parts/EditorCommand/EditorCommandSave/showFilePicker.ts')
 
 test('showFilePicker - returns file path', async () => {
-  using mockRpc = RendererWorker.registerMockRpc({
+  using mockRpc = OpenerWorker.registerMockRpc({
     'ElectronDialog.showOpenDialog': async () => {
       return ['file.txt']
     },
@@ -18,7 +18,7 @@ test('showFilePicker - returns file path', async () => {
 })
 
 test('showFilePicker - returns undefined when no file selected', async () => {
-  using mockRpc = RendererWorker.registerMockRpc({
+  using mockRpc = OpenerWorker.registerMockRpc({
     'ElectronDialog.showOpenDialog': async () => {
       return []
     },
@@ -31,7 +31,7 @@ test('showFilePicker - returns undefined when no file selected', async () => {
 })
 
 test('showFilePicker - passes correct dialog options', async () => {
-  using mockRpc = RendererWorker.registerMockRpc({
+  using mockRpc = OpenerWorker.registerMockRpc({
     'ElectronDialog.showOpenDialog': async (...params: any[]) => {
       return ['result.ts']
     },
