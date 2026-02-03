@@ -150,9 +150,57 @@ import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
-import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
+import { wrapCommand } from '../WrapCommands/WrapCommands.ts'
 
-export const commandMap = {
+// Commands that should NOT be wrapped
+const unwrappedCommands = new Set([
+  'ActivateByEvent.activateByEvent',
+  'ExtensionHostManagement.activateByEvent',
+  'Editor.applyEdit2',
+  'Editor.applyEdits2',
+  'Editor.closeFind2',
+  'Editor.closeWidget2',
+  'Editor.create',
+  'Editor.getKeyBindings',
+  'Editor.getSourceActions',
+  'Editor.getLines2',
+  'Editor.getPositionAtCursor',
+  'Editor.getOffsetAtCursor',
+  'Editor.getQuickPickMenuEntries',
+  'Editor.getSelections',
+  'Editor.hotReload',
+  'Editor.getSelections2',
+  'Editor.getDiagnostics',
+  'Editor.getText',
+  'Editor.getWordAt',
+  'Editor.getWordAt2',
+  'Editor.getWordAtOffset2',
+  'Editor.getUri',
+  'Editor.getWordBefore',
+  'Editor.getWordBefore2',
+  'Editor.offsetAt',
+  'Editor.render',
+  'Editor.setSelections2',
+  'Editor.updateDebugInfo',
+  'Editor.getLanguageId',
+  'Editor.getProblems',
+  'Editor.getKeys',
+  'Editor.getMenuIds',
+  'Editor.getMenuEntries',
+  'Editor.getMenuEntries2',
+  'Font.ensure',
+  'HandleMessagePort.handleMessagePort',
+  'Hover.getHoverInfo',
+  'Hover.handleSashPointerDown',
+  'Hover.handleSashPointerMove',
+  'Hover.handleSashPointerUp',
+  'Hover.loadContent',
+  'Hover.render',
+  'Initialize.initialize',
+  'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker',
+])
+
+const baseCommandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
   'CodeGenerator.accept': CodeGeneratorAccept.codeGeneratorAccept,
   'ColorPicker.loadContent': ColorPicker.loadContent,
@@ -392,6 +440,4 @@ export const commandMap = {
   'Initialize.initialize': Initialize.intialize,
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
     SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
-}
-
-WrapCommands.wrapCommands(commandMap)
+} as any
