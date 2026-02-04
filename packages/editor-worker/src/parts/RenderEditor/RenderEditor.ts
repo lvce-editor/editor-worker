@@ -1,3 +1,4 @@
+import { ViewletCommand, ViewletModuleId } from '@lvce-editor/constants'
 import type { EditorState } from '../State/State.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
@@ -89,7 +90,7 @@ const renderFocus = {
 
 const renderFocusContext = {
   apply(oldState: EditorState, newState: EditorState) {
-    return ['Viewlet.setFocusContext', newState.uid, newState.focus]
+    return [ViewletCommand.SetFocusContext, newState.uid, newState.focus, 0, newState.uid, 'Editor']
   },
   isEqual(oldState: EditorState, newState: EditorState) {
     return oldState.focus === newState.focus
