@@ -1,4 +1,4 @@
-import { ViewletCommand, ViewletModuleId } from '@lvce-editor/constants'
+import { ViewletCommand } from '@lvce-editor/constants'
 import type { EditorState } from '../State/State.ts'
 import * as Editors from '../Editors/Editors.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
