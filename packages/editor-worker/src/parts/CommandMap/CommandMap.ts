@@ -143,11 +143,13 @@ import { hotReload } from '../HotReload/HotReload.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
+import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as SendMessagePortToExtensionHostWorker from '../SendMessagePortToExtensionHostWorker/SendMessagePortToExtensionHostWorker.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import { wrapCommand } from '../WrapCommands/WrapCommands.ts'
@@ -392,6 +394,8 @@ export const commandMap = {
   'Hover.loadContent': EditorHover.loadContent,
   'Hover.render': EditorHoverRender.renderHover,
   'Initialize.initialize': Initialize.intialize,
+  'Listener.register': RegisterListener.registerListener,
+  'Listener.unregister': UnregisterListener.unregisterListener,
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
     SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
 }

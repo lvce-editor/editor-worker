@@ -7,6 +7,8 @@ import * as EditorText from '../EditorText/EditorText.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
+import * as ListenerType from '../ListenerType/ListenerType.ts'
+import * as NotifyListeners from '../NotifyListeners/NotifyListeners.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
@@ -115,6 +117,18 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   if (!editor.modified) {
     await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri)
   }
+
+  // Notify registered listeners about editor changes
+  NotifyListeners.notifyListeners(
+    ListenerType.EditorChange,
+    'handleEditorChanged',
+    editor.uid,
+    editor.uri,
+    changes,
+  ).catch((error) => {
+    // Silently ignore notification errors to not interrupt the edit flow
+    console.warn('Failed to notify editor change listeners:', error)
+  })
 
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditorWithDecorations)
 
