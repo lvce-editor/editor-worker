@@ -1,0 +1,13 @@
+{
+  "id": "test.completion-close-on-type-space",
+  "name": "Completion Open on type",
+  "description": "",
+  "activation": ["onLanguage:xyz", "onCompletion:xyz"],
+  "browser": "main.js",
+  "languages": [
+    {
+      "id": "xyz",
+      "extensions": [".xyz"]
+    }
+  ]
+}
