@@ -19,6 +19,7 @@ export default [
   },
   {
     rules: {
+      '@cspell/spellchecker': 'off',
       'github-actions/permissions': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
