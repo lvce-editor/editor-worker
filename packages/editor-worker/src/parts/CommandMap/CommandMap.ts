@@ -143,6 +143,7 @@ import { hotReload } from '../HotReload/HotReload.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
+import * as EditorListeners from '../EditorListeners/EditorListeners.ts'
 import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
@@ -395,6 +396,7 @@ export const commandMap = {
   'Hover.render': EditorHoverRender.renderHover,
   'Initialize.initialize': Initialize.intialize,
   'Listener.register': RegisterListener.registerListener,
+  'Listener.registerListener': EditorListeners.registerListener,
   'Listener.unregister': UnregisterListener.unregisterListener,
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
     SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
