@@ -7,6 +7,7 @@ import * as EditorText from '../EditorText/EditorText.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
@@ -111,11 +112,6 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
   EditorStates.set(editor.uid, editor, newEditorWithDecorations)
 
-  // Notify main-area-worker about modified status change
-  if (!editor.modified) {
-    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri)
-  }
-
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditorWithDecorations)
 
   const editorWithNewWidgets = await ApplyWidgetChanges.applyWidgetChanges(newEditorWithDecorations, changes)
@@ -129,11 +125,20 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
   const syncIncremental = SyncIncremental.getEnabled()
   const { differences, textInfos } = await EditorText.getVisible(newEditor2, syncIncremental)
-  return {
+  const newEditorWithDifferences = {
     ...newEditor2,
     differences,
     textInfos,
   }
+
+  // If modified status changed, set editor state, rerender, then update the tab
+  if (!editor.modified) {
+    EditorStates.set(editor.uid, editor, newEditorWithDifferences)
+    await RendererWorker.invoke('Editor.rerender')
+    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri)
+  }
+
+  return newEditorWithDifferences
 }
 // @ts-ignore
 export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes) => {
