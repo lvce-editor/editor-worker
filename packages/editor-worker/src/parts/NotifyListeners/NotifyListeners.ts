@@ -11,9 +11,9 @@ import * as RpcRegistry from '../RpcRegistry/RpcRegistry.ts'
 export const notifyListeners = async (listenerType: number, method: string, ...params: any[]): Promise<void> => {
   Assert.number(listenerType)
   Assert.string(method)
-  
+
   const rpcIds = EditorListeners.getListeners(listenerType)
-  
+
   // Notify all listeners in parallel
   const notifications = rpcIds.map(async (rpcId) => {
     try {
@@ -27,6 +27,6 @@ export const notifyListeners = async (listenerType: number, method: string, ...p
       console.warn(`Failed to notify listener ${rpcId}:`, error)
     }
   })
-  
+
   await Promise.all(notifications)
 }

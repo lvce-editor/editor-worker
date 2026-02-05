@@ -9,7 +9,7 @@ beforeEach(() => {
 test('registerListener - should register a listener for an event type', () => {
   const rpcId = 100
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId)
-  
+
   const listeners = EditorListeners.getListeners(ListenerType.EditorChange)
   expect(listeners).toEqual([rpcId])
 })
@@ -18,7 +18,7 @@ test('registerListener - should not register duplicate listeners', () => {
   const rpcId = 100
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId)
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId)
-  
+
   const listeners = EditorListeners.getListeners(ListenerType.EditorChange)
   expect(listeners).toEqual([rpcId])
 })
@@ -28,7 +28,7 @@ test('registerListener - should support multiple listeners for same type', () =>
   const rpcId2 = 200
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId1)
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId2)
-  
+
   const listeners = EditorListeners.getListeners(ListenerType.EditorChange)
   expect(listeners).toEqual([rpcId1, rpcId2])
 })
@@ -38,10 +38,10 @@ test('registerListener - should support different event types', () => {
   const rpcId2 = 200
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId1)
   EditorListeners.registerListener(ListenerType.EditorSelection, rpcId2)
-  
+
   const changeListeners = EditorListeners.getListeners(ListenerType.EditorChange)
   const selectionListeners = EditorListeners.getListeners(ListenerType.EditorSelection)
-  
+
   expect(changeListeners).toEqual([rpcId1])
   expect(selectionListeners).toEqual([rpcId2])
 })
@@ -50,7 +50,7 @@ test('unregisterListener - should remove a registered listener', () => {
   const rpcId = 100
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId)
   EditorListeners.unregisterListener(ListenerType.EditorChange, rpcId)
-  
+
   const listeners = EditorListeners.getListeners(ListenerType.EditorChange)
   expect(listeners).toEqual([])
 })
@@ -61,7 +61,7 @@ test('unregisterListener - should only remove the specified listener', () => {
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId1)
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId2)
   EditorListeners.unregisterListener(ListenerType.EditorChange, rpcId1)
-  
+
   const listeners = EditorListeners.getListeners(ListenerType.EditorChange)
   expect(listeners).toEqual([rpcId2])
 })
@@ -77,7 +77,7 @@ test('clearListeners - should remove all listeners for a type', () => {
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId1)
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId2)
   EditorListeners.clearListeners(ListenerType.EditorChange)
-  
+
   const listeners = EditorListeners.getListeners(ListenerType.EditorChange)
   expect(listeners).toEqual([])
 })
@@ -88,10 +88,10 @@ test('clearAll - should remove all listeners for all types', () => {
   EditorListeners.registerListener(ListenerType.EditorChange, rpcId1)
   EditorListeners.registerListener(ListenerType.EditorSelection, rpcId2)
   EditorListeners.clearAll()
-  
+
   const changeListeners = EditorListeners.getListeners(ListenerType.EditorChange)
   const selectionListeners = EditorListeners.getListeners(ListenerType.EditorSelection)
-  
+
   expect(changeListeners).toEqual([])
   expect(selectionListeners).toEqual([])
 })

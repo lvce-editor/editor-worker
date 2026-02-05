@@ -14,11 +14,11 @@ const state: ListenerRegistry = Object.create(null)
 export const registerListener = (listenerType: number, rpcId: number): void => {
   Assert.number(listenerType)
   Assert.number(rpcId)
-  
+
   if (!state[listenerType]) {
     state[listenerType] = []
   }
-  
+
   // Avoid duplicate registrations
   if (!state[listenerType].includes(rpcId)) {
     state[listenerType].push(rpcId)
@@ -33,7 +33,7 @@ export const registerListener = (listenerType: number, rpcId: number): void => {
 export const unregisterListener = (listenerType: number, rpcId: number): void => {
   Assert.number(listenerType)
   Assert.number(rpcId)
-  
+
   if (state[listenerType]) {
     const index = state[listenerType].indexOf(rpcId)
     if (index !== -1) {

@@ -119,13 +119,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
 
   // Notify registered listeners about editor changes
-  NotifyListeners.notifyListeners(
-    ListenerType.EditorChange,
-    'handleEditorChanged',
-    editor.uid,
-    editor.uri,
-    changes,
-  ).catch((error) => {
+  NotifyListeners.notifyListeners(ListenerType.EditorChange, 'handleEditorChanged', editor.uid, editor.uri, changes).catch((error) => {
     // Silently ignore notification errors to not interrupt the edit flow
     console.warn('Failed to notify editor change listeners:', error)
   })
