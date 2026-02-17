@@ -31,6 +31,7 @@ import * as CursorWordPartLeft from '../EditorCommand/EditorCommandCursorWordPar
 import * as CursorWordPartRight from '../EditorCommand/EditorCommandCursorWordPartRight.ts'
 import * as CursorWordRight from '../EditorCommand/EditorCommandCursorWordRight.ts'
 import * as Cut from '../EditorCommand/EditorCommandCut.ts'
+import * as DeleteAll from '../EditorCommand/EditorCommandDeleteAll.ts'
 import * as DeleteAllLeft from '../EditorCommand/EditorCommandDeleteAllLeft.ts'
 import * as DeleteAllRight from '../EditorCommand/EditorCommandDeleteAllRight.ts'
 import * as DeleteCharacterLeft from '../EditorCommand/EditorCommandDeleteCharacterLeft.ts'
@@ -194,6 +195,7 @@ export const commandMap = {
   'Editor.cursorWordPartRight': wrapCommand(CursorWordPartRight.cursorWordPartRight),
   'Editor.cursorWordRight': wrapCommand(CursorWordRight.cursorWordRight),
   'Editor.cut': wrapCommand(Cut.cut),
+  'Editor.deleteAll': wrapCommand(DeleteAll.deleteAll),
   'Editor.deleteAllLeft': wrapCommand(DeleteAllLeft.deleteAllLeft),
   'Editor.deleteAllRight': wrapCommand(DeleteAllRight.deleteAllRight),
   'Editor.deleteCharacterLeft': wrapCommand(DeleteCharacterLeft.deleteCharacterLeft),
