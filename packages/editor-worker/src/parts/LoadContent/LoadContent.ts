@@ -2,10 +2,10 @@ import { WhenExpression } from '@lvce-editor/constants'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as Editor from '../Editor/Editor.ts'
-import * as EditorPreferences from '../EditorPreferences/EditorPreferences.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
+import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
@@ -16,7 +16,8 @@ import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 export const loadContent = async (state: EditorState, savedState: unknown) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
-  const [
+  const {
+    completionTriggerCharacters,
     diagnosticsEnabled,
     fontFamily,
     fontSize,
@@ -25,26 +26,11 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
     isQuickSuggestionsEnabled,
+    letterSpacing,
     lineNumbers,
     rowHeight,
     tabSize,
-    letterSpacing,
-    completionTriggerCharacters,
-  ] = await Promise.all([
-    EditorPreferences.diagnosticsEnabled(),
-    EditorPreferences.getFontFamily(),
-    EditorPreferences.getFontSize(),
-    EditorPreferences.getFontWeight(),
-    EditorPreferences.isAutoClosingBracketsEnabled(),
-    EditorPreferences.isAutoClosingQuotesEnabled(),
-    EditorPreferences.isAutoClosingTagsEnabled(),
-    EditorPreferences.isQuickSuggestionsEnabled(),
-    EditorPreferences.getLineNumbers(),
-    EditorPreferences.getRowHeight(),
-    EditorPreferences.getTabSize(),
-    EditorPreferences.getLetterSpacing(),
-    EditorPreferences.getCompletionTriggerCharacters(),
-  ])
+  } = await getEditorPreferences()
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
