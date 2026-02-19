@@ -128,7 +128,7 @@ import * as EditorRenameWidget from '../EditorRenameWidget/EditorRenameWidget.ts
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
-import { getCommandIds, wrapGetter } from '../EditorStates/EditorStates.ts'
+import { getCommandIds, wrapCommand, wrapGetter } from '../EditorStates/EditorStates.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
@@ -275,7 +275,7 @@ export const commandMap = {
   'Editor.indendLess': wrapCommandOld(IndentLess.indentLess),
   'Editor.indentMore': wrapCommandOld(IndentMore.indentMore),
   'Editor.insertLineBreak': wrapCommandOld(InsertLineBreak.insertLineBreak),
-  'Editor.loadContent': loadContent,
+  'Editor.loadContent': wrapCommand(loadContent),
   'Editor.moveLineDown': wrapCommandOld(MoveLineDown.moveLineDown),
   'Editor.moveLineUp': wrapCommandOld(MoveLineUp.moveLineUp),
   'Editor.moveRectangleSelection': wrapCommandOld(MoveRectangleSelection.moveRectangleSelection),
