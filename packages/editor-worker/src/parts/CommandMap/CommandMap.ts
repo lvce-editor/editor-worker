@@ -121,6 +121,7 @@ import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorComplet
 import * as EditorFindWidget from '../EditorFindWidget/EditorFindWidget.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
+import * as EditorListeners from '../EditorListeners/EditorListeners.ts'
 import * as EditorRenameWidget from '../EditorRenameWidget/EditorRenameWidget.ts'
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
@@ -399,6 +400,7 @@ export const commandMap = {
   'Hover.render': EditorHoverRender.renderHover,
   'Initialize.initialize': Initialize.intialize,
   'Listener.register': RegisterListener.registerListener,
+  'Listener.registerListener': EditorListeners.registerListener,
   'Listener.unregister': UnregisterListener.unregisterListener,
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
     SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
