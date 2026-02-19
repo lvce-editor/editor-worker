@@ -18,7 +18,8 @@
     "composite": true,
     "forceConsistentCasingInFileNames": true,
     "allowImportingTsExtensions": true,
-    "exactOptionalPropertyTypes": true
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedSideEffectImports": true
   },
   "include": ["src", "test"]
 }
