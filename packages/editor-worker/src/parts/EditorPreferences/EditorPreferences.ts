@@ -15,69 +15,69 @@ const kAutoClosingBrackets = 'editor.autoclosingBrackets'
 const kFontWeight = 'editor.fontWeight'
 const kHover = 'editor.hover'
 
-export const isAutoClosingBracketsEnabled = () => {
-  return Boolean(Preferences.get(kAutoClosingBrackets))
+export const isAutoClosingBracketsEnabled = async () => {
+  return Boolean(await Preferences.get(kAutoClosingBrackets))
 }
 
-export const isAutoClosingQuotesEnabled = () => {
-  return Boolean(Preferences.get(kAutoClosingQuotes))
+export const isAutoClosingQuotesEnabled = async () => {
+  return Boolean(await Preferences.get(kAutoClosingQuotes))
 }
 
-export const isQuickSuggestionsEnabled = () => {
-  return Boolean(Preferences.get(kQuickSuggestions))
+export const isQuickSuggestionsEnabled = async () => {
+  return Boolean(await Preferences.get(kQuickSuggestions))
 }
 
-export const isAutoClosingTagsEnabled = () => {
+export const isAutoClosingTagsEnabled = async () => {
   return true
 }
 
-export const getRowHeight = () => {
-  return Preferences.get(kLineHeight) || 20
+export const getRowHeight = async () => {
+  return (await Preferences.get(kLineHeight)) || 20
 }
 
-export const getFontSize = () => {
-  return Preferences.get(kFontSize) || 15 // TODO find out if it is possible to use all numeric values for settings for efficiency, maybe settings could be an array
+export const getFontSize = async () => {
+  return (await Preferences.get(kFontSize)) || 15 // TODO find out if it is possible to use all numeric values for settings for efficiency, maybe settings could be an array
 }
 
-export const getHoverEnabled = () => {
-  return Preferences.get(kHover) ?? false
+export const getHoverEnabled = async () => {
+  return (await Preferences.get(kHover)) ?? false
 }
 
-export const getFontFamily = () => {
-  return Preferences.get(kFontFamily) || 'Fira Code'
+export const getFontFamily = async () => {
+  return (await Preferences.get(kFontFamily)) || 'Fira Code'
 }
 
-export const getLetterSpacing = () => {
+export const getLetterSpacing = async () => {
   if (!false) {
     return 0
   }
-  return Preferences.get(kLetterSpacing) ?? 0.5
+  return (await Preferences.get(kLetterSpacing)) ?? 0.5
 }
 
-export const getTabSize = () => {
-  return Preferences.get(kTabSize) || 2
+export const getTabSize = async () => {
+  return (await Preferences.get(kTabSize)) || 2
 }
 
-export const getLinks = () => {
-  return Preferences.get(kLinks) || false
+export const getLinks = async () => {
+  return (await Preferences.get(kLinks)) || false
 }
 
-export const getLineNumbers = () => {
-  return Preferences.get(kLineNumbers) ?? false
+export const getLineNumbers = async () => {
+  return (await Preferences.get(kLineNumbers)) ?? false
 }
 
-export const getCompletionTriggerCharacters = () => {
+export const getCompletionTriggerCharacters = async () => {
   return ['.', '/']
 }
 
-export const getFormatOnSave = () => {
-  return Preferences.get(kFormatOnSave) ?? false
+export const getFormatOnSave = async () => {
+  return (await Preferences.get(kFormatOnSave)) ?? false
 }
 
-export const diagnosticsEnabled = () => {
-  return Preferences.get(kDiagnostics) ?? false
+export const diagnosticsEnabled = async () => {
+  return (await Preferences.get(kDiagnostics)) ?? false
 }
 
-export const getFontWeight = () => {
-  return Preferences.get(kFontWeight) ?? 400
+export const getFontWeight = async () => {
+  return (await Preferences.get(kFontWeight)) ?? 400
 }
