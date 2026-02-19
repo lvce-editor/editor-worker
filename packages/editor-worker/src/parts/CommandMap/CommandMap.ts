@@ -127,6 +127,7 @@ import * as EditorRenameWidget from '../EditorRenameWidget/EditorRenameWidget.ts
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
+import { getCommandIds } from '../EditorStates/EditorStates.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
@@ -215,6 +216,7 @@ export const commandMap = {
   'Editor.executeWidgetCommand': wrapCommand(ExecuteWidgetCommand.executeWidgetCommand),
   'Editor.findAllReferences': wrapCommand(FindAllReferences.findAllReferences),
   'Editor.format': wrapCommand(EditorFormat.format),
+  'Editor.getCommandIds': getCommandIds,
   'Editor.getDiagnostics': ExternalGetPositionAtCursor.getDiagnostics,
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
   'Editor.getKeys': GetKeys.getKeys,
