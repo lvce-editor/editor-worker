@@ -39,7 +39,7 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     {
       name: DomEventListenerFunctions.HandleWheel,
       params: ['setDelta', 'event.deltaMode', 'event.deltaY'],
-      preventDefault: true,
+      passive: true,
     },
     {
       name: DomEventListenerFunctions.HandleContextMenu,
