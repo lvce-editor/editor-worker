@@ -92,6 +92,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const newEditor5: EditorState = {
     ...newEditor4,
     completionsOnType,
+    initial: false,
   }
   return newEditor5
 }

@@ -29,6 +29,7 @@ export interface EditorState {
   readonly highlightedLine: number
   readonly id: number
   readonly incrementalEdits: readonly any[]
+  readonly initial: boolean
   readonly invalidStartIndex: number
   readonly isAutoClosingBracketsEnabled: boolean
   readonly isAutoClosingQuotesEnabled: boolean

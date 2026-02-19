@@ -45,6 +45,7 @@ export const createEditor2 = (
     highlightedLine: -1,
     id,
     incrementalEdits: emptyIncrementalEdits,
+    initial: true,
     invalidStartIndex: 0,
     isAutoClosingBracketsEnabled: false,
     isAutoClosingQuotesEnabled: false,
