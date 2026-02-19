@@ -5,9 +5,9 @@ import * as Editor from '../Editor/Editor.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
+import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
-import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
@@ -17,6 +17,7 @@ import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 export const loadContent = async (state: EditorState, savedState: unknown) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
+    completionTriggerCharacters,
     diagnosticsEnabled,
     fontFamily,
     fontSize,
@@ -25,11 +26,10 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
     isQuickSuggestionsEnabled,
+    letterSpacing,
     lineNumbers,
     rowHeight,
     tabSize,
-    letterSpacing,
-    completionTriggerCharacters,
   } = await getEditorPreferences()
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
