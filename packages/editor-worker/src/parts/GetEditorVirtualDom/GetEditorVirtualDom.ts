@@ -8,8 +8,8 @@ import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts
 
 interface EditorVirtualDomOptions {
   readonly cursorInfos?: readonly any[]
-  readonly differences: readonly number[]
   readonly diagnostics?: readonly any[]
+  readonly differences: readonly number[]
   readonly gutterInfos?: readonly any[]
   readonly highlightedLine?: number
   readonly lineNumbers?: boolean
@@ -20,8 +20,8 @@ interface EditorVirtualDomOptions {
 
 export const getEditorVirtualDom = ({
   cursorInfos = [],
-  differences,
   diagnostics = [],
+  differences,
   gutterInfos = [],
   highlightedLine = -1,
   lineNumbers = true,

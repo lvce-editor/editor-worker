@@ -6,7 +6,6 @@ import { text } from '../src/parts/VirtualDomHelpers/VirtualDomHelpers.ts'
 test('getEditorVirtualDom', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     cursorInfos: ['144.962px 180px'],
-    differences: [0],
     diagnostics: [
       {
         height: 16,
@@ -16,6 +15,7 @@ test('getEditorVirtualDom', () => {
         y: 6,
       },
     ],
+    differences: [0],
     gutterInfos: [1],
     selectionInfos: [1, 2, 3, 4],
     textInfos: [['#', 'Token Comment']],
