@@ -152,6 +152,7 @@ import { loadContent } from '../LoadContent/LoadContent.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
+import { render2 } from '../Render2/Render2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import { saveState } from '../SaveState/SaveState.ts'
@@ -295,6 +296,7 @@ export const commandMap = {
   'Editor.paste': wrapCommandOld(EditorPaste.paste),
   'Editor.pasteText': wrapCommandOld(PasteText.pasteText),
   'Editor.render': RenderEditor.renderEditor,
+  'Editor.render2': render2,
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': wrapCommandOld(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommandOld(EditorRerender.rerender),
