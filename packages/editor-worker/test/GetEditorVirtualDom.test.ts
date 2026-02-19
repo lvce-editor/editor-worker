@@ -69,6 +69,7 @@ test('getEditorVirtualDom', () => {
     {
       childCount: 1,
       className: 'EditorRows',
+      onWheel: 'handleWheel',
       type: VirtualDomElements.Div,
     },
     {
