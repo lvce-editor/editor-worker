@@ -72,8 +72,6 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   }
   const content = await RendererWorker.readFile(uri)
 
-  console.log({ content })
-
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds(newEditor0, x, y, width, height, 9)
   const newEditor2 = Editor.setText(newEditor1, content)
@@ -88,8 +86,6 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
 
   const syncIncremental = SyncIncremental.getEnabled()
   const { differences, textInfos } = await EditorText.getVisible(newEditor3WithLinks, syncIncremental)
-
-  console.log({ textInfos })
   const newEditor4 = {
     ...newEditor3WithLinks,
     differences,
