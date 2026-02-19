@@ -1,3 +1,4 @@
+import { terminate } from '@lvce-editor/viewlet-registry'
 import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
 import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
 import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
@@ -326,6 +327,7 @@ export const commandMap = {
   'Editor.showSourceActions3': EditorCommandShowSourceActions3.showSourceActions,
   'Editor.sortLinesAscending': wrapCommand(SortLinesAscending.sortLinesAscending),
   'Editor.tabCompletion': wrapCommand(EditorTabCompletion.tabCompletion),
+  'Editor.terminate': terminate,
   'Editor.toggleBlockComment': wrapCommand(EditorToggleBlockComment.toggleBlockComment),
   'Editor.toggleComment': wrapCommand(EditorToggleComment.toggleComment),
   'Editor.toggleLineComment': wrapCommand(EditorToggleLineComment.editorToggleLineComment),
