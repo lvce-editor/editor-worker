@@ -1,6 +1,7 @@
 import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
 import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
 import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
+import { createEditor2 } from '../CreateEditor2/CreateEditor2.ts'
 import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import * as AddCursorAbove from '../EditorCommand/EditorCommandAddCursorAbove.ts'
 import * as AddCursorBelow from '../EditorCommand/EditorCommandAddCursorBelow.ts'
@@ -144,6 +145,7 @@ import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import * as HandleTab from '../HandleTab/HandleTab.ts'
 import { hotReload } from '../HotReload/HotReload.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
+import { loadContent } from '../LoadContent/LoadContent.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
@@ -183,6 +185,7 @@ export const commandMap = {
   'Editor.copyLineDown': wrapCommand(CopyLineDown.copyLineDown),
   'Editor.copyLineUp': wrapCommand(CopyLineUp.copyLineUp),
   'Editor.create': CreateEditor.createEditor,
+  'Editor.create2': createEditor2,
   'Editor.cursorCharacterLeft': wrapCommand(CursorCharacterLeft.cursorCharacterLeft),
   'Editor.cursorCharacterRight': wrapCommand(CursorCharacterRight.cursorCharacterRight),
   'Editor.cursorDown': wrapCommand(CursorDown.cursorDown),
@@ -268,6 +271,7 @@ export const commandMap = {
   'Editor.indendLess': wrapCommand(IndentLess.indentLess),
   'Editor.indentMore': wrapCommand(IndentMore.indentMore),
   'Editor.insertLineBreak': wrapCommand(InsertLineBreak.insertLineBreak),
+  'Editor.loadContent': loadContent,
   'Editor.moveLineDown': wrapCommand(MoveLineDown.moveLineDown),
   'Editor.moveLineUp': wrapCommand(MoveLineUp.moveLineUp),
   'Editor.moveRectangleSelection': wrapCommand(MoveRectangleSelection.moveRectangleSelection),
