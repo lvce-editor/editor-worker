@@ -12,7 +12,18 @@ import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
+import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
+import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
+
+const getTokenizePath = (languages: readonly any[], languageId: string): string => {
+  for (const language of languages) {
+    if (language?.id === languageId) {
+      return language.tokenize || ''
+    }
+  }
+  return ''
+}
 
 export const loadContent = async (state: EditorState, savedState: unknown) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
@@ -34,7 +45,12 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
-  const computedlanguageId = getLanguageId(uri, languages)
+  const computedLanguageId = getLanguageId(uri, languages)
+  const tokenizePath = getTokenizePath(languages, computedLanguageId)
+  await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
+  const tokenizer = Tokenizer.getTokenizer(computedLanguageId)
+  const newTokenizerId = state.tokenizerId + 1
+  TokenizerMap.set(newTokenizerId, tokenizer)
   const newEditor0: EditorState = {
     ...state,
     charWidth,
@@ -47,13 +63,16 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
     isQuickSuggestionsEnabled,
-    languageId: computedlanguageId,
+    languageId: computedLanguageId,
     letterSpacing,
     lineNumbers,
     rowHeight,
     tabSize,
+    tokenizerId: newTokenizerId,
   }
   const content = await RendererWorker.readFile(uri)
+
+  console.log({ content })
 
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds(newEditor0, x, y, width, height, 9)
@@ -69,6 +88,8 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
 
   const syncIncremental = SyncIncremental.getEnabled()
   const { differences, textInfos } = await EditorText.getVisible(newEditor3WithLinks, syncIncremental)
+
+  console.log({ textInfos })
   const newEditor4 = {
     ...newEditor3WithLinks,
     differences,
@@ -80,7 +101,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   // TODO only sync when needed
   // e.g. it might not always be necessary to send text to extension host worker
   // @ts-ignore
-  await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, computedlanguageId, content)
+  await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, computedLanguageId, content)
 
   // TODO await promise
   if (diagnosticsEnabled) {
