@@ -14,6 +14,24 @@ import * as Preferences from '../Preferences/Preferences.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
+const getEditorPreferences = async () => {
+  return await Promise.all([
+    EditorPreferences.diagnosticsEnabled(),
+    EditorPreferences.getFontFamily(),
+    EditorPreferences.getFontSize(),
+    EditorPreferences.getFontWeight(),
+    EditorPreferences.isAutoClosingBracketsEnabled(),
+    EditorPreferences.isAutoClosingQuotesEnabled(),
+    EditorPreferences.isAutoClosingTagsEnabled(),
+    EditorPreferences.isQuickSuggestionsEnabled(),
+    EditorPreferences.getLineNumbers(),
+    EditorPreferences.getRowHeight(),
+    EditorPreferences.getTabSize(),
+    EditorPreferences.getLetterSpacing(),
+    EditorPreferences.getCompletionTriggerCharacters(),
+  ])
+}
+
 export const loadContent = async (state: EditorState, savedState: unknown) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const [
@@ -30,21 +48,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     tabSize,
     letterSpacing,
     completionTriggerCharacters,
-  ] = await Promise.all([
-    EditorPreferences.diagnosticsEnabled(),
-    EditorPreferences.getFontFamily(),
-    EditorPreferences.getFontSize(),
-    EditorPreferences.getFontWeight(),
-    EditorPreferences.isAutoClosingBracketsEnabled(),
-    EditorPreferences.isAutoClosingQuotesEnabled(),
-    EditorPreferences.isAutoClosingTagsEnabled(),
-    EditorPreferences.isQuickSuggestionsEnabled(),
-    EditorPreferences.getLineNumbers(),
-    EditorPreferences.getRowHeight(),
-    EditorPreferences.getTabSize(),
-    EditorPreferences.getLetterSpacing(),
-    EditorPreferences.getCompletionTriggerCharacters(),
-  ])
+  ] = await getEditorPreferences()
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
