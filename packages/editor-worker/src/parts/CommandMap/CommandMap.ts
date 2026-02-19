@@ -127,7 +127,7 @@ import * as EditorRenameWidget from '../EditorRenameWidget/EditorRenameWidget.ts
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
-import { getCommandIds } from '../EditorStates/EditorStates.ts'
+import { getCommandIds, wrapGetter } from '../EditorStates/EditorStates.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
@@ -152,6 +152,7 @@ import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
+import { saveState } from '../SaveState/SaveState.ts'
 import * as SendMessagePortToExtensionHostWorker from '../SendMessagePortToExtensionHostWorker/SendMessagePortToExtensionHostWorker.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
@@ -295,6 +296,7 @@ export const commandMap = {
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
   'Editor.save': wrapCommand(Save.save),
+  'Editor.saveState': wrapGetter(saveState),
   'Editor.selectAll': wrapCommand(SelectAll.selectAll),
   'Editor.selectAllLeft': wrapCommand(SelectAllLeft.editorSelectAllLeft),
   'Editor.selectAllOccurrences': wrapCommand(SelectAllOccurrences.selectAllOccurrences),
