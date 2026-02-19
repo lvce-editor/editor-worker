@@ -2,6 +2,7 @@ import { WhenExpression } from '@lvce-editor/constants'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as Editor from '../Editor/Editor.ts'
+import * as EditorPreferences from '../EditorPreferences/EditorPreferences.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
@@ -14,7 +15,36 @@ import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 export const loadContent = async (state: EditorState, savedState: unknown) => {
-  const { assetDir, diagnosticsEnabled, fontFamily, fontSize, fontWeight, height, letterSpacing, platform, uri, width, x, y } = state
+  const { assetDir, height, id, platform, uri, width, x, y } = state
+  const [
+    diagnosticsEnabled,
+    fontFamily,
+    fontSize,
+    fontWeight,
+    isAutoClosingBracketsEnabled,
+    isAutoClosingQuotesEnabled,
+    isAutoClosingTagsEnabled,
+    isQuickSuggestionsEnabled,
+    lineNumbers,
+    rowHeight,
+    tabSize,
+    letterSpacing,
+    completionTriggerCharacters,
+  ] = await Promise.all([
+    EditorPreferences.diagnosticsEnabled(),
+    EditorPreferences.getFontFamily(),
+    EditorPreferences.getFontSize(),
+    EditorPreferences.getFontWeight(),
+    EditorPreferences.isAutoClosingBracketsEnabled(),
+    EditorPreferences.isAutoClosingQuotesEnabled(),
+    EditorPreferences.isAutoClosingTagsEnabled(),
+    EditorPreferences.isQuickSuggestionsEnabled(),
+    EditorPreferences.getLineNumbers(),
+    EditorPreferences.getRowHeight(),
+    EditorPreferences.getTabSize(),
+    EditorPreferences.getLetterSpacing(),
+    EditorPreferences.getCompletionTriggerCharacters(),
+  ])
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
@@ -22,7 +52,20 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const newEditor0: EditorState = {
     ...state,
     charWidth,
+    completionTriggerCharacters,
+    diagnosticsEnabled,
+    fontFamily,
+    fontSize,
+    fontWeight,
+    isAutoClosingBracketsEnabled,
+    isAutoClosingQuotesEnabled,
+    isAutoClosingTagsEnabled,
+    isQuickSuggestionsEnabled,
     languageId: computedlanguageId,
+    letterSpacing,
+    lineNumbers,
+    rowHeight,
+    tabSize,
   }
   const content = await RendererWorker.readFile(uri)
 
@@ -51,7 +94,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   // TODO only sync when needed
   // e.g. it might not always be necessary to send text to extension host worker
   // @ts-ignore
-  await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, languageId, content)
+  await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, computedlanguageId, content)
 
   // TODO await promise
   if (diagnosticsEnabled) {
