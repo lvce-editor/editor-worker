@@ -31,6 +31,7 @@ export const getEditorPreferences = async () => {
     EditorPreferences.getCompletionTriggerCharacters(),
   ])
   return {
+    completionTriggerCharacters,
     diagnosticsEnabled,
     fontFamily,
     fontSize,
@@ -39,10 +40,9 @@ export const getEditorPreferences = async () => {
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
     isQuickSuggestionsEnabled,
+    letterSpacing,
     lineNumbers,
     rowHeight,
     tabSize,
-    letterSpacing,
-    completionTriggerCharacters,
   }
 }
