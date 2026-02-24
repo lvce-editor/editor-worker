@@ -1,7 +1,7 @@
 import { WidgetId } from '@lvce-editor/constants'
 import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'

@@ -1,7 +1,7 @@
 import * as Assert from '../Assert/Assert.ts'
 import * as GetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as EditorPosition from '../EditorCommand/EditorCommandPosition.ts'
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import * as Hover from '../Hover/Hover.ts'
 import * as MeasureTextHeight from '../MeasureTextHeight/MeasureTextHeight.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'

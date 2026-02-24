@@ -1,4 +1,4 @@
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 
 // TODO wrap commands globally, not per editor

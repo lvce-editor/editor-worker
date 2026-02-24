@@ -1,6 +1,6 @@
 import { ViewletCommand } from '@lvce-editor/constants'
 import type { EditorState } from '../State/State.ts'
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'

@@ -1,4 +1,4 @@
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import * as GetWidgetInvoke from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 

@@ -1,5 +1,5 @@
 import type { Problem } from '../Problem/Problem.ts'
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
 
 const getDiagnostics = (editor: any): Promise<any> => {

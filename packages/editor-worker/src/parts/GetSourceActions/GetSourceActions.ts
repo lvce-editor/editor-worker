@@ -1,5 +1,5 @@
 import { RendererWorker } from '@lvce-editor/rpc-registry'
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 
 const filterActions = (sourceActions: readonly any[], languageId: string) => {
   return sourceActions.filter((action) => action.languageId === languageId)

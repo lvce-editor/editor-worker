@@ -1,4 +1,4 @@
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 
 export const getEditor = (editorUid: number) => {
   const instance = Editors.get(editorUid)

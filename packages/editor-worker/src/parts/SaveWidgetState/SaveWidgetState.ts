@@ -1,5 +1,5 @@
 import { WidgetId } from '@lvce-editor/constants'
-import { get } from '../Editors/Editors.ts'
+import { get } from '../EditorStates/EditorStates.ts'
 import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 
 export const getWidgetName = (widgetId: number): string => {
