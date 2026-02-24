@@ -5,5 +5,12 @@
  * @returns Array of regex matches
  */
 export const getRegexMatches = (text: string, regex: RegExp): readonly RegExpMatchArray[] => {
-  return [...text.matchAll(regex)]
+  const localRegex = new RegExp(regex.source, regex.flags)
+  localRegex.lastIndex = 0
+  const matches: RegExpMatchArray[] = []
+  for (const match of text.matchAll(localRegex)) {
+    matches.push(match)
+  }
+  localRegex.lastIndex = 0
+  return matches
 }

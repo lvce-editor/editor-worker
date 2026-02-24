@@ -38,17 +38,61 @@ export const detectLinks = (text: string): Link[] => {
   return links
 }
 
+const getVisibleLineRange = (editor: any) => {
+  const { lines, minLineY = 0, numberOfVisibleLines = lines.length } = editor
+  const startLineIndex = Math.max(0, Math.min(minLineY, lines.length))
+  const endLineIndex = Math.max(startLineIndex, Math.min(startLineIndex + numberOfVisibleLines, lines.length))
+  return {
+    endLineIndex,
+    startLineIndex,
+  }
+}
+
+const removeLinkDecorations = (decorations: readonly number[]): number[] => {
+  const nonLinkDecorations: number[] = []
+  for (let i = 0; i < decorations.length; i += 4) {
+    if (decorations[i + 2] !== DecorationType.Link) {
+      nonLinkDecorations.push(decorations[i], decorations[i + 1], decorations[i + 2], decorations[i + 3])
+    }
+  }
+  return nonLinkDecorations
+}
+
+const sortDecorationsByOffset = (decorations: readonly number[]): number[] => {
+  const sortedDecorations: Array<{ offset: number; length: number; type: number; modifiers: number }> = []
+  for (let i = 0; i < decorations.length; i += 4) {
+    sortedDecorations.push({
+      length: decorations[i + 1],
+      modifiers: decorations[i + 3],
+      offset: decorations[i],
+      type: decorations[i + 2],
+    })
+  }
+  sortedDecorations.sort((a, b) => a.offset - b.offset)
+  const flattened: number[] = []
+  for (const decoration of sortedDecorations) {
+    flattened.push(decoration.offset, decoration.length, decoration.type, decoration.modifiers)
+  }
+  return flattened
+}
+
 /**
- * Detects all links in an editor and returns them as decorations
+ * Detects links in the visible editor viewport and returns them as decorations
  * @param editor The editor containing lines to scan
  * @returns Flat array of decorations in format [offset, length, type, modifiers, ...]
  */
 export const detectAllLinksAsDecorations = (editor: any): number[] => {
   const decorations: number[] = []
   const { lines } = editor
-  let offset = 0
+  const { endLineIndex, startLineIndex } = getVisibleLineRange(editor)
 
-  for (const line of lines) {
+  let offset = 0
+  for (let i = 0; i < startLineIndex; i++) {
+    offset += lines[i].length + 1
+  }
+
+  for (let i = startLineIndex; i < endLineIndex; i++) {
+    const line = lines[i]
     const links = detectLinks(line)
     for (const link of links) {
       const linkOffset = offset + link.start
@@ -59,6 +103,12 @@ export const detectAllLinksAsDecorations = (editor: any): number[] => {
   }
 
   return decorations
+}
+
+export const mergeVisibleLinksWithDecorations = (editor: any, decorations: readonly number[]): number[] => {
+  const visibleLinkDecorations = detectAllLinksAsDecorations(editor)
+  const nonLinkDecorations = removeLinkDecorations(decorations)
+  return sortDecorationsByOffset([...nonLinkDecorations, ...visibleLinkDecorations])
 }
 
 /**
