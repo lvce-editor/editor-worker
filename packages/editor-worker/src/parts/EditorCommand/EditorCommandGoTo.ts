@@ -39,7 +39,7 @@ export const goTo = async ({ editor, getErrorMessage, getLocation, getNoLocation
       startColumnIndex: definition.startColumnIndex,
       startRowIndex: definition.startRowIndex,
     }
-    await RendererWorker.invoke(/* Main.openUri */ 'Main.openUri', /* uri */ uri, /* focus */ true, context)
+    await RendererWorker.openUri(uri, true, context)
     return editor
   } catch (error) {
     // TODO if editor is already disposed at this point, do nothing
