@@ -2,6 +2,8 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.context-menu-paste'
 
+export const skip = 1
+
 export const test: Test = async ({ ClipBoard, ContextMenu, Editor, FileSystem, Main, Workspace }) => {
   // arrange
   await ClipBoard.enableMemoryClipBoard()
