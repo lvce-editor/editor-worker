@@ -5,7 +5,7 @@ import type { EditorState } from '../State/State.ts'
 import { getEditorVirtualDom } from '../GetEditorVirtualDom/GetEditorVirtualDom.ts'
 
 const getDom = (state: EditorState): readonly VirtualDomNode[] => {
-  if (state.initial) {
+  if (state.initial && state.textInfos.length === 0) {
     return []
   }
   return getEditorVirtualDom(state)

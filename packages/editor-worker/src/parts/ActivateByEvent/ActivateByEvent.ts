@@ -6,5 +6,5 @@ export const activateByEvent = async (event: string, assetDir: string, platform:
   Assert.string(event)
   // Assert.string(assetDir)
   // Assert.number(platform)
-  await RendererWorker.invoke('ExtensionHostManagement.activateByEvent', event, assetDir, platform)
+  await RendererWorker.activateByEvent(event, assetDir, platform)
 }

@@ -1,3 +1,4 @@
+import { EventExpression } from '@lvce-editor/constants'
 import type { DomEventListener } from '../DomEventListener/DomEventListener.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 
@@ -9,7 +10,7 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     },
     {
       name: DomEventListenerFunctions.HandleMouseMove,
-      params: ['handleInput', 'event.clientX', 'event.clientY', 'event.altKey'],
+      params: ['handleInput', EventExpression.ClientX, EventExpression.ClientY, EventExpression.AltKey],
     },
     {
       name: DomEventListenerFunctions.HandleBlur,
@@ -38,12 +39,12 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     },
     {
       name: DomEventListenerFunctions.HandleWheel,
-      params: ['setDelta', 'event.deltaMode', 'event.deltaY'],
-      preventDefault: true,
+      params: ['setDelta', EventExpression.DeltaMode, EventExpression.DeltaY],
+      passive: true,
     },
     {
       name: DomEventListenerFunctions.HandleContextMenu,
-      params: ['handleContextMenu', 'event.button', 'event.clientX', 'event.clientY'],
+      params: ['handleContextMenu', EventExpression.Button, EventExpression.ClientX, EventExpression.ClientY],
       preventDefault: true,
     },
   ]

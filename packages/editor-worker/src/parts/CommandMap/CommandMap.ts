@@ -419,3 +419,10 @@ export const commandMap = {
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
     SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
 }
+
+for (const [key, value] of Object.entries(commandMap)) {
+  if (key.startsWith('Editor.')) {
+    // @ts-ignore
+    commandMap['EditorText' + key.slice('Editor'.length)] = value
+  }
+}
