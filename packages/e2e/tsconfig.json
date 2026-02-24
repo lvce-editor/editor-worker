@@ -19,7 +19,8 @@
     "forceConsistentCasingInFileNames": true,
     "allowImportingTsExtensions": true,
     "exactOptionalPropertyTypes": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "noUnusedParameters": true
   },
   "include": ["src", "test"]
 }

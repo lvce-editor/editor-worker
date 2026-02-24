@@ -9,7 +9,7 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
   await Main.openUri(`${tmpDir}/file1.txt`)
   await Editor.setCursor(0, 3)
 
-  await Command.execute('Editor.deleteCharacterLeft')
+  await Editor.deleteCharacterLeft()
 
   await Editor.shouldHaveText('ab')
 }

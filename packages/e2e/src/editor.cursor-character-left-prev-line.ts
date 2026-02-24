@@ -9,7 +9,7 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
   await Main.openUri(`${tmpDir}/file1.txt`)
   await Editor.setCursor(1, 0)
 
-  await Command.execute('Editor.cursorCharacterLeft')
+  await Editor.cursorCharacterLeft()
 
   await Editor.shouldHaveSelections(new Uint32Array([0, 3, 0, 3]))
 }

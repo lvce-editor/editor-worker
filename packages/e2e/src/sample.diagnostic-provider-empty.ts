@@ -4,7 +4,7 @@ export const skip = true
 
 export const name = 'sample.diagnostic-provider-empty'
 
-export const test: Test = async ({ expect, Extension, FileSystem, Locator, Main, Panel, SideBar, Workspace }) => {
+export const test: Test = async ({ expect, Extension, FileSystem, Locator, Main, Panel, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/test.xyz`, `abcdefgh`)
