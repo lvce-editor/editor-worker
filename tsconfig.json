@@ -9,9 +9,6 @@
       "path": "./packages/build"
     },
     {
-      "path": "./packages/memory"
-    },
-    {
       "path": "./packages/test-integration"
     },
     {
