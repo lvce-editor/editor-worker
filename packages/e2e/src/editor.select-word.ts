@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-select-word'
 
-export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace }) => {
+export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, `command_exists\n`)
