@@ -9,12 +9,6 @@
       "path": "./packages/build"
     },
     {
-      "path": "./packages/test-integration"
-    },
-    {
-      "path": "./packages/test-integration-util"
-    },
-    {
       "path": "./packages/server"
     },
     {
