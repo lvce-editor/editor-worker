@@ -13,7 +13,7 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
   await Editor.setCursor(1, 3)
 
   // act
-  await Command.execute('Editor.deleteAll')
+  await Editor.deleteAll()
 
   // assert
   await Editor.shouldHaveText('')
