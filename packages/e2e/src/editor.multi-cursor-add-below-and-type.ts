@@ -1,0 +1,16 @@
+import type { Test } from '@lvce-editor/test-with-playwright'
+
+export const name = 'viewlet.editor-multi-cursor-add-below-and-type'
+
+export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace }) => {
+  const tmpDir = await FileSystem.getTmpDir()
+  await FileSystem.writeFile(`${tmpDir}/file1.txt`, `ab\ncd\nef`)
+  await Workspace.setPath(tmpDir)
+  await Main.openUri(`${tmpDir}/file1.txt`)
+  await Editor.setCursor(0, 1)
+
+  await Command.execute('Editor.addCursorBelow')
+  await Editor.type('!')
+
+  await Editor.shouldHaveText(`a!b\nc!d\nef`)
+}
