@@ -4,7 +4,7 @@ const detachString = (value: string): string => {
   if (value.length === 0) {
     return ''
   }
-  return (` ${value}`).slice(1)
+  return ` ${value}`.slice(1)
 }
 
 export const splitLines = (lines: string | undefined): readonly string[] => {
