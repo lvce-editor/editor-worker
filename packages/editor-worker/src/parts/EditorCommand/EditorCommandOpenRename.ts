@@ -1,7 +1,7 @@
 import { WidgetId } from '@lvce-editor/constants'
 import type { RenameState } from '../RenameState/RenameState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as RenameWidgetFactory from '../RenameWidgetFactory/RenameWidgetFactory.ts'

@@ -1,6 +1,6 @@
 import { RendererWorker } from '@lvce-editor/rpc-registry'
-import * as Editors from '../Editors/Editors.ts'
-import { getKeys } from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
+import { getKeys } from '../EditorStates/EditorStates.ts'
 import { relaunchWorkers } from '../RelaunchWorkers/RelaunchWorkers.ts'
 import { restoreWidgetState } from '../RestoreWidgetState/RestoreWidgetState.ts'
 import { saveWidgetState } from '../SaveWidgetState/SaveWidgetState.ts'
