@@ -1,6 +1,7 @@
 import * as Assert from '../Assert/Assert.ts'
 import * as Clamp from '../Clamp/Clamp.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as ScrollingFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
@@ -23,12 +24,17 @@ export const setDeltaY = async (state: any, value: number) => {
     minLineY: newMinLineY,
     scrollBarY,
   }
+  const decorations = LinkDetection.mergeVisibleLinksWithDecorations(newEditor1, state.decorations || [])
+  const newEditorWithDecorations = {
+    ...newEditor1,
+    decorations,
+  }
   const syncIncremental = SyncIncremental.getEnabled()
 
-  const { differences, textInfos } = await EditorText.getVisible(newEditor1, syncIncremental)
+  const { differences, textInfos } = await EditorText.getVisible(newEditorWithDecorations, syncIncremental)
 
   const newEditor2 = {
-    ...newEditor1,
+    ...newEditorWithDecorations,
     differences,
     textInfos,
   }
