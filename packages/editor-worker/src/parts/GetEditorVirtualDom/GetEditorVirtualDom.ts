@@ -1,3 +1,4 @@
+import type { EditorVirtualDomOptions } from '../EditorVirtualDomOptions/EditorVirtualDomOptions.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
 import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
@@ -6,27 +7,15 @@ import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRo
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
-interface EditorVirtualDomOptions {
-  readonly cursorInfos?: readonly any[]
-  readonly diagnostics?: readonly any[]
-  readonly differences: readonly number[]
-  readonly gutterInfos?: readonly any[]
-  readonly highlightedLine?: number
-  readonly lineNumbers?: boolean
-  readonly scrollBarDiagnostics?: readonly any[]
-  readonly selectionInfos?: readonly any[]
-  readonly textInfos: readonly any[]
-}
-
 export const getEditorVirtualDom = ({
-  cursorInfos = [],
-  diagnostics = [],
+  cursorInfos,
+  diagnostics,
   differences,
-  gutterInfos = [],
-  highlightedLine = -1,
-  lineNumbers = true,
-  scrollBarDiagnostics = [],
-  selectionInfos = [],
+  gutterInfos,
+  highlightedLine,
+  lineNumbers,
+  scrollBarDiagnostics,
+  selectionInfos,
   textInfos,
 }: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
   const cursorInfosArray = [...cursorInfos]
