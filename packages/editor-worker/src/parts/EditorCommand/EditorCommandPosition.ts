@@ -6,7 +6,22 @@ export const at = async (editor: any, eventX: number, eventY: number) => {
   Assert.object(editor)
   Assert.number(eventX)
   Assert.number(eventY)
-  const { charWidth, deltaX, deltaY, differences, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, lines, rowHeight, tabSize, x, y } = editor
+  const {
+    charWidth,
+    deltaX,
+    deltaY,
+    differences,
+    fontFamily,
+    fontSize,
+    fontWeight,
+    isMonospaceFont,
+    letterSpacing,
+    lines,
+    rowHeight,
+    tabSize,
+    x,
+    y,
+  } = editor
   const rowIndex = Math.floor((eventY - y + deltaY) / rowHeight)
   const relativeX = eventX - x + deltaX
   if (rowIndex < 0) {
