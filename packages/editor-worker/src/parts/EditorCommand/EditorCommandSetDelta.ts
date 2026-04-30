@@ -20,7 +20,7 @@ export const setDelta = (editor, deltaMode, eventDeltaX, eventDeltaY) => {
   Assert.number(eventDeltaX)
   Assert.number(eventDeltaY)
   // @ts-ignore
-  const { deltaX, deltaY } = editor
+  const { deltaX } = editor
   if (eventDeltaX === 0) {
     return setDeltaY(editor, eventDeltaY)
   }
