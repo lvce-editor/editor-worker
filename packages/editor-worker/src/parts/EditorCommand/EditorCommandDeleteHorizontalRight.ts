@@ -19,7 +19,7 @@ const getChanges = (editor, getDelta) => {
     const { lines } = editor
     for (let i = 0; i < selections.length; i += 4) {
       // @ts-ignore
-      const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
+      const [selectionStartRow, selectionStartColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
       const start = {
         columnIndex: selectionStartColumn,
         rowIndex: selectionStartRow,
