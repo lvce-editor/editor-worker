@@ -18,7 +18,9 @@ const hoverProblemDetail: VirtualDomNode = {
 }
 
 const getChildCount = (lineInfos: any, documentation: any, diagnostics: any): number => {
-  return lineInfos.length + documentation ? 1 : 0 + (diagnostics && diagnostics.length > 0) ? 1 : 0
+  const documentationCount = documentation ? 1 : 0
+  const diagnosticsCount = diagnostics && diagnostics.length > 0 ? 1 : 0
+  return lineInfos.length + documentationCount + diagnosticsCount
 }
 
 export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnostics: any): readonly VirtualDomNode[] => {
