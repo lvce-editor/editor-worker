@@ -17,5 +17,5 @@ export const test: Test = async ({ Editor, FileSystem, Locator, Main, Workspace 
 
   // assert
   // TODO
-  const completions = Locator('.EditorCompletion')
+  Locator('.EditorCompletion')
 }
