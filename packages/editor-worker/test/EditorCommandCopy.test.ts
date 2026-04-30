@@ -79,8 +79,7 @@ test.skip('editorCopy - error from clipboard - document is not focused', async (
   writeTextSpy = jest.fn().mockImplementation(() => {
     throw new DOMException('Document is not focused.')
   })
-  // @ts-ignore
-  const spy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+  jest.spyOn(console, 'warn').mockImplementation(() => {})
   const editor = {
     columnWidth: 9,
     completionTriggerCharacters: [],
