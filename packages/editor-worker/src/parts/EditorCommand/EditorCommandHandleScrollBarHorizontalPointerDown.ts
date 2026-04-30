@@ -6,7 +6,7 @@ import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts
 // @ts-ignore
 export const handleScrollBarHorizontalPointerDown = (state, eventX) => {
   // @ts-ignore
-  const { deltaX, finalDeltaY, height, longestLineWidth, scrollBarHeight, width, x } = state
+  const { deltaX, longestLineWidth, width, x } = state
   const relativeX = eventX - x
   const scrollBarWidth = ScrollBarFunctions.getScrollBarWidth(width, longestLineWidth)
   const finalDeltaX = width - scrollBarWidth
