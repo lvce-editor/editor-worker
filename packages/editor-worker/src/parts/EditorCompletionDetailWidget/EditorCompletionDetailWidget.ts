@@ -27,7 +27,7 @@ export const add = (widget: CompletionDetailWidget) => {
 
 export const remove = RemoveWidget.removeWidget
 
-export const handleEditorType = (editor: any, state: CompletionDetailState): CompletionDetailState => {
+const handleEditorChange = (editor: any, state: CompletionDetailState): CompletionDetailState => {
   const completionState = GetCompletionState.getCompletionState(editor)
   if (!completionState) {
     return editor
@@ -40,15 +40,10 @@ export const handleEditorType = (editor: any, state: CompletionDetailState): Com
   }
 }
 
+export const handleEditorType = (editor: any, state: CompletionDetailState): CompletionDetailState => {
+  return handleEditorChange(editor, state)
+}
+
 export const handleEditorDeleteLeft = (editor: any, state: CompletionDetailState): CompletionDetailState => {
-  const completionState = GetCompletionState.getCompletionState(editor)
-  if (!completionState) {
-    return editor
-  }
-  const { x } = GetPositionAtCursor.getPositionAtCursor(editor)
-  const detailX = x + completionState.width - state.borderSize
-  return {
-    ...state,
-    x: detailX,
-  }
+  return handleEditorChange(editor, state)
 }
