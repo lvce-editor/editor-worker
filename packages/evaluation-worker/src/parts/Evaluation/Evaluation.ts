@@ -32,14 +32,12 @@ export const initialize = async (listenerRpcId: number, listenerType: number): P
 
 export const handleEditorChanged = async (
   editorUid: number,
-  uri: string,
-  changes: readonly unknown[],
+  _uri: string,
+  _changes: readonly unknown[],
   text: string,
   languageId: string,
   runId: number,
 ): Promise<void> => {
-  void uri
-  void changes
   const previous = pendingByEditor.get(editorUid)
   if (previous) {
     clearTimeout(previous.timer)

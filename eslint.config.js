@@ -76,4 +76,10 @@ export default [
       'sonarjs/single-char-in-character-classes': 'off',
     },
   },
+  {
+    files: ['packages/editor-worker/test/**/*.test.ts'],
+    rules: {
+      'jest/no-disabled-tests': 'off',
+    },
+  },
 ]
