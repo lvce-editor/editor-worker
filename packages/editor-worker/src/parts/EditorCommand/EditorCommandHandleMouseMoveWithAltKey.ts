@@ -32,11 +32,7 @@ export const handleMouseMoveWithAltKey = async (editor, x, y) => {
     // TODO make sure that editor is not disposed
 
     const definitionStartPosition = TextDocument.positionAt(editor, definition.startOffset)
-    const definitionEndPosition = TextDocument.positionAt(editor, definition.endOffset)
-    // @ts-ignore
-    const definitionRelativeStartX = definitionStartPosition.columnIndex
-    // @ts-ignore
-    const definitionRelativeEndX = definitionEndPosition.columnIndex
+    TextDocument.positionAt(editor, definition.endOffset)
     // const definitionRelativeY = definitionStartPosition.rowIndex - editor.minLineY
 
     const lineTokenMap = editor.lineCache[definitionStartPosition.rowIndex + 1]
