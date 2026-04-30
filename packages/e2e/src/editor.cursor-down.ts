@@ -17,7 +17,7 @@ content 2`,
   await Editor.setCursor(0, 1)
 
   // assert
-  const cursor = Locator('.EditorCursor')
+  Locator('.EditorCursor')
   await Editor.shouldHaveSelections(new Uint32Array([0, 1, 0, 1]))
 
   // act
