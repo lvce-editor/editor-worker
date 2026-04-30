@@ -22,7 +22,7 @@ export const handleSashPointerDown = (state: any, eventX: any, eventY: any) => {
 
 export const handleSashPointerMove = (state: any, eventX: any, eventY: any) => {
   // @ts-ignore
-  const { x, y } = state
+  const { x } = state
   const minWidth = 100
   const newWidth = Math.max(eventX - x, minWidth)
   return {
