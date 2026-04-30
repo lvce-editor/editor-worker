@@ -36,10 +36,7 @@ const getRemoveBlockCommentEdits = (
       createDeleteEdit(rowIndex, endColumnIndex - blockCommentStart.length, blockCommentEnd),
     ]
   }
-  return [
-    createDeleteEdit(startRowIndex, startColumnIndex, blockCommentStart),
-    createDeleteEdit(endRowIndex, endColumnIndex, blockCommentEnd),
-  ]
+  return [createDeleteEdit(startRowIndex, startColumnIndex, blockCommentStart), createDeleteEdit(endRowIndex, endColumnIndex, blockCommentEnd)]
 }
 
 export const getBlockCommentEdits = (editor: any, blockComment: string): readonly Edit[] => {
@@ -73,15 +70,7 @@ export const getBlockCommentEdits = (editor: any, blockComment: string): readonl
 
   if (startColumnIndex !== -1 && endColumnIndex !== -1) {
     changes.push(
-      ...getRemoveBlockCommentEdits(
-        rowIndex,
-        startRowIndex,
-        startColumnIndex,
-        endRowIndex,
-        endColumnIndex,
-        blockCommentStart,
-        blockCommentEnd,
-      ),
+      ...getRemoveBlockCommentEdits(rowIndex, startRowIndex, startColumnIndex, endRowIndex, endColumnIndex, blockCommentStart, blockCommentEnd),
     )
 
     // const oldRow1 = TextDocument.getLine(editor, startRowIndex)
