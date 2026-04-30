@@ -6,22 +6,7 @@ export const at = async (editor: any, eventX: number, eventY: number) => {
   Assert.object(editor)
   Assert.number(eventX)
   Assert.number(eventY)
-  const {
-    charWidth,
-    deltaX,
-    deltaY,
-    differences,
-    fontFamily,
-    fontSize,
-    fontWeight,
-    isMonospaceFont,
-    letterSpacing,
-    lines,
-    rowHeight,
-    tabSize,
-    x,
-    y,
-  } = editor
+  const { charWidth, deltaX, deltaY, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, lines, rowHeight, tabSize, x, y } = editor
   const rowIndex = Math.floor((eventY - y + deltaY) / rowHeight)
   const relativeX = eventX - x + deltaX
   if (rowIndex < 0) {
@@ -30,8 +15,6 @@ export const at = async (editor: any, eventX: number, eventY: number) => {
       rowIndex: 0,
     }
   }
-  // @ts-ignore
-  const difference = differences[rowIndex]
   const clampedRowIndex = Clamp.clamp(rowIndex, 0, lines.length - 1)
   const line = lines[clampedRowIndex]
   const columnIndex = await GetAccurateColumnIndex.getAccurateColumnIndex(
