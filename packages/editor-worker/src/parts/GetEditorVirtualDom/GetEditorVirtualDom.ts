@@ -10,9 +10,11 @@ interface EditorVirtualDomOptions {
   readonly cursorInfos?: readonly any[]
   readonly diagnostics?: readonly any[]
   readonly differences: readonly number[]
+  readonly evaluationPreviews?: readonly any[]
   readonly gutterInfos?: readonly any[]
   readonly highlightedLine?: number
   readonly lineNumbers?: boolean
+  readonly minLineY?: number
   readonly scrollBarDiagnostics?: readonly any[]
   readonly selectionInfos?: readonly any[]
   readonly textInfos: readonly any[]
@@ -22,9 +24,11 @@ export const getEditorVirtualDom = ({
   cursorInfos = [],
   diagnostics = [],
   differences,
+  evaluationPreviews = [],
   gutterInfos = [],
   highlightedLine = -1,
   lineNumbers = true,
+  minLineY = 0,
   scrollBarDiagnostics = [],
   selectionInfos = [],
   textInfos,
@@ -33,7 +37,7 @@ export const getEditorVirtualDom = ({
   const diagnosticsArray = [...diagnostics]
   const gutterInfosArray = [...gutterInfos]
   const scrollBarDiagnosticsArray = [...scrollBarDiagnostics]
-  const rowsDom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, lineNumbers, highlightedLine)
+  const rowsDom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, lineNumbers, highlightedLine, evaluationPreviews, minLineY)
   const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfosArray)
   const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos)
   const diagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(diagnosticsArray)

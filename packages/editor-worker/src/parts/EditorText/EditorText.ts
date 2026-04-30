@@ -125,6 +125,129 @@ const getStartDefaults = (tokens: any, minOffset: any) => {
   }
 }
 
+const getDecorationMap = (decorations: any, lineOffset: any, lineLength: number) => {
+  const decorationMap = new Map<number, { end: number; className: string }>()
+  for (let j = 0; j < decorations.length; j += 4) {
+    const decorationOffset = decorations[j]
+    const decorationLength = decorations[j + 1]
+    const decorationType = decorations[j + 2]
+    const relativeStart = decorationOffset - lineOffset
+    const relativeEnd = relativeStart + decorationLength
+    if (relativeStart < lineLength && relativeEnd > 0) {
+      const decorationClassName = GetDecorationClassName.getDecorationClassName(decorationType)
+      if (decorationClassName) {
+        decorationMap.set(Math.max(0, relativeStart), {
+          className: decorationClassName,
+          end: Math.min(lineLength, relativeEnd),
+        })
+      }
+    }
+  }
+  return decorationMap
+}
+
+const hasDecorationOverlap = (decorationMap: Map<number, { end: number; className: string }>, start: number, tokenEnd: number) => {
+  for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
+    if (decorationStart < tokenEnd && decorationEnd > start) {
+      return true
+    }
+  }
+  return false
+}
+
+const getActiveDecoration = (decorationMap: Map<number, { end: number; className: string }>, currentPos: number) => {
+  for (const [decorationStart, decoration] of decorationMap) {
+    if (decorationStart <= currentPos && decoration.end > currentPos) {
+      return decoration
+    }
+  }
+  return null
+}
+
+const getNextDecorationStart = (decorationMap: Map<number, { end: number; className: string }>, currentPos: number, tokenEnd: number) => {
+  let nextDecorationStart = tokenEnd
+  for (const [decorationStart] of decorationMap) {
+    if (decorationStart > currentPos && decorationStart < tokenEnd) {
+      nextDecorationStart = Math.min(nextDecorationStart, decorationStart)
+    }
+  }
+  return nextDecorationStart
+}
+
+const pushTextPart = (lineInfo: any[], line: string, start: number, end: number, className: string, normalize: any, tabSize: any) => {
+  const text = line.slice(start, end)
+  const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
+  lineInfo.push(normalizedText, className)
+}
+
+const pushTokenParts = (
+  lineInfo: any[],
+  decorationMap: Map<number, { end: number; className: string }>,
+  line: string,
+  start: number,
+  tokenEnd: number,
+  tokenClass: string,
+  normalize: any,
+  tabSize: any,
+) => {
+  let currentPos = start
+  while (currentPos < tokenEnd) {
+    const activeDecoration = getActiveDecoration(decorationMap, currentPos)
+    if (activeDecoration) {
+      const partEnd = Math.min(tokenEnd, activeDecoration.end)
+      pushTextPart(lineInfo, line, currentPos, partEnd, `Token ${tokenClass} ${activeDecoration.className}`, normalize, tabSize)
+      currentPos = partEnd
+      continue
+    }
+    const partEnd = getNextDecorationStart(decorationMap, currentPos, tokenEnd)
+    pushTextPart(lineInfo, line, currentPos, partEnd, `Token ${tokenClass}`, normalize, tabSize)
+    currentPos = partEnd
+  }
+}
+
+const getLineInfoFromTokens = (
+  line: any,
+  tokens: any,
+  tokenMap: any,
+  decorations: any,
+  lineOffset: any,
+  normalize: any,
+  tabSize: any,
+  averageCharWidth: any,
+  deltaX: any,
+  minOffset: any,
+  maxOffset: any,
+) => {
+  const lineInfo = []
+  const decorationMap = getDecorationMap(decorations, lineOffset, line.length)
+  let { end, start, startIndex } = getStartDefaults(tokens, minOffset)
+  const difference = getDifference(start, averageCharWidth, deltaX)
+
+  for (let i = startIndex; i < tokens.length; i += 2) {
+    const tokenType = tokens[i]
+    const tokenLength = tokens[i + 1]
+    const tokenEnd = start + tokenLength
+    const tokenClass = tokenMap[tokenType] || 'Unknown'
+
+    if (hasDecorationOverlap(decorationMap, start, tokenEnd)) {
+      pushTokenParts(lineInfo, decorationMap, line, start, tokenEnd, tokenClass, normalize, tabSize)
+    } else {
+      pushTextPart(lineInfo, line, start, tokenEnd, `Token ${tokenClass}`, normalize, tabSize)
+    }
+
+    start = tokenEnd
+    end = tokenEnd
+    if (end >= maxOffset) {
+      break
+    }
+  }
+
+  return {
+    difference,
+    lineInfo,
+  }
+}
+
 const getLineInfoEmbeddedFull = (
   embeddedResults: any,
   tokenResults: any,
@@ -139,112 +262,22 @@ const getLineInfoEmbeddedFull = (
   minOffset: any,
   maxOffset: any,
 ) => {
-  const lineInfo = []
-
-  // Build decoration map for this line (position -> decoration class)
-  const decorationMap = new Map<number, { end: number; className: string }>()
-  for (let j = 0; j < decorations.length; j += 4) {
-    const decorationOffset = decorations[j]
-    const decorationLength = decorations[j + 1]
-    const decorationType = decorations[j + 2]
-
-    const relativeStart = decorationOffset - lineOffset
-    const relativeEnd = relativeStart + decorationLength
-
-    // Only include decorations that overlap with this line
-    if (relativeStart < line.length && relativeEnd > 0) {
-      const decorationClassName = GetDecorationClassName.getDecorationClassName(decorationType)
-      if (decorationClassName) {
-        decorationMap.set(Math.max(0, relativeStart), {
-          className: decorationClassName,
-          end: Math.min(line.length, relativeEnd),
-        })
-      }
-    }
-  }
-
   const embeddedResult = embeddedResults[tokenResults.embeddedResultIndex]
   const embeddedTokens = embeddedResult.result.tokens
   const embeddedTokenMap = embeddedResult.TokenMap
-  const tokensLength = embeddedTokens.length
-  let { end, start, startIndex } = getStartDefaults(embeddedTokens, minOffset)
-  const difference = getDifference(start, averageCharWidth, deltaX)
-
-  for (let i = startIndex; i < tokensLength; i += 2) {
-    const tokenType = embeddedTokens[i]
-    const tokenLength = embeddedTokens[i + 1]
-    const tokenEnd = start + tokenLength
-
-    // Check if any decorations overlap with this token
-    let hasOverlap = false
-    for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
-      if (decorationStart < tokenEnd && decorationEnd > start) {
-        hasOverlap = true
-        break
-      }
-    }
-
-    if (hasOverlap) {
-      // Token has decoration overlap - split into parts
-      let currentPos = start
-
-      while (currentPos < tokenEnd) {
-        // Find if current position is inside a decoration
-        let activeDecoration: { end: number; className: string } | null = null
-
-        for (const [decorationStart, decoration] of decorationMap) {
-          if (decorationStart <= currentPos && decoration.end > currentPos) {
-            activeDecoration = decoration
-            break
-          }
-        }
-
-        if (activeDecoration) {
-          // Render decorated part
-          const partEnd = Math.min(tokenEnd, activeDecoration.end)
-          const text = line.slice(currentPos, partEnd)
-          const baseTokenClass = embeddedTokenMap[tokenType] || 'Unknown'
-          const className = `Token ${baseTokenClass} ${activeDecoration.className}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
-        } else {
-          // Find next decoration start or token end
-          let nextDecorationStart = tokenEnd
-          for (const [decorationStart] of decorationMap) {
-            if (decorationStart > currentPos && decorationStart < tokenEnd) {
-              nextDecorationStart = Math.min(nextDecorationStart, decorationStart)
-            }
-          }
-
-          // Render non-decorated part
-          const partEnd = nextDecorationStart
-          const text = line.slice(currentPos, partEnd)
-          const className = `Token ${embeddedTokenMap[tokenType] || 'Unknown'}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
-        }
-      }
-    } else {
-      // No decoration overlap - render token normally
-      const text = line.slice(start, tokenEnd)
-      const className = `Token ${embeddedTokenMap[tokenType] || 'Unknown'}`
-      const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-      lineInfo.push(normalizedText, className)
-    }
-
-    start = tokenEnd
-    end = tokenEnd
-    if (end >= maxOffset) {
-      break
-    }
-  }
-
-  return {
-    difference,
-    lineInfo,
-  }
+  return getLineInfoFromTokens(
+    line,
+    embeddedTokens,
+    embeddedTokenMap,
+    decorations,
+    lineOffset,
+    normalize,
+    tabSize,
+    averageCharWidth,
+    deltaX,
+    minOffset,
+    maxOffset,
+  )
 }
 
 const getOffsets = (deltaX: any, width: any, averageCharWidth: any) => {
@@ -285,110 +318,8 @@ const getLineInfoDefault = (
   minOffset: any,
   maxOffset: any,
 ) => {
-  const lineInfo = []
-
-  // Build decoration map for this line (position -> decoration class)
-  const decorationMap = new Map<number, { end: number; className: string }>()
-  for (let j = 0; j < decorations.length; j += 4) {
-    const decorationOffset = decorations[j]
-    const decorationLength = decorations[j + 1]
-    const decorationType = decorations[j + 2]
-
-    const relativeStart = decorationOffset - lineOffset
-    const relativeEnd = relativeStart + decorationLength
-
-    // Only include decorations that overlap with this line
-    if (relativeStart < line.length && relativeEnd > 0) {
-      const decorationClassName = GetDecorationClassName.getDecorationClassName(decorationType)
-      if (decorationClassName) {
-        decorationMap.set(Math.max(0, relativeStart), {
-          className: decorationClassName,
-          end: Math.min(line.length, relativeEnd),
-        })
-      }
-    }
-  }
-
   const { tokens } = tokenResults
-  let { end, start, startIndex } = getStartDefaults(tokens, minOffset)
-  const difference = getDifference(start, averageCharWidth, deltaX)
-  const tokensLength = tokens.length
-
-  for (let i = startIndex; i < tokensLength; i += 2) {
-    const tokenType = tokens[i]
-    const tokenLength = tokens[i + 1]
-    const tokenEnd = start + tokenLength
-
-    // Check if any decorations overlap with this token
-    let hasOverlap = false
-    for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
-      if (decorationStart < tokenEnd && decorationEnd > start) {
-        hasOverlap = true
-        break
-      }
-    }
-
-    if (hasOverlap) {
-      // Token has decoration overlap - split into parts
-      let currentPos = start
-
-      while (currentPos < tokenEnd) {
-        // Find if current position is inside a decoration
-        let activeDecoration: { end: number; className: string } | null = null
-
-        for (const [decorationStart, decoration] of decorationMap) {
-          if (decorationStart <= currentPos && decoration.end > currentPos) {
-            activeDecoration = decoration
-            break
-          }
-        }
-
-        if (activeDecoration) {
-          // Render decorated part
-          const partEnd = Math.min(tokenEnd, activeDecoration.end)
-          const text = line.slice(currentPos, partEnd)
-          const baseTokenClass = TokenMap[tokenType] || 'Unknown'
-          const className = `Token ${baseTokenClass} ${activeDecoration.className}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
-        } else {
-          // Find next decoration start or token end
-          let nextDecorationStart = tokenEnd
-          for (const [decorationStart] of decorationMap) {
-            if (decorationStart > currentPos && decorationStart < tokenEnd) {
-              nextDecorationStart = Math.min(nextDecorationStart, decorationStart)
-            }
-          }
-
-          // Render non-decorated part
-          const partEnd = nextDecorationStart
-          const text = line.slice(currentPos, partEnd)
-          const className = `Token ${TokenMap[tokenType] || 'Unknown'}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
-        }
-      }
-    } else {
-      // No decoration overlap - render token normally
-      const text = line.slice(start, tokenEnd)
-      const className = `Token ${TokenMap[tokenType] || 'Unknown'}`
-      const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-      lineInfo.push(normalizedText, className)
-    }
-
-    start = tokenEnd
-    end = tokenEnd
-    if (end >= maxOffset) {
-      break
-    }
-  }
-
-  return {
-    difference,
-    lineInfo,
-  }
+  return getLineInfoFromTokens(line, tokens, TokenMap, decorations, lineOffset, normalize, tabSize, averageCharWidth, deltaX, minOffset, maxOffset)
 }
 
 const getLineInfo = (
@@ -507,7 +438,7 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
   // invalidStartIndex, lineCache, etc. just for testing editorType
   // editor.invalidStartIndex = changes[0].start.rowIndex
   // @ts-ignore
-  const { charWidth, deltaX, fontFamily, fontSize, fontWeight, letterSpacing, lines, minLineY, numberOfVisibleLines, width } = editor
+  const { charWidth, deltaX, lines, minLineY, numberOfVisibleLines, width } = editor
   const maxLineY = Math.min(minLineY + numberOfVisibleLines, lines.length)
   // @ts-ignore
   const { embeddedResults, tokenizersToLoad, tokens } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)

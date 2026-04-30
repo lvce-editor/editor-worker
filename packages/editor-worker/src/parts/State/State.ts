@@ -16,6 +16,8 @@ export interface EditorState {
   // TODO should be immutable
   differences: any[]
   readonly embeds: any
+  readonly evaluationPreviews: readonly any[]
+  readonly evaluationRunId: number
   readonly finalDeltaY: number
   readonly finalY: number
   readonly focus: number

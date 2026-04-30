@@ -16,6 +16,10 @@ import * as TabModifiedStatusChange from '../TabModifiedStatusChange/TabModified
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as EditorSelection from './EditorSelection.ts'
 
+const isJavaScriptLanguage = (languageId: string): boolean => {
+  return languageId === 'javascript' || languageId === 'js' || languageId === 'mjs'
+}
+
 // TODO
 export const setDeltaYFixedValue = (editor: any, value: any) => {
   return EditorScrolling.setDeltaY(editor, value)
@@ -37,21 +41,19 @@ const applyAutoClosingRangesEdit = (editor: any, changes: any[]) => {
   const changeStartColumnIndex = change.start.columnIndex
   const changeEndRowIndex = change.end.rowIndex
   const changeEndColumnIndex = change.end.columnIndex
+  const delta = change.inserted[0].length - change.deleted[0].length
   for (let i = 0; i < autoClosingRanges.length; i += 4) {
     const autoStartRowIndex = autoClosingRanges[i]
     const autoStartColumnIndex = autoClosingRanges[i + 1]
     const autoEndRowIndex = autoClosingRanges[i + 2]
     const autoEndColumnIndex = autoClosingRanges[i + 3]
-    if (changeEndRowIndex === autoEndRowIndex && changeEndColumnIndex === autoEndColumnIndex) {
-      const delta = change.inserted[0].length - change.deleted[0].length
-      newAutoClosingRanges.push(autoStartRowIndex, autoStartColumnIndex, autoEndRowIndex, autoEndColumnIndex + delta)
-    } else if (
-      changeStartRowIndex === autoStartRowIndex &&
-      changeStartColumnIndex >= autoStartColumnIndex &&
-      changeEndRowIndex === autoEndRowIndex &&
-      changeEndColumnIndex <= autoEndColumnIndex
+    if (
+      (changeEndRowIndex === autoEndRowIndex && changeEndColumnIndex === autoEndColumnIndex) ||
+      (changeStartRowIndex === autoStartRowIndex &&
+        changeStartColumnIndex >= autoStartColumnIndex &&
+        changeEndRowIndex === autoEndRowIndex &&
+        changeEndColumnIndex <= autoEndColumnIndex)
     ) {
-      const delta = change.inserted[0].length - change.deleted[0].length
       newAutoClosingRanges.push(autoStartRowIndex, autoStartColumnIndex, autoEndRowIndex, autoEndColumnIndex + delta)
     } else {
       // ignore
@@ -107,9 +109,12 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
   // Update link decorations after text changes
   const linkDecorations = LinkDetection.detectAllLinksAsDecorations(newEditor)
+  const evaluationRunId = isJavaScriptLanguage(newEditor.languageId) ? editor.evaluationRunId + 1 : 0
   const newEditorWithDecorations = {
     ...newEditor,
     decorations: linkDecorations,
+    evaluationPreviews: [],
+    evaluationRunId,
   }
   EditorStates.set(editor.uid, editor, newEditorWithDecorations)
 
@@ -119,7 +124,16 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
 
   // Notify registered listeners about editor changes
-  NotifyListeners.notifyListeners(ListenerType.EditorChange, 'handleEditorChanged', editor.uid, editor.uri, changes).catch((error) => {
+  NotifyListeners.notifyListeners(
+    ListenerType.EditorChange,
+    'handleEditorChanged',
+    editor.uid,
+    editor.uri,
+    changes,
+    TextDocument.getText(newEditorWithDecorations),
+    newEditorWithDecorations.languageId,
+    newEditorWithDecorations.evaluationRunId,
+  ).catch((error) => {
     // Silently ignore notification errors to not interrupt the edit flow
     console.warn('Failed to notify editor change listeners:', error)
   })

@@ -8,6 +8,8 @@ export const emptyEditor = {
   diagnostics: [],
   differences: [],
   embeds: [],
+  evaluationPreviews: [],
+  evaluationRunId: 0,
   focused: false,
   height: 0,
   highlightedLine: -1,

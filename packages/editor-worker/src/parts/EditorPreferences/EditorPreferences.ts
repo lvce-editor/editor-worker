@@ -3,7 +3,6 @@ import * as Preferences from '../Preferences/Preferences.ts'
 const kLineHeight = 'editor.lineHeight'
 const kFontSize = 'editor.fontSize'
 const kFontFamily = 'editor.fontFamily'
-const kLetterSpacing = 'editor.letterSpacing'
 const kLinks = 'editor.links'
 const kTabSize = 'editor.tabSize'
 const kLineNumbers = 'editor.lineNumbers'
@@ -48,10 +47,7 @@ export const getFontFamily = async () => {
 }
 
 export const getLetterSpacing = async () => {
-  if (!false) {
-    return 0
-  }
-  return (await Preferences.get(kLetterSpacing)) ?? 0.5
+  return 0
 }
 
 export const getTabSize = async () => {

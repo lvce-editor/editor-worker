@@ -1,4 +1,5 @@
 import { setFactory } from '../CompletionWorker/CompletionWorker.ts'
+import { initializeEvaluationWorker } from '../InitializeEvaluationWorker/InitializeEvaluationWorker.ts'
 import { initializeExtensionHost } from '../InitializeExtensionHost/InitializeExtensionHost.ts'
 import { initializeExtensionManagementWorker } from '../InitializeExtensionManagementWorker/InitializeExtensionManagementWorker.ts'
 import { initializeOpenerWorker } from '../InitializeOpenerWorker/InitializeOpenerWorker.ts'
@@ -12,6 +13,7 @@ export const intialize = async (syntaxHighlightingEnabled: boolean, syncIncremen
     initializeSyntaxHighlighting(syntaxHighlightingEnabled, syncIncremental),
     initializeExtensionHost(),
     initializeExtensionManagementWorker(),
+    initializeEvaluationWorker(),
     initializeTextMeasurementWorker(),
     initializeOpenerWorker(),
   ])
