@@ -1,0 +1,43 @@
+{
+  "name": "@lvce-editor/evaluation-worker",
+  "version": "0.0.0-dev",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/evaluationWorkerMain.ts",
+  "scripts": {
+    "test": "node --unhandled-rejections=warn --experimental-vm-modules ./node_modules/jest/bin/jest.js --detectOpenHandles --forceExit",
+    "type-check": "tsc"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 150
+  },
+  "jest": {
+    "injectGlobals": false,
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "transform": {
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "useESM": true
+        }
+      ]
+    },
+    "testMatch": [
+      "**/test/**"
+    ]
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.3.0",
+    "@lvce-editor/rpc": "^6.4.0",
+    "@types/node": "^24.2.1",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.4.6"
+  }
+}
