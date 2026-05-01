@@ -35,6 +35,11 @@ const stringifyValue = (value: unknown): string => {
   }
 }
 
+const getEvaluationModuleUrl = (code: string): string => {
+  const moduleSource = `const run = (__preview__) => {\n'use strict'\n${code}}\nexport default run\n`
+  return `data:text/javascript;charset=utf-8,${encodeURIComponent(moduleSource)}`
+}
+
 export const evaluateText = async (text: string): Promise<readonly EvaluationPreview[]> => {
   const { code, markerLines } = TransformSource.transformSource(text)
   if (markerLines.length === 0) {
@@ -49,11 +54,11 @@ export const evaluateText = async (text: string): Promise<readonly EvaluationPre
     return value
   }
   try {
-    // The evaluation worker runs transformed user-authored source in an isolated worker scope
-    // to compute inline previews for `//?` markers.
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval, sonarjs/code-eval
-    const fn = new Function('__preview__', `'use strict'\n${code}`)
-    fn(preview)
+    const url = getEvaluationModuleUrl(code)
+    const module = (await import(url)) as {
+      readonly default: (preview: typeof preview) => void
+    }
+    module.default(preview)
   } catch {
     return []
   }
