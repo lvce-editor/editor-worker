@@ -9,6 +9,7 @@ import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as ListenerType from '../ListenerType/ListenerType.ts'
 import * as NotifyListeners from '../NotifyListeners/NotifyListeners.ts'
+import * as Resize from '../Resize/Resize.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
@@ -243,24 +244,7 @@ export const hasSelection = (editor: any) => {
 }
 
 export const setBounds = (editor: any, x: number, y: number, width: number, height: number, columnWidth: number) => {
-  const { itemHeight } = editor
-  const numberOfVisibleLines = Math.floor(height / itemHeight)
-  const total = editor.lines.length
-  const maxLineY = Math.min(numberOfVisibleLines, total)
-  const finalY = Math.max(total - numberOfVisibleLines, 0)
-  const finalDeltaY = finalY * itemHeight
-  return {
-    ...editor,
-    columnWidth,
-    finalDeltaY,
-    finalY,
-    height,
-    maxLineY,
-    numberOfVisibleLines,
-    width,
-    x,
-    y,
-  }
+  return Resize.resize(editor, { x, y, width, height }, columnWidth)
 }
 
 export const setText = (editor: any, text: string) => {
