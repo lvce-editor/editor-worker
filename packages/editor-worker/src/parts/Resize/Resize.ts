@@ -13,8 +13,8 @@ interface ResizeState {
   readonly height: number
   readonly itemHeight: number
   readonly lines: readonly string[]
-  readonly minLineY: number
   readonly minimumSliderSize: number
+  readonly minLineY: number
   readonly rowHeight: number
   readonly width: number
   readonly x: number

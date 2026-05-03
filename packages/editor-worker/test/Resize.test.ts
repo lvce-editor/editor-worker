@@ -11,8 +11,8 @@ test('resize updates bounds and visible lines', () => {
     itemHeight: 20,
     lines: ['a', 'b', 'c', 'd', 'e'],
     maxLineY: 2,
-    minLineY: 0,
     minimumSliderSize: 20,
+    minLineY: 0,
     numberOfVisibleLines: 2,
     rowHeight: 20,
     scrollBarHeight: 20,
@@ -21,7 +21,7 @@ test('resize updates bounds and visible lines', () => {
     y: 2,
   }
 
-  expect(Resize.resize(state, { x: 10, y: 20, width: 120, height: 60 })).toEqual({
+  expect(Resize.resize(state, { height: 60, width: 120, x: 10, y: 20 })).toEqual({
     columnWidth: 9,
     deltaY: 0,
     finalDeltaY: 40,
@@ -30,8 +30,8 @@ test('resize updates bounds and visible lines', () => {
     itemHeight: 20,
     lines: ['a', 'b', 'c', 'd', 'e'],
     maxLineY: 3,
-    minLineY: 0,
     minimumSliderSize: 20,
+    minLineY: 0,
     numberOfVisibleLines: 3,
     rowHeight: 20,
     scrollBarHeight: 36,
@@ -51,8 +51,8 @@ test('resize clamps scroll position when height increases', () => {
     itemHeight: 20,
     lines: Array.from({ length: 100 }, (_, index) => `${index}`),
     maxLineY: 100,
-    minLineY: 90,
     minimumSliderSize: 20,
+    minLineY: 90,
     numberOfVisibleLines: 10,
     rowHeight: 20,
     scrollBarHeight: 20,
@@ -70,8 +70,8 @@ test('resize clamps scroll position when height increases', () => {
     itemHeight: 20,
     lines: Array.from({ length: 100 }, (_, index) => `${index}`),
     maxLineY: 100,
-    minLineY: 80,
     minimumSliderSize: 20,
+    minLineY: 80,
     numberOfVisibleLines: 20,
     rowHeight: 20,
     scrollBarHeight: 80,

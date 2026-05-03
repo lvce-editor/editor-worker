@@ -244,7 +244,7 @@ export const hasSelection = (editor: any) => {
 }
 
 export const setBounds = (editor: any, x: number, y: number, width: number, height: number, columnWidth: number) => {
-  return Resize.resize(editor, { x, y, width, height }, columnWidth)
+  return Resize.resize(editor, { height, width, x, y }, columnWidth)
 }
 
 export const setText = (editor: any, text: string) => {
