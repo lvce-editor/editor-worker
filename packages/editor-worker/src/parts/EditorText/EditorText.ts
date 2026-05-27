@@ -510,7 +510,15 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
   const { charWidth, deltaX, fontFamily, fontSize, fontWeight, letterSpacing, lines, minLineY, numberOfVisibleLines, width } = editor
   const maxLineY = Math.min(minLineY + numberOfVisibleLines, lines.length)
   // @ts-ignore
-  const { embeddedResults, tokenizersToLoad, tokens } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
+  let { embeddedResults, tokenizersToLoad, tokens } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
+  if (tokenizersToLoad.length > 0) {
+    await LoadTokenizers.loadTokenizers(editor, tokenizersToLoad)
+    GetTokensViewport2.resetSentLines(editor.id)
+    const updated = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
+    embeddedResults = updated.embeddedResults
+    tokenizersToLoad = updated.tokenizersToLoad
+    tokens = updated.tokens
+  }
   const minLineOffset = await TextDocument.offsetAtSync(editor, minLineY, 0)
   const averageCharWidth = charWidth
   const { differences, result } = getLineInfosViewport(
@@ -524,9 +532,6 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
     deltaX,
     averageCharWidth,
   )
-  if (tokenizersToLoad.length > 0) {
-    LoadTokenizers.loadTokenizers(tokenizersToLoad)
-  }
   return {
     differences,
     textInfos: result,
