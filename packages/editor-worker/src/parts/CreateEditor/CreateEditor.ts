@@ -82,6 +82,7 @@ export const createEditor = async ({
     height,
     id,
     incrementalEdits: emptyIncrementalEdits,
+    initial: true,
     invalidStartIndex: 0,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,

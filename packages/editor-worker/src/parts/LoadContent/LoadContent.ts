@@ -59,6 +59,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     fontFamily,
     fontSize,
     fontWeight,
+    initial: false,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,

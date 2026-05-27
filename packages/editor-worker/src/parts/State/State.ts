@@ -30,6 +30,7 @@ export interface EditorState {
   readonly id: number
   readonly incrementalEdits: readonly any[]
   readonly initial: boolean
+  readonly intiial?: boolean
   readonly invalidStartIndex: number
   readonly isAutoClosingBracketsEnabled: boolean
   readonly isAutoClosingQuotesEnabled: boolean

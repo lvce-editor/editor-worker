@@ -46,6 +46,7 @@ export const createEditor2 = (
     id,
     incrementalEdits: emptyIncrementalEdits,
     initial: true,
+    initial: true,
     invalidStartIndex: 0,
     isAutoClosingBracketsEnabled: false,
     isAutoClosingQuotesEnabled: false,
