@@ -31,9 +31,14 @@ export const loadTokenizer = async (languageId: string, tokenizePath: string) =>
     return
   }
   if (SyntaxHighlightingState.getEnabled()) {
-    // @ts-ignore
-    const tokenMap = await SyntaxHighlightingWorker.invoke('Tokenizer.load', languageId, tokenizePath)
-    TokenMaps.set(languageId, tokenMap)
+    try {
+      // @ts-ignore
+      const tokenMap = await SyntaxHighlightingWorker.invoke('Tokenizer.load', languageId, tokenizePath)
+      TokenMaps.set(languageId, tokenMap)
+    } catch (error) {
+      console.warn(`Failed to load tokenizer in syntax worker for "${languageId}"`)
+      console.error(error)
+    }
   }
   await loadTokenizerLocal(languageId, tokenizePath)
 }

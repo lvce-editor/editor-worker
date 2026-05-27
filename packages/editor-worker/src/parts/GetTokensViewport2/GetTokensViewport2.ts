@@ -10,9 +10,6 @@ export const resetSentLines = (id: number) => {
 
 // TODO only send changed lines to renderer process instead of all lines in viewport
 export const getTokensViewport2 = async (editor: any, startLineIndex: any, endLineIndex: any, syncIncremental: boolean) => {
-  if (editor.languageId === 'html') {
-    return GetTokensViewport.getTokensViewport(editor, startLineIndex, endLineIndex)
-  }
   if (SyntaxHighlightingState.getEnabled()) {
     if (syncIncremental) {
       const { id, invalidStartIndex, languageId, lines } = editor
