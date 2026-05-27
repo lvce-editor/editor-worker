@@ -27,6 +27,7 @@ export interface EditorCreateOptions {
   readonly savedSelections: any
   readonly tabSize: number
   readonly uri: string
+  readonly useFunctionalRendering?: boolean
   readonly width: number
   readonly x: number
   readonly y: number
