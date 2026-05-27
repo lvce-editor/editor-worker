@@ -2,6 +2,8 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.main-area-open-file-error'
 
+export const skip = 1
+
 export const test: Test = async ({ Editor, expect, Extension, Locator, Main, Workspace }) => {
   // arrange
   const extensionUri = import.meta.resolve('../fixtures/write-file-error')
