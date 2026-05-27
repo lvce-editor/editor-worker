@@ -3,6 +3,7 @@ import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtual
 import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
 import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
+import * as GetScrollBarVirtualDom from '../GetScrollBarVirtualDom/GetScrollBarVirtualDom.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
@@ -39,6 +40,7 @@ export const getEditorVirtualDom = ({
   const diagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(diagnosticsArray)
   const gutterDom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfosArray)
   const scrollBarDiagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(scrollBarDiagnosticsArray)
+  const scrollBarDom = GetScrollBarVirtualDom.getScrollBarVirtualDom()
 
   return [
     {
@@ -93,25 +95,6 @@ export const getEditorVirtualDom = ({
       type: VirtualDomElements.Div,
     },
     ...scrollBarDiagnosticsDom,
-    {
-      childCount: 1,
-      className: 'ScrollBar ScrollBarVertical',
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 0,
-      className: 'ScrollBarThumb ScrollBarThumbVertical',
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 1,
-      className: 'ScrollBar ScrollBarHorizontal',
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 0,
-      className: 'ScrollBarThumb ScrollBarThumbHorizontal',
-      type: VirtualDomElements.Div,
-    },
+    ...scrollBarDom,
   ]
 }
