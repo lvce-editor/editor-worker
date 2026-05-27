@@ -10,6 +10,8 @@ import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRo
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
 import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
+import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 const renderLines = {
   apply(oldState: EditorState, newState: EditorState) {
@@ -22,6 +24,23 @@ const renderLines = {
     const { highlightedLine, minLineY } = newState
     const relativeLine = highlightedLine - minLineY
     const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
+    if (newState.languageId === 'html') {
+      const debugInfo = JSON.stringify(textInfos[4] || [])
+      dom.push(
+        {
+          childCount: 1,
+          className: 'EditorRow',
+          translate: '0px',
+          type: VirtualDomElements.Div,
+        },
+        {
+          childCount: 1,
+          className: 'Token DebugHtml',
+          type: VirtualDomElements.Span,
+        },
+        text(debugInfo),
+      )
+    }
     if (newState.languageId === 'html') {
       console.warn(
         '[html-render-apply]',

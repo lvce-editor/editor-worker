@@ -13,8 +13,12 @@ const getTokensViewportEmbedded = (langageId: string, lines: string[], lineCache
     const line = lines[index]
     if (result.embeddedLanguage) {
       const { embeddedLanguage, embeddedLanguageEnd, embeddedLanguageStart } = result
+      if (embeddedLanguageStart === line.length || embeddedLanguageEnd < embeddedLanguageStart) {
+        topContext = undefined
+        continue
+      }
       const embeddedTokenizer = Tokenizer.getTokenizer(embeddedLanguage)
-      if (embeddedLanguageStart !== line.length && embeddedTokenizer && embeddedTokenizer !== TokenizePlainText) {
+      if (embeddedTokenizer && embeddedTokenizer !== TokenizePlainText) {
         const isFull = embeddedLanguageStart === 0 && embeddedLanguageEnd === line.length
         const partialLine = line.slice(embeddedLanguageStart, embeddedLanguageEnd)
         const embedResult = SafeTokenizeLine.safeTokenizeLine(

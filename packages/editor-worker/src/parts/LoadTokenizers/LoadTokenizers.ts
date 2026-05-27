@@ -31,7 +31,7 @@ const warnMissingTokenizerPath = (languageId: string) => {
 export const loadTokenizers = async (editor: any, languageIds: any) => {
   for (const languageId of languageIds) {
     const tokenizePath = await getEmbeddedTokenizerPath(editor, languageId)
-    if (!tokenizePath && languageId !== 'css' && languageId !== 'javascript') {
+    if (!tokenizePath) {
       warnMissingTokenizerPath(languageId)
       continue
     }
