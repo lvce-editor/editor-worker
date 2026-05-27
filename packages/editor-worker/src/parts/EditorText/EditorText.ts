@@ -1,7 +1,11 @@
+import * as BuiltinTokenizeCss from '../../../../server/node_modules/@lvce-editor/static-server/static/27c0844/extensions/builtin.language-basics-css/src/tokenizeCss.js'
+import * as BuiltinTokenizeJavaScript from '../../../../server/node_modules/@lvce-editor/static-server/static/27c0844/extensions/builtin.language-basics-javascript/src/tokenizeJavaScript.js'
 import * as GetDecorationClassName from '../GetDecorationClassName/GetDecorationClassName.ts'
+import * as GetInitialLineState from '../GetInitialLineState/GetInitialLineState.ts'
 import * as GetTokensViewport2 from '../GetTokensViewport2/GetTokensViewport2.ts'
 import * as LoadTokenizers from '../LoadTokenizers/LoadTokenizers.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
+import * as SafeTokenizeLine from '../SafeTokenizeLine/SafeTokenizeLine.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 
@@ -424,6 +428,42 @@ const getLineInfo = (
       )
     }
   }
+  if (
+    tokenResults.embeddedLanguage &&
+    tokenResults.embeddedLanguageStart === 0 &&
+    tokenResults.embeddedLanguageEnd === line.length
+  ) {
+    const embeddedTokenizer = Tokenizer.getTokenizer(tokenResults.embeddedLanguage)
+    if (embeddedTokenizer?.tokenizeLine) {
+      const fallbackResult = SafeTokenizeLine.safeTokenizeLine(
+        tokenResults.embeddedLanguage,
+        embeddedTokenizer.tokenizeLine,
+        line,
+        GetInitialLineState.getInitialLineState(embeddedTokenizer.initialLineState),
+        embeddedTokenizer.hasArrayReturn,
+      )
+      return getLineInfoEmbeddedFull(
+        [
+          {
+            isFull: true,
+            result: fallbackResult,
+            TokenMap: embeddedTokenizer.TokenMap,
+          },
+        ],
+        { embeddedResultIndex: 0 },
+        line,
+        decorations,
+        lineOffset,
+        normalize,
+        tabSize,
+        width,
+        deltaX,
+        averageCharWidth,
+        minOffset,
+        maxOffset,
+      )
+    }
+  }
   return getLineInfoDefault(
     line,
     tokenResults,
@@ -439,6 +479,55 @@ const getLineInfo = (
     minOffset,
     maxOffset,
   )
+}
+
+const getEmbeddedLanguageBeforeLine = (lines: readonly string[], endLineY: number) => {
+  let embeddedLanguage = ''
+  for (let i = 0; i < endLineY; i++) {
+    const trimmed = lines[i].trimStart().toLowerCase()
+    if (embeddedLanguage === 'css') {
+      if (trimmed.startsWith('</style')) {
+        embeddedLanguage = ''
+      }
+      continue
+    }
+    if (embeddedLanguage === 'javascript') {
+      if (trimmed.startsWith('</script')) {
+        embeddedLanguage = ''
+      }
+      continue
+    }
+    if (trimmed.startsWith('<style') && !trimmed.includes('</style')) {
+      embeddedLanguage = 'css'
+      continue
+    }
+    if (trimmed.startsWith('<script') && !trimmed.includes('</script')) {
+      embeddedLanguage = 'javascript'
+    }
+  }
+  return embeddedLanguage
+}
+
+const getEmbeddedLanguageForOpeningTag = (line: string) => {
+  const trimmed = line.trimStart().toLowerCase()
+  if (trimmed.startsWith('<style') && !trimmed.includes('</style')) {
+    return 'css'
+  }
+  if (trimmed.startsWith('<script') && !trimmed.includes('</script')) {
+    return 'javascript'
+  }
+  return ''
+}
+
+const getBuiltinEmbeddedTokenizer = (languageId: string) => {
+  switch (languageId) {
+    case 'css':
+      return BuiltinTokenizeCss
+    case 'javascript':
+      return BuiltinTokenizeJavaScript
+    default:
+      return undefined
+  }
 }
 
 // TODO need lots of tests for this
@@ -457,6 +546,14 @@ const getLineInfosViewport = (
   const differences = []
   const { decorations, languageId, lines } = editor
   const tokenMap = TokenMaps.get(languageId)
+  let embeddedLanguage = languageId === 'html' ? getEmbeddedLanguageBeforeLine(lines, minLineY) : ''
+  let embeddedLineState: any = undefined
+  if (embeddedLanguage) {
+    const embeddedTokenizer = getBuiltinEmbeddedTokenizer(embeddedLanguage)
+    if (embeddedTokenizer?.initialLineState) {
+      embeddedLineState = GetInitialLineState.getInitialLineState(embeddedTokenizer.initialLineState)
+    }
+  }
   let offset = minLineOffset
   const tabSize = 2
   for (let i = minLineY; i < maxLineY; i++) {
@@ -478,22 +575,89 @@ const getLineInfosViewport = (
       }
     }
 
-    const { difference, lineInfo } = getLineInfo(
-      line,
-      tokens[i - minLineY],
-      embeddedResults,
-      lineDecorations,
-      tokenMap,
-      offset,
-      normalize,
-      tabSize,
-      width,
-      deltaX,
-      averageCharWidth,
-    )
+    let difference
+    let lineInfo
+    const trimmed = line.trimStart().toLowerCase()
+    const isClosingEmbeddedTag =
+      (embeddedLanguage === 'css' && trimmed.startsWith('</style')) || (embeddedLanguage === 'javascript' && trimmed.startsWith('</script'))
+    if (languageId === 'html' && embeddedLanguage && !isClosingEmbeddedTag) {
+      const embeddedTokenizer = getBuiltinEmbeddedTokenizer(embeddedLanguage)
+      if (embeddedTokenizer?.tokenizeLine && embeddedTokenizer.TokenMap) {
+        const fallbackResult = SafeTokenizeLine.safeTokenizeLine(
+          embeddedLanguage,
+          embeddedTokenizer.tokenizeLine,
+          line,
+          embeddedLineState || GetInitialLineState.getInitialLineState(embeddedTokenizer.initialLineState),
+          embeddedTokenizer.hasArrayReturn,
+        )
+        embeddedLineState = fallbackResult
+        ;({ difference, lineInfo } = getLineInfoEmbeddedFull(
+          [
+            {
+              isFull: true,
+              result: fallbackResult,
+              TokenMap: embeddedTokenizer.TokenMap,
+            },
+          ],
+          { embeddedResultIndex: 0 },
+          line,
+          lineDecorations,
+          offset,
+          normalize,
+          tabSize,
+          width,
+          deltaX,
+          averageCharWidth,
+          getOffsets(deltaX, width, averageCharWidth).minOffset,
+          getOffsets(deltaX, width, averageCharWidth).maxOffset,
+        ))
+      } else {
+        ;({ difference, lineInfo } = getLineInfo(
+          line,
+          tokens[i - minLineY],
+          embeddedResults,
+          lineDecorations,
+          tokenMap,
+          offset,
+          normalize,
+          tabSize,
+          width,
+          deltaX,
+          averageCharWidth,
+        ))
+      }
+    } else {
+      ;({ difference, lineInfo } = getLineInfo(
+        line,
+        tokens[i - minLineY],
+        embeddedResults,
+        lineDecorations,
+        tokenMap,
+        offset,
+        normalize,
+        tabSize,
+        width,
+        deltaX,
+        averageCharWidth,
+      ))
+    }
     result.push(lineInfo)
     differences.push(difference)
     offset += line.length + 1
+    if (languageId === 'html') {
+      if (isClosingEmbeddedTag) {
+        embeddedLanguage = ''
+        embeddedLineState = undefined
+      } else if (!embeddedLanguage) {
+        embeddedLanguage = getEmbeddedLanguageForOpeningTag(line)
+        if (embeddedLanguage) {
+          const embeddedTokenizer = getBuiltinEmbeddedTokenizer(embeddedLanguage)
+          if (embeddedTokenizer?.initialLineState) {
+            embeddedLineState = GetInitialLineState.getInitialLineState(embeddedTokenizer.initialLineState)
+          }
+        }
+      }
+    }
   }
   return {
     differences,
@@ -511,6 +675,20 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
   const maxLineY = Math.min(minLineY + numberOfVisibleLines, lines.length)
   // @ts-ignore
   let { embeddedResults, tokenizersToLoad, tokens } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
+  if (editor.languageId === 'html') {
+    const needsCss = editor.lines.some((line: string) => line.includes('<style'))
+    const needsJavaScript = editor.lines.some((line: string) => line.includes('<script'))
+    const htmlEmbeddedTokenizers = []
+    if (needsCss) {
+      htmlEmbeddedTokenizers.push('css')
+    }
+    if (needsJavaScript) {
+      htmlEmbeddedTokenizers.push('javascript')
+    }
+    if (htmlEmbeddedTokenizers.length > 0) {
+      await LoadTokenizers.loadTokenizers(editor, htmlEmbeddedTokenizers)
+    }
+  }
   if (tokenizersToLoad.length > 0) {
     await LoadTokenizers.loadTokenizers(editor, tokenizersToLoad)
     GetTokensViewport2.resetSentLines(editor.id)
@@ -532,6 +710,17 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
     deltaX,
     averageCharWidth,
   )
+  if (editor.languageId === 'html') {
+    console.warn(
+      '[html-highlight]',
+      JSON.stringify({
+        embeddedResultsLength: embeddedResults.length,
+        firstTextInfo: result[0],
+        secondTextInfo: result[1],
+        tokenizersToLoad,
+      }),
+    )
+  }
   return {
     differences,
     textInfos: result,

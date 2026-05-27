@@ -51,13 +51,15 @@ const loadTokenizerLocal = async (languageId: string, tokenizePath: string) => {
 
 // TODO loadTokenizer should be invoked from renderer worker
 export const loadTokenizer = async (languageId: string, tokenizePath: string) => {
-  if (!tokenizePath) {
+  if (!tokenizePath && !shouldLoadLocalTokenizer(languageId)) {
     return
   }
   if (SyntaxHighlightingState.getEnabled()) {
-    // @ts-ignore
-    const tokenMap = await SyntaxHighlightingWorker.invoke('Tokenizer.load', languageId, tokenizePath)
-    TokenMaps.set(languageId, tokenMap)
+    if (tokenizePath) {
+      // @ts-ignore
+      const tokenMap = await SyntaxHighlightingWorker.invoke('Tokenizer.load', languageId, tokenizePath)
+      TokenMaps.set(languageId, tokenMap)
+    }
     if (shouldLoadLocalTokenizer(languageId)) {
       await loadTokenizerLocal(languageId, tokenizePath)
     }

@@ -22,10 +22,19 @@ const renderLines = {
     const { highlightedLine, minLineY } = newState
     const relativeLine = highlightedLine - minLineY
     const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
+    if (newState.languageId === 'html') {
+      console.warn(
+        '[html-render-apply]',
+        JSON.stringify({
+          firstTextInfo: textInfos[0],
+          secondTextInfo: textInfos[1],
+        }),
+      )
+    }
     return [/* method */ 'setText', dom]
   },
   isEqual(oldState: EditorState, newState: EditorState) {
-    return (
+    const equal =
       oldState.lines === newState.lines &&
       oldState.tokenizerId === newState.tokenizerId &&
       oldState.minLineY === newState.minLineY &&
@@ -35,7 +44,20 @@ const renderLines = {
       oldState.width === newState.width &&
       oldState.highlightedLine === newState.highlightedLine &&
       oldState.debugEnabled === newState.debugEnabled
-    )
+    if (newState.languageId === 'html') {
+      console.warn(
+        '[html-render-equal]',
+        JSON.stringify({
+          equal,
+          oldTokenizerId: oldState.tokenizerId,
+          newTokenizerId: newState.tokenizerId,
+          oldTextInfosLength: oldState.textInfos.length,
+          newTextInfosLength: newState.textInfos.length,
+          sameTextInfosRef: oldState.textInfos === newState.textInfos,
+        }),
+      )
+    }
+    return equal
   },
 }
 
