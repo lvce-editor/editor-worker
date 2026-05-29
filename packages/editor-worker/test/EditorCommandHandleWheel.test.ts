@@ -4,13 +4,13 @@ import * as EditorCommandHandleWheel from '../src/parts/EditorCommand/EditorComm
 test('handleWheel delegates to shared setDelta logic', async () => {
   const editor = {
     charWidth: 8,
+    decorations: [],
     deltaX: 0,
     deltaY: 0,
-    decorations: [],
     finalDeltaY: 100,
     height: 40,
-    itemHeight: 20,
     invalidStartIndex: 0,
+    itemHeight: 20,
     languageId: '',
     lineCache: [],
     lines: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],

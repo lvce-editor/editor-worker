@@ -28,7 +28,7 @@ test('getEditorContentVirtualDom', () => {
     childCount: 0,
     className: 'ScrollBarThumb ScrollBarThumbVertical',
     style: 'height:24px;',
-    translate: '0 16px',
+    translate: '0 8px',
     type: VirtualDomElements.Div,
   })
 })
