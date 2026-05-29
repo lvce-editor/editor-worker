@@ -45,16 +45,16 @@ test.skip('renderEventListeners', () => {
       params: ['paste', 'event.clipboardData ? event.clipboardData.getData("text/plain") : ""'],
       preventDefault: true,
     },
-    {
-      name: DomEventListenerFunctions.HandleMouseDown,
-      params: [
-        'handleMouseDown',
-        'event.button === 2 ? -1 : (((event.metaKey || event.ctrlKey) ? 2048 : 0) | (event.shiftKey ? 1024 : 0) | (event.altKey ? 512 : 0))',
-        EventExpression.ClientX,
-        EventExpression.ClientY,
-        'event.button === 2 ? 0 : event.detail',
-      ],
-    },
+    // {
+    //   name: DomEventListenerFunctions.HandleMouseDown,
+    //   params: [
+    //     'handleMouseDown',
+    //     'event.button === 2 ? -1 : (((event.metaKey || event.ctrlKey) ? 2048 : 0) | (event.shiftKey ? 1024 : 0) | (event.altKey ? 512 : 0))',
+    //     EventExpression.ClientX,
+    //     EventExpression.ClientY,
+    //     'event.button === 2 ? 0 : event.detail',
+    //   ],
+    // },
     {
       name: DomEventListenerFunctions.HandlePointerDown,
       params: [],
