@@ -2,7 +2,7 @@ import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
-export const getScrollBarVirtualDom = (): readonly VirtualDomNode[] => {
+export const getScrollBarVirtualDom = (scrollBarHeight: number): readonly VirtualDomNode[] => {
   return [
     {
       childCount: 1,
@@ -14,6 +14,7 @@ export const getScrollBarVirtualDom = (): readonly VirtualDomNode[] => {
     {
       childCount: 0,
       className: 'ScrollBarThumb ScrollBarThumbVertical',
+      style: `height:${scrollBarHeight}px;`,
       type: VirtualDomElements.Div,
     },
     {

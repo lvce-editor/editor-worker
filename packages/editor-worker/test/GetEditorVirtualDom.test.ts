@@ -18,6 +18,7 @@ test('getEditorVirtualDom', () => {
     ],
     differences: [0],
     gutterInfos: [1],
+    scrollBarHeight: 24,
     selectionInfos: [1, 2, 3, 4],
     textInfos: [['#', 'Token Comment']],
   })
@@ -153,6 +154,7 @@ test('getEditorVirtualDom', () => {
     {
       childCount: 0,
       className: 'ScrollBarThumb ScrollBarThumbVertical',
+      style: 'height:24px;',
       type: VirtualDomElements.Div,
     },
     {
