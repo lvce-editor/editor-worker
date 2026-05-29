@@ -1,6 +1,6 @@
 import * as Assert from '../Assert/Assert.ts'
 import * as EditorMoveSelectionAnchorState from '../EditorMoveSelectionAnchorState/EditorMoveSelectionAnchorState.ts'
-import * as EditorSelectionAutoMoveState from '../EditorSelectionAutoMoveState/EditorSelectionAutoMoveState.ts'
+import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as RequestAnimationFrame from '../RequestAnimationFrame/RequestAnimationFrame.ts'
 import * as EditorMoveSelection from './EditorCommandMoveSelection.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
@@ -41,12 +41,17 @@ const getNewEditor = (editor, position) => {
   return editor
 }
 
-const continueScrollingAndMovingSelection = async () => {
-  const editor = EditorSelectionAutoMoveState.getEditor()
-  if (!editor) {
+const getCurrentEditor = (uid: number) => {
+  const currentState = EditorStates.get(uid)
+  return currentState?.newState
+}
+
+const continueScrollingAndMovingSelection = async (uid: number) => {
+  const editor = getCurrentEditor(uid)
+  if (!editor || !editor.autoMoveSelectionState?.hasListener) {
     return
   }
-  const position = EditorSelectionAutoMoveState.getPosition()
+  const { position } = editor.autoMoveSelectionState
   if (position.rowIndex === 0) {
     return
   }
@@ -54,12 +59,20 @@ const continueScrollingAndMovingSelection = async () => {
   if (editor === newEditor) {
     return
   }
-  // await Viewlet.setState(ViewletModuleId.EditorText, newEditor)
-  EditorSelectionAutoMoveState.setEditor(newEditor)
   // @ts-ignore
   const delta = position.rowIndex < editor.minLineY ? -1 : 1
-  EditorSelectionAutoMoveState.setPosition({ columnIndex: position.columnIndex, rowIndex: position.rowIndex + delta })
-  RequestAnimationFrame.requestAnimationFrame(continueScrollingAndMovingSelection)
+  const updatedEditor = {
+    ...newEditor,
+    autoMoveSelectionState: {
+      hasListener: true,
+      position: {
+        columnIndex: position.columnIndex,
+        rowIndex: position.rowIndex + delta,
+      },
+    },
+  }
+  EditorStates.set(editor.uid, editor, updatedEditor)
+  RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(uid))
   // TODO get editor state
   // if editor is disposed, return and remove animation frame
   // on cursor up, remove animation frame
@@ -72,10 +85,17 @@ export const moveSelectionPx = async (editor, x, y) => {
   Assert.number(x)
   Assert.number(y)
   const position = await EditorPosition.at(editor, x, y)
-  if (!EditorSelectionAutoMoveState.hasListener() && (position.rowIndex < editor.minLineY || position.rowIndex > editor.maxLineY)) {
-    RequestAnimationFrame.requestAnimationFrame(continueScrollingAndMovingSelection)
-    EditorSelectionAutoMoveState.setEditor(editor)
-    EditorSelectionAutoMoveState.setPosition(position)
+  const hasAutoMoveSelectionListener = editor.autoMoveSelectionState?.hasListener
+  let editorWithAutoMoveSelectionState = editor
+  if (!hasAutoMoveSelectionListener && (position.rowIndex < editor.minLineY || position.rowIndex > editor.maxLineY)) {
+    editorWithAutoMoveSelectionState = {
+      ...editor,
+      autoMoveSelectionState: {
+        hasListener: true,
+        position,
+      },
+    }
+    RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editor.uid))
   }
-  return EditorMoveSelection.editorMoveSelection(editor, position)
+  return EditorMoveSelection.editorMoveSelection(editorWithAutoMoveSelectionState, position)
 }

@@ -4,16 +4,27 @@ beforeEach(() => {
   jest.resetAllMocks()
 })
 
-const EditorSelectionAutoMoveState = await import('../src/parts/EditorSelectionAutoMoveState/EditorSelectionAutoMoveState.ts')
 const EditorCommandHandlePointerCaptureLost = await import('../src/parts/EditorCommand/EditorCommandHandlePointerCaptureLost.ts')
 
-test.skip('handlePointerCaptureLost', () => {
-  // Skipped: Cannot spy on ES module exports (read-only properties)
-  const clearEditorSpy = jest.spyOn(EditorSelectionAutoMoveState, 'clearEditor')
+test('handlePointerCaptureLost - clears selection auto move state', () => {
   const editor = {
+    autoMoveSelectionState: {
+      hasListener: true,
+      position: {
+        columnIndex: 1,
+        rowIndex: 2,
+      },
+    },
     lineCache: [],
   }
-  expect(EditorCommandHandlePointerCaptureLost.handlePointerCaptureLost(editor)).toBe(editor)
-  expect(clearEditorSpy).toHaveBeenCalledTimes(1)
-  clearEditorSpy.mockRestore()
+  expect(EditorCommandHandlePointerCaptureLost.handlePointerCaptureLost(editor)).toEqual({
+    autoMoveSelectionState: {
+      hasListener: false,
+      position: {
+        columnIndex: 1,
+        rowIndex: 2,
+      },
+    },
+    lineCache: [],
+  })
 })

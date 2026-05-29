@@ -1,5 +1,16 @@
+export interface EditorSelectionAutoMovePosition {
+  readonly columnIndex: number
+  readonly rowIndex: number
+}
+
+export interface EditorSelectionAutoMoveState {
+  readonly hasListener: boolean
+  readonly position: EditorSelectionAutoMovePosition
+}
+
 export interface EditorState {
   readonly additionalFocus: number
+  readonly autoMoveSelectionState?: EditorSelectionAutoMoveState
   readonly assetDir: string
   readonly charWidth: number
   readonly columnWidth: number

@@ -1,6 +1,13 @@
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 
 export const emptyEditor = {
+  autoMoveSelectionState: {
+    hasListener: false,
+    position: {
+      columnIndex: 0,
+      rowIndex: 0,
+    },
+  },
   cursorInfos: [],
   debugEnabled: false,
   decorations: [],
