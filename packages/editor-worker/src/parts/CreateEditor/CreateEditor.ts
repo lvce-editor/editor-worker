@@ -72,6 +72,8 @@ export const createEditor = async ({
     diagnostics: [],
     diagnosticsEnabled,
     differences: [],
+    evaluationPreviews: [],
+    evaluationRunId: 0,
     finalDeltaY: 0,
     finalY: 0,
     focused: false,

@@ -1,5 +1,6 @@
 import { terminate } from '@lvce-editor/viewlet-registry'
 import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
+import * as ApplyEvaluationResult from '../ApplyEvaluationResult/ApplyEvaluationResult.ts'
 import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
 import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 import { createEditor2 } from '../CreateEditor2/CreateEditor2.ts'
@@ -372,10 +373,11 @@ export const commandMap = {
   'EditorSourceAction.handleWheel': EditorSourceActionWidget.handleWheel,
   'EditorSourceAction.selectCurrent': EditorSourceActionWidget.selectCurrent,
   'EditorSourceAction.selectIndex': EditorSourceActionWidget.selectIndex,
-
   'EditorSourceAction.selectItem': EditorSourceActionWidget.selectItem,
+
   'EditorSourceAction.toggleDetails': EditorSourceActionWidget.toggleDetails,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
+  'Evaluation.applyResult': ApplyEvaluationResult.applyEvaluationResult,
   'ExtensionHostManagement.activateByEvent': ActivateByEvent.activateByEvent,
   'FindWidget.close': EditorFindWidget.close,
   'FindWidget.focusCloseButton': EditorFindWidget.focusCloseButton,

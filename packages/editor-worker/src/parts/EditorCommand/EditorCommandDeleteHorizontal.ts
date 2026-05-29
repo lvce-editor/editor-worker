@@ -13,14 +13,6 @@ export const editorDeleteHorizontalRight = (editor, getDelta) => {
     if (rowIndex >= lines.length) {
       return
     }
-    // @ts-ignore
-    const documentEdits = {
-      count: 1,
-      newLines: [lines[rowIndex].slice(0, columnIndex) + lines[rowIndex].slice(columnIndex)],
-      rowIndex,
-      type: /* splice */ 2,
-    }
-    // @ts-ignore
-    const cursorEdit = {}
+    return
   }
 }

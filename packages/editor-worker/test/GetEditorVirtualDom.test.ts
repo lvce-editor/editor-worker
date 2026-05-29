@@ -16,6 +16,12 @@ test('getEditorVirtualDom', () => {
       },
     ],
     differences: [0],
+    evaluationPreviews: [
+      {
+        rowIndex: 0,
+        value: '2',
+      },
+    ],
     gutterInfos: [1],
     selectionInfos: [1, 2, 3, 4],
     textInfos: [['#', 'Token Comment']],
@@ -72,7 +78,7 @@ test('getEditorVirtualDom', () => {
       type: VirtualDomElements.Div,
     },
     {
-      childCount: 1,
+      childCount: 2,
       className: 'EditorRow',
       translate: '0px',
       type: VirtualDomElements.Div,
@@ -83,6 +89,12 @@ test('getEditorVirtualDom', () => {
       type: VirtualDomElements.Span,
     },
     text('#'),
+    {
+      childCount: 1,
+      className: 'EvaluationPreview',
+      type: VirtualDomElements.Span,
+    },
+    text(' 2'),
     {
       childCount: 1,
       className: 'LayerCursor',

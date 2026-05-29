@@ -5,6 +5,7 @@ export const isEqual = (oldState: EditorState, newState: EditorState): boolean =
     oldState.lines === newState.lines &&
     oldState.textInfos === newState.textInfos &&
     oldState.differences === newState.differences &&
+    oldState.evaluationPreviews === newState.evaluationPreviews &&
     oldState.initial === newState.initial
   )
 }

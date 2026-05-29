@@ -32,6 +32,8 @@ export const createEditor2 = (
     diagnosticsEnabled: false,
     differences: [],
     embeds: [],
+    evaluationPreviews: [],
+    evaluationRunId: 0,
     finalDeltaY: 0,
     finalY: 0,
     focus: 0,

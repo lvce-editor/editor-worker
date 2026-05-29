@@ -21,7 +21,14 @@ const renderLines = {
     newState.differences = differences
     const { highlightedLine, minLineY } = newState
     const relativeLine = highlightedLine - minLineY
-    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
+    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(
+      textInfos,
+      differences,
+      true,
+      relativeLine,
+      newState.evaluationPreviews,
+      newState.minLineY,
+    )
     return [/* method */ 'setText', dom]
   },
   isEqual(oldState: EditorState, newState: EditorState) {
@@ -30,6 +37,7 @@ const renderLines = {
       oldState.tokenizerId === newState.tokenizerId &&
       oldState.minLineY === newState.minLineY &&
       oldState.decorations === newState.decorations &&
+      oldState.evaluationPreviews === newState.evaluationPreviews &&
       oldState.embeds === newState.embeds &&
       oldState.deltaX === newState.deltaX &&
       oldState.width === newState.width &&
@@ -136,56 +144,56 @@ const renderGutterInfo = {
   },
 }
 
+const getWidgetGroups = (oldWidgets: readonly any[], newWidgets: readonly any[]) => {
+  const addedWidgets = []
+  const changedWidgets = []
+  const removedWidgets = []
+  const oldWidgetMap = Object.create(null)
+  const newWidgetMap = Object.create(null)
+  for (const oldWidget of oldWidgets) {
+    oldWidgetMap[oldWidget.id] = oldWidget
+  }
+  for (const newWidget of newWidgets) {
+    newWidgetMap[newWidget.id] = newWidget
+  }
+  for (const oldWidget of oldWidgets) {
+    if (oldWidget.id in newWidgetMap) {
+      changedWidgets.push(newWidgetMap[oldWidget.id])
+    } else {
+      removedWidgets.push(oldWidget)
+    }
+  }
+  for (const newWidget of newWidgets) {
+    if (!(newWidget.id in oldWidgetMap)) {
+      addedWidgets.push(newWidget)
+    }
+  }
+  return {
+    addedWidgets,
+    changedWidgets,
+    removedWidgets,
+  }
+}
+
+const collectWidgetCommands = (widgets: readonly any[], fn: (widget: any) => readonly any[]) => {
+  const commands = []
+  for (const widget of widgets) {
+    const childCommands = fn(widget)
+    if (childCommands.length > 0) {
+      commands.push(...childCommands)
+    }
+  }
+  return commands
+}
+
 const renderWidgets = {
   apply(oldState: any, newState: any) {
-    const addedWidgets = []
-    const changedWidgets = []
-    const removedWidgets = []
     const oldWidgets = oldState.widgets || []
     const newWidgets = newState.widgets || []
-    const oldWidgetMap = Object.create(null)
-    const newWidgetMap = Object.create(null)
-    for (const oldWidget of oldWidgets) {
-      oldWidgetMap[oldWidget.id] = oldWidget
-    }
-    for (const newWidget of newWidgets) {
-      newWidgetMap[newWidget.id] = newWidget
-    }
-    for (const oldWidget of oldWidgets) {
-      if (oldWidget.id in newWidgetMap) {
-        changedWidgets.push(newWidgetMap[oldWidget.id])
-      } else {
-        removedWidgets.push(oldWidget)
-      }
-    }
-    for (const newWidget of newWidgets) {
-      if (newWidget.id in oldWidgetMap) {
-        // ignore
-      } else {
-        addedWidgets.push(newWidget)
-      }
-    }
-    const addCommands = []
-    for (const addedWidget of addedWidgets) {
-      const childCommands = RenderWidget.addWidget(addedWidget)
-      if (childCommands.length > 0) {
-        addCommands.push(...childCommands)
-      }
-    }
-    const changeCommands: any[] = []
-    for (const changedWidget of changedWidgets) {
-      const childCommands = RenderWidget.renderWidget(changedWidget)
-      if (childCommands.length > 0) {
-        changeCommands.push(...childCommands)
-      }
-    }
-    const removeCommands = []
-    for (const removedWidget of removedWidgets) {
-      const childCommands = RenderWidget.removeWidget(removedWidget)
-      if (childCommands.length > 0) {
-        removeCommands.push(...childCommands)
-      }
-    }
+    const { addedWidgets, changedWidgets, removedWidgets } = getWidgetGroups(oldWidgets, newWidgets)
+    const addCommands = collectWidgetCommands(addedWidgets, RenderWidget.addWidget)
+    const changeCommands = collectWidgetCommands(changedWidgets, RenderWidget.renderWidget)
+    const removeCommands = collectWidgetCommands(removedWidgets, RenderWidget.removeWidget)
     const allCommands = [...addCommands, ...changeCommands, ...removeCommands]
     const filteredCommands = allCommands.filter((item) => item[0] !== 'Viewlet.setFocusContext')
     return filteredCommands

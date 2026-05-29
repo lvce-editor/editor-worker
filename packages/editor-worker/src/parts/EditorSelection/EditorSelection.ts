@@ -85,7 +85,13 @@ export const from = (array: any[], getSelection: any) => {
   return newSelections
 }
 
-export const push = (selections: any[], startRowIndex: number, startColumnIndex: number, endRowIndex: number, endColumnIndex: number) => {
+export const push = (
+  selections: any[] | Uint32Array,
+  startRowIndex: number,
+  startColumnIndex: number,
+  endRowIndex: number,
+  endColumnIndex: number,
+) => {
   const oldLength = selections.length
   const newSelections = alloc(oldLength + 4)
   newSelections.set(selections)
@@ -123,6 +129,190 @@ const getSelectionArray = (visibleSelections: any) => {
     selectionsArray.push(Px.px(x), Px.px(y), Px.px(width), Px.px(height))
   }
   return selectionsArray
+}
+
+const getLineX = async (
+  line: string,
+  columnIndex: number,
+  fontWeight: any,
+  fontSize: any,
+  fontFamily: any,
+  isMonospaceFont: any,
+  letterSpacing: any,
+  tabSize: any,
+  halfCursorWidth: any,
+  width: any,
+  averageCharWidth: any,
+  difference: any,
+) => {
+  return GetX.getX(
+    line,
+    columnIndex,
+    fontWeight,
+    fontSize,
+    fontFamily,
+    isMonospaceFont,
+    letterSpacing,
+    tabSize,
+    halfCursorWidth,
+    width,
+    averageCharWidth,
+    difference,
+  )
+}
+
+const pushSingleLineSelection = async (
+  visibleCursors: number[],
+  visibleSelections: number[],
+  reversed: boolean,
+  endLine: string,
+  endLineEndX: number,
+  endLineY: number,
+  selectionStartColumn: number,
+  startLineY: number,
+  fontWeight: any,
+  fontSize: any,
+  fontFamily: any,
+  isMonospaceFont: any,
+  letterSpacing: any,
+  tabSize: any,
+  halfCursorWidth: any,
+  width: any,
+  averageCharWidth: any,
+  difference: any,
+  rowHeight: number,
+) => {
+  const startX = await getLineX(
+    endLine,
+    selectionStartColumn,
+    fontWeight,
+    fontSize,
+    fontFamily,
+    isMonospaceFont,
+    letterSpacing,
+    tabSize,
+    halfCursorWidth,
+    width,
+    averageCharWidth,
+    difference,
+  )
+  visibleCursors.push(reversed ? startX : endLineEndX, endLineY)
+  visibleSelections.push(startX, startLineY, endLineEndX - startX, rowHeight)
+}
+
+const pushStartLineSelection = async (
+  visibleCursors: number[],
+  visibleSelections: number[],
+  reversed: boolean,
+  lines: string[],
+  selectionStartRow: number,
+  selectionStartColumn: number,
+  minLineY: number,
+  rowHeight: number,
+  fontWeight: any,
+  fontSize: any,
+  fontFamily: any,
+  isMonospaceFont: any,
+  letterSpacing: any,
+  tabSize: any,
+  halfCursorWidth: any,
+  width: any,
+  averageCharWidth: any,
+  difference: any,
+) => {
+  const startLine = lines[selectionStartRow]
+  const startLineStartX = await getLineX(
+    startLine,
+    selectionStartColumn,
+    fontWeight,
+    fontSize,
+    fontFamily,
+    isMonospaceFont,
+    letterSpacing,
+    tabSize,
+    halfCursorWidth,
+    width,
+    averageCharWidth,
+    difference,
+  )
+  const startLineEndX = await getLineX(
+    startLine,
+    startLine.length,
+    fontWeight,
+    fontSize,
+    fontFamily,
+    isMonospaceFont,
+    letterSpacing,
+    tabSize,
+    halfCursorWidth,
+    width,
+    averageCharWidth,
+    difference,
+  )
+  const startLineY = GetY.getY(selectionStartRow, minLineY, rowHeight)
+  if (reversed) {
+    visibleCursors.push(startLineStartX, startLineY)
+  }
+  visibleSelections.push(startLineStartX, startLineY, startLineEndX - startLineStartX, rowHeight)
+}
+
+const pushMiddleLineSelections = async (
+  visibleSelections: number[],
+  lines: string[],
+  iMin: number,
+  iMax: number,
+  minLineY: number,
+  rowHeight: number,
+  differences: any,
+  fontWeight: any,
+  fontSize: any,
+  fontFamily: any,
+  isMonospaceFont: any,
+  letterSpacing: any,
+  tabSize: any,
+  halfCursorWidth: any,
+  width: any,
+  averageCharWidth: any,
+) => {
+  for (let i = iMin; i < iMax; i++) {
+    const currentLine = lines[i]
+    const currentLineY = GetY.getY(i, minLineY, rowHeight)
+    const difference = differences[i - minLineY]
+    const selectionWidth = await getLineX(
+      currentLine,
+      currentLine.length,
+      fontWeight,
+      fontSize,
+      fontFamily,
+      isMonospaceFont,
+      letterSpacing,
+      tabSize,
+      halfCursorWidth,
+      width,
+      averageCharWidth,
+      difference,
+    )
+    visibleSelections.push(0, currentLineY, selectionWidth, rowHeight)
+  }
+}
+
+const pushEndLineSelection = (
+  visibleCursors: number[],
+  visibleSelections: number[],
+  reversed: boolean,
+  selectionEndRow: number,
+  maxLineY: number,
+  endLineEndX: number,
+  endLineY: number,
+  rowHeight: number,
+) => {
+  if (selectionEndRow > maxLineY) {
+    return
+  }
+  visibleSelections.push(0, endLineY, endLineEndX, rowHeight)
+  if (!reversed) {
+    visibleCursors.push(endLineEndX, endLineY)
+  }
 }
 
 export const getVisible = async (editor: any) => {
@@ -185,9 +375,15 @@ export const getVisible = async (editor: any) => {
     const startLineYRelative = selectionStartRow - minLineY
     const startLineDifference = differences[startLineYRelative]
     if (selectionStartRow === selectionEndRow) {
-      const startX = await GetX.getX(
+      await pushSingleLineSelection(
+        visibleCursors,
+        visibleSelections,
+        reversed,
         endLine,
+        endLineEndX,
+        endLineY,
         selectionStartColumn,
+        startLineY,
         fontWeight,
         fontSize,
         fontFamily,
@@ -198,20 +394,19 @@ export const getVisible = async (editor: any) => {
         width,
         averageCharWidth,
         startLineDifference,
+        rowHeight,
       )
-      if (reversed) {
-        visibleCursors.push(startX, endLineY)
-      } else if (endLineEndX >= 0) {
-        visibleCursors.push(endLineEndX, endLineY)
-      }
-      const selectionWidth = endLineEndX - startX
-      visibleSelections.push(startX, startLineY, selectionWidth, rowHeight)
     } else {
       if (selectionStartRow >= minLineY) {
-        const startLine = lines[selectionStartRow]
-        const startLineStartX = await GetX.getX(
-          startLine,
+        await pushStartLineSelection(
+          visibleCursors,
+          visibleSelections,
+          reversed,
+          lines,
+          selectionStartRow,
           selectionStartColumn,
+          minLineY,
+          rowHeight,
           fontWeight,
           fontSize,
           fontFamily,
@@ -223,57 +418,28 @@ export const getVisible = async (editor: any) => {
           averageCharWidth,
           startLineDifference,
         )
-        const startLineEndX = await GetX.getX(
-          startLine,
-          startLine.length,
-          fontWeight,
-          fontSize,
-          fontFamily,
-          isMonospaceFont,
-          letterSpacing,
-          tabSize,
-          halfCursorWidth,
-          width,
-          averageCharWidth,
-          startLineDifference,
-        )
-        const startLineStartY = GetY.getY(selectionStartRow, minLineY, rowHeight)
-        const selectionWidth = startLineEndX - startLineStartX
-        if (reversed) {
-          visibleCursors.push(startLineStartX, startLineStartY)
-        }
-        visibleSelections.push(startLineStartX, startLineStartY, selectionWidth, rowHeight)
       }
       const iMin = Math.max(selectionStartRow + 1, minLineY)
       const iMax = Math.min(selectionEndRow, maxLineY)
-      for (let i = iMin; i < iMax; i++) {
-        const currentLine = lines[i]
-        const currentLineY = GetY.getY(i, minLineY, rowHeight)
-        const relativeLine = i - minLineY
-        const difference = differences[relativeLine]
-        const selectionWidth = await GetX.getX(
-          currentLine,
-          currentLine.length,
-          fontWeight,
-          fontSize,
-          fontFamily,
-          isMonospaceFont,
-          letterSpacing,
-          tabSize,
-          halfCursorWidth,
-          width,
-          averageCharWidth,
-          difference,
-        )
-        visibleSelections.push(0, currentLineY, selectionWidth, rowHeight)
-      }
-      if (selectionEndRow <= maxLineY) {
-        const selectionWidth = endLineEndX
-        visibleSelections.push(0, endLineY, selectionWidth, rowHeight)
-        if (!reversed) {
-          visibleCursors.push(selectionWidth, endLineY)
-        }
-      }
+      await pushMiddleLineSelections(
+        visibleSelections,
+        lines,
+        iMin,
+        iMax,
+        minLineY,
+        rowHeight,
+        differences,
+        fontWeight,
+        fontSize,
+        fontFamily,
+        isMonospaceFont,
+        letterSpacing,
+        tabSize,
+        halfCursorWidth,
+        width,
+        averageCharWidth,
+      )
+      pushEndLineSelection(visibleCursors, visibleSelections, reversed, selectionEndRow, maxLineY, endLineEndX, endLineY, rowHeight)
     }
   }
   // TODO maybe use Uint32array or Float64Array?

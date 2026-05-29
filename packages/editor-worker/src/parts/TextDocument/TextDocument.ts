@@ -2,6 +2,76 @@ import * as Arrays from '../Arrays/Arrays.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as JoinLines from '../JoinLines/JoinLines.ts'
 
+const updateMaxLineY = (textDocument: any, newLines: readonly string[]) => {
+  textDocument.maxLineY = Math.min(textDocument.numberOfVisibleLines, newLines.length)
+}
+
+const applySingleLineEdit = (
+  newLines: string[],
+  textDocument: any,
+  startRowIndex: number,
+  startColumnIndex: number,
+  endColumnIndex: number,
+  inserted: readonly string[],
+  deletedLength: number,
+) => {
+  const line = newLines[startRowIndex]
+  if (inserted.length === 0) {
+    newLines[startRowIndex] = line.slice(0, startColumnIndex) + line.slice(endColumnIndex)
+    return
+  }
+  if (inserted.length === 1) {
+    let before = line.slice(0, startColumnIndex)
+    if (startColumnIndex > line.length) {
+      before += ' '.repeat(startColumnIndex - line.length)
+    }
+    newLines[startRowIndex] = before + inserted[0] + line.slice(endColumnIndex)
+    return
+  }
+  const before = line.slice(0, startColumnIndex) + inserted[0]
+  const after = inserted.at(-1) + line.slice(endColumnIndex)
+  Arrays.spliceLargeArray(newLines, startRowIndex, deletedLength, [before, ...inserted.slice(1, -1), after])
+  updateMaxLineY(textDocument, newLines)
+}
+
+const applyMultiLineEdit = (
+  newLines: string[],
+  textDocument: any,
+  startRowIndex: number,
+  startColumnIndex: number,
+  endRowIndex: number,
+  endColumnIndex: number,
+  inserted: readonly string[],
+  deletedLength: number,
+) => {
+  if (inserted.length === 1) {
+    const before = newLines[startRowIndex].slice(0, startColumnIndex) + inserted[0]
+    const after = endRowIndex >= newLines.length ? '' : newLines[endRowIndex].slice(endColumnIndex)
+    Arrays.spliceLargeArray(newLines, startRowIndex, deletedLength, [before + after])
+  } else {
+    const before = newLines[startRowIndex].slice(0, startColumnIndex) + inserted[0]
+    const middle = inserted.slice(1, -1)
+    const after = inserted.at(-1) + (endRowIndex >= newLines.length ? '' : newLines[endRowIndex].slice(endColumnIndex))
+    Arrays.spliceLargeArray(newLines, startRowIndex, deletedLength, [before, ...middle, after])
+  }
+  updateMaxLineY(textDocument, newLines)
+}
+
+const getOffsetAt = (textDocument: any, positionRowIndex: number, positionColumnIndex: number) => {
+  Assert.object(textDocument)
+  Assert.number(positionRowIndex)
+  Assert.number(positionColumnIndex)
+  let offset = 0
+  let rowIndex = 0
+  const { lines } = textDocument
+  const max = Math.min(positionRowIndex, textDocument.lines.length)
+  while (rowIndex < max) {
+    offset += lines[rowIndex].length + 1
+    rowIndex++
+  }
+  return offset + positionColumnIndex
+}
+
 // TODO have function for single edit (most common, avoid one array)
 export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
   Assert.object(textDocument)
@@ -23,41 +93,9 @@ export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
     Assert.array(inserted)
     Assert.array(deleted)
     if (startRowIndex === endRowIndex) {
-      if (inserted.length === 0) {
-        const line = newLines[startRowIndex]
-        const before = line.slice(0, startColumnIndex)
-        const after = line.slice(endColumnIndex)
-        newLines[startRowIndex] = before + after
-      } else if (inserted.length === 1) {
-        const line = newLines[startRowIndex]
-        let before = line.slice(0, startColumnIndex)
-        if (startColumnIndex > line.length) {
-          before += ' '.repeat(startColumnIndex - line.length)
-        }
-        const after = line.slice(endColumnIndex)
-        const text = inserted[0]
-        newLines[startRowIndex] = before + text + after
-      } else {
-        const line = newLines[startRowIndex]
-        const before = line.slice(0, startColumnIndex) + inserted[0]
-        const after = inserted.at(-1) + line.slice(endColumnIndex)
-        Arrays.spliceLargeArray(newLines, startRowIndex, deleted.length, [before, ...inserted.slice(1, -1), after])
-        // TODO only do this once after all edits, not inside loop
-        textDocument.maxLineY = Math.min(textDocument.numberOfVisibleLines, newLines.length)
-      }
+      applySingleLineEdit(newLines, textDocument, startRowIndex, startColumnIndex, endColumnIndex, inserted, deleted.length)
     } else {
-      if (inserted.length === 1) {
-        const before = newLines[startRowIndex].slice(0, startColumnIndex) + inserted[0]
-        const after = endRowIndex >= newLines.length ? '' : newLines[endRowIndex].slice(endColumnIndex)
-        Arrays.spliceLargeArray(newLines, startRowIndex, deleted.length, [before + after])
-      } else {
-        const before = newLines[startRowIndex].slice(0, startColumnIndex) + inserted[0]
-        const middle = inserted.slice(1, -1)
-        const after = inserted.at(-1) + (endRowIndex >= newLines.length ? '' : newLines[endRowIndex].slice(endColumnIndex))
-        Arrays.spliceLargeArray(newLines, startRowIndex, deleted.length, [before, ...middle, after])
-      }
-      // TODO only do this once after all edits, not inside loop
-      textDocument.maxLineY = Math.min(textDocument.numberOfVisibleLines, textDocument.lines.length)
+      applyMultiLineEdit(newLines, textDocument, startRowIndex, startColumnIndex, endRowIndex, endColumnIndex, inserted, deleted.length)
     }
     linesDelta += inserted.length - deleted.length
   }
@@ -92,35 +130,11 @@ export const getSelectionText = (textDocument: any, range: any): readonly string
 }
 
 export const offsetAtSync = async (textDocument: any, positionRowIndex: any, positionColumnIndex: any) => {
-  Assert.object(textDocument)
-  Assert.number(positionRowIndex)
-  Assert.number(positionColumnIndex)
-  let offset = 0
-  let rowIndex = 0
-  const { lines } = textDocument
-  const max = Math.min(positionRowIndex, textDocument.lines.length)
-  while (rowIndex < max) {
-    offset += lines[rowIndex].length + 1
-    rowIndex++
-  }
-  offset += positionColumnIndex
-  return offset
+  return getOffsetAt(textDocument, positionRowIndex, positionColumnIndex)
 }
 
 export const offsetAt = (textDocument: any, positionRowIndex: number, positionColumnIndex: number) => {
-  Assert.object(textDocument)
-  Assert.number(positionRowIndex)
-  Assert.number(positionColumnIndex)
-  let offset = 0
-  let rowIndex = 0
-  const { lines } = textDocument
-  const max = Math.min(positionRowIndex, textDocument.lines.length)
-  while (rowIndex < max) {
-    offset += lines[rowIndex].length + 1
-    rowIndex++
-  }
-  offset += positionColumnIndex
-  return offset
+  return getOffsetAt(textDocument, positionRowIndex, positionColumnIndex)
 }
 
 export const positionAt = (textDocument: any, offset: number) => {
@@ -135,7 +149,6 @@ export const positionAt = (textDocument: any, offset: number) => {
   }
 
   if (currentOffset > offset) {
-    rowIndex
     rowIndex--
     currentOffset -= lines[rowIndex].length + 1
     columnIndex = offset - currentOffset
