@@ -30,7 +30,6 @@ export const getEditorVirtualDom = ({
   lineNumbers = true,
   scrollBarDiagnostics = [],
   selectionInfos = [],
-  selections = [],
   textInfos,
 }: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
   const cursorInfosArray = [...cursorInfos]
@@ -39,7 +38,7 @@ export const getEditorVirtualDom = ({
   const scrollBarDiagnosticsArray = [...scrollBarDiagnostics]
   const rowsDom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, lineNumbers, highlightedLine)
   const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfosArray)
-  const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos || selections)
+  const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos)
   const diagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(diagnosticsArray)
   const gutterDom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfosArray)
   const scrollBarDiagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(scrollBarDiagnosticsArray)
