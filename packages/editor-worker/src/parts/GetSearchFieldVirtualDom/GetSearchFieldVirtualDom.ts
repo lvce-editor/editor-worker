@@ -6,10 +6,10 @@ import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts
 export const getSearchFieldVirtualDom = (
   name: string,
   placeholder: string,
-  onInput: string,
+  onInput: string | number,
   insideButtons: any,
   outsideButtons: any,
-  onFocus = '',
+  onFocus: string | number = '',
 ) => {
   const dom = [
     {
