@@ -2,10 +2,15 @@ import type { EditorState } from '../State/State.ts'
 
 export const isEqual = (oldState: EditorState, newState: EditorState): boolean => {
   return (
-    oldState.lines === newState.lines &&
+    oldState.cursorInfos === newState.cursorInfos &&
+    oldState.diagnostics === newState.diagnostics &&
+    oldState.highlightedLine === newState.highlightedLine &&
+    oldState.lineNumbers === newState.lineNumbers &&
     oldState.textInfos === newState.textInfos &&
     oldState.differences === newState.differences &&
     oldState.initial === newState.initial &&
-    oldState.selections === newState.selections
+    oldState.scrollBarHeight === newState.scrollBarHeight &&
+    oldState.scrollBarWidth === newState.scrollBarWidth &&
+    oldState.selectionInfos === newState.selectionInfos
   )
 }
