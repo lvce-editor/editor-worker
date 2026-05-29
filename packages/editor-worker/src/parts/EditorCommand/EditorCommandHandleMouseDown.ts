@@ -15,7 +15,6 @@ const getModifier = (altKey: boolean, ctrlKey: boolean): number => {
 }
 
 export const handleMouseDown = (state: any, button: number, altKey: boolean, ctrlKey: boolean, x: number, y: number, detail: any) => {
-  void button
   const modifier = getModifier(altKey, ctrlKey)
   switch (detail) {
     case ClickDetailType.Double:
