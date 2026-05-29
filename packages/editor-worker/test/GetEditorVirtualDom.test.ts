@@ -1,5 +1,6 @@
 import { expect, test } from '@jest/globals'
 import * as GetEditorVirtualDom from '../src/parts/GetEditorVirtualDom/GetEditorVirtualDom.ts'
+import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../src/parts/VirtualDomHelpers/VirtualDomHelpers.ts'
 
@@ -25,6 +26,8 @@ test('getEditorVirtualDom', () => {
     {
       childCount: 2,
       className: 'Viewlet Editor',
+      onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+      onWheel: DomEventListenerFunctions.HandleWheel,
       role: 'code',
       type: VirtualDomElements.Div,
     },
@@ -44,9 +47,33 @@ test('getEditorVirtualDom', () => {
       type: VirtualDomElements.Text,
     },
     {
-      childCount: 4,
+      childCount: 5,
       className: 'EditorContent',
+      onMouseMove: DomEventListenerFunctions.HandleMouseMove,
       type: VirtualDomElements.Div,
+    },
+    {
+      ariaAutoComplete: 'list',
+      ariaMultiLine: 'true',
+      ariaRoleDescription: 'editor',
+      autocapitalize: 'off',
+      autocomplete: 'off',
+      autocorrect: 'off',
+      childCount: 0,
+      className: 'EditorInput',
+      name: 'editor',
+      onBeforeInput: DomEventListenerFunctions.HandleBeforeInput,
+      onBlur: DomEventListenerFunctions.HandleBlur,
+      onCompositionEnd: DomEventListenerFunctions.HandleCompositionEnd,
+      onCompositionStart: DomEventListenerFunctions.HandleCompositionStart,
+      onCompositionUpdate: DomEventListenerFunctions.HandleCompositionUpdate,
+      onCut: DomEventListenerFunctions.HandleCut,
+      onFocus: DomEventListenerFunctions.HandleFocus,
+      onPaste: DomEventListenerFunctions.HandlePaste,
+      role: 'textbox',
+      spellcheck: false,
+      type: VirtualDomElements.TextArea,
+      wrap: 'off',
     },
     {
       childCount: 4,
@@ -69,6 +96,8 @@ test('getEditorVirtualDom', () => {
     {
       childCount: 1,
       className: 'EditorRows',
+      onMouseDown: DomEventListenerFunctions.HandleMouseDown,
+      onPointerDown: DomEventListenerFunctions.HandlePointerDown,
       type: VirtualDomElements.Div,
     },
     {
@@ -115,6 +144,8 @@ test('getEditorVirtualDom', () => {
     {
       childCount: 1,
       className: 'ScrollBar ScrollBarVertical',
+      onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+      onPointerDown: DomEventListenerFunctions.HandleScrollBarVerticalPointerDown,
       type: VirtualDomElements.Div,
     },
     {
@@ -125,6 +156,7 @@ test('getEditorVirtualDom', () => {
     {
       childCount: 1,
       className: 'ScrollBar ScrollBarHorizontal',
+      onPointerDown: DomEventListenerFunctions.HandleScrollBarHorizontalPointerDown,
       type: VirtualDomElements.Div,
     },
     {

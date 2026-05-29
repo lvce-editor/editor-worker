@@ -60,6 +60,8 @@ import * as EditorCommandHandleMouseMoveWithAltKey from '../EditorCommand/Editor
 import * as EditorCommandHandleNativeBeforeInputFromContentEditable from '../EditorCommand/EditorCommandHandleNativeBeforeInputFromContentEditable.ts'
 import * as HandleNativeSelectionChange from '../EditorCommand/EditorCommandHandleNativeSelectionChange.ts'
 import * as HandlePointerCaptureLost from '../EditorCommand/EditorCommandHandlePointerCaptureLost.ts'
+import * as HandlePointerMove from '../EditorCommand/EditorCommandHandlePointerMove.ts'
+import * as HandlePointerUp from '../EditorCommand/EditorCommandHandlePointerUp.ts'
 import * as HandleScrollBarHorizontalMove from '../EditorCommand/EditorCommandHandleScrollBarHorizontalMove.ts'
 import * as HandleScrollBarHorizontalPointerDown from '../EditorCommand/EditorCommandHandleScrollBarHorizontalPointerDown.ts'
 import * as EditorCommandHandleScrollBarMove from '../EditorCommand/EditorCommandHandleScrollBarMove.ts'
@@ -260,6 +262,8 @@ export const commandMap = {
   'Editor.handleMouseMove': wrapCommandOld(HandleMouseMove.handleMouseMove),
   'Editor.handleMouseMoveWithAltKey': wrapCommandOld(EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey),
   'Editor.handleNativeSelectionChange': HandleNativeSelectionChange.editorHandleNativeSelectionChange,
+  'Editor.handlePointerMove': wrapCommandOld(HandlePointerMove.handlePointerMove),
+  'Editor.handlePointerUp': wrapCommandOld(HandlePointerUp.handlePointerUp),
   'Editor.handlePointerCaptureLost': wrapCommandOld(HandlePointerCaptureLost.handlePointerCaptureLost),
   'Editor.handleScrollBarClick': HandleScrollBarPointerDown.handleScrollBarPointerDown,
   'Editor.handleScrollBarHorizontalMove': wrapCommandOld(HandleScrollBarHorizontalMove.handleScrollBarHorizontalMove),
