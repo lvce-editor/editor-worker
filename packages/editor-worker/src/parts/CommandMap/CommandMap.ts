@@ -73,6 +73,7 @@ import * as HandleTouchEnd from '../EditorCommand/EditorCommandHandleTouchEnd.ts
 import * as HandleTouchMove from '../EditorCommand/EditorCommandHandleTouchMove.ts'
 import * as HandleTouchStart from '../EditorCommand/EditorCommandHandleTouchStart.ts'
 import * as HandleTripleClick from '../EditorCommand/EditorCommandHandleTripleClick.ts'
+import * as HandleWheel from '../EditorCommand/EditorCommandHandleWheel.ts'
 import * as IndentLess from '../EditorCommand/EditorCommandIndentLess.ts'
 import * as IndentMore from '../EditorCommand/EditorCommandIndentMore.ts'
 import * as InsertLineBreak from '../EditorCommand/EditorCommandInsertLineBreak.ts'
@@ -282,6 +283,7 @@ export const commandMap = {
   'Editor.handleTouchMove': wrapCommandOld(HandleTouchMove.handleTouchMove),
   'Editor.handleTouchStart': wrapCommandOld(HandleTouchStart.handleTouchStart),
   'Editor.handleTripleClick': wrapCommandOld(HandleTripleClick.handleTripleClick),
+  'Editor.handleWheel': wrapCommandOld(HandleWheel.handleWheel),
   'Editor.hotReload': hotReload,
   'Editor.indendLess': wrapCommandOld(IndentLess.indentLess),
   'Editor.indentMore': wrapCommandOld(IndentMore.indentMore),

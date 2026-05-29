@@ -70,7 +70,7 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     },
     {
       name: DomEventListenerFunctions.HandleWheel,
-      params: ['setDelta', EventExpression.DeltaMode, EventExpression.DeltaY],
+      params: ['handleWheel', EventExpression.DeltaMode, 'event.deltaX', EventExpression.DeltaY],
       passive: true,
     },
     {

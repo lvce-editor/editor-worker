@@ -1,19 +1,8 @@
-// @ts-ignore
-export const editorHandleWheel = (editor, y) => {
-  // @ts-ignore
-  const newDeltaY = clamp(editor.deltaY + y, 0, editor.finalDeltaY)
-  if (editor.deltaY === newDeltaY) {
-    return
-  }
-  editor.deltaY = newDeltaY
-  const newLineY = Math.floor(newDeltaY / 20)
-  if (editor.minLineY === newLineY) {
-    return
-  }
-  editor.minLineY = newLineY
-  editor.maxLineY = Math.min(editor.minLineY + editor.numberOfVisibleLines, editor.lines.length)
+import * as SetDelta from './EditorCommandSetDelta.ts'
 
-  // TODO
-  //
-  // renderTextAndCursorAndSelections(editor)
+// Keep wheel handling as a dedicated command entry point and delegate
+// the actual scroll state update to the shared setDelta logic.
+// @ts-ignore
+export const handleWheel = (editor, deltaMode, eventDeltaX, eventDeltaY) => {
+  return SetDelta.setDelta(editor, deltaMode, eventDeltaX, eventDeltaY)
 }
