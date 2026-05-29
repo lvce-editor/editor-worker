@@ -255,7 +255,7 @@ export const commandMap = {
     EditorCommandHandleNativeBeforeInputFromContentEditable.handleBeforeInputFromContentEditable,
   ),
   'Editor.handleBlur': wrapCommandOld(EditorBlur.handleBlur),
-  'Editor.handleClickAtPosition': handleClickAtPosition,
+  'Editor.handleClickAtPosition': wrapCommandOld(handleClickAtPosition),
   'Editor.handleContextMenu': wrapCommandOld(EditorCommandHandleContextMenu.handleContextMenu),
   'Editor.handleDoubleClick': wrapCommandOld(HandleDoubleClick.handleDoubleClick),
   'Editor.handleFocus': wrapCommandOld(HandleFocus.handleFocus),

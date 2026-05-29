@@ -9,12 +9,13 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
   if (initial && textInfos.length === 0) {
     return []
   }
-  return getEditorVirtualDom(state)
+  return getEditorVirtualDom(state as any)
 }
 
 export const renderIncremental = (oldState: EditorState, newState: EditorState): any => {
   const oldDom: readonly VirtualDomNode[] = getDom(oldState)
   const newDom: readonly VirtualDomNode[] = getDom(newState)
   const patches = diffTree(oldDom, newDom)
+  console.log({ newState: newState.selections, oldState: oldState.selections, patches })
   return [ViewletCommand.SetPatches, newState.uid, patches]
 }

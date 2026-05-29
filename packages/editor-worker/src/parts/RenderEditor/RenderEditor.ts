@@ -1,6 +1,5 @@
 import { ViewletCommand } from '@lvce-editor/constants'
 import type { EditorState } from '../State/State.ts'
-import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
@@ -40,19 +39,14 @@ const renderLines = {
 }
 
 const renderSelections = {
-  apply: async (oldState: any, newState: any) => {
-    const { cursorInfos, selectionInfos } = await EditorSelection.getVisible(newState)
+  apply: (oldState: any, newState: any) => {
+    const { cursorInfos = [], selectionInfos = [] } = newState
     const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos)
     const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos)
     return [/* method */ 'setSelections', cursorsDom, selectionsDom]
   },
   isEqual(oldState: any, newState: any) {
-    return (
-      oldState.selections === newState.selections &&
-      oldState.focused === newState.focused &&
-      oldState.minLineY === newState.minLineY &&
-      oldState.deltaX === newState.deltaX
-    )
+    return oldState.cursorInfos === newState.cursorInfos && oldState.selectionInfos === newState.selectionInfos
   },
 }
 

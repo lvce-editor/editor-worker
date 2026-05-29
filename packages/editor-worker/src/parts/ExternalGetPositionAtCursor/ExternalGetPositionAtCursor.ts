@@ -9,6 +9,7 @@ import { getEditorSourceActions } from '../GetSourceActions/GetSourceActions.ts'
 import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
+import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
 
 export const getPositionAtCursor = (editorUid: number): any => {
@@ -61,10 +62,11 @@ export const getSelections2 = (editorUid: number): readonly string[] => {
   return selections
 }
 
-export const setSelections2 = (editorUid: number, selections: Uint32Array): void => {
+export const setSelections2 = async (editorUid: number, selections: Uint32Array): Promise<void> => {
   const editor = GetEditor.getEditor(editorUid)
   const newEditor = { ...editor, selections }
-  Editors.set(editorUid, editor, newEditor)
+  const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
+  Editors.set(editorUid, editor, newEditorWithDerivedState)
 }
 
 export const closeWidget2 = async (editorUid: number, widgetId: number, widgetName: string, unsetAdditionalFocus: number) => {
@@ -82,7 +84,8 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
     focused: true,
     widgets: newWidgets,
   }
-  Editors.set(editorUid, editor, newEditor)
+  const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
+  Editors.set(editorUid, editor, newEditorWithDerivedState)
   await SetFocus.setFocus(WhenExpression.FocusEditorText)
   if (unsetAdditionalFocus) {
     await SetFocus.unsetAdditionalFocus(unsetAdditionalFocus)
@@ -96,7 +99,8 @@ export const closeFind2 = async (editorUid: number) => {
 export const applyEdits2 = async (editorUid: number, edits: readonly any[]): Promise<void> => {
   const editor = GetEditor.getEditor(editorUid)
   const newEditor = await ApplyEdit.applyEdit(editor, edits)
-  Editors.set(editorUid, editor, newEditor)
+  const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
+  Editors.set(editorUid, editor, newEditorWithDerivedState)
 }
 
 export const getSourceActions = async (editorUid: number): Promise<readonly any[]> => {

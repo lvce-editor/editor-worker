@@ -6,6 +6,7 @@ export interface EditorState {
   readonly completionState: string
   readonly completionTriggerCharacters: readonly string[]
   readonly completionUid: number
+  readonly cursorInfos: readonly any[]
   readonly cursorWidth: number
   readonly debugEnabled: boolean
   readonly decorations: any // Text-level decorations (flat array) for CSS classes like Link, Type, etc.
@@ -55,6 +56,7 @@ export interface EditorState {
   readonly savedSelections: readonly any[]
   readonly scrollBarHeight: number
   readonly scrollBarWidth: number
+  readonly selectionInfos: readonly any[]
   readonly selections: Uint32Array
   readonly tabSize: number
   readonly textInfos: readonly any[]
