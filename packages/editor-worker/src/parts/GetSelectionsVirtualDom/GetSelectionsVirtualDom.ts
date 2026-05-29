@@ -3,13 +3,14 @@ import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export const getSelectionsVirtualDom = (selections: any): readonly VirtualDomNode[] => {
-  const dom = []
+  const dom: VirtualDomNode[] = []
   for (let i = 0; i < selections.length; i += 4) {
     const x = selections[i]
     const y = selections[i + 1]
     const width = selections[i + 2]
     const height = selections[i + 3]
     dom.push({
+      childCount: 0,
       className: ClassNames.EditorSelection,
       height,
       left: x,

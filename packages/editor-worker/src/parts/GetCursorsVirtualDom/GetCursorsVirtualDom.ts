@@ -5,6 +5,7 @@ export const getCursorsVirtualDom = (cursors: any[]) => {
   const dom = []
   for (const translate of cursors) {
     dom.push({
+      childCount: 0,
       className: ClassNames.EditorCursor,
       translate,
       type: VirtualDomElements.Div,

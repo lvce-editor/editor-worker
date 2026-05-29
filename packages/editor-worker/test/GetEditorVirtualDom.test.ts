@@ -86,6 +86,7 @@ test('getEditorVirtualDom', () => {
       type: VirtualDomElements.Div,
     },
     {
+      childCount: 0,
       className: 'EditorSelection',
       height: 4,
       left: 1,
@@ -118,6 +119,7 @@ test('getEditorVirtualDom', () => {
       type: VirtualDomElements.Div,
     },
     {
+      childCount: 0,
       className: 'EditorCursor',
       translate: '144.962px 180px',
       type: VirtualDomElements.Div,

@@ -1,11 +1,7 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
-import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
-import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
-import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
-import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
-import * as GetScrollBarVirtualDom from '../GetScrollBarVirtualDom/GetScrollBarVirtualDom.ts'
-import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
+import * as GetEditorContentVirtualDom from '../GetEditorContentVirtualDom/GetEditorContentVirtualDom.ts'
+import * as GetEditorGutterLayerVirtualDom from '../GetEditorGutterLayerVirtualDom/GetEditorGutterLayerVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 interface EditorVirtualDomOptions {
@@ -32,18 +28,6 @@ export const getEditorVirtualDom = ({
   selectionInfos = [],
   textInfos,
 }: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
-  const cursorInfosArray = [...cursorInfos]
-  const diagnosticsArray = [...diagnostics]
-  const gutterInfosArray = [...gutterInfos]
-  const scrollBarDiagnosticsArray = [...scrollBarDiagnostics]
-  const rowsDom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, lineNumbers, highlightedLine)
-  const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfosArray)
-  const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos)
-  const diagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(diagnosticsArray)
-  const gutterDom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfosArray)
-  const scrollBarDiagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(scrollBarDiagnosticsArray)
-  const scrollBarDom = GetScrollBarVirtualDom.getScrollBarVirtualDom()
-
   return [
     {
       childCount: 2,
@@ -53,78 +37,16 @@ export const getEditorVirtualDom = ({
       role: 'code',
       type: VirtualDomElements.Div,
     },
-    {
-      childCount: gutterInfosArray.length,
-      className: 'Gutter',
-      type: VirtualDomElements.Div,
-    },
-    ...gutterDom,
-    {
-      childCount: 5,
-      className: 'EditorContent',
-      onMouseMove: DomEventListenerFunctions.HandleMouseMove,
-      type: VirtualDomElements.Div,
-    },
-    {
-      ariaAutoComplete: 'list',
-      ariaMultiLine: 'true',
-      ariaRoleDescription: 'editor',
-      autocapitalize: 'off',
-      autocomplete: 'off',
-      autocorrect: 'off',
-      childCount: 0,
-      className: 'EditorInput',
-      name: 'editor',
-      onBeforeInput: DomEventListenerFunctions.HandleBeforeInput,
-      onBlur: DomEventListenerFunctions.HandleBlur,
-      onCompositionEnd: DomEventListenerFunctions.HandleCompositionEnd,
-      onCompositionStart: DomEventListenerFunctions.HandleCompositionStart,
-      onCompositionUpdate: DomEventListenerFunctions.HandleCompositionUpdate,
-      onCut: DomEventListenerFunctions.HandleCut,
-      onFocus: DomEventListenerFunctions.HandleFocus,
-      onPaste: DomEventListenerFunctions.HandlePaste,
-      role: 'textbox',
-      spellcheck: false,
-      type: VirtualDomElements.TextArea,
-      wrap: 'off',
-    },
-    {
-      childCount: 4,
-      className: 'EditorLayers',
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: selectionsDom.length,
-      className: 'Selections',
-      type: VirtualDomElements.Div,
-    },
-    ...selectionsDom,
-    {
-      childCount: textInfos.length,
-      className: 'EditorRows',
-      onMouseDown: DomEventListenerFunctions.HandleMouseDown,
-      onPointerDown: DomEventListenerFunctions.HandlePointerDown,
-      type: VirtualDomElements.Div,
-    },
-    ...rowsDom,
-    {
-      childCount: cursorsDom.length,
-      className: 'LayerCursor',
-      type: VirtualDomElements.Div,
-    },
-    ...cursorsDom,
-    {
-      childCount: diagnosticsDom.length,
-      className: 'LayerDiagnostics',
-      type: VirtualDomElements.Div,
-    },
-    ...diagnosticsDom,
-    {
-      childCount: scrollBarDiagnosticsDom.length,
-      className: 'EditorScrollBarDiagnostics',
-      type: VirtualDomElements.Div,
-    },
-    ...scrollBarDiagnosticsDom,
-    ...scrollBarDom,
+    ...GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(gutterInfos),
+    ...GetEditorContentVirtualDom.getEditorContentVirtualDom({
+      cursorInfos,
+      diagnostics,
+      differences,
+      highlightedLine,
+      lineNumbers,
+      scrollBarDiagnostics,
+      selectionInfos,
+      textInfos,
+    }),
   ]
 }
