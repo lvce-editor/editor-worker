@@ -1,6 +1,5 @@
-import type { VirtualDomNode } from '@lvce-editor/virtual-dom-worker'
+import { type VirtualDomNode, diffTree } from '@lvce-editor/virtual-dom-worker'
 import { ViewletCommand } from '@lvce-editor/constants'
-import { diffTree } from '@lvce-editor/virtual-dom-worker'
 import type { EditorState } from '../State/State.ts'
 import { getEditorVirtualDom } from '../GetEditorVirtualDom/GetEditorVirtualDom.ts'
 
@@ -9,6 +8,7 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
   if (initial && textInfos.length === 0) {
     return []
   }
+
   return getEditorVirtualDom(state)
 }
 
