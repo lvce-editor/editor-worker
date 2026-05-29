@@ -35,7 +35,6 @@ export const getEditorVirtualDom = ({
       childCount: 2,
       className: 'Viewlet Editor',
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
-      onWheel: DomEventListenerFunctions.HandleWheel,
       role: 'code',
       type: VirtualDomElements.Div,
     },

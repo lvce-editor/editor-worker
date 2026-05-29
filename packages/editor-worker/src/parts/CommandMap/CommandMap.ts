@@ -63,6 +63,7 @@ import * as HandlePointerCaptureLost from '../EditorCommand/EditorCommandHandleP
 import { handlePointerDown } from '../EditorCommand/EditorCommandHandlePointerDown.ts'
 import * as HandlePointerMove from '../EditorCommand/EditorCommandHandlePointerMove.ts'
 import * as HandlePointerUp from '../EditorCommand/EditorCommandHandlePointerUp.ts'
+import * as HandleWheel from '../EditorCommand/EditorCommandHandleWheel.ts'
 import * as HandleScrollBarHorizontalMove from '../EditorCommand/EditorCommandHandleScrollBarHorizontalMove.ts'
 import * as HandleScrollBarHorizontalPointerDown from '../EditorCommand/EditorCommandHandleScrollBarHorizontalPointerDown.ts'
 import * as EditorCommandHandleScrollBarMove from '../EditorCommand/EditorCommandHandleScrollBarMove.ts'
@@ -268,6 +269,7 @@ export const commandMap = {
   'Editor.handlePointerDown': wrapCommandOld(handlePointerDown),
   'Editor.handlePointerMove': wrapCommandOld(HandlePointerMove.handlePointerMove),
   'Editor.handlePointerUp': wrapCommandOld(HandlePointerUp.handlePointerUp),
+  'Editor.handleWheel': wrapCommandOld(HandleWheel.handleWheel),
   'Editor.handleScrollBarClick': HandleScrollBarPointerDown.handleScrollBarPointerDown,
   'Editor.handleScrollBarHorizontalMove': wrapCommandOld(HandleScrollBarHorizontalMove.handleScrollBarHorizontalMove),
   'Editor.handleScrollBarHorizontalPointerDown': wrapCommandOld(HandleScrollBarHorizontalPointerDown.handleScrollBarHorizontalPointerDown),

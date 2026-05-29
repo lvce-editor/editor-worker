@@ -28,7 +28,6 @@ test('getEditorVirtualDom', () => {
       childCount: 2,
       className: 'Viewlet Editor',
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
-      onWheel: DomEventListenerFunctions.HandleWheel,
       role: 'code',
       type: VirtualDomElements.Div,
     },
@@ -100,6 +99,7 @@ test('getEditorVirtualDom', () => {
       className: 'EditorRows',
       onMouseDown: DomEventListenerFunctions.HandleMouseDown,
       onPointerDown: DomEventListenerFunctions.HandlePointerDown,
+      onWheel: DomEventListenerFunctions.HandleWheel,
       type: VirtualDomElements.Div,
     },
     {
