@@ -102,7 +102,7 @@ export const getEditorVirtualDom = ({
     {
       childCount: textInfos.length,
       className: 'EditorRows',
-      // onMouseDown: DomEventListenerFunctions.HandleMouseDown,
+      onMouseDown: DomEventListenerFunctions.HandleMouseDown,
       onPointerDown: DomEventListenerFunctions.HandlePointerDown,
       type: VirtualDomElements.Div,
     },
