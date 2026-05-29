@@ -81,10 +81,7 @@ test('renderEventListeners', () => {
     {
       name: DomEventListenerFunctions.HandleScrollBarVerticalPointerDown,
       params: ['handleScrollBarVerticalPointerDown', EventExpression.ClientY],
-      trackPointerEvents: [
-        DomEventListenerFunctions.HandleScrollBarVerticalPointerMove,
-        DomEventListenerFunctions.HandleScrollBarVerticalPointerUp,
-      ],
+      trackPointerEvents: [DomEventListenerFunctions.HandleScrollBarVerticalPointerMove, DomEventListenerFunctions.HandleScrollBarVerticalPointerUp],
     },
     {
       name: DomEventListenerFunctions.HandleScrollBarVerticalPointerMove,
