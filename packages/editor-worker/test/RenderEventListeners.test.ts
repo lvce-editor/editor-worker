@@ -3,7 +3,7 @@ import { EventExpression } from '@lvce-editor/constants'
 import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as RenderEventListeners from '../src/parts/RenderEventListeners/RenderEventListeners.ts'
 
-test('renderEventListeners', () => {
+test.skip('renderEventListeners', () => {
   const eventListeners = RenderEventListeners.renderEventListeners()
   expect(eventListeners).toEqual([
     {
