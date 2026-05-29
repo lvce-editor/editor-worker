@@ -28,6 +28,7 @@ const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorStat
   if (oldState.textInfos !== newState.textInfos || oldState.differences !== newState.differences) {
     return false
   }
+
   return (
     oldState.lines !== newState.lines ||
     oldState.tokenizerId !== newState.tokenizerId ||
@@ -53,9 +54,11 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
       textInfos,
     }
   }
+
   if (!shouldUpdateSelectionData(oldState, newState)) {
     return finalState
   }
+
   const { cursorInfos, selectionInfos } = await EditorSelection.getVisible(finalState)
   return {
     ...finalState,
