@@ -1,5 +1,4 @@
 import * as Editors from '../EditorStates/EditorStates.ts'
-import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
 // TODO wrap commands globally, not per editor
@@ -20,9 +19,5 @@ export const wrapCommand =
     // TODO combine neweditor with latest editor?
 
     Editors.set(editorUid, state, newEditorWithDerivedState)
-    const commands = await RenderEditor.renderEditor(editorUid)
-    return {
-      ...newEditorWithDerivedState,
-      commands,
-    }
+    return newEditorWithDerivedState
   }
