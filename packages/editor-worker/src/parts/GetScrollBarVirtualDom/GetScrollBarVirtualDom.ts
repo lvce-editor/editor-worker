@@ -1,4 +1,5 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export const getScrollBarVirtualDom = (): readonly VirtualDomNode[] => {
@@ -6,6 +7,8 @@ export const getScrollBarVirtualDom = (): readonly VirtualDomNode[] => {
     {
       childCount: 1,
       className: 'ScrollBar ScrollBarVertical',
+      onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+      onPointerDown: DomEventListenerFunctions.HandleScrollBarVerticalPointerDown,
       type: VirtualDomElements.Div,
     },
     {
@@ -16,6 +19,7 @@ export const getScrollBarVirtualDom = (): readonly VirtualDomNode[] => {
     {
       childCount: 1,
       className: 'ScrollBar ScrollBarHorizontal',
+      onPointerDown: DomEventListenerFunctions.HandleScrollBarHorizontalPointerDown,
       type: VirtualDomElements.Div,
     },
     {

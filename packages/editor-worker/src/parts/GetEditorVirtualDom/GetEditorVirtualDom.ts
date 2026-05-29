@@ -1,4 +1,5 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
 import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
@@ -46,6 +47,8 @@ export const getEditorVirtualDom = ({
     {
       childCount: 2,
       className: 'Viewlet Editor',
+      onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+      onWheel: DomEventListenerFunctions.HandleWheel,
       role: 'code',
       type: VirtualDomElements.Div,
     },
@@ -56,9 +59,33 @@ export const getEditorVirtualDom = ({
     },
     ...gutterDom,
     {
-      childCount: 4,
+      childCount: 5,
       className: 'EditorContent',
+      onMouseMove: DomEventListenerFunctions.HandleMouseMove,
       type: VirtualDomElements.Div,
+    },
+    {
+      ariaAutoComplete: 'list',
+      ariaMultiLine: 'true',
+      ariaRoleDescription: 'editor',
+      autocapitalize: 'off',
+      autocomplete: 'off',
+      autocorrect: 'off',
+      childCount: 0,
+      className: 'EditorInput',
+      name: 'editor',
+      onBeforeInput: DomEventListenerFunctions.HandleBeforeInput,
+      onBlur: DomEventListenerFunctions.HandleBlur,
+      onCompositionEnd: DomEventListenerFunctions.HandleCompositionEnd,
+      onCompositionStart: DomEventListenerFunctions.HandleCompositionStart,
+      onCompositionUpdate: DomEventListenerFunctions.HandleCompositionUpdate,
+      onCut: DomEventListenerFunctions.HandleCut,
+      onFocus: DomEventListenerFunctions.HandleFocus,
+      onPaste: DomEventListenerFunctions.HandlePaste,
+      role: 'textbox',
+      spellcheck: false,
+      type: VirtualDomElements.TextArea,
+      wrap: 'off',
     },
     {
       childCount: 4,
@@ -74,6 +101,8 @@ export const getEditorVirtualDom = ({
     {
       childCount: textInfos.length,
       className: 'EditorRows',
+      onMouseDown: DomEventListenerFunctions.HandleMouseDown,
+      onPointerDown: DomEventListenerFunctions.HandlePointerDown,
       type: VirtualDomElements.Div,
     },
     ...rowsDom,
