@@ -44,12 +44,8 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
       preventDefault: true,
     },
     {
-      name: DomEventListenerFunctions.HandleMouseDown,
-      params: ['handleMouseDown', 'event.button', EventExpression.ClientX, EventExpression.ClientY, 'event.detail'],
-    },
-    {
       name: DomEventListenerFunctions.HandlePointerDown,
-      params: ['handleMouseDown', EventExpression.ClientX, EventExpression.ClientY],
+      params: ['handlePointerDown', 'event.button', 'event.altKey', 'event.ctrlKey', EventExpression.ClientX, EventExpression.ClientY],
       trackPointerEvents: [DomEventListenerFunctions.HandlePointerMove, DomEventListenerFunctions.HandlePointerUp],
     },
     {
