@@ -132,7 +132,7 @@ import * as EditorRenameWidget from '../EditorRenameWidget/EditorRenameWidget.ts
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
-import { getCommandIds, wrapCommand, wrapGetter } from '../EditorStates/EditorStates.ts'
+import { getCommandIds, wrapGetter } from '../EditorStates/EditorStates.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
@@ -165,6 +165,7 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
+import { wrapCommand } from '../WrapCommands/WrapCommands.ts'
 
 const wrapCommandOld = wrapCommand
 
@@ -255,7 +256,7 @@ export const commandMap = {
     EditorCommandHandleNativeBeforeInputFromContentEditable.handleBeforeInputFromContentEditable,
   ),
   'Editor.handleBlur': wrapCommandOld(EditorBlur.handleBlur),
-  'Editor.handleClickAtPosition': handleClickAtPosition,
+  'Editor.handleClickAtPosition': wrapCommandOld(handleClickAtPosition),
   'Editor.handleContextMenu': wrapCommandOld(EditorCommandHandleContextMenu.handleContextMenu),
   'Editor.handleDoubleClick': wrapCommandOld(HandleDoubleClick.handleDoubleClick),
   'Editor.handleFocus': wrapCommandOld(HandleFocus.handleFocus),

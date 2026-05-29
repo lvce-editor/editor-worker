@@ -96,7 +96,6 @@ test('getEditorVirtualDom', () => {
     {
       childCount: 1,
       className: 'EditorRows',
-      onMouseDown: DomEventListenerFunctions.HandleMouseDown,
       onPointerDown: DomEventListenerFunctions.HandlePointerDown,
       type: VirtualDomElements.Div,
     },

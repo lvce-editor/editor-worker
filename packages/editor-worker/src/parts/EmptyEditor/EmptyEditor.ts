@@ -1,6 +1,7 @@
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 
 export const emptyEditor = {
+  cursorInfos: [],
   debugEnabled: false,
   decorations: [],
   deltaX: 0,
@@ -19,6 +20,7 @@ export const emptyEditor = {
   maxLineY: 0,
   minLineY: 0,
   scrollBarHeight: 0,
+  selectionInfos: [],
   selections: new Uint32Array(),
   textInfos: [],
   tokenizerId: 0,
