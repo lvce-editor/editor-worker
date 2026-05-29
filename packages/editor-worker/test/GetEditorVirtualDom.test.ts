@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
-import * as GetEditorVirtualDom from '../src/parts/GetEditorVirtualDom/GetEditorVirtualDom.ts'
 import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
+import * as GetEditorVirtualDom from '../src/parts/GetEditorVirtualDom/GetEditorVirtualDom.ts'
 import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../src/parts/VirtualDomHelpers/VirtualDomHelpers.ts'
 
