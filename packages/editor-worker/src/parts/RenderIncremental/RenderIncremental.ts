@@ -9,6 +9,7 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
   if (initial && textInfos.length === 0) {
     return []
   }
+  // @ts-ignore
   return getEditorVirtualDom(state)
 }
 
