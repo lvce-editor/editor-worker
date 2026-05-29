@@ -1,5 +1,7 @@
 import type { EditorState } from '../State/State.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
+import * as EditorText from '../EditorText/EditorText.ts'
+import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
 const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState): boolean => {
   return (
@@ -22,13 +24,41 @@ const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState)
   )
 }
 
-export const updateDerivedState = async (oldState: EditorState, newState: EditorState): Promise<EditorState> => {
-  if (!shouldUpdateSelectionData(oldState, newState)) {
-    return newState
+const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorState): boolean => {
+  if (oldState.textInfos !== newState.textInfos || oldState.differences !== newState.differences) {
+    return false
   }
-  const { cursorInfos, selectionInfos } = await EditorSelection.getVisible(newState)
+  return (
+    oldState.lines !== newState.lines ||
+    oldState.tokenizerId !== newState.tokenizerId ||
+    oldState.minLineY !== newState.minLineY ||
+    oldState.maxLineY !== newState.maxLineY ||
+    oldState.decorations !== newState.decorations ||
+    oldState.embeds !== newState.embeds ||
+    oldState.deltaX !== newState.deltaX ||
+    oldState.width !== newState.width ||
+    oldState.highlightedLine !== newState.highlightedLine ||
+    oldState.debugEnabled !== newState.debugEnabled
+  )
+}
+
+export const updateDerivedState = async (oldState: EditorState, newState: EditorState): Promise<EditorState> => {
+  let finalState = newState
+  if (shouldUpdateVisibleTextData(oldState, newState)) {
+    const syncIncremental = SyncIncremental.getEnabled()
+    const { differences, textInfos } = await EditorText.getVisible(newState, syncIncremental)
+    finalState = {
+      ...newState,
+      differences,
+      textInfos,
+    }
+  }
+  if (!shouldUpdateSelectionData(oldState, newState)) {
+    return finalState
+  }
+  const { cursorInfos, selectionInfos } = await EditorSelection.getVisible(finalState)
   return {
-    ...newState,
+    ...finalState,
     cursorInfos,
     selectionInfos,
   }

@@ -14,6 +14,7 @@ export const wrapCommand =
       return newEditor
     }
     const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
+
     // TODO if editor did not change, no need to update furthur
 
     // TODO combine neweditor with latest editor?
