@@ -12,8 +12,8 @@ interface EditorContentVirtualDomOptions {
   readonly differences: readonly number[]
   readonly highlightedLine?: number
   readonly lineNumbers?: boolean
-  readonly scrollBarHeight?: number
   readonly scrollBarDiagnostics?: readonly any[]
+  readonly scrollBarHeight?: number
   readonly selectionInfos?: readonly any[]
   readonly textInfos: readonly any[]
 }
@@ -24,8 +24,8 @@ export const getEditorContentVirtualDom = ({
   differences,
   highlightedLine = -1,
   lineNumbers = true,
-  scrollBarHeight = 0,
   scrollBarDiagnostics = [],
+  scrollBarHeight = 0,
   selectionInfos = [],
   textInfos,
 }: EditorContentVirtualDomOptions): readonly VirtualDomNode[] => {

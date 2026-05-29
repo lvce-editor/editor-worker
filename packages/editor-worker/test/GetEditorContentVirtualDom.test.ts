@@ -8,8 +8,8 @@ test('getEditorContentVirtualDom', () => {
     cursorInfos: ['1px 2px'],
     diagnostics: [{ height: 10, type: 'error', width: 20, x: 3, y: 4 }],
     differences: [0],
-    scrollBarHeight: 24,
     scrollBarDiagnostics: [{ height: 5, type: 'warning', width: 6, x: 7, y: 8 }],
+    scrollBarHeight: 24,
     selectionInfos: [1, 2, 3, 4],
     textInfos: [['x', 'Token X']],
   })

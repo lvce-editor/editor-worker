@@ -11,8 +11,8 @@ interface EditorVirtualDomOptions {
   readonly gutterInfos?: readonly any[]
   readonly highlightedLine?: number
   readonly lineNumbers?: boolean
-  readonly scrollBarHeight?: number
   readonly scrollBarDiagnostics?: readonly any[]
+  readonly scrollBarHeight?: number
   readonly selectionInfos?: readonly any[]
   readonly selections?: any
   readonly textInfos: readonly any[]
@@ -25,8 +25,8 @@ export const getEditorVirtualDom = ({
   gutterInfos = [],
   highlightedLine = -1,
   lineNumbers = true,
-  scrollBarHeight = 0,
   scrollBarDiagnostics = [],
+  scrollBarHeight = 0,
   selectionInfos = [],
   textInfos,
 }: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
@@ -46,8 +46,8 @@ export const getEditorVirtualDom = ({
       differences,
       highlightedLine,
       lineNumbers,
-      scrollBarHeight,
       scrollBarDiagnostics,
+      scrollBarHeight,
       selectionInfos,
       textInfos,
     }),
