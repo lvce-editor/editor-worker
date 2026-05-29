@@ -35,7 +35,15 @@ export const getEditorContentVirtualDom = ({
       type: VirtualDomElements.Div,
     },
     ...GetEditorInputVirtualDom.getEditorInputVirtualDom(),
-    ...GetEditorLayersVirtualDom.getEditorLayersVirtualDom(selectionInfos, textInfos, differences, lineNumbers, highlightedLine, cursorInfos, diagnostics),
+    ...GetEditorLayersVirtualDom.getEditorLayersVirtualDom(
+      selectionInfos,
+      textInfos,
+      differences,
+      lineNumbers,
+      highlightedLine,
+      cursorInfos,
+      diagnostics,
+    ),
     ...GetEditorScrollBarDiagnosticsVirtualDom.getEditorScrollBarDiagnosticsVirtualDom(scrollBarDiagnostics),
     ...GetScrollBarVirtualDom.getScrollBarVirtualDom(),
   ]
