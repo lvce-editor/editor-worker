@@ -1,9 +1,11 @@
+import { expect, test } from '@jest/globals'
 import { EventExpression } from '@lvce-editor/constants'
-import type { DomEventListener } from '../DomEventListener/DomEventListener.ts'
-import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
+import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
+import * as RenderEventListeners from '../src/parts/RenderEventListeners/RenderEventListeners.ts'
 
-export const renderEventListeners = (): readonly DomEventListener[] => {
-  return [
+test('renderEventListeners', () => {
+  const eventListeners = RenderEventListeners.renderEventListeners()
+  expect(eventListeners).toEqual([
     {
       name: DomEventListenerFunctions.HandleFocus,
       params: ['handleFocus'],
@@ -105,5 +107,5 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
       name: DomEventListenerFunctions.HandleScrollBarHorizontalPointerUp,
       params: ['handlePointerUp'],
     },
-  ]
-}
+  ])
+})
