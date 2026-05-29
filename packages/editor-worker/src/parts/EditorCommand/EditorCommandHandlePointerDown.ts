@@ -1,3 +1,5 @@
-export const handlePointerDown = (state: any) => {
-  return state
+import * as HandleMouseDown from './EditorCommandHandleMouseDown.ts'
+
+export const handlePointerDown = (state: any, button: number, altKey: boolean, ctrlKey: boolean, x: number, y: number, detail: number) => {
+  return HandleMouseDown.handleMouseDown(state, button, altKey, ctrlKey, x, y, detail)
 }
