@@ -3,10 +3,6 @@ import * as EditorCommandHandlePointerDown from '../src/parts/EditorCommand/Edit
 
 test('handlePointerDown - sets collapsed selection like single click', async () => {
   const editor = {
-    hoverEnabled: false,
-    minLineY: 0,
-    maxLineY: 10,
-    rowHeight: 20,
     charWidth: 8,
     columnWidth: 8,
     cursorWidth: 2,
@@ -17,11 +13,15 @@ test('handlePointerDown - sets collapsed selection like single click', async () 
     fontWeight: 400,
     halfCursorWidth: 1,
     height: 200,
+    hoverEnabled: false,
     isMonospaceFont: true,
     letterSpacing: 0,
     lineCache: [],
     lineHeight: 20,
     lines: ['hello world'],
+    maxLineY: 10,
+    minLineY: 0,
+    rowHeight: 20,
     rowHeightIncludingMargin: 20,
     tabSize: 2,
     widgets: [],

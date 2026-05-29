@@ -1,5 +1,5 @@
-import { type VirtualDomNode, diffTree } from '@lvce-editor/virtual-dom-worker'
 import { ViewletCommand } from '@lvce-editor/constants'
+import { type VirtualDomNode, diffTree } from '@lvce-editor/virtual-dom-worker'
 import type { EditorState } from '../State/State.ts'
 import { getEditorVirtualDom } from '../GetEditorVirtualDom/GetEditorVirtualDom.ts'
 
