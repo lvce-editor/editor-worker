@@ -11,6 +11,7 @@ test('getEditorSelectionsVirtualDom', () => {
   })
   expect(dom.slice(1)).toEqual([
     {
+      childCount: 0,
       className: 'EditorSelection',
       height: 4,
       left: 1,
@@ -19,6 +20,7 @@ test('getEditorSelectionsVirtualDom', () => {
       width: 3,
     },
     {
+      childCount: 0,
       className: 'EditorSelection',
       height: 8,
       left: 5,
