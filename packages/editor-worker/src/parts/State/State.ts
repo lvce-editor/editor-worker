@@ -10,8 +10,8 @@ export interface EditorSelectionAutoMoveState {
 
 export interface EditorState {
   readonly additionalFocus: number
-  readonly autoMoveSelectionState?: EditorSelectionAutoMoveState
   readonly assetDir: string
+  readonly autoMoveSelectionState?: EditorSelectionAutoMoveState
   readonly charWidth: number
   readonly columnWidth: number
   readonly completionState: string

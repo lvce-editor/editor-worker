@@ -17,6 +17,7 @@ export const createEditor2 = (
   Assert.number(id)
   const editor: EditorState = {
     additionalFocus: 0,
+    assetDir,
     autoMoveSelectionState: {
       hasListener: false,
       position: {
@@ -24,7 +25,6 @@ export const createEditor2 = (
         rowIndex: 0,
       },
     },
-    assetDir,
     charWidth: 0,
     columnWidth: 0,
     completionState: '',
