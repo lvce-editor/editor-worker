@@ -7,6 +7,7 @@ import { text } from '../src/parts/VirtualDomHelpers/VirtualDomHelpers.ts'
 test('getEditorVirtualDom', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     cursorInfos: ['144.962px 180px'],
+    deltaY: 40,
     diagnostics: [
       {
         height: 16,
@@ -17,7 +18,9 @@ test('getEditorVirtualDom', () => {
       },
     ],
     differences: [0],
+    finalDeltaY: 80,
     gutterInfos: [1],
+    height: 40,
     scrollBarHeight: 24,
     selectionInfos: [1, 2, 3, 4],
     textInfos: [['#', 'Token Comment']],
@@ -155,6 +158,7 @@ test('getEditorVirtualDom', () => {
       childCount: 0,
       className: 'ScrollBarThumb ScrollBarThumbVertical',
       style: 'height:24px;',
+      translate: '0 16px',
       type: VirtualDomElements.Div,
     },
     {

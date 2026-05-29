@@ -9,6 +9,7 @@ export const isEqual = (oldState: EditorState, newState: EditorState): boolean =
     oldState.textInfos === newState.textInfos &&
     oldState.differences === newState.differences &&
     oldState.initial === newState.initial &&
+    oldState.deltaY === newState.deltaY &&
     oldState.scrollBarHeight === newState.scrollBarHeight &&
     oldState.scrollBarWidth === newState.scrollBarWidth &&
     oldState.selectionInfos === newState.selectionInfos

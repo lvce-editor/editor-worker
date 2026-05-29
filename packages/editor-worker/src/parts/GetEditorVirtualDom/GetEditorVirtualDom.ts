@@ -6,9 +6,12 @@ import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts
 
 interface EditorVirtualDomOptions {
   readonly cursorInfos?: readonly any[]
+  readonly deltaY?: number
   readonly diagnostics?: readonly any[]
   readonly differences: readonly number[]
+  readonly finalDeltaY?: number
   readonly gutterInfos?: readonly any[]
+  readonly height?: number
   readonly highlightedLine?: number
   readonly lineNumbers?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
@@ -20,9 +23,12 @@ interface EditorVirtualDomOptions {
 
 export const getEditorVirtualDom = ({
   cursorInfos = [],
+  deltaY = 0,
   diagnostics = [],
   differences,
+  finalDeltaY = 0,
   gutterInfos = [],
+  height = 0,
   highlightedLine = -1,
   lineNumbers = true,
   scrollBarDiagnostics = [],
@@ -41,8 +47,11 @@ export const getEditorVirtualDom = ({
     ...GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(gutterInfos),
     ...GetEditorContentVirtualDom.getEditorContentVirtualDom({
       cursorInfos,
+      deltaY,
       diagnostics,
       differences,
+      finalDeltaY,
+      height,
       highlightedLine,
       lineNumbers,
       scrollBarDiagnostics,
