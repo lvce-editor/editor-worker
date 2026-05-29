@@ -48,9 +48,9 @@ export const getFontFamily = async () => {
 }
 
 export const getLetterSpacing = async () => {
-  if (!false) {
-    return 0
-  }
+  // if (!false) {
+  //   return 0
+  // }
   return (await Preferences.get(kLetterSpacing)) ?? 0.5
 }
 
