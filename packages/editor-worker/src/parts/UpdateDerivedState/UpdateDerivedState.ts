@@ -1,6 +1,6 @@
 import type { EditorState } from '../State/State.ts'
-import * as EditorText from '../EditorText/EditorText.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
+import * as EditorText from '../EditorText/EditorText.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
 const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState): boolean => {
