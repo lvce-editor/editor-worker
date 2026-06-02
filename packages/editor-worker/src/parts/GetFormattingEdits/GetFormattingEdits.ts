@@ -1,11 +1,5 @@
-import * as ExtensionHostEditor from '../ExtensionHostEditor/ExtensionHostEditor.ts'
+import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 
 export const getFormattingEdits = async (editor: any): Promise<readonly any[]> => {
-  const edits = await ExtensionHostEditor.execute({
-    args: [],
-    editor,
-    event: 'onFormatting',
-    method: 'ExtensionHostFormatting.executeFormattingProvider',
-  })
-  return edits
+  return ExtensionManagementWorker.invoke('Extensions.executeFormattingProvider', editor)
 }
