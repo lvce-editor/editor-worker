@@ -130,7 +130,7 @@ const renderGutterInfo = {
   },
 }
 
-const renderWidgets = {
+export const renderWidgets = {
   apply(oldState: any, newState: any) {
     const addedWidgets = []
     const changedWidgets = []
