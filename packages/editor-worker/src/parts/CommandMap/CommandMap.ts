@@ -161,6 +161,7 @@ import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import { saveState } from '../SaveState/SaveState.ts'
 import * as SendMessagePortToExtensionHostWorker from '../SendMessagePortToExtensionHostWorker/SendMessagePortToExtensionHostWorker.ts'
+import { sendMessagePortToExtensionManagementWorker } from '../SendMessagePortToExtensionManagementWorker/SendMessagePortToExtensionManagementWorker.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
@@ -428,6 +429,7 @@ export const commandMap = {
   'Listener.unregister': UnregisterListener.unregisterListener,
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
     SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
+  'SendMessagePortToExtensionManagementWorker.sendMessagePortToExtensionManagementWorker': sendMessagePortToExtensionManagementWorker,
 }
 
 for (const [key, value] of Object.entries(commandMap)) {
