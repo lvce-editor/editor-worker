@@ -1,5 +1,4 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
-import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as GetEditorInputVirtualDom from '../GetEditorInputVirtualDom/GetEditorInputVirtualDom.ts'
 import * as GetEditorLayersVirtualDom from '../GetEditorLayersVirtualDom/GetEditorLayersVirtualDom.ts'
 import * as GetEditorScrollBarDiagnosticsVirtualDom from '../GetEditorScrollBarDiagnosticsVirtualDom/GetEditorScrollBarDiagnosticsVirtualDom.ts'
@@ -39,7 +38,7 @@ export const getEditorContentVirtualDom = ({
     {
       childCount: 5,
       className: 'EditorContent',
-      onMouseMove: DomEventListenerFunctions.HandleMouseMove,
+      // onMouseMove: DomEventListenerFunctions.HandleMouseMove,
       type: VirtualDomElements.Div,
     },
     ...GetEditorInputVirtualDom.getEditorInputVirtualDom(),

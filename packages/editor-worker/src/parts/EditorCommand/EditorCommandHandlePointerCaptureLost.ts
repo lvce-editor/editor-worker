@@ -1,7 +1,13 @@
-import * as EditorSelectionAutoMoveState from '../EditorSelectionAutoMoveState/EditorSelectionAutoMoveState.ts'
-
 // @ts-ignore
 export const handlePointerCaptureLost = (editor) => {
-  EditorSelectionAutoMoveState.clearEditor()
-  return editor
+  return {
+    ...editor,
+    autoMoveSelectionState: {
+      hasListener: false,
+      position: editor.autoMoveSelectionState?.position || {
+        columnIndex: 0,
+        rowIndex: 0,
+      },
+    },
+  }
 }

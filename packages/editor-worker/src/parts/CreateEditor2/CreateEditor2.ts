@@ -18,6 +18,13 @@ export const createEditor2 = (
   const editor: EditorState = {
     additionalFocus: 0,
     assetDir,
+    autoMoveSelectionState: {
+      hasListener: false,
+      position: {
+        columnIndex: 0,
+        rowIndex: 0,
+      },
+    },
     charWidth: 0,
     columnWidth: 0,
     completionState: '',

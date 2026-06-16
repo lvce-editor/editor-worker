@@ -60,6 +60,13 @@ export const createEditor = async ({
   const computedlanguageId = getLanguageId(uri, languages)
   const editor = {
     assetDir,
+    autoMoveSelectionState: {
+      hasListener: false,
+      position: {
+        columnIndex: 0,
+        rowIndex: 0,
+      },
+    },
     charWidth,
     columnWidth: 0,
     completionState: '',
