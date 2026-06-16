@@ -1,18 +1,15 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
-export const name = 'viewlet.editor-undo-type'
-
-export const skip = 1
+export const name = 'viewlet.editor-delete-all-left-join-lines'
 
 export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
-  await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'abc')
+  await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'abc\ndef')
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
-  await Editor.setCursor(0, 3)
-  await Editor.type('def')
+  await Editor.setCursor(1, 0)
 
-  await Editor.undo()
+  await Editor.deleteAllLeft()
 
-  await Editor.shouldHaveText('abc')
+  await Editor.shouldHaveText('abcdef')
 }
