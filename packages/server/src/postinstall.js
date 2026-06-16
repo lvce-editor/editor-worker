@@ -40,10 +40,10 @@ await replace({
 
 const folders = await readdir(staticPath, { withFileTypes: true })
 const commitHash = folders.find((item) => item.isDirectory())?.name || ''
-// const rendererProcessPath = join(staticPath, commitHash, 'packages', 'renderer-process', 'dist', 'rendererProcessMain.js')
+const rendererProcessPath = join(staticPath, commitHash, 'packages', 'renderer-process', 'dist', 'rendererProcessMain.js')
 
-// await replace({
-//   uri: rendererProcessPath,
-//   occurrence: 'const editorWorkerUrl = `${assetDir}/packages/editor-worker/dist/editorWorkerMain.js`',
-//   replacement: `const editorWorkerUrl = \`${remoteUrl}\``,
-// })
+await replace({
+  uri: rendererProcessPath,
+  occurrence: '`${assetDir}/packages/editor-worker/dist/editorWorkerMain.js`',
+  replacement: `\`${remoteUrl}\``,
+})
