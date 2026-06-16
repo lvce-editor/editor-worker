@@ -1,5 +1,6 @@
 import { expect, test } from '@jest/globals'
 import * as EditorCommandHandlePointerDown from '../src/parts/EditorCommand/EditorCommandHandlePointerDown.ts'
+import * as EditorSelectionAutoMoveState from '../src/parts/EditorSelectionAutoMoveState/EditorSelectionAutoMoveState.ts'
 
 test('handlePointerDown - sets collapsed selection like single click', async () => {
   const editor = {
@@ -35,4 +36,5 @@ test('handlePointerDown - sets collapsed selection like single click', async () 
     focused: true,
     selections: new Uint32Array([0, 0, 0, 0]),
   })
+  expect(EditorSelectionAutoMoveState.isSelecting()).toBe(true)
 })
