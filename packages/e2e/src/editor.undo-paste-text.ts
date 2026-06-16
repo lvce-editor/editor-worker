@@ -10,7 +10,7 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
   await Editor.setCursor(0, 1)
   await Command.execute('Editor.pasteText', 'XYZ')
 
-  await Command.execute('Editor.undo')
+  await Editor.undo()
 
   await Editor.shouldHaveText('abc')
 }

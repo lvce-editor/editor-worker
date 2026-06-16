@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-undo-type'
 
-export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace }) => {
+export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'abc')
   await Workspace.setPath(tmpDir)
@@ -10,7 +10,7 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
   await Editor.setCursor(0, 3)
   await Editor.type('def')
 
-  await Command.execute('Editor.undo')
+  await Editor.undo()
 
   await Editor.shouldHaveText('abc')
 }
