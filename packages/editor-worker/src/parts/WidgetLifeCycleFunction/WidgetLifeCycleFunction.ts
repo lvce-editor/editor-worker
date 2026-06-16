@@ -1,3 +1,3 @@
-export interface WidgetLifeCycleFunction<T> {
+export interface WidgetLifecycleFunction<T> {
   (widget: T): readonly any[]
 }

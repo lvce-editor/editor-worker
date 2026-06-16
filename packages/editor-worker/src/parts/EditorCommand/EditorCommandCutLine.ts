@@ -1,4 +1,4 @@
-import * as ClipBoard from '../ClipBoard/ClipBoard.ts'
+import * as Clipboard from '../ClipBoard/ClipBoard.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorCommandReplaceRange from './EditorCommandReplaceRange.ts'
@@ -10,6 +10,6 @@ export const cutLine = async (editor: any) => {
   const replaceRange = new Uint32Array([startRowIndex, 0, startRowIndex, line.length])
   const changes = EditorCommandReplaceRange.replaceRange(editor, replaceRange, [''], EditOrigin.EditorCut)
   const selectionChanges = new Uint32Array([startRowIndex, 0, startRowIndex, 0])
-  await ClipBoard.writeText(line)
+  await Clipboard.writeText(line)
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes, selectionChanges)
 }

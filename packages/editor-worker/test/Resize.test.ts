@@ -49,7 +49,7 @@ test('resize clamps scroll position when height increases', () => {
     finalY: 90,
     height: 200,
     itemHeight: 20,
-    lines: Array.from({ length: 100 }, (_, index) => `${index}`),
+    lines: Array.from({ length: 100 }, (_, index) => String(index)),
     maxLineY: 100,
     minimumSliderSize: 20,
     minLineY: 90,

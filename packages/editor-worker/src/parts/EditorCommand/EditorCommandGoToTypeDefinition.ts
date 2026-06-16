@@ -17,7 +17,7 @@ import * as EditorGoTo from './EditorCommandGoTo.ts'
 
 // @ts-ignore
 const getTypeDefinitionErrorMessage = (error: any) => {
-  return `${error}`
+  return String(error)
 }
 
 const getLocation = async (editor: any, rowIndex: number, columnIndex: number) => {
@@ -38,7 +38,7 @@ const getErrorMessage = (error) => {
   //     ''
   //   )
   // }
-  return `${error}`
+  return String(error)
 }
 
 const isNoProviderFoundError = (error: any) => {

@@ -6,7 +6,7 @@ export const skip = 1
 
 export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main }) => {
   // arrange
-  const url = new URL('../fixtures/editor.source-actions-open', import.meta.url).href
+  const url = import.meta.resolve('../fixtures/editor.source-actions-open')
   await Extension.addWebExtension(url)
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/src/test.xyz`, 'globalThis.AbortSignal.abort()')

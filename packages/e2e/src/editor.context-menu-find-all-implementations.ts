@@ -16,6 +16,6 @@ export const test: Test = async ({ ContextMenu, Editor, expect, FileSystem, Loca
   await ContextMenu.selectItem('Find All Implementations')
 
   // assert
-  const sideBar = Locator('#SideBar')
-  await expect(sideBar).toBeVisible()
+  const sidebar = Locator('#SideBar')
+  await expect(sidebar).toBeVisible()
 }

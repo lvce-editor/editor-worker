@@ -7,7 +7,7 @@ import * as EditorShowMessage from './EditorCommandShowMessage.ts'
 
 // @ts-ignore
 const getErrorMessage = (error) => {
-  return `${error}`
+  return String(error)
 }
 
 // @ts-ignore

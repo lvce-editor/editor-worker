@@ -8,13 +8,13 @@ export const at = async (editor: any, eventX: number, eventY: number) => {
   Assert.number(eventY)
   const { charWidth, deltaX, deltaY, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, lines, rowHeight, tabSize, x, y } = editor
   const rowIndex = Math.floor((eventY - y + deltaY) / rowHeight)
-  const relativeX = eventX - x + deltaX
   if (rowIndex < 0) {
     return {
       columnIndex: 0,
       rowIndex: 0,
     }
   }
+  const relativeX = eventX - x + deltaX
   const clampedRowIndex = Clamp.clamp(rowIndex, 0, lines.length - 1)
   const line = lines[clampedRowIndex]
   const columnIndex = await GetAccurateColumnIndex.getAccurateColumnIndex(

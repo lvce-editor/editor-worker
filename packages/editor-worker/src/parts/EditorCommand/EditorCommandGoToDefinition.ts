@@ -38,7 +38,7 @@ const getErrorMessage = (error) => {
   // ) {
   //   return error.message.replace('Failed to execute definition provider: ', '')
   // }
-  return `${error}`
+  return String(error)
 }
 
 // @ts-ignore

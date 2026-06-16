@@ -4,8 +4,8 @@ import * as Editor from '../Editor/Editor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 // match all words, including umlauts, see https://stackoverflow.com/questions/5436824/matching-accented-characters-with-javascript-regexes/#answer-11550799
-const RE_WORD_START = /^[a-z\u00C0-\u017F\d]+/i
-const RE_WORD_END = /[a-z\u00C0-\u017F\d]+$/i
+const RE_WORD_START = /^[a-z\u{C0}-\u{17F}\d]+/iu
+const RE_WORD_END = /[a-z\u{C0}-\u{17F}\d]+$/iu
 
 // @ts-ignore
 const getNewSelections = (line, rowIndex, columnIndex) => {

@@ -9,7 +9,7 @@ export const test: Test = async ({ Editor, Extension, FileSystem, Main, Settings
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/test.xyz`, `abc`)
   await Workspace.setPath(tmpDir)
-  await Extension.addWebExtension(new URL(`../fixtures/${name}`, import.meta.url).href)
+  await Extension.addWebExtension(import.meta.resolve(`../fixtures/${name}`))
   await Settings.update({ 'editor.diagnostics': true })
   await Main.openUri(`${tmpDir}/test.xyz`)
   await Editor.setCursor(0, 3)
