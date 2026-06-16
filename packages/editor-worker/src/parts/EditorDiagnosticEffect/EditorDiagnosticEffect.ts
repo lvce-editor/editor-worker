@@ -5,8 +5,6 @@ export const editorDiagnosticEffect = {
   async apply(editor: any) {
     await UpdateDiagnostics.updateDiagnostics(editor)
   },
-  isActive(oldEditor: any, newEditor: any) {
-    // TODO avoid slow comparison
-    return newEditor.diagnosticsEnabled && JSON.stringify(oldEditor.lines) !== JSON.stringify(newEditor.lines)
-  },
+  // TODO avoid slow comparison
+  isActive: (oldEditor: any, newEditor: any) => newEditor.diagnosticsEnabled && JSON.stringify(oldEditor.lines) !== JSON.stringify(newEditor.lines),
 }

@@ -2,18 +2,18 @@ import { beforeEach, expect, test } from '@jest/globals'
 import * as EditorCommandPosition from '../src/parts/EditorCommand/EditorCommandPosition.ts'
 
 beforeEach(() => {
-  // @ts-ignore
-  globalThis.OffscreenCanvas = class {
-    getContext() {
-      return {
-        measureText(text: string) {
-          return {
+  Object.defineProperty(globalThis, 'OffscreenCanvas', {
+    configurable: true,
+    value: class {
+      getContext() {
+        return {
+          measureText: (text: string) => ({
             width: text.length * 10,
-          }
-        },
+          }),
+        }
       }
-    }
-  }
+    },
+  })
 })
 
 test('at - accounts for editor x and deltaX', async () => {

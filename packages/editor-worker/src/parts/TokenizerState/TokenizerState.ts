@@ -10,7 +10,7 @@ const state = {
 }
 
 export const has = (languageId: any) => {
-  return languageId in state.tokenizers
+  return Object.hasOwn(state.tokenizers, languageId)
 }
 
 export const set = (languageId: any, tokenizer: any) => {
@@ -22,5 +22,5 @@ export const get = (languageId: any) => {
 }
 
 export const isPending = (languageId: any) => {
-  return languageId in state.pending
+  return Object.hasOwn(state.pending, languageId)
 }

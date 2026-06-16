@@ -8,18 +8,14 @@ const id = 1
 
 beforeEach(() => {
   WidgetRegistry.set(id, {
-    handleEditorDeleteLeft(editor: any, state: any) {
-      return {
-        ...state,
-        updated: true,
-      }
-    },
-    handleEditorType(editor: any, state: any) {
-      return {
-        ...state,
-        updated: true,
-      }
-    },
+    handleEditorDeleteLeft: (editor: any, state: any) => ({
+      ...state,
+      updated: true,
+    }),
+    handleEditorType: (editor: any, state: any) => ({
+      ...state,
+      updated: true,
+    }),
   })
 })
 

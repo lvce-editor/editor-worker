@@ -35,7 +35,7 @@ export const applyWorkspaceEdit = async (editor: any, changes: readonly any[]): 
     return editor
   }
   // TODO
-  // for now only apply edits to single file, if it matches the uri
+  // for now only apply edits to single file, if it matches the URI
   //
   // in the future:
   // 1. if a change targets the current editor, apply an edit to this editor

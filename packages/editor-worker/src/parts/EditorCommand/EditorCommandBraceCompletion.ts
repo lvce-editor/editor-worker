@@ -6,9 +6,7 @@ import { editorReplaceSelections } from './EditorCommandReplaceSelection.ts'
 import * as EditorShowMessage from './EditorCommandShowMessage.ts'
 
 // @ts-ignore
-const getErrorMessage = (error) => {
-  return `${error}`
-}
+const getErrorMessage = String
 
 // @ts-ignore
 const getMatchingClosingBrace = (brace) => {

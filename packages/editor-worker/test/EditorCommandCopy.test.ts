@@ -5,8 +5,10 @@ import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
 beforeAll(() => {
   // TODO remove this when using newer node version
   if (typeof DOMException === 'undefined') {
-    // @ts-ignore
-    globalThis.DOMException = globalThis.Error
+    Object.defineProperty(globalThis, 'DOMException', {
+      configurable: true,
+      value: Error,
+    })
   }
 })
 

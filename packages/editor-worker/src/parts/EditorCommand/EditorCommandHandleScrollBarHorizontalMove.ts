@@ -23,8 +23,6 @@ const getNewPercent = (size, scrollBarSize, relativeX) => {
 // @ts-ignore
 export const handleScrollBarHorizontalMove = (state, eventX) => {
   const { handleOffsetX, longestLineWidth, width, x } = state
-  const spaceRight = 20 // TODO make this configurable
-  const normalizedEventX = Clamp.clamp(eventX, x, x + width)
   if (width > longestLineWidth) {
     return {
       ...state,
@@ -32,6 +30,8 @@ export const handleScrollBarHorizontalMove = (state, eventX) => {
       scrollBarWidth: 0,
     }
   }
+  const spaceRight = 20 // TODO make this configurable
+  const normalizedEventX = Clamp.clamp(eventX, x, x + width)
   const relativeX = normalizedEventX - x - handleOffsetX
   const scrollBarWidth = ScrollBarFunctions.getScrollBarWidth(width, longestLineWidth)
   const finalDeltaX = longestLineWidth - width + spaceRight

@@ -92,7 +92,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   // invalidStartIndex, lineCache, etc. just for testing editorType
   const invalidStartIndex = Math.min(editor.invalidStartIndex, changes[0].start.rowIndex)
 
-  // TODO maybe put undostack into indexeddb so that there is no memory leak in application
+  // TODO maybe put undostack into indexeddb so that there is no memory leak in app
   // then clear old undostack from indexeddb after 3 days
   // TODO should push to undostack after rendering
   const autoClosingRanges = applyAutoClosingRangesEdit(editor, changes)
@@ -120,10 +120,12 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
 
   // Notify registered listeners about editor changes
-  NotifyListeners.notifyListeners(ListenerType.EditorChange, 'handleEditorChanged', editor.uid, editor.uri, changes).catch((error) => {
+  try {
+    await NotifyListeners.notifyListeners(ListenerType.EditorChange, 'handleEditorChanged', editor.uid, editor.uri, changes)
+  } catch (error) {
     // Silently ignore notification errors to not interrupt the edit flow
     console.warn('Failed to notify editor change listeners:', error)
-  })
+  }
 
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditorWithDecorations)
 

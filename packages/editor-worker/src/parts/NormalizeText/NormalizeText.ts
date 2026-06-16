@@ -2,7 +2,7 @@ import * as Character from '../Character/Character.ts'
 
 export const normalizeText = (text: string, normalize: any, tabSize: number): string => {
   if (normalize) {
-    return text.replaceAll(Character.Tab, Character.Space.repeat(tabSize))
+    return text.replaceAll(Character.Tab, () => Character.Space.repeat(tabSize))
   }
   return text
 }

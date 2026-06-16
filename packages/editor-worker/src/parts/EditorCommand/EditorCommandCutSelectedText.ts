@@ -1,4 +1,4 @@
-import * as ClipBoard from '../ClipBoard/ClipBoard.ts'
+import * as Clipboard from '../ClipBoard/ClipBoard.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as JoinLines from '../JoinLines/JoinLines.ts'
@@ -12,7 +12,7 @@ export const cutSelectedText = async (editor: any) => {
   // @ts-ignore
   const text = JoinLines.joinLines(changes[0].deleted)
   // TODO remove selected text from document
-  await ClipBoard.writeText(text)
+  await Clipboard.writeText(text)
   // @ts-ignore
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes, selectionChanges)
 }

@@ -12,7 +12,7 @@ export const measureTextWidth = async (
   charWidth: number,
 ): Promise<number> => {
   // TODO maybe have a property for the whole text document
-  // whether the document is ascii or not
+  // whether the document is ASCII or not
   // so that it doesn't need to be checked on every cursor change
   // or scroll position change
   if (isMonoSpaceFont && isAscii(text)) {
