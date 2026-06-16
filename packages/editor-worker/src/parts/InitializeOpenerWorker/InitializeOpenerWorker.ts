@@ -7,13 +7,9 @@ const send = (port: MessagePort): Promise<void> => {
 }
 
 export const initializeOpenerWorker = async (): Promise<void> => {
-  try {
-    const rpc = await LazyTransferMessagePortRpcParent.create({
-      commandMap: {},
-      send,
-    })
-    OpenerWorker.set(rpc)
-  } catch {
-    // ignore
-  }
+  const rpc = await LazyTransferMessagePortRpcParent.create({
+    commandMap: {},
+    send,
+  })
+  OpenerWorker.set(rpc)
 }
