@@ -1,0 +1,22 @@
+{
+  "id": "test.syntax-highlighting-nested-extension",
+  "name": "Syntax Highlighting Nested Extension",
+  "description": "Provides nested syntax highlighting fixtures.",
+  "languages": [
+    {
+      "id": "mock-a",
+      "extensions": [".mocka"],
+      "tokenize": "src/tokenizeMockA.js"
+    },
+    {
+      "id": "mock-b",
+      "extensions": [".mockb"],
+      "tokenize": "src/tokenizeMockB.js"
+    },
+    {
+      "id": "mock-c",
+      "extensions": [".mockc"],
+      "tokenize": "src/tokenizeMockC.js"
+    }
+  ]
+}
