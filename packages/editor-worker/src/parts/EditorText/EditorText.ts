@@ -13,7 +13,7 @@ import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 //   // because storing tokens could maybe result in high
 //   // memory usage (e.g. 10000 lines * 10 tokens per line = 100 000 objects stored)
 //   // on the other hand, scrolling should be really fast, and needlessly
-//   // recomputing tokens would be a waste of cpu time and cause lots of garbage collection
+//   // recomputing tokens would be a waste of CPU time and cause lots of garbage collection
 //   const lineCache = editor.lineCache
 //   // TODO only compute tokens in viewport
 //   // const cachedLineStates = Object.create(null)
@@ -25,7 +25,7 @@ import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 //       continue
 //     }
 //     // TODO use TextDocument.getLine so that text document buffer implementation
-//     // can be changed (e.g. vscode has piece tree, codemirror has something like chunked arrays / string[][])
+//     // can be changed (e.g. VS Code has piece tree, codemirror has something like chunked arrays / string[][])
 //     const line = lines[i]
 //     lineState = safeTokenizeLine(tokenizeLine, line, lineState)
 //     const newTokens = lineState.tokens
@@ -35,7 +35,7 @@ import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 //   return tokens
 // }
 
-// TODO vscode has an interesting approach for tokenizing:
+// TODO VS Code has an interesting approach for tokenizing:
 // first, the viewport is tokenized from startLine to endLine
 // the first iteration might not be accurate because for example
 // there can be a open multiline comment at the start of the file
@@ -125,6 +125,29 @@ const getStartDefaults = (tokens: any, minOffset: any) => {
   }
 }
 
+interface DecorationInfo {
+  className: string
+  end: number
+}
+
+const hasDecorationOverlap = (decorationMap: Map<number, DecorationInfo>, tokenStart: number, tokenEnd: number): boolean => {
+  for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
+    if (decorationStart < tokenEnd && decorationEnd > tokenStart) {
+      return true
+    }
+  }
+  return false
+}
+
+const getActiveDecoration = (decorationMap: Map<number, DecorationInfo>, currentPos: number): DecorationInfo | undefined => {
+  for (const [decorationStart, decoration] of decorationMap) {
+    if (decorationStart <= currentPos && decoration.end > currentPos) {
+      return decoration
+    }
+  }
+  return undefined
+}
+
 const getLineInfoEmbeddedFull = (
   embeddedResults: any,
   tokenResults: any,
@@ -142,7 +165,7 @@ const getLineInfoEmbeddedFull = (
   const lineInfo = []
 
   // Build decoration map for this line (position -> decoration class)
-  const decorationMap = new Map<number, { end: number; className: string }>()
+  const decorationMap = new Map<number, DecorationInfo>()
   for (let j = 0; j < decorations.length; j += 4) {
     const decorationOffset = decorations[j]
     const decorationLength = decorations[j + 1]
@@ -175,14 +198,7 @@ const getLineInfoEmbeddedFull = (
     const tokenLength = embeddedTokens[i + 1]
     const tokenEnd = start + tokenLength
 
-    // Check if any decorations overlap with this token
-    let hasOverlap = false
-    for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
-      if (decorationStart < tokenEnd && decorationEnd > start) {
-        hasOverlap = true
-        break
-      }
-    }
+    const hasOverlap = hasDecorationOverlap(decorationMap, start, tokenEnd)
 
     if (hasOverlap) {
       // Token has decoration overlap - split into parts
@@ -190,14 +206,7 @@ const getLineInfoEmbeddedFull = (
 
       while (currentPos < tokenEnd) {
         // Find if current position is inside a decoration
-        let activeDecoration: { end: number; className: string } | null = null
-
-        for (const [decorationStart, decoration] of decorationMap) {
-          if (decorationStart <= currentPos && decoration.end > currentPos) {
-            activeDecoration = decoration
-            break
-          }
-        }
+        const activeDecoration = getActiveDecoration(decorationMap, currentPos)
 
         if (activeDecoration) {
           // Render decorated part
@@ -249,7 +258,7 @@ const getLineInfoEmbeddedFull = (
 
 const getOffsets = (deltaX: any, width: any, averageCharWidth: any) => {
   // TODO accurately measure char widths using offscreen canvas
-  // and use fast measurements for monospace ascii text
+  // and use fast measurements for monospace ASCII text
   if (deltaX === 0) {
     return {
       maxOffset: Math.ceil(width / averageCharWidth),
@@ -288,7 +297,7 @@ const getLineInfoDefault = (
   const lineInfo = []
 
   // Build decoration map for this line (position -> decoration class)
-  const decorationMap = new Map<number, { end: number; className: string }>()
+  const decorationMap = new Map<number, DecorationInfo>()
   for (let j = 0; j < decorations.length; j += 4) {
     const decorationOffset = decorations[j]
     const decorationLength = decorations[j + 1]
@@ -319,14 +328,7 @@ const getLineInfoDefault = (
     const tokenLength = tokens[i + 1]
     const tokenEnd = start + tokenLength
 
-    // Check if any decorations overlap with this token
-    let hasOverlap = false
-    for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
-      if (decorationStart < tokenEnd && decorationEnd > start) {
-        hasOverlap = true
-        break
-      }
-    }
+    const hasOverlap = hasDecorationOverlap(decorationMap, start, tokenEnd)
 
     if (hasOverlap) {
       // Token has decoration overlap - split into parts
@@ -334,14 +336,7 @@ const getLineInfoDefault = (
 
       while (currentPos < tokenEnd) {
         // Find if current position is inside a decoration
-        let activeDecoration: { end: number; className: string } | null = null
-
-        for (const [decorationStart, decoration] of decorationMap) {
-          if (decorationStart <= currentPos && decoration.end > currentPos) {
-            activeDecoration = decoration
-            break
-          }
-        }
+        const activeDecoration = getActiveDecoration(decorationMap, currentPos)
 
         if (activeDecoration) {
           // Render decorated part

@@ -5,5 +5,5 @@
  * @returns Array of regex matches
  */
 export const getRegexMatches = (text: string, regex: RegExp): readonly RegExpMatchArray[] => {
-  return [...text.matchAll(regex)]
+  return text.matchAll(regex).toArray()
 }

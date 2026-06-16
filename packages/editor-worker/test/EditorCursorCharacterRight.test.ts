@@ -65,7 +65,7 @@ test('editorCursorCharacterRight - emoji - 👮🏽‍♀️', () => {
 test('editorCursorCharacterRight - unicode - zero width space', () => {
   const editor = {
     lineCache: [],
-    lines: ['\u200B'],
+    lines: ['\u{200B}'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
   }

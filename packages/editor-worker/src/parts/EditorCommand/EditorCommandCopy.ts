@@ -1,4 +1,4 @@
-import * as ClipBoard from '../ClipBoard/ClipBoard.ts'
+import * as Clipboard from '../ClipBoard/ClipBoard.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as JoinLines from '../JoinLines/JoinLines.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
@@ -58,6 +58,6 @@ export const copy = async (editor) => {
   const selectedLines = TextDocument.getSelectionText(editor, range)
   const text = JoinLines.joinLines(selectedLines)
   const fullText = copyFullLine ? '\n' + text : text
-  await ClipBoard.writeText(fullText)
+  await Clipboard.writeText(fullText)
   return editor
 }

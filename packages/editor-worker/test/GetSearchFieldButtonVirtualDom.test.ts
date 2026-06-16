@@ -16,7 +16,7 @@ test('getIconVirtualDom', () => {
       ariaChecked: false,
       childCount: 1,
       className: 'SearchFieldButton',
-      role: AriaRoles.CheckBox,
+      role: AriaRoles.Checkbox,
       tabIndex: 0,
       title: 'Test',
       type: VirtualDomElements.Div,

@@ -11,7 +11,7 @@ export const getSearchFieldButtonVirtualDom = (button: ISearchFieldButton) => {
       ariaChecked: checked,
       childCount: 1,
       className: MergeClassNames.mergeClassNames(ClassNames.SearchFieldButton, checked ? ClassNames.SearchFieldButtonChecked : ''),
-      role: AriaRoles.CheckBox,
+      role: AriaRoles.Checkbox,
       tabIndex: 0,
       title,
       type: VirtualDomElements.Div,

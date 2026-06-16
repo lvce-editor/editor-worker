@@ -5,7 +5,10 @@ const Listen = await import('../src/parts/Listen/Listen.ts')
 const RegisterWidgets = await import('../src/parts/RegisterWidgets/RegisterWidgets.ts')
 
 beforeAll(() => {
-  globalThis.addEventListener = jest.fn()
+  Object.defineProperty(globalThis, 'addEventListener', {
+    configurable: true,
+    value: jest.fn(),
+  })
 })
 
 test.skip('main', async () => {

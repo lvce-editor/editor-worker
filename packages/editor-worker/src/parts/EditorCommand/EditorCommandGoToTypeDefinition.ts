@@ -13,12 +13,10 @@ import * as EditorGoTo from './EditorCommandGoTo.ts'
 // TODO possible to do this with events/state machine instead of promises -> enables canceling operations / concurrent calls
 
 // TODO there are still race conditions in this function:
-// - when open is called twice, previous dom nodes can either be reused or the previous dom nodes must be disposed
+// - when open is called twice, previous DOM nodes can either be reused or the previous DOM nodes must be disposed
 
 // @ts-ignore
-const getTypeDefinitionErrorMessage = (error: any) => {
-  return `${error}`
-}
+const getTypeDefinitionErrorMessage = String
 
 const getLocation = async (editor: any, rowIndex: number, columnIndex: number) => {
   const offset = TextDocument.offsetAt(editor, rowIndex, columnIndex)
@@ -26,20 +24,7 @@ const getLocation = async (editor: any, rowIndex: number, columnIndex: number) =
   return definition
 }
 
-// @ts-ignore
-const getErrorMessage = (error) => {
-  // if (
-  //   error &&
-  //   error.message &&
-  //   error.message.startsWith('Failed to execute type definition provider: ')
-  // ) {
-  //   return error.message.replace(
-  //     'Failed to execute type definition provider: ',
-  //     ''
-  //   )
-  // }
-  return `${error}`
-}
+const getErrorMessage = String
 
 const isNoProviderFoundError = (error: any) => {
   return error?.message?.startsWith('Failed to execute type definition provider: No type definition provider found')

@@ -56,7 +56,7 @@ const tryRegexArray = (partialLine: string, regexArray: RegExp[]) => {
 }
 
 const RE_WORD_LEFT_1 = /(?<![A-Z])[A-Z]+\s*$/
-const RE_WORD_LEFT_2 = /[\u00C0-\u017F\w\-]+>?\s*$/
+const RE_WORD_LEFT_2 = /[\u{C0}-\u{17F}\w\-]+>?\s*$/u
 const RE_WORD_LEFT_3 = /[a-zA-Z]+[^a-zA-Z\d]+\s*$/
 const RE_WORD_LEFT_4 = /\s+$/
 const RE_WORD_LEFT_5 = /[^a-zA-Z\d]+\s*$/
@@ -68,7 +68,7 @@ export const wordLeft = (line, columnIndex) => {
   return tryRegexArray(partialLine, RE_WORD_LEFT)
 }
 
-const RE_WORD_RIGHT_1 = /^\s*[\u00C0-\u017F\w]+/i
+const RE_WORD_RIGHT_1 = /^\s*[\u{C0}-\u{17F}\w]+/iu
 const RE_WORD_RIGHT_2 = /^[^a-zA-Z\d]+\w*/
 const RE_WORD_RIGHT = [RE_WORD_RIGHT_1, RE_WORD_RIGHT_2]
 

@@ -11,6 +11,9 @@ export const getSearchFieldVirtualDom = (
   outsideButtons: any,
   onFocus: string | number = '',
 ) => {
+  if (outsideButtons.length > 0) {
+    throw new Error('outsideButtons are deprecated')
+  }
   const dom = [
     {
       childCount: 2,
@@ -37,8 +40,5 @@ export const getSearchFieldVirtualDom = (
     },
     ...insideButtons.flatMap(GetSearchFieldButtonVirtualDom.getSearchFieldButtonVirtualDom),
   ]
-  if (outsideButtons.length > 0) {
-    throw new Error('outsideButtons are deprecated')
-  }
   return dom
 }

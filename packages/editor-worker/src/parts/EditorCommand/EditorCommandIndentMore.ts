@@ -10,22 +10,19 @@ const getChanges = (selections: any) => {
       rowsToIndent.push(i)
     }
   }
-  const changes: any[] = []
-  for (const rowToIndent of rowsToIndent) {
-    changes.push({
-      deleted: [''],
-      end: {
-        columnIndex: 0,
-        rowIndex: rowToIndent,
-      },
-      inserted: ['  '],
-      origin: EditOrigin.IndentMore,
-      start: {
-        columnIndex: 0,
-        rowIndex: rowToIndent,
-      },
-    })
-  }
+  const changes: any[] = Array.from(rowsToIndent, (rowToIndent) => ({
+    deleted: [''],
+    end: {
+      columnIndex: 0,
+      rowIndex: rowToIndent,
+    },
+    inserted: ['  '],
+    origin: EditOrigin.IndentMore,
+    start: {
+      columnIndex: 0,
+      rowIndex: rowToIndent,
+    },
+  }))
   return changes
 }
 

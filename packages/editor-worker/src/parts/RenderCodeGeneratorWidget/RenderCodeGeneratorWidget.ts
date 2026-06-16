@@ -7,9 +7,7 @@ const renderContent = {
     const dom: readonly any[] = GetCodeGeneratorVirtualDom.getCodeGeneratorVirtualDom(newState)
     return [RenderMethod.SetDom2, newState.uid, dom]
   },
-  isEqual(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
-    return oldState.questions === newState.questions
-  },
+  isEqual: (oldState: CodeGeneratorState, newState: CodeGeneratorState) => oldState.questions === newState.questions,
 }
 
 const renderBounds = {
@@ -17,18 +15,14 @@ const renderBounds = {
     const { height, width, x, y } = newState
     return [/* method */ RenderMethod.SetBounds, /* x */ x, /* y */ y, /* width */ width, /* height */ height]
   },
-  isEqual(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
-    return oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height
-  },
+  isEqual: (oldState: CodeGeneratorState, newState: CodeGeneratorState) =>
+    oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height,
 }
 
 const renderFocus = {
-  apply(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
-    return [RenderMethod.Focus, '.CodeGeneratorInput', newState.focusSource]
-  },
-  isEqual(oldState: CodeGeneratorState, newState: CodeGeneratorState) {
-    return oldState.focused === newState.focused && oldState.focusSource === newState.focusSource
-  },
+  apply: (oldState: CodeGeneratorState, newState: CodeGeneratorState) => [RenderMethod.Focus, '.CodeGeneratorInput', newState.focusSource],
+  isEqual: (oldState: CodeGeneratorState, newState: CodeGeneratorState) =>
+    oldState.focused === newState.focused && oldState.focusSource === newState.focusSource,
 }
 
 const render = [renderContent, renderBounds, renderFocus]
