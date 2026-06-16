@@ -37,7 +37,7 @@ export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Wid
   // 1. renderDom
   // 2. renderAriaAnnouncement
   // 3. renderFocus
-  // to ensure that focus is always after the element is added to the dom
+  // to ensure that focus is always after the element is added to the DOM
   if (focusCommandIndex !== -1) {
     const command = allCommands[focusCommandIndex]
     allCommands.splice(focusCommandIndex, 1)

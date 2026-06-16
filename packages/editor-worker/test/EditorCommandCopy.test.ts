@@ -6,7 +6,7 @@ beforeAll(() => {
   // TODO remove this when using newer node version
   if (typeof DOMException === 'undefined') {
     // @ts-ignore
-    globalThis.DOMException = globalThis.Error
+    globalThis.DOMException = Error
   }
 })
 

@@ -24,7 +24,7 @@ export const setDelta = (editor, deltaMode, eventDeltaX, eventDeltaY) => {
   if (eventDeltaX === 0) {
     return setDeltaY(editor, eventDeltaY)
   }
-  const newDeltaX = Clamp.clamp(deltaX + eventDeltaX, 0, Number.POSITIVE_INFINITY)
+  const newDeltaX = Clamp.clamp(deltaX + eventDeltaX, 0, Infinity)
   return {
     ...setDeltaY(editor, eventDeltaY),
     deltaX: newDeltaX,

@@ -7,11 +7,7 @@ const renderHoverDom = {
     const dom = GetHoverVirtualDom.getHoverVirtualDom(newState.lineInfos, newState.documentation, newState.diagnostics)
     return [/* method */ RenderMethod.SetDom2, dom]
   },
-  isEqual(oldState: HoverState, newState: HoverState) {
-    return (
-      oldState.lineInfos === newState.lineInfos && oldState.documentation === newState.documentation && oldState.diagnostics === newState.diagnostics
-    )
-  },
+  isEqual: (oldState: HoverState, newState: HoverState) => oldState.lineInfos === newState.lineInfos && oldState.documentation === newState.documentation && oldState.diagnostics === newState.diagnostics,
 }
 
 const renderBounds = {
@@ -19,9 +15,7 @@ const renderBounds = {
     const { height, width, x, y } = newState
     return [RenderMethod.SetBounds, x, y, width, height]
   },
-  isEqual(oldState: HoverState, newState: HoverState) {
-    return oldState.x === newState.x && oldState.y === newState.y
-  },
+  isEqual: (oldState: HoverState, newState: HoverState) => oldState.x === newState.x && oldState.y === newState.y,
 }
 
 const render = [renderHoverDom, renderBounds]

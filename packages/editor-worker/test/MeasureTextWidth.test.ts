@@ -6,11 +6,9 @@ beforeAll(() => {
   globalThis.OffscreenCanvas = class {
     getContext() {
       return {
-        measureText() {
-          return {
+        measureText: () => ({
             width: 8.5,
-          }
-        },
+          }),
       }
     }
   }

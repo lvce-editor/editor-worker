@@ -6,7 +6,7 @@ export const getBlockComment = async (editor: any, offset: number) => {
   const { assetDir, platform } = editor
   // TODO ask extension host worker,
   // execute block comment provider with
-  // uri, language id, offset
+  // URI, language id, offset
   // and the extension returns a matching block comment or undefined
   try {
     await activateByEvent(`onLanguage:${editor.languageId}`, assetDir, platform)

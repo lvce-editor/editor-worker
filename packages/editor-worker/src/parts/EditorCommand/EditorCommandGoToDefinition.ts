@@ -12,7 +12,7 @@ import * as EditorGoTo from './EditorCommandGoTo.ts'
 // TODO possible to do this with events/state machine instead of promises -> enables canceling operations / concurrent calls
 
 // TODO there are still race conditions in this function:
-// - when open is called twice, previous dom nodes can either be reused or the previous dom nodes must be disposed
+// - when open is called twice, previous DOM nodes can either be reused or the previous DOM nodes must be disposed
 
 // @ts-ignore
 const getLocation = async (editor, rowIndex, columnIndex) => {

@@ -9,7 +9,7 @@ export const test: Test = async ({ expect, Extension, FileSystem, Locator, Main,
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/test.xyz`, `abcdefgh`)
   await Workspace.setPath(tmpDir)
-  await Extension.addWebExtension(new URL(`../fixtures/${name}`, import.meta.url).toString())
+  await Extension.addWebExtension(new URL(`../fixtures/${name}`, import.meta.url).href)
   await Main.openUri(`${tmpDir}/test.xyz`)
 
   // act

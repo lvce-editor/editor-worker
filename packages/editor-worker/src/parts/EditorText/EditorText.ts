@@ -13,7 +13,7 @@ import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 //   // because storing tokens could maybe result in high
 //   // memory usage (e.g. 10000 lines * 10 tokens per line = 100 000 objects stored)
 //   // on the other hand, scrolling should be really fast, and needlessly
-//   // recomputing tokens would be a waste of cpu time and cause lots of garbage collection
+//   // recomputing tokens would be a waste of CPU time and cause lots of garbage collection
 //   const lineCache = editor.lineCache
 //   // TODO only compute tokens in viewport
 //   // const cachedLineStates = Object.create(null)
@@ -25,7 +25,7 @@ import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 //       continue
 //     }
 //     // TODO use TextDocument.getLine so that text document buffer implementation
-//     // can be changed (e.g. vscode has piece tree, codemirror has something like chunked arrays / string[][])
+//     // can be changed (e.g. VS Code has piece tree, codemirror has something like chunked arrays / string[][])
 //     const line = lines[i]
 //     lineState = safeTokenizeLine(tokenizeLine, line, lineState)
 //     const newTokens = lineState.tokens
@@ -35,7 +35,7 @@ import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 //   return tokens
 // }
 
-// TODO vscode has an interesting approach for tokenizing:
+// TODO VS Code has an interesting approach for tokenizing:
 // first, the viewport is tokenized from startLine to endLine
 // the first iteration might not be accurate because for example
 // there can be a open multiline comment at the start of the file
@@ -190,7 +190,7 @@ const getLineInfoEmbeddedFull = (
 
       while (currentPos < tokenEnd) {
         // Find if current position is inside a decoration
-        let activeDecoration: { end: number; className: string } | null = null
+        let activeDecoration: null | { end: number; className: string } = null
 
         for (const [decorationStart, decoration] of decorationMap) {
           if (decorationStart <= currentPos && decoration.end > currentPos) {
@@ -249,7 +249,7 @@ const getLineInfoEmbeddedFull = (
 
 const getOffsets = (deltaX: any, width: any, averageCharWidth: any) => {
   // TODO accurately measure char widths using offscreen canvas
-  // and use fast measurements for monospace ascii text
+  // and use fast measurements for monospace ASCII text
   if (deltaX === 0) {
     return {
       maxOffset: Math.ceil(width / averageCharWidth),
@@ -334,7 +334,7 @@ const getLineInfoDefault = (
 
       while (currentPos < tokenEnd) {
         // Find if current position is inside a decoration
-        let activeDecoration: { end: number; className: string } | null = null
+        let activeDecoration: null | { end: number; className: string } = null
 
         for (const [decorationStart, decoration] of decorationMap) {
           if (decorationStart <= currentPos && decoration.end > currentPos) {

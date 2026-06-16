@@ -272,7 +272,7 @@ test.skip('getAccurateColumnIndex - line starting with tab', async () => {
   const fontFamily = 'Test'
   const letterSpacing = 0.5
   const isMonospaceFont = false
-  const charWidth = 9.730_804_44
+  const charWidth = 9.73080444
   const tabSize = 2
   const eventX = 50
   measureTextMap.set('  try {', 9)

@@ -17,9 +17,8 @@ export const save = async (editor: any): Promise<any> => {
         return { ...newEditor, modified: false, uri: pickedFilePath }
       }
       return newEditor
-    } else {
-      await saveNormalFile(uri, content)
     }
+    await saveNormalFile(uri, content)
     return { ...newEditor, modified: false }
   } catch (error) {
     // @ts-ignore

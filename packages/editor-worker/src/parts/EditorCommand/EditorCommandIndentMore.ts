@@ -10,9 +10,7 @@ const getChanges = (selections: any) => {
       rowsToIndent.push(i)
     }
   }
-  const changes: any[] = []
-  for (const rowToIndent of rowsToIndent) {
-    changes.push({
+  const changes: any[] = Array.from(rowsToIndent, rowToIndent => ({
       deleted: [''],
       end: {
         columnIndex: 0,
@@ -24,8 +22,7 @@ const getChanges = (selections: any) => {
         columnIndex: 0,
         rowIndex: rowToIndent,
       },
-    })
-  }
+    }));
   return changes
 }
 

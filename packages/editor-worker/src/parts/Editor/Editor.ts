@@ -92,7 +92,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   // invalidStartIndex, lineCache, etc. just for testing editorType
   const invalidStartIndex = Math.min(editor.invalidStartIndex, changes[0].start.rowIndex)
 
-  // TODO maybe put undostack into indexeddb so that there is no memory leak in application
+  // TODO maybe put undostack into indexeddb so that there is no memory leak in app
   // then clear old undostack from indexeddb after 3 days
   // TODO should push to undostack after rendering
   const autoClosingRanges = applyAutoClosingRangesEdit(editor, changes)

@@ -35,7 +35,7 @@ export const at = async (editor: any, eventX: number, eventY: number) => {
 }
 
 /**
- * @deprecated this doesn't work for variable width characters (unicode/emoji).
+ * @deprecated this doesn't work for variable width characters (Unicode/emoji).
  * Use position computation in renderer process instead
  *
  * @param {object} editor
