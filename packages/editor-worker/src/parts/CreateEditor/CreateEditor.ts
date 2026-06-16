@@ -80,6 +80,7 @@ export const createEditor = async ({
     fontFamily,
     fontSize,
     fontWeight,
+    handleOffset: 0,
     handleOffsetX: 0,
     height,
     id,

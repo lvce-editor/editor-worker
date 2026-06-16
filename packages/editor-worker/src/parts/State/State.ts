@@ -25,6 +25,7 @@ export interface EditorState {
   readonly fontFamily: string
   readonly fontSize: number
   readonly fontWeight: number
+  readonly handleOffset: number
   readonly handleOffsetX: number
   readonly height: number
   readonly highlightedLine: number
