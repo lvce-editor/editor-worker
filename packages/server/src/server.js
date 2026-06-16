@@ -1,33 +1,22 @@
-import { cp, readFile, writeFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { pathToFileURL } from 'node:url'
-import { root } from './root.ts'
 
-const sharedProcessPath = join(root, 'packages', 'server', 'node_modules', '@lvce-editor', 'shared-process', 'index.js')
-
-const sharedProcessUrl = pathToFileURL(sharedProcessPath).toString()
-
-const sharedProcess = await import(sharedProcessUrl)
-
-process.env.PATH_PREFIX = '/editor-worker'
-const { commitHash } = await sharedProcess.exportStatic({
-  root,
-  extensionPath: '',
-  testPath: 'packages/e2e',
-})
-
-const patchFile = async (path: string, occurrence: string, replacement: string): Promise<void> => {
+const patchFile = async (path, occurrence, replacement) => {
   const content = await readFile(path, 'utf8')
   if (content.includes(occurrence)) {
     await writeFile(path, content.replace(occurrence, replacement))
   }
 }
 
-const patchDynamicWebExtensionTokenizerUrls = async (): Promise<void> => {
+const patchDynamicWebExtensionTokenizerUrls = async () => {
   const extensionManagementWorkerPath = join(
-    root,
-    'dist',
-    commitHash,
+    import.meta.dirname,
+    '..',
+    'node_modules',
+    '@lvce-editor',
+    'static-server',
+    'static',
+    'ba431a4',
     'packages',
     'extension-management-worker',
     'dist',
@@ -51,11 +40,15 @@ const patchDynamicWebExtensionTokenizerUrls = async (): Promise<void> => {
   await patchFile(extensionManagementWorkerPath, occurrence, replacement)
 }
 
-const patchNestedEmbeddedTokenizers = async (): Promise<void> => {
+const patchNestedEmbeddedTokenizers = async () => {
   const syntaxHighlightingWorkerPath = join(
-    root,
-    'dist',
-    commitHash,
+    import.meta.dirname,
+    '..',
+    'node_modules',
+    '@lvce-editor',
+    'static-server',
+    'static',
+    'ba431a4',
     'packages',
     'syntax-highlighting-worker',
     'dist',
@@ -184,43 +177,4 @@ const getTokensViewportEmbedded = (langageId, lines, lineCache, linesWithEmbed) 
 
 await patchDynamicWebExtensionTokenizerUrls()
 await patchNestedEmbeddedTokenizers()
-
-await cp(
-  join(root, '.tmp', 'dist', 'dist', 'editorWorkerMain.js'),
-  join(root, 'dist', commitHash, 'packages', 'editor-worker', 'dist', 'editorWorkerMain.js'),
-)
-
-const rendererWorkerPath = join(root, 'dist', commitHash, 'packages', 'renderer-worker', 'dist', 'rendererWorkerMain.js')
-
-export const getRemoteUrl = (path: string): string => {
-  const url = pathToFileURL(path).toString().slice(8)
-  return `/remote/${url}`
-}
-
-const content = await readFile(rendererWorkerPath, 'utf8')
-const workerPath = join(root, '.tmp/dist/dist/editorWorkerMain.js')
-const remoteUrl = getRemoteUrl(workerPath)
-
-if (content.includes('// const editorWorkerUrl = ')) {
-  const occurrence = `// const editorWorkerUrl = \`\${assetDir}/packages/editor-worker/dist/editorWorkerMain.js\`
-const editorWorkerUrl = \`${remoteUrl}\``
-  const replacement = `const editorWorkerUrl = \`\${assetDir}/packages/editor-worker/dist/editorWorkerMain.js\``
-  const newContent = content.replace(occurrence, replacement)
-  await writeFile(rendererWorkerPath, newContent)
-}
-
-const rendererProcessPath = join(root, 'dist', commitHash, 'packages', 'renderer-process', 'dist', 'rendererProcessMain.js')
-
-const replace = async ({ uri, occurrence, replacement }) => {
-  const content = await readFile(uri, 'utf8')
-  const newContent = content.replace(occurrence, replacement)
-  await writeFile(uri, newContent)
-}
-
-await replace({
-  uri: rendererProcessPath,
-  occurrence: `const editorWorkerUrl = \`${remoteUrl}\``,
-  replacement: 'const editorWorkerUrl = `${assetDir}/packages/editor-worker/dist/editorWorkerMain.js`',
-})
-
-await cp(join(root, 'dist'), join(root, '.tmp', 'static'), { recursive: true })
+await import('../node_modules/@lvce-editor/server/src/server.js')

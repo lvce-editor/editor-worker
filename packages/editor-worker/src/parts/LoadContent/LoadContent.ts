@@ -14,6 +14,7 @@ import * as Preferences from '../Preferences/Preferences.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
+import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 const getTokenizePath = (languages: readonly any[], languageId: string): string => {
@@ -45,6 +46,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
+  TokenizerState.setTokenizePaths(languages)
   const computedLanguageId = getLanguageId(uri, languages)
   const tokenizePath = getTokenizePath(languages, computedLanguageId)
   await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
