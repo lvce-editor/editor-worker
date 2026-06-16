@@ -4,19 +4,21 @@ import * as EditorColorPickerRender from '../EditorColorPickerRender/EditorColor
 import * as RemoveWidget from '../RemoveWidget/RemoveWidget.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 
+const commandsToForward = [
+  RenderMethod.SetDom2,
+  RenderMethod.SetCss,
+  RenderMethod.AppendToBody,
+  RenderMethod.SetBounds2,
+  RenderMethod.RegisterEventListeners,
+  RenderMethod.SetUid,
+]
+
 export const render = (widget: ColorPickerWidget) => {
   const commands: any[] = EditorColorPickerRender.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
   const { uid } = widget.newState
   for (const command of commands) {
-    if (
-      command[0] === RenderMethod.SetDom2 ||
-      command[0] === RenderMethod.SetCss ||
-      command[0] === RenderMethod.AppendToBody ||
-      command[0] === RenderMethod.SetBounds2 ||
-      command[0] === RenderMethod.RegisterEventListeners ||
-      command[0] === RenderMethod.SetUid
-    ) {
+    if (commandsToForward.includes(command[0])) {
       wrappedCommands.push(command)
     } else {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
