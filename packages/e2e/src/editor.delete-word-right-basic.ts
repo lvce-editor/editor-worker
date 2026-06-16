@@ -2,14 +2,14 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-delete-word-right-basic'
 
-export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace }) => {
+export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, `foo bar`)
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
   await Editor.setCursor(0, 0)
 
-  await Command.execute('Editor.deleteWordRight')
+  await Editor.deleteWordRight()
 
   await Editor.shouldHaveText(' bar')
 }
