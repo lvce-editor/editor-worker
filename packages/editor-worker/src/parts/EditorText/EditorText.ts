@@ -125,6 +125,29 @@ const getStartDefaults = (tokens: any, minOffset: any) => {
   }
 }
 
+interface DecorationInfo {
+  className: string
+  end: number
+}
+
+const hasDecorationOverlap = (decorationMap: Map<number, DecorationInfo>, tokenStart: number, tokenEnd: number): boolean => {
+  for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
+    if (decorationStart < tokenEnd && decorationEnd > tokenStart) {
+      return true
+    }
+  }
+  return false
+}
+
+const getActiveDecoration = (decorationMap: Map<number, DecorationInfo>, currentPos: number): DecorationInfo | undefined => {
+  for (const [decorationStart, decoration] of decorationMap) {
+    if (decorationStart <= currentPos && decoration.end > currentPos) {
+      return decoration
+    }
+  }
+  return undefined
+}
+
 const getLineInfoEmbeddedFull = (
   embeddedResults: any,
   tokenResults: any,
@@ -142,7 +165,7 @@ const getLineInfoEmbeddedFull = (
   const lineInfo = []
 
   // Build decoration map for this line (position -> decoration class)
-  const decorationMap = new Map<number, { end: number; className: string }>()
+  const decorationMap = new Map<number, DecorationInfo>()
   for (let j = 0; j < decorations.length; j += 4) {
     const decorationOffset = decorations[j]
     const decorationLength = decorations[j + 1]
@@ -175,14 +198,7 @@ const getLineInfoEmbeddedFull = (
     const tokenLength = embeddedTokens[i + 1]
     const tokenEnd = start + tokenLength
 
-    // Check if any decorations overlap with this token
-    let hasOverlap = false
-    for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
-      if (decorationStart < tokenEnd && decorationEnd > start) {
-        hasOverlap = true
-        break
-      }
-    }
+    const hasOverlap = hasDecorationOverlap(decorationMap, start, tokenEnd)
 
     if (hasOverlap) {
       // Token has decoration overlap - split into parts
@@ -190,14 +206,7 @@ const getLineInfoEmbeddedFull = (
 
       while (currentPos < tokenEnd) {
         // Find if current position is inside a decoration
-        let activeDecoration: null | { end: number; className: string } = null
-
-        for (const [decorationStart, decoration] of decorationMap) {
-          if (decorationStart <= currentPos && decoration.end > currentPos) {
-            activeDecoration = decoration
-            break
-          }
-        }
+        const activeDecoration = getActiveDecoration(decorationMap, currentPos)
 
         if (activeDecoration) {
           // Render decorated part
@@ -288,7 +297,7 @@ const getLineInfoDefault = (
   const lineInfo = []
 
   // Build decoration map for this line (position -> decoration class)
-  const decorationMap = new Map<number, { end: number; className: string }>()
+  const decorationMap = new Map<number, DecorationInfo>()
   for (let j = 0; j < decorations.length; j += 4) {
     const decorationOffset = decorations[j]
     const decorationLength = decorations[j + 1]
@@ -319,14 +328,7 @@ const getLineInfoDefault = (
     const tokenLength = tokens[i + 1]
     const tokenEnd = start + tokenLength
 
-    // Check if any decorations overlap with this token
-    let hasOverlap = false
-    for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
-      if (decorationStart < tokenEnd && decorationEnd > start) {
-        hasOverlap = true
-        break
-      }
-    }
+    const hasOverlap = hasDecorationOverlap(decorationMap, start, tokenEnd)
 
     if (hasOverlap) {
       // Token has decoration overlap - split into parts
@@ -334,14 +336,7 @@ const getLineInfoDefault = (
 
       while (currentPos < tokenEnd) {
         // Find if current position is inside a decoration
-        let activeDecoration: null | { end: number; className: string } = null
-
-        for (const [decorationStart, decoration] of decorationMap) {
-          if (decorationStart <= currentPos && decoration.end > currentPos) {
-            activeDecoration = decoration
-            break
-          }
-        }
+        const activeDecoration = getActiveDecoration(decorationMap, currentPos)
 
         if (activeDecoration) {
           // Render decorated part

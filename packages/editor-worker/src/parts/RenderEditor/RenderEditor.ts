@@ -23,15 +23,16 @@ const renderLines = {
     const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
     return [/* method */ 'setText', dom]
   },
-  isEqual: (oldState: EditorState, newState: EditorState) => oldState.lines === newState.lines &&
-      oldState.tokenizerId === newState.tokenizerId &&
-      oldState.minLineY === newState.minLineY &&
-      oldState.decorations === newState.decorations &&
-      oldState.embeds === newState.embeds &&
-      oldState.deltaX === newState.deltaX &&
-      oldState.width === newState.width &&
-      oldState.highlightedLine === newState.highlightedLine &&
-      oldState.debugEnabled === newState.debugEnabled,
+  isEqual: (oldState: EditorState, newState: EditorState) =>
+    oldState.lines === newState.lines &&
+    oldState.tokenizerId === newState.tokenizerId &&
+    oldState.minLineY === newState.minLineY &&
+    oldState.decorations === newState.decorations &&
+    oldState.embeds === newState.embeds &&
+    oldState.deltaX === newState.deltaX &&
+    oldState.width === newState.width &&
+    oldState.highlightedLine === newState.highlightedLine &&
+    oldState.debugEnabled === newState.debugEnabled,
 }
 
 const renderSelections = {
@@ -51,7 +52,8 @@ const renderScrollBarY = {
     const heightPx = `${newState.scrollBarHeight}px`
     return [/* method */ 'setScrollBar', translate, heightPx]
   },
-  isEqual: (oldState: EditorState, newState: EditorState) => oldState.deltaY === newState.deltaY && oldState.scrollBarHeight === newState.scrollBarHeight,
+  isEqual: (oldState: EditorState, newState: EditorState) =>
+    oldState.deltaY === newState.deltaY && oldState.scrollBarHeight === newState.scrollBarHeight,
 }
 
 const renderScrollBarX = {
@@ -60,7 +62,8 @@ const renderScrollBarX = {
     const scrollBarX = (newState.deltaX / newState.longestLineWidth) * newState.width
     return [/* method */ 'setScrollBarHorizontal', /* scrollBarX */ scrollBarX, /* scrollBarWidth */ scrollBarWidth, /* deltaX */ newState.deltaX]
   },
-  isEqual: (oldState: EditorState, newState: EditorState) => oldState.longestLineWidth === newState.longestLineWidth && oldState.deltaX === newState.deltaX,
+  isEqual: (oldState: EditorState, newState: EditorState) =>
+    oldState.longestLineWidth === newState.longestLineWidth && oldState.deltaX === newState.deltaX,
 }
 
 const renderFocus = {

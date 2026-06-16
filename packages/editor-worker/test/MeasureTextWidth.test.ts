@@ -7,8 +7,8 @@ beforeAll(() => {
     getContext() {
       return {
         measureText: () => ({
-            width: 8.5,
-          }),
+          width: 8.5,
+        }),
       }
     }
   }

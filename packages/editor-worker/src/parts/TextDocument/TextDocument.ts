@@ -14,7 +14,7 @@ export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
     const endRowIndex = change.end.rowIndex + linesDelta
     const startColumnIndex = change.start.columnIndex
     const endColumnIndex = change.end.columnIndex
-    const {deleted, inserted} = change;
+    const { deleted, inserted } = change
     Assert.number(startRowIndex)
     Assert.number(endRowIndex)
     Assert.number(startColumnIndex)

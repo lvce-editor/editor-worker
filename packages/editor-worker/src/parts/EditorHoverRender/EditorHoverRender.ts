@@ -7,7 +7,8 @@ const renderHoverDom = {
     const dom = GetHoverVirtualDom.getHoverVirtualDom(newState.lineInfos, newState.documentation, newState.diagnostics)
     return [/* method */ RenderMethod.SetDom2, dom]
   },
-  isEqual: (oldState: HoverState, newState: HoverState) => oldState.lineInfos === newState.lineInfos && oldState.documentation === newState.documentation && oldState.diagnostics === newState.diagnostics,
+  isEqual: (oldState: HoverState, newState: HoverState) =>
+    oldState.lineInfos === newState.lineInfos && oldState.documentation === newState.documentation && oldState.diagnostics === newState.diagnostics,
 }
 
 const renderBounds = {

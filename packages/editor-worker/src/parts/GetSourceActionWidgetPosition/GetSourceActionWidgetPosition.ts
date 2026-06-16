@@ -11,7 +11,7 @@ export const getSourceActionWidgetPosition = (editor: any, sourceActionCount: nu
   const width = 300
   const height = getHeight(sourceActionCount)
   const cursor = GetPositionAtCursor.getPositionAtCursor(editor)
-  const {x, y} = cursor;
+  const { x, y } = cursor
   // TODO support virtual list
   return {
     height,

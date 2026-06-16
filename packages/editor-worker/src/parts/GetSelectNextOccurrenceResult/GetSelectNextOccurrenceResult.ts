@@ -87,35 +87,35 @@ const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
       startRowIndex = selections[selectionIndex]
       const startColumnIndex = selections[selectionIndex + 1]
       const endColumnIndex = selections[selectionIndex + 3]
-      if (startRowIndex === i && startColumnIndex <= columnIndex && columnIndex <= endColumnIndex) {
-        continue
-      }
-      if (startRowIndex > i) {
-        selectionIndex -= 4
-      }
-      const columnEndIndex = columnIndex + word.length
-      // @ts-ignore
-      const revealRange = {
-        end: {
-          columnIndex: columnEndIndex,
-          rowIndex: i,
-        },
-        start: {
-          columnIndex,
-          rowIndex: i,
-        },
-      }
-      selectionIndex += 4
-      const newSelections = new Uint32Array(selections.length + 4)
-      newSelections.set(selections.subarray(0, selectionIndex), 0)
-      newSelections[selectionIndex] = i
-      newSelections[selectionIndex + 1] = columnIndex
-      newSelections[selectionIndex + 2] = i
-      newSelections[selectionIndex + 3] = columnEndIndex
-      newSelections.set(selections.subarray(selectionIndex), selectionIndex + 4)
-      return {
-        revealRange: newSelections.length - 4,
-        selectionEdits: newSelections,
+      const isSelected = startRowIndex === i && startColumnIndex <= columnIndex && columnIndex <= endColumnIndex
+      if (!isSelected) {
+        if (startRowIndex > i) {
+          selectionIndex -= 4
+        }
+        const columnEndIndex = columnIndex + word.length
+        // @ts-ignore
+        const revealRange = {
+          end: {
+            columnIndex: columnEndIndex,
+            rowIndex: i,
+          },
+          start: {
+            columnIndex,
+            rowIndex: i,
+          },
+        }
+        selectionIndex += 4
+        const newSelections = new Uint32Array(selections.length + 4)
+        newSelections.set(selections.subarray(0, selectionIndex), 0)
+        newSelections[selectionIndex] = i
+        newSelections[selectionIndex + 1] = columnIndex
+        newSelections[selectionIndex + 2] = i
+        newSelections[selectionIndex + 3] = columnEndIndex
+        newSelections.set(selections.subarray(selectionIndex), selectionIndex + 4)
+        return {
+          revealRange: newSelections.length - 4,
+          selectionEdits: newSelections,
+        }
       }
     }
   }
