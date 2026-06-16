@@ -16,9 +16,7 @@ import * as EditorGoTo from './EditorCommandGoTo.ts'
 // - when open is called twice, previous DOM nodes can either be reused or the previous DOM nodes must be disposed
 
 // @ts-ignore
-const getTypeDefinitionErrorMessage = (error: any) => {
-  return String(error)
-}
+const getTypeDefinitionErrorMessage = String
 
 const getLocation = async (editor: any, rowIndex: number, columnIndex: number) => {
   const offset = TextDocument.offsetAt(editor, rowIndex, columnIndex)

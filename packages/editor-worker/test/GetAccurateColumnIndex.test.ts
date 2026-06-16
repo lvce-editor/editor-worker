@@ -1,28 +1,26 @@
-import { beforeEach, expect, test, beforeAll } from '@jest/globals'
+import { beforeAll, beforeEach, expect, test } from '@jest/globals'
 
-const testSymbol = Symbol('GetAccurateColumnIndexTest')
 const measureTextMap = new Map<string, number>()
 
 beforeAll(() => {
-  // @ts-ignore
-  globalThis.OffscreenCanvas = class {
-    getContext() {
-      return {
-        measureText(text: string) {
-          // Use the module's measureTextMap via closure
-          const width = measureTextMap.get(text)
-          if (width !== undefined) {
-            return { width }
-          }
-          // Default: return 0 for empty strings or unregistered text
-          return { width: 0 }
-        },
+  Object.defineProperty(globalThis, 'OffscreenCanvas', {
+    configurable: true,
+    value: class {
+      getContext() {
+        return {
+          measureText(text: string) {
+            // Use the module's measureTextMap via closure
+            const width = measureTextMap.get(text)
+            if (width !== undefined) {
+              return { width }
+            }
+            // Default: return 0 for empty strings or unregistered text
+            return { width: 0 }
+          },
+        }
       }
-    }
-  }
-  // Store the map reference on the global object with a unique symbol
-  // @ts-ignore
-  globalThis[testSymbol] = measureTextMap
+    },
+  })
 })
 
 beforeEach(() => {

@@ -1,17 +1,19 @@
-import { expect, test, beforeAll } from '@jest/globals'
+import { beforeAll, expect, test } from '@jest/globals'
 import * as MeasureTextWidth from '../src/parts/MeasureTextWidth/MeasureTextWidth.ts'
 
 beforeAll(() => {
-  // @ts-ignore
-  globalThis.OffscreenCanvas = class {
-    getContext() {
-      return {
-        measureText: () => ({
-          width: 8.5,
-        }),
+  Object.defineProperty(globalThis, 'OffscreenCanvas', {
+    configurable: true,
+    value: class {
+      getContext() {
+        return {
+          measureText: () => ({
+            width: 8.5,
+          }),
+        }
       }
-    }
-  }
+    },
+  })
 })
 
 test.skip('monospace', async () => {

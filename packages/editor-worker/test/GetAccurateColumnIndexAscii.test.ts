@@ -1,16 +1,18 @@
 import { beforeAll, expect, test } from '@jest/globals'
 
 beforeAll(() => {
-  // @ts-ignore
-  globalThis.OffscreenCanvas = class {
-    getContext() {
-      return {
-        measureText: () => ({
-          width: 18,
-        }),
+  Object.defineProperty(globalThis, 'OffscreenCanvas', {
+    configurable: true,
+    value: class {
+      getContext() {
+        return {
+          measureText: () => ({
+            width: 18,
+          }),
+        }
       }
-    }
-  }
+    },
+  })
 })
 
 const GetAccurateColumnIndexAscii = await import('../src/parts/GetAccurateColumnIndexAscii/GetAccurateColumnIndexAscii.ts')
