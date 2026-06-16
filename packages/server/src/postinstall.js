@@ -39,7 +39,7 @@ await replace({
 })
 
 const folders = await readdir(staticPath, { withFileTypes: true })
-const commitHash = folders.find((item) => item.isDirectory())?.name || ''
+const commitHash = folders.find((item) => item.isDirectory() && item.name !== 'auth')?.name || ''
 const rendererProcessPath = join(staticPath, commitHash, 'packages', 'renderer-process', 'dist', 'rendererProcessMain.js')
 
 await replace({
