@@ -3,11 +3,13 @@ import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
+import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
 
 // TODO add command to set language id
 // without needing to specify tokenizePath
 export const setLanguageId = async (editor: any, languageId: string, tokenizePath: string) => {
   const { tokenizerId } = editor
+  TokenizerState.setTokenizePath(languageId, tokenizePath)
   // TODO move tokenizer to syntax highlighting worker
   // TODO only load tokenizer if not already loaded
   // if already loaded just set tokenizer and rerender text

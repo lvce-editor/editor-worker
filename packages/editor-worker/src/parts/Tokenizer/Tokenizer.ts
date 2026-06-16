@@ -9,6 +9,7 @@ export const loadTokenizer = async (languageId: string, tokenizePath: string) =>
   if (!tokenizePath) {
     return
   }
+  TokenizerState.setTokenizePath(languageId, tokenizePath)
   if (SyntaxHighlightingState.getEnabled()) {
     // @ts-ignore
     const tokenMap = await SyntaxHighlightingWorker.invoke('Tokenizer.load', languageId, tokenizePath)

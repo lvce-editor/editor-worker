@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "node src/postinstall.js",
-    "dev": "node ./node_modules/@lvce-editor/server/bin/server.js"
+    "dev": "node ./src/server.js"
   },
   "keywords": [],
   "author": "",
