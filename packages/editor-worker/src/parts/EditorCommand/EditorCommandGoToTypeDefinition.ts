@@ -24,20 +24,7 @@ const getLocation = async (editor: any, rowIndex: number, columnIndex: number) =
   return definition
 }
 
-// @ts-ignore
-const getErrorMessage = (error) => {
-  // if (
-  //   error &&
-  //   error.message &&
-  //   error.message.startsWith('Failed to execute type definition provider: ')
-  // ) {
-  //   return error.message.replace(
-  //     'Failed to execute type definition provider: ',
-  //     ''
-  //   )
-  // }
-  return String(error)
-}
+const getErrorMessage = String
 
 const isNoProviderFoundError = (error: any) => {
   return error?.message?.startsWith('Failed to execute type definition provider: No type definition provider found')

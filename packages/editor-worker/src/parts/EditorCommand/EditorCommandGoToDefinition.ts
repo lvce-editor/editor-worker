@@ -29,17 +29,7 @@ const getNoLocationFoundMessage = (info) => {
   return EditorStrings.noDefinitionFound()
 }
 
-// @ts-ignore
-const getErrorMessage = (error) => {
-  // if (
-  //   error &&
-  //   error.message &&
-  //   error.message.startsWith('Failed to execute definition provider: ')
-  // ) {
-  //   return error.message.replace('Failed to execute definition provider: ', '')
-  // }
-  return String(error)
-}
+const getErrorMessage = String
 
 // @ts-ignore
 const isNoProviderFoundError = (error) => {

@@ -2,6 +2,14 @@ import { expect, test } from '@jest/globals'
 import * as EditOrigin from '../src/parts/EditOrigin/EditOrigin.ts'
 import * as TextDocument from '../src/parts/TextDocument/TextDocument.ts'
 
+const createLargeInsertedLines = (): string[] => {
+  const lines: string[] = []
+  for (let i = 0; i < 150_000; i++) {
+    lines.push('a')
+  }
+  return lines
+}
+
 test('applyEdits - one single line edit', () => {
   const textDocument = {
     lines: [''],
@@ -277,14 +285,14 @@ test('applyEdits - issue with pasting many lines', () => {
           columnIndex: 0,
           rowIndex: 0,
         },
-        inserted: Array.from({length: 150_000}).fill('a'),
+        inserted: createLargeInsertedLines(),
         start: {
           columnIndex: 0,
           rowIndex: 0,
         },
       },
     ]),
-  ).toEqual(Array.from({length: 150_000}).fill('a'))
+  ).toEqual(createLargeInsertedLines())
 })
 
 test('applyEdits - virtual space', () => {
