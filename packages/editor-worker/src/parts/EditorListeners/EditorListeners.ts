@@ -15,7 +15,7 @@ export const registerListener = (listenerType: number, rpcId: number): void => {
   Assert.number(listenerType)
   Assert.number(rpcId)
 
-  if (!state[listenerType]) {
+  if (!Object.hasOwn(state, listenerType)) {
     state[listenerType] = []
   }
 
@@ -34,7 +34,7 @@ export const unregisterListener = (listenerType: number, rpcId: number): void =>
   Assert.number(listenerType)
   Assert.number(rpcId)
 
-  if (state[listenerType]) {
+  if (Object.hasOwn(state, listenerType)) {
     const index = state[listenerType].indexOf(rpcId)
     if (index !== -1) {
       state[listenerType].splice(index, 1)

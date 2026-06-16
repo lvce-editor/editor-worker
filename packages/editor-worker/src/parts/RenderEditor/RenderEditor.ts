@@ -64,9 +64,7 @@ const renderScrollBarX = {
 }
 
 const renderFocus = {
-  apply(oldState: EditorState, newState: EditorState) {
-    return [/* method */ 'setFocused', newState.focused]
-  },
+  apply: (oldState: EditorState, newState: EditorState) => [/* method */ 'setFocused', newState.focused],
   isEqual: (oldState: EditorState, newState: EditorState) => oldState.focused === newState.focused,
 }
 
@@ -124,14 +122,14 @@ const renderWidgets = {
       newWidgetMap[newWidget.id] = newWidget
     }
     for (const oldWidget of oldWidgets) {
-      if (oldWidget.id in newWidgetMap) {
+      if (Object.hasOwn(newWidgetMap, oldWidget.id)) {
         changedWidgets.push(newWidgetMap[oldWidget.id])
       } else {
         removedWidgets.push(oldWidget)
       }
     }
     for (const newWidget of newWidgets) {
-      if (newWidget.id in oldWidgetMap) {
+      if (Object.hasOwn(oldWidgetMap, newWidget.id)) {
         // ignore
       } else {
         addedWidgets.push(newWidget)
