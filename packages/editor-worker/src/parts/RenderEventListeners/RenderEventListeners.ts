@@ -81,6 +81,7 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     {
       name: DomEventListenerFunctions.HandleScrollBarVerticalPointerDown,
       params: ['handleScrollBarVerticalPointerDown', EventExpression.ClientY],
+      preventDefault: true,
       trackPointerEvents: [DomEventListenerFunctions.HandleScrollBarVerticalPointerMove, DomEventListenerFunctions.HandleScrollBarVerticalPointerUp],
     },
     {

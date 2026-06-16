@@ -1,6 +1,10 @@
 import { expect, test } from '@jest/globals'
 import * as ScrollBarFunctions from '../src/parts/ScrollBarFunctions/ScrollBarFunctions.ts'
 
+test('getScrollBarY - returns zero for no scroll range', () => {
+  expect(ScrollBarFunctions.getScrollBarY(0, 0, 40, 0)).toBe(0)
+})
+
 test('getNewDeltaPercent - clicked at top', () => {
   const height = 100
   const scrollBarHeight = 20
