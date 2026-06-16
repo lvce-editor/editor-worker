@@ -16,13 +16,13 @@ const getNewPercent = (state, relativeY) => {
   return 1
 }
 
-// @ts-ignore
-export const handleScrollBarMove = (state, eventY) => {
-  const { finalDeltaY, handleOffset, y } = state
+export const handleScrollBarMove = async (state: any, eventY: number): Promise<any> => {
+  const { finalDeltaY, handleOffset = 0, y } = state
   const relativeY = eventY - y - handleOffset
   const newPercent = getNewPercent(state, relativeY)
   const newDeltaY = newPercent * finalDeltaY
-  return Editor.setDeltaYFixedValue(state, newDeltaY)
+  const newState = await Editor.setDeltaYFixedValue(state, newDeltaY)
+  return newState
 }
 
 export const handleScrollBarVerticalPointerMove = handleScrollBarMove
