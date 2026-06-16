@@ -5,10 +5,13 @@ import * as EditorSelectionAutoMoveState from '../src/parts/EditorSelectionAutoM
 test('handlePointerUp - clears selection auto move state', () => {
   const editor = {}
   EditorSelectionAutoMoveState.setEditor(editor)
+  EditorSelectionAutoMoveState.startSelecting()
   expect(EditorSelectionAutoMoveState.hasListener()).toBe(true)
+  expect(EditorSelectionAutoMoveState.isSelecting()).toBe(true)
 
   const result = EditorCommandHandlePointerUp.handlePointerUp(editor)
 
   expect(result).toBe(editor)
   expect(EditorSelectionAutoMoveState.hasListener()).toBe(false)
+  expect(EditorSelectionAutoMoveState.isSelecting()).toBe(false)
 })

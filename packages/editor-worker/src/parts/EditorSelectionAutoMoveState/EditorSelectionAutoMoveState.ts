@@ -4,6 +4,7 @@ const state = {
    */
   currentEditor: undefined,
   hasListener: false,
+  isSelecting: false,
   position: {
     columnIndex: 0,
     rowIndex: 0,
@@ -19,6 +20,19 @@ export const setEditor = (editor) => {
 export const clearEditor = () => {
   state.currentEditor = undefined
   state.hasListener = false
+  state.isSelecting = false
+}
+
+export const startSelecting = () => {
+  state.isSelecting = true
+}
+
+export const stopSelecting = () => {
+  state.isSelecting = false
+}
+
+export const isSelecting = () => {
+  return state.isSelecting
 }
 
 // @ts-ignore
