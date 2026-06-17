@@ -10,7 +10,7 @@ export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
   await Editor.setCursor(0, 6)
 
   await Editor.cursorDown()
-  await Editor.shouldHaveSelections(new Uint32Array([1, 1, 1, 1]))
+  await Editor.shouldHaveSelections(new Uint32Array([1, 6, 1, 6]))
 
   await Editor.cursorUp()
   await Editor.shouldHaveSelections(new Uint32Array([0, 6, 0, 6]))
