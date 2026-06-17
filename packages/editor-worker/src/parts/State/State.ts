@@ -63,6 +63,7 @@ export interface EditorState {
   readonly textInfos: readonly any[]
   readonly tokenizerId: any
   readonly uid: number
+  readonly redoStack: readonly any[]
   readonly undoStack: readonly any[]
   readonly uri: string
   readonly validLines: readonly number[]

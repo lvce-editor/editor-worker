@@ -116,6 +116,7 @@ export const createEditor = async ({
     textInfos: [],
     tokenizerId: 0,
     uid: id,
+    redoStack: [],
     undoStack: [],
     uri,
     useFunctionalRendering,

@@ -24,6 +24,7 @@ export const emptyEditor = {
   selections: new Uint32Array(),
   textInfos: [],
   tokenizerId: 0,
+  redoStack: [],
   undoStack: [],
   uri: '',
   width: 0,

@@ -6,8 +6,12 @@ export const undo = (state: any) => {
   if (undoStack.length === 0) {
     return state
   }
-  // TODO avoid side effect?
-  const last = undoStack.pop()
+  const last = undoStack.at(-1)
   const inverseChanges = last.map(InverseChange.inverseChange)
-  return Editor.scheduleDocumentAndCursorsSelectionIsUndo(state, inverseChanges)
+  const newState = {
+    ...state,
+    redoStack: [...(state.redoStack || []), last],
+    undoStack: undoStack.slice(0, -1),
+  }
+  return Editor.scheduleDocumentAndCursorsSelectionIsUndo(newState, inverseChanges)
 }

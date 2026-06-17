@@ -90,6 +90,7 @@ import * as OrganizeImports from '../EditorCommand/EditorCommandOrganizeImports.
 import * as EditorPaste from '../EditorCommand/EditorCommandPaste.ts'
 import * as PasteText from '../EditorCommand/EditorCommandPasteText.ts'
 import * as ReplaceRange from '../EditorCommand/EditorCommandReplaceRange.ts'
+import * as EditorRedo from '../EditorCommand/EditorCommandRedo.ts'
 import * as Save from '../EditorCommand/EditorCommandSave.ts'
 import * as SelectAll from '../EditorCommand/EditorCommandSelectAll.ts'
 import * as SelectAllLeft from '../EditorCommand/EditorCommandSelectAllLeft.ts'
@@ -310,6 +311,7 @@ export const commandMap = {
   'Editor.render2': render2,
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': wrapCommandOld(ReplaceRange.replaceRange),
+  'Editor.redo': wrapCommandOld(EditorRedo.redo),
   'Editor.rerender': wrapCommandOld(EditorRerender.rerender),
   'Editor.save': wrapCommandOld(Save.save),
   'Editor.saveState': wrapGetter(saveState),

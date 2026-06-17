@@ -79,6 +79,7 @@ export const createEditor2 = (
     textInfos: [],
     tokenizerId: 0,
     uid: id,
+    redoStack: [],
     undoStack: [],
     uri,
     validLines: [],

@@ -104,6 +104,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     lines: newLines,
     modified: true,
     selections: newSelections,
+    redoStack: [],
     undoStack: [...editor.undoStack, changes],
   }
   // Update link decorations after text changes
@@ -208,6 +209,7 @@ export const scheduleDocument = async (editor, changes) => {
     ...editor,
     invalidStartIndex,
     lines: newLines,
+    redoStack: [],
     undoStack: [...editor.undoStack, changes],
   }
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
