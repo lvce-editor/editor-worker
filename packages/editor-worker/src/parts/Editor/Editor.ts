@@ -103,8 +103,8 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     invalidStartIndex,
     lines: newLines,
     modified: true,
-    selections: newSelections,
     redoStack: [],
+    selections: newSelections,
     undoStack: [...editor.undoStack, changes],
   }
   // Update link decorations after text changes
