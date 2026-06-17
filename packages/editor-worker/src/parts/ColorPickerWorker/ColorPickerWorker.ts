@@ -1,13 +1,15 @@
 import type { Rpc } from '@lvce-editor/rpc'
 import * as LaunchColorPickerWorker from '../LaunchColorPickerWorker/LaunchColorPickerWorker.ts'
 
-let workerPromise: any
+const state: {
+  workerPromise?: Promise<Rpc>
+} = {}
 
 const getOrCreate = (): Promise<Rpc> => {
-  if (!workerPromise) {
-    workerPromise = LaunchColorPickerWorker.launchColorPickerWorker()
+  if (!state.workerPromise) {
+    state.workerPromise = LaunchColorPickerWorker.launchColorPickerWorker()
   }
-  return workerPromise
+  return state.workerPromise
 }
 
 export const invoke = async (method: string, ...params: readonly any[]): Promise<any> => {

@@ -1,9 +1,11 @@
-let enabled = false
+const state = {
+  enabled: false,
+}
 
 export const setEnabled = (value: boolean) => {
-  enabled = value
+  state.enabled = value
 }
 
 export const getEnabled = () => {
-  return enabled
+  return state.enabled
 }
