@@ -2,23 +2,35 @@ import * as Assert from '../Assert/Assert.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 // TODO handle multiline selection
-// TODO handle multiple cursors
 
 export const copyLineDown = (editor: any) => {
   const { selections } = editor
-  const rowIndex = selections[0]
-  Assert.number(rowIndex)
-  const position = {
-    columnIndex: 0,
-    rowIndex,
+  const rows: number[] = []
+  for (let i = 0; i < selections.length; i += 4) {
+    const rowIndex = selections[i]
+    Assert.number(rowIndex)
+    rows.push(rowIndex)
   }
-  const changes = [
-    {
+  const uniqueRows = Array.from(new Set(rows)).sort((a, b) => a - b)
+  const changes = uniqueRows.map((rowIndex) => {
+    const position = {
+      columnIndex: 0,
+      rowIndex,
+    }
+    return {
       deleted: [''],
       end: position,
       inserted: [TextDocument.getLine(editor, rowIndex), ''],
       start: position,
-    },
-  ]
-  return Editor.scheduleDocumentAndCursorsSelections(editor, changes)
+    }
+  })
+  const selectionChanges = new Uint32Array(uniqueRows.length * 4)
+  for (let i = 0; i < uniqueRows.length; i++) {
+    const rowIndex = uniqueRows[i] + i + 1
+    selectionChanges[i * 4] = rowIndex
+    selectionChanges[i * 4 + 1] = 0
+    selectionChanges[i * 4 + 2] = rowIndex
+    selectionChanges[i * 4 + 3] = 0
+  }
+  return Editor.scheduleDocumentAndCursorsSelections(editor, changes, selectionChanges)
 }
