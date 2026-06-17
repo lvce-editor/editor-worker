@@ -1,13 +1,15 @@
 import type { Rpc } from '@lvce-editor/rpc'
 import * as LaunchRenameWorker from '../LaunchRenameWorker/LaunchRenameWorker.ts'
 
-let workerPromise: any
+const state: {
+  workerPromise?: Promise<Rpc>
+} = {}
 
 const getOrCreate = (): Promise<Rpc> => {
-  if (!workerPromise) {
-    workerPromise = LaunchRenameWorker.launchRenameWorker()
+  if (!state.workerPromise) {
+    state.workerPromise = LaunchRenameWorker.launchRenameWorker()
   }
-  return workerPromise
+  return state.workerPromise
 }
 
 export const invoke = async (method: string, ...params: readonly any[]): Promise<any> => {

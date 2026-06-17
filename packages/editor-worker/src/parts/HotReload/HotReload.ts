@@ -5,13 +5,15 @@ import { relaunchWorkers } from '../RelaunchWorkers/RelaunchWorkers.ts'
 import { restoreWidgetState } from '../RestoreWidgetState/RestoreWidgetState.ts'
 import { saveWidgetState } from '../SaveWidgetState/SaveWidgetState.ts'
 
-let isReloading = false
+const state = {
+  isReloading: false,
+}
 
 export const hotReload = async (): Promise<void> => {
-  if (isReloading) {
+  if (state.isReloading) {
     return
   }
-  isReloading = true
+  state.isReloading = true
 
   // TODO use getEditors
   const keys = getKeys()
@@ -30,5 +32,5 @@ export const hotReload = async (): Promise<void> => {
   // @ts-ignore
   await RendererWorker.invoke(`Editor.rerender`)
 
-  isReloading = false
+  state.isReloading = false
 }

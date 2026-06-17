@@ -1,13 +1,15 @@
 import type { Rpc } from '@lvce-editor/rpc'
 import * as LaunchSourceActionWorker from '../LaunchSourceActionWorker/LaunchSourceActionWorker.ts'
 
-let workerPromise: any
+const state: {
+  workerPromise?: Promise<Rpc>
+} = {}
 
 const getOrCreate = (): Promise<Rpc> => {
-  if (!workerPromise) {
-    workerPromise = LaunchSourceActionWorker.launchSourceActionWorker()
+  if (!state.workerPromise) {
+    state.workerPromise = LaunchSourceActionWorker.launchSourceActionWorker()
   }
-  return workerPromise
+  return state.workerPromise
 }
 
 export const invoke = async (method: string, ...params: readonly any[]): Promise<any> => {

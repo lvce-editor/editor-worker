@@ -12,14 +12,16 @@ beforeAll(() => {
   }
 })
 
-let writeTextSpy: jest.Mock | undefined
+const state: {
+  writeTextSpy?: jest.Mock
+} = {}
 
 const mockRpc = MockRpc.create({
   commandMap: {},
   invoke: async (method: string, ...args: any[]) => {
     if (method === 'ClipBoard.writeText') {
-      if (writeTextSpy) {
-        return writeTextSpy(...args)
+      if (state.writeTextSpy) {
+        return state.writeTextSpy(...args)
       }
       throw new Error('not implemented')
     }
@@ -43,7 +45,7 @@ beforeAll(() => {
 })
 
 test('editorCopy', async () => {
-  writeTextSpy = jest.fn().mockImplementation(() => {})
+  state.writeTextSpy = jest.fn().mockImplementation(() => {})
   const editor = {
     columnWidth: 9,
     completionTriggerCharacters: [],
@@ -73,12 +75,12 @@ test('editorCopy', async () => {
   }
 
   expect(await EditorCopy.copy(editor)).toBe(editor)
-  expect(writeTextSpy).toHaveBeenCalledTimes(1)
-  expect(writeTextSpy).toHaveBeenCalledWith('line 1\nline 2\nline 3')
+  expect(state.writeTextSpy).toHaveBeenCalledTimes(1)
+  expect(state.writeTextSpy).toHaveBeenCalledWith('line 1\nline 2\nline 3')
 })
 
 test.skip('editorCopy - error from clipboard - document is not focused', async () => {
-  writeTextSpy = jest.fn().mockImplementation(() => {
+  state.writeTextSpy = jest.fn().mockImplementation(() => {
     throw new DOMException('Document is not focused.')
   })
   jest.spyOn(console, 'warn').mockImplementation(() => {})

@@ -42,7 +42,13 @@ const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
         rowIndex,
       },
     }
-    const newSelections = EditorSelection.push(selections, rowIndex, columnIndexAfter, rowIndex, columnIndexAfterEnd)
+    const newSelections = new Uint32Array(selections.length + 4)
+    newSelections.set(selections, 0)
+    const insertIndex = selections.length
+    newSelections[insertIndex] = rowIndex
+    newSelections[insertIndex + 1] = columnIndexAfter
+    newSelections[insertIndex + 2] = rowIndex
+    newSelections[insertIndex + 3] = columnIndexAfterEnd
     return {
       revealRange: newSelections.length - 4,
       selectionEdits: newSelections,

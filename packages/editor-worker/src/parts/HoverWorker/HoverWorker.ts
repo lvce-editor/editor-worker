@@ -1,13 +1,15 @@
 import type { Rpc } from '@lvce-editor/rpc'
 import { launchHoverWorker } from '../LaunchHoverWorker/LaunchHoverWorker.ts'
 
-let workerPromise: any
+const state: {
+  workerPromise?: Promise<Rpc>
+} = {}
 
 const getOrCreate = (): Promise<Rpc> => {
-  if (!workerPromise) {
-    workerPromise = launchHoverWorker()
+  if (!state.workerPromise) {
+    state.workerPromise = launchHoverWorker()
   }
-  return workerPromise
+  return state.workerPromise
 }
 
 export const invoke = async (method: string, ...params: readonly any[]): Promise<any> => {
