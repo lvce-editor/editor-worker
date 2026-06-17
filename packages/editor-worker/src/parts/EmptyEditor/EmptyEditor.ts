@@ -19,6 +19,7 @@ export const emptyEditor = {
   longestLineWidth: 0,
   maxLineY: 0,
   minLineY: 0,
+  redoStack: [],
   scrollBarHeight: 0,
   selectionInfos: [],
   selections: new Uint32Array(),

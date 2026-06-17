@@ -103,6 +103,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     invalidStartIndex,
     lines: newLines,
     modified: true,
+    redoStack: [],
     selections: newSelections,
     undoStack: [...editor.undoStack, changes],
   }
@@ -208,6 +209,7 @@ export const scheduleDocument = async (editor, changes) => {
     ...editor,
     invalidStartIndex,
     lines: newLines,
+    redoStack: [],
     undoStack: [...editor.undoStack, changes],
   }
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)

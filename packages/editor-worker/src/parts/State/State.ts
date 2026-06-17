@@ -53,6 +53,7 @@ export interface EditorState {
   readonly numberOfVisibleLines: number
   readonly platform: number
   readonly primarySelectionIndex: number
+  readonly redoStack: readonly any[]
   readonly rowHeight: number
   readonly savedSelections: readonly any[]
   readonly scrollBarHeight: number

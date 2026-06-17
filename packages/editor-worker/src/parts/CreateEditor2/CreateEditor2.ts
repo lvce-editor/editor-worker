@@ -69,6 +69,7 @@ export const createEditor2 = (
     numberOfVisibleLines: 0,
     platform,
     primarySelectionIndex: 0,
+    redoStack: [],
     rowHeight: 0,
     savedSelections: [],
     scrollBarHeight: 0,
