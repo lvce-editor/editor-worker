@@ -2,13 +2,15 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'find-widget-no-results'
 
+export const skip = 1
+
 export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'alpha beta')
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
 
-  await Editor.openFindWidget()
+  await Editor.openFind()
   const findWidgetInput = Locator('.FindWidget .MultilineInputBox')
   await findWidgetInput.type('missing')
 

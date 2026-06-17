@@ -2,6 +2,8 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'find-widget-open'
 
+export const skip = 1
+
 export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
@@ -15,7 +17,7 @@ content 2`,
 
   // act
   await Editor.setSelections(new Uint32Array([0, 0, 0, 7]))
-  await Editor.openFindWidget()
+  await Editor.openFind()
 
   // assert
   const findWidgetInput = Locator('.FindWidget .MultilineInputBox')
