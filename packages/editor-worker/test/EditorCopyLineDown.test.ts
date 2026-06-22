@@ -52,3 +52,22 @@ test('editorCopyLineDown - cursor in middle of line', async () => {
     selections: EditorSelection.fromRange(1, 0, 1, 0),
   })
 })
+
+test('editorCopyLineDown - multiple cursors', async () => {
+  const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['line 1', 'line 2', 'line 3'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    primarySelectionIndex: 0,
+    selections: new Uint32Array([0, 6, 0, 6, 1, 6, 1, 6]),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
+  }
+  expect(await EditorCopyLineDown.copyLineDown(editor)).toMatchObject({
+    lines: ['line 1', 'line 1', 'line 2', 'line 2', 'line 3'],
+    selections: new Uint32Array([1, 0, 1, 0, 3, 0, 3, 0]),
+  })
+})

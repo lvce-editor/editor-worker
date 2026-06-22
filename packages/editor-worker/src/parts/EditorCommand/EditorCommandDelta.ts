@@ -7,8 +7,14 @@ export const characterLeft = (line: string, columnIndex: number) => {
   if (!TextSegmenter.supported()) {
     return 1
   }
+  if (columnIndex > line.length) {
+    return 1
+  }
   const segmenter = TextSegmenter.create()
   const last = segmenter.at(line, columnIndex - 1)
+  if (!last) {
+    return 1
+  }
   // @ts-ignore
   return columnIndex - last.index
 }
