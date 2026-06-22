@@ -12,11 +12,6 @@ test.skip('editorCompositionStart', () => {
   expect(EditorComposition.state.isComposing).toBe(true)
 })
 
-test.skip('editorCompositionUpdate', () => {
-  // eslint-disable-next-line sonarjs/assertions-in-tests
-  // TODO
-})
-
 test.skip('editorCompositionEnd', () => {
   EditorComposition.state.isComposing = true
   EditorComposition.compositionEnd({}, {})
