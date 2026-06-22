@@ -12,9 +12,7 @@ test.skip('editorCompositionStart', () => {
   expect(EditorComposition.state.isComposing).toBe(true)
 })
 
-test.skip('editorCompositionUpdate', () => {
-  // TODO
-})
+test.todo('editorCompositionUpdate')
 
 test.skip('editorCompositionEnd', () => {
   EditorComposition.state.isComposing = true

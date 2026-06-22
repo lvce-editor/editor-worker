@@ -6,6 +6,9 @@
       "path": "./packages/editor-worker"
     },
     {
+      "path": "./packages/evaluation-worker"
+    },
+    {
       "path": "./packages/build"
     },
     {
