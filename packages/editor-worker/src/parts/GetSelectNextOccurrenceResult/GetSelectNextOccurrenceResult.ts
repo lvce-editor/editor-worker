@@ -138,13 +138,12 @@ export const getSelectNextOccurrenceResult = (editor: any) => {
 
       const wordMatch = GetWordMatchAtPosition.getWordMatchAtPosition(lines, selectionStartRow, selectionStartColumn)
       wordMatch // ?
+      newSelections[i] = selectionStartRow
       if (wordMatch.start === wordMatch.end) {
-        newSelections[i] = selectionStartRow
         newSelections[i + 1] = selectionStartColumn
         newSelections[i + 2] = selectionEndRow
         newSelections[i + 3] = selectionEndColumn
       } else {
-        newSelections[i] = selectionStartRow
         newSelections[i + 1] = wordMatch.start
         newSelections[i + 2] = selectionStartRow
         newSelections[i + 3] = wordMatch.end

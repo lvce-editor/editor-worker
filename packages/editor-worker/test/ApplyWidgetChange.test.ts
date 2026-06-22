@@ -45,7 +45,7 @@ test('applyWidgetChange - type', async () => {
       origin: EditOrigin.EditorType,
     },
   ]
-  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual(undefined)
+  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toBeUndefined()
 })
 
 test('applyWidgetChange - deleteLeft', async () => {
@@ -74,7 +74,7 @@ test('applyWidgetChange - deleteLeft', async () => {
       origin: EditOrigin.DeleteLeft,
     },
   ]
-  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual(undefined)
+  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toBeUndefined()
 })
 
 test('applyWidgetChange - other', async () => {

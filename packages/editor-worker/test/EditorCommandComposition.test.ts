@@ -13,6 +13,7 @@ test.skip('editorCompositionStart', () => {
 })
 
 test.skip('editorCompositionUpdate', () => {
+  // eslint-disable-next-line sonarjs/assertions-in-tests
   // TODO
 })
 

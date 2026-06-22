@@ -22,13 +22,12 @@ export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
     Assert.array(inserted)
     Assert.array(deleted)
     if (startRowIndex === endRowIndex) {
+      const line = newLines[startRowIndex]
       if (inserted.length === 0) {
-        const line = newLines[startRowIndex]
         const before = line.slice(0, startColumnIndex)
         const after = line.slice(endColumnIndex)
         newLines[startRowIndex] = before + after
       } else if (inserted.length === 1) {
-        const line = newLines[startRowIndex]
         let before = line.slice(0, startColumnIndex)
         if (startColumnIndex > line.length) {
           before += ' '.repeat(startColumnIndex - line.length)
@@ -37,7 +36,6 @@ export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
         const text = inserted[0]
         newLines[startRowIndex] = before + text + after
       } else {
-        const line = newLines[startRowIndex]
         const before = line.slice(0, startColumnIndex) + inserted[0]
         const after = inserted.at(-1) + line.slice(endColumnIndex)
         Arrays.spliceLargeArray(newLines, startRowIndex, deleted.length, [before, ...inserted.slice(1, -1), after])
@@ -45,12 +43,11 @@ export const applyEdits = (textDocument: any, changes: readonly any[]): any => {
         textDocument.maxLineY = Math.min(textDocument.numberOfVisibleLines, newLines.length)
       }
     } else {
+      const before = newLines[startRowIndex].slice(0, startColumnIndex) + inserted[0]
       if (inserted.length === 1) {
-        const before = newLines[startRowIndex].slice(0, startColumnIndex) + inserted[0]
         const after = endRowIndex >= newLines.length ? '' : newLines[endRowIndex].slice(endColumnIndex)
         Arrays.spliceLargeArray(newLines, startRowIndex, deleted.length, [before + after])
       } else {
-        const before = newLines[startRowIndex].slice(0, startColumnIndex) + inserted[0]
         const middle = inserted.slice(1, -1)
         const after = inserted.at(-1) + (endRowIndex >= newLines.length ? '' : newLines[endRowIndex].slice(endColumnIndex))
         Arrays.spliceLargeArray(newLines, startRowIndex, deleted.length, [before, ...middle, after])

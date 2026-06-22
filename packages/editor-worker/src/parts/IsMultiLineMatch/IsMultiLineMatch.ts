@@ -8,8 +8,5 @@ export const isMultiLineMatch = (lines: readonly string[], rowIndex: number, wor
       return false
     }
   }
-  if (!lines[rowIndex + j].startsWith(wordParts[j])) {
-    return false
-  }
-  return true
+  return lines[rowIndex + j].startsWith(wordParts[j])
 }

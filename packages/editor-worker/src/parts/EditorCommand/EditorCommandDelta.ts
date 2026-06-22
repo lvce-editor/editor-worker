@@ -1,6 +1,8 @@
 import * as Character from '../Character/Character.ts'
 import * as TextSegmenter from '../TextSegmenter/TextSegmenter.ts'
 
+/* eslint-disable sonarjs/super-linear-regex */
+
 export const characterLeft = (line: string, columnIndex: number) => {
   if (!TextSegmenter.supported()) {
     return 1
