@@ -11,7 +11,7 @@ export const copyLineDown = (editor: any) => {
     Assert.number(rowIndex)
     rows.push(rowIndex)
   }
-  const uniqueRows = Array.from(new Set(rows)).sort((a, b) => a - b)
+  const uniqueRows = [...new Set(rows)].toSorted((a, b) => a - b)
   const changes = uniqueRows.map((rowIndex) => {
     const position = {
       columnIndex: 0,

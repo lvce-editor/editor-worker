@@ -4,7 +4,7 @@ export const name = 'editor.completion-click'
 
 export const skip = 1
 
-export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Editor, EditorCompletion, expect, Extension, FileSystem, Locator, Main, Workspace }) => {
   const extensionUri = import.meta.resolve('../fixtures/editor.completion-click')
   await Extension.addWebExtension(extensionUri)
   const tmpDir = await FileSystem.getTmpDir()
@@ -16,8 +16,9 @@ export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locato
   await Editor.openCompletion()
   const item = Locator('.EditorCompletionItem', { hasText: 'test' })
   await expect(item).toBeVisible()
-  await item.click()
+  await EditorCompletion.selectIndex(0)
 
   await Editor.shouldHaveText('test')
-  await expect(Locator('.EditorCompletion')).toBeHidden()
+  const completions = Locator('.EditorCompletion')
+  await expect(completions).toBeHidden()
 }
