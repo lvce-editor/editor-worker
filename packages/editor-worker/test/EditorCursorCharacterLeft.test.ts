@@ -51,6 +51,18 @@ test('editorCursorCharacterLeft - at start of line', () => {
   })
 })
 
+test('editorCursorCharacterLeft - in virtual space', () => {
+  const editor = {
+    lineCache: [],
+    lines: ['a'],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 6, 0, 6),
+  }
+  expect(EditorCursorLeft.cursorCharacterLeft(editor)).toMatchObject({
+    selections: EditorSelection.fromRange(0, 5, 0, 5),
+  })
+})
+
 test('editorCursorCharacterLeft - emoji - 👮🏽‍♀️', () => {
   const columnIndex = '👮🏽‍♀️'.length
   const editor = {

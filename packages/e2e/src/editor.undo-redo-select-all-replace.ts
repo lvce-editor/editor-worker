@@ -4,12 +4,12 @@ export const name = 'viewlet.editor-undo-redo-select-all-replace'
 
 export const skip = 1
 
-export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
+export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'first\nsecond')
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
-  await Editor.selectAll()
+  await Command.execute('Editor.selectAll')
   await Editor.type('replacement')
 
   await Editor.undo()

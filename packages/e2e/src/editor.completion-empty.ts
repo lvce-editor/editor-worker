@@ -1,32 +1,21 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
-export const name = 'editor.completion-close-on-click'
+export const name = 'editor.completion-empty'
 
 export const skip = 1
 
 export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main, Workspace }) => {
-  // arrange
-  const extensionUri = import.meta.resolve('../fixtures/editor.completion-one-result')
+  const extensionUri = import.meta.resolve('../fixtures/editor.completion-empty')
   await Extension.addWebExtension(extensionUri)
   const tmpDir = await FileSystem.getTmpDir()
-  await FileSystem.writeFile(`${tmpDir}/file1.xyz`, 'content 1')
+  await FileSystem.writeFile(`${tmpDir}/file1.xyz`, '')
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.xyz`)
   await Editor.setCursor(0, 0)
 
-  // act
   await Editor.openCompletion()
 
-  // assert
   const completions = Locator('.EditorCompletion')
   await expect(completions).toBeVisible()
-  const items = Locator('.EditorCompletionItem')
-  await expect(items).toHaveCount(1)
-  await expect(items).toHaveText('test')
-
-  // act
-  await Editor.closeCompletion()
-
-  // assert
-  await expect(completions).toBeHidden()
+  await expect(completions).toContainText('No Results')
 }
