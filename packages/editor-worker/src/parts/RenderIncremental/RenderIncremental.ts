@@ -12,9 +12,25 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
   return getEditorVirtualDom(state)
 }
 
+const isFastScroll = (oldState: EditorState, newState: EditorState): boolean => {
+  return Math.abs(newState.minLineY - oldState.minLineY) > 1
+}
+
 export const renderIncremental = (oldState: EditorState, newState: EditorState): any => {
   const oldDom: readonly VirtualDomNode[] = getDom(oldState)
   const newDom: readonly VirtualDomNode[] = getDom(newState)
+  if (isFastScroll(oldState, newState)) {
+    return [
+      ViewletCommand.SetPatches,
+      newState.uid,
+      [
+        {
+          nodes: newDom,
+          type: 6,
+        },
+      ],
+    ]
+  }
   const patches = diffTree(oldDom, newDom)
   if (patches.length === 0) {
     return []
