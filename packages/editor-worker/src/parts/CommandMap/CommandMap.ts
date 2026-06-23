@@ -168,7 +168,7 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
-import { wrapCommand as wrapCommand } from '../WrapCommands/WrapCommands.ts'
+import { wrapCommand } from '../WrapCommands/WrapCommands.ts'
 
 export const commandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
