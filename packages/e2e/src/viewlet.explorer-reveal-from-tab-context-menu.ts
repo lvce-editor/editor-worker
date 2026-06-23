@@ -29,7 +29,7 @@ export const test: Test = async ({ Command, ContextMenu, expect, Explorer, FileS
   await Command.execute('Main.handleTabContextMenu', 0, 0, 0)
   const closeMenuItem = Locator('text=Close').first()
   await expect(closeMenuItem).toBeVisible()
-  await ContextMenu.selectItem('Reveal in Explorer')
+  await ContextMenu.selectItem('Reveal in Explorer View')
 
   // assert
   await expect(secondTreeItem).toHaveId('TreeItemActive')
