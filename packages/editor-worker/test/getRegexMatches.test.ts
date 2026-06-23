@@ -24,7 +24,6 @@ test('returns multiple matches', () => {
 })
 
 test('returns matches with capture groups', () => {
-  // eslint-disable-next-line sonarjs/super-linear-regex
   const regex = /(\w+)=(\d+)/g
   const result = getRegexMatches('a=1 b=2 c=3', regex)
   expect(result).toHaveLength(3)
