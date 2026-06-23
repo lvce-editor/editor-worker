@@ -43,14 +43,12 @@ const applyAutoClosingRangesEdit = (editor: any, changes: any[]) => {
     const autoStartColumnIndex = autoClosingRanges[i + 1]
     const autoEndRowIndex = autoClosingRanges[i + 2]
     const autoEndColumnIndex = autoClosingRanges[i + 3]
-    if (changeEndRowIndex === autoEndRowIndex && changeEndColumnIndex === autoEndColumnIndex) {
-      const delta = change.inserted[0].length - change.deleted[0].length
-      newAutoClosingRanges.push(autoStartRowIndex, autoStartColumnIndex, autoEndRowIndex, autoEndColumnIndex + delta)
-    } else if (
-      changeStartRowIndex === autoStartRowIndex &&
-      changeStartColumnIndex >= autoStartColumnIndex &&
-      changeEndRowIndex === autoEndRowIndex &&
-      changeEndColumnIndex <= autoEndColumnIndex
+    if (
+      (changeEndRowIndex === autoEndRowIndex && changeEndColumnIndex === autoEndColumnIndex) ||
+      (changeStartRowIndex === autoStartRowIndex &&
+        changeStartColumnIndex >= autoStartColumnIndex &&
+        changeEndRowIndex === autoEndRowIndex &&
+        changeEndColumnIndex <= autoEndColumnIndex)
     ) {
       const delta = change.inserted[0].length - change.deleted[0].length
       newAutoClosingRanges.push(autoStartRowIndex, autoStartColumnIndex, autoEndRowIndex, autoEndColumnIndex + delta)
