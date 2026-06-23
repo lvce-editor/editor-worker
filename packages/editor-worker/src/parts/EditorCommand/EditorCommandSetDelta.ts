@@ -15,7 +15,7 @@ export const setDeltaYFixedValue = (editor, deltaY) => {
 }
 
 // @ts-ignore
-export const setDelta = (editor, deltaMode, eventDeltaX, eventDeltaY) => {
+export const setDelta = async (editor, deltaMode, eventDeltaX, eventDeltaY) => {
   Assert.number(deltaMode)
   Assert.number(eventDeltaX)
   Assert.number(eventDeltaY)
@@ -25,8 +25,9 @@ export const setDelta = (editor, deltaMode, eventDeltaX, eventDeltaY) => {
     return setDeltaY(editor, eventDeltaY)
   }
   const newDeltaX = Clamp.clamp(deltaX + eventDeltaX, 0, Infinity)
+  const newEditor = await setDeltaY(editor, eventDeltaY)
   return {
-    ...setDeltaY(editor, eventDeltaY),
+    ...newEditor,
     deltaX: newDeltaX,
   }
 }
