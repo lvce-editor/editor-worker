@@ -189,14 +189,15 @@ export const renderEditor = async (id: number) => {
   const commands = []
   Editors.set(id, newState, newState)
   for (const item of render) {
-    if (!item.isEqual(oldState, newState)) {
-      const result = await item.apply(oldState, newState)
-      // @ts-ignore
-      if (item.multiple) {
-        commands.push(...result)
-      } else if (result.length > 0) {
-        commands.push(result)
-      }
+    if (item.isEqual(oldState, newState)) {
+      continue
+    }
+    const result = await item.apply(oldState, newState)
+    // @ts-ignore
+    if (item.multiple) {
+      commands.push(...result)
+    } else if (result.length > 0) {
+      commands.push(result)
     }
   }
   return commands

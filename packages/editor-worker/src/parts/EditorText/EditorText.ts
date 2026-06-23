@@ -210,15 +210,16 @@ const getLineInfoEmbeddedFull = (
         // Find if current position is inside a decoration
         const activeDecoration = getActiveDecoration(decorationMap, currentPos)
 
+        let partEnd
+        let text
+        let className
+
         if (activeDecoration) {
           // Render decorated part
-          const partEnd = Math.min(tokenEnd, activeDecoration.end)
-          const text = line.slice(currentPos, partEnd)
+          partEnd = Math.min(tokenEnd, activeDecoration.end)
+          text = line.slice(currentPos, partEnd)
           const baseTokenClass = embeddedTokenMap[tokenType] || 'Unknown'
-          const className = `Token ${baseTokenClass} ${activeDecoration.className}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
+          className = `Token ${baseTokenClass} ${activeDecoration.className}`
         } else {
           // Find next decoration start or token end
           let nextDecorationStart = tokenEnd
@@ -229,13 +230,13 @@ const getLineInfoEmbeddedFull = (
           }
 
           // Render non-decorated part
-          const partEnd = nextDecorationStart
-          const text = line.slice(currentPos, partEnd)
-          const className = `Token ${embeddedTokenMap[tokenType] || 'Unknown'}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
+          partEnd = nextDecorationStart
+          text = line.slice(currentPos, partEnd)
+          className = `Token ${embeddedTokenMap[tokenType] || 'Unknown'}`
         }
+        const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
+        lineInfo.push(normalizedText, className)
+        currentPos = partEnd
       }
     } else {
       // No decoration overlap - render token normally
@@ -340,15 +341,16 @@ const getLineInfoDefault = (
         // Find if current position is inside a decoration
         const activeDecoration = getActiveDecoration(decorationMap, currentPos)
 
+        let partEnd
+        let text
+        let className
+
         if (activeDecoration) {
           // Render decorated part
-          const partEnd = Math.min(tokenEnd, activeDecoration.end)
-          const text = line.slice(currentPos, partEnd)
+          partEnd = Math.min(tokenEnd, activeDecoration.end)
+          text = line.slice(currentPos, partEnd)
           const baseTokenClass = TokenMap[tokenType] || 'Unknown'
-          const className = `Token ${baseTokenClass} ${activeDecoration.className}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
+          className = `Token ${baseTokenClass} ${activeDecoration.className}`
         } else {
           // Find next decoration start or token end
           let nextDecorationStart = tokenEnd
@@ -359,13 +361,13 @@ const getLineInfoDefault = (
           }
 
           // Render non-decorated part
-          const partEnd = nextDecorationStart
-          const text = line.slice(currentPos, partEnd)
-          const className = `Token ${TokenMap[tokenType] || 'Unknown'}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
+          partEnd = nextDecorationStart
+          text = line.slice(currentPos, partEnd)
+          className = `Token ${TokenMap[tokenType] || 'Unknown'}`
         }
+        const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
+        lineInfo.push(normalizedText, className)
+        currentPos = partEnd
       }
     } else {
       // No decoration overlap - render token normally

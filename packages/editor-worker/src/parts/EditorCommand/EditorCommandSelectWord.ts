@@ -3,6 +3,8 @@ import * as Editor from '../Editor/Editor.ts'
 // @ts-ignore
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
+/* eslint-disable sonarjs/super-linear-regex */
+
 // match all words, including umlauts, see https://stackoverflow.com/questions/5436824/matching-accented-characters-with-javascript-regexes/#answer-11550799
 const RE_WORD_START = /^[a-zA-Z\u{C0}-\u{17F}\d]+/u
 const RE_WORD_END = /[a-zA-Z\u{C0}-\u{17F}\d]+$/u
