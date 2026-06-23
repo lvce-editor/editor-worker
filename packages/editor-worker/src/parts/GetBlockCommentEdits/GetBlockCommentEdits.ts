@@ -2,6 +2,8 @@ import type { Edit } from '../Edit/Edit.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
+/* eslint-disable sonarjs/super-linear-regex */
+
 const RE_WHITESPACE_AT_START = /^\s+/
 const RE_WHITESPACE_AT_END = /\s+$/
 

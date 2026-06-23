@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/super-linear-regex */
+
 const RE_WORD = /[\w\-]+$/
 
 export const getWordAtOffset = (editor: any): string => {
