@@ -16,5 +16,8 @@ export const renderIncremental = (oldState: EditorState, newState: EditorState):
   const oldDom: readonly VirtualDomNode[] = getDom(oldState)
   const newDom: readonly VirtualDomNode[] = getDom(newState)
   const patches = diffTree(oldDom, newDom)
+  if (patches.length === 0) {
+    return []
+  }
   return [ViewletCommand.SetPatches, newState.uid, patches]
 }
