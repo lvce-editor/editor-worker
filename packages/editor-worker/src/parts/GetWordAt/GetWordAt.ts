@@ -1,7 +1,5 @@
 import * as Character from '../Character/Character.ts'
 
-/* eslint-disable sonarjs/super-linear-regex */
-
 const RE_WORD_START = /^[\w\-]+/
 
 const RE_WORD_END = /[\w\-]+$/

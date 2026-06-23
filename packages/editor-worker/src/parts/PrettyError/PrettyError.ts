@@ -40,8 +40,6 @@ const prepareErrorMessageWithCodeFrame = (error: any) => {
   }
 }
 
-/* eslint-disable sonarjs/super-linear-regex */
-
 const RE_PATH_1 = /\((.*):(\d+):(\d+)\)$/
 const RE_PATH_2 = /at (.*):(\d+):(\d+)$/
 
