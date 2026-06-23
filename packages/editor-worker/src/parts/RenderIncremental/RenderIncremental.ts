@@ -2,8 +2,9 @@ import { ViewletCommand } from '@lvce-editor/constants'
 import { type VirtualDomNode, diffTree } from '@lvce-editor/virtual-dom-worker'
 import type { EditorState } from '../State/State.ts'
 import { getEditorVirtualDom } from '../GetEditorVirtualDom/GetEditorVirtualDom.ts'
+import * as RenderedDoms from '../RenderedDoms/RenderedDoms.ts'
 
-const getDom = (state: EditorState): readonly VirtualDomNode[] => {
+export const getDom = (state: EditorState): readonly VirtualDomNode[] => {
   const { initial, textInfos } = state
   if (initial && textInfos.length === 0) {
     return []
@@ -17,9 +18,10 @@ const isFastScroll = (oldState: EditorState, newState: EditorState): boolean => 
 }
 
 export const renderIncremental = (oldState: EditorState, newState: EditorState): any => {
-  const oldDom: readonly VirtualDomNode[] = getDom(oldState)
+  const oldDom: readonly VirtualDomNode[] = oldState.initial ? getDom(oldState) : RenderedDoms.get(newState.uid) || getDom(oldState)
   const newDom: readonly VirtualDomNode[] = getDom(newState)
   if (isFastScroll(oldState, newState)) {
+    RenderedDoms.set(newState.uid, newDom)
     return [
       ViewletCommand.SetPatches,
       newState.uid,
@@ -35,5 +37,6 @@ export const renderIncremental = (oldState: EditorState, newState: EditorState):
   if (patches.length === 0) {
     return []
   }
+  RenderedDoms.set(newState.uid, newDom)
   return [ViewletCommand.SetPatches, newState.uid, patches]
 }

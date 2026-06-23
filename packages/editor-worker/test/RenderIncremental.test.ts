@@ -1,5 +1,6 @@
-import { expect, test } from '@jest/globals'
+import { beforeEach, expect, test } from '@jest/globals'
 import { ViewletCommand } from '@lvce-editor/constants'
+import * as RenderedDoms from '../src/parts/RenderedDoms/RenderedDoms.ts'
 import * as RenderIncremental from '../src/parts/RenderIncremental/RenderIncremental.ts'
 
 const createState = (minLineY: number, textInfos: readonly any[]): any => ({
@@ -8,6 +9,10 @@ const createState = (minLineY: number, textInfos: readonly any[]): any => ({
   minLineY,
   textInfos,
   uid: 1,
+})
+
+beforeEach(() => {
+  RenderedDoms.clear()
 })
 
 test('renderIncremental uses full render when visible rows jump during fast scroll', () => {
@@ -64,4 +69,59 @@ test('renderIncremental uses full render when visible rows jump during fast scro
       type: 6,
     },
   ])
+})
+
+test('renderIncremental diffs from the last emitted dom when editor state is mutated', () => {
+  const textInfos = [
+    [
+      ' '.repeat(6),
+      'Token Whitespace',
+      '"',
+      'Token Punctuation',
+      'lerna',
+      'Token JsonPropertyName',
+      '"',
+      'Token Punctuation',
+      ':',
+      'Token Punctuation',
+      ' ',
+      'Token Whitespace',
+      '{',
+      'Token Punctuation',
+    ],
+  ]
+  const initialState = createState(0, [])
+  initialState.initial = true
+  const renderedState = createState(0, textInfos)
+
+  RenderIncremental.renderIncremental(initialState, renderedState)
+  textInfos[0] = [
+    ' '.repeat(6),
+    'Token Whitespace',
+    '"',
+    'Token Punctuation',
+    'lerna',
+    'Token JsonPropertyName',
+    '"',
+    'Token Punctuation',
+    ':',
+    'Token Punctuation',
+    ' ',
+    'Token Whitespace',
+    '"',
+    'Token Punctuation',
+    '^8.2.4',
+    'Token JsonPropertyValueString',
+    '"',
+    'Token Punctuation',
+    ',',
+    'Token Punctuation',
+  ]
+  const newState = createState(0, textInfos)
+
+  const command = RenderIncremental.renderIncremental(renderedState, newState)
+
+  expect(command[0]).toBe(ViewletCommand.SetPatches)
+  expect(command[1]).toBe(1)
+  expect(command[2]).not.toEqual([])
 })
