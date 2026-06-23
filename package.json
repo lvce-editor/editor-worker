@@ -13,6 +13,7 @@
     "postinstall": "lerna bootstrap --ci",
     "lint": "eslint . && prettier --check .",
     "test": "lerna run test",
+    "trigger-ci-branches": "bash packages/build/trigger-ci-branches.sh",
     "type-check": "tsc -b"
   },
   "prettier": {
