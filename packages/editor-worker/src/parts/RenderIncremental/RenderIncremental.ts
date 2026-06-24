@@ -4,13 +4,17 @@ import type { EditorState } from '../State/State.ts'
 import { getEditorVirtualDom } from '../GetEditorVirtualDom/GetEditorVirtualDom.ts'
 import * as RenderedDoms from '../RenderedDoms/RenderedDoms.ts'
 
-export const getDom = (state: EditorState): readonly VirtualDomNode[] => {
+const getDom = (state: EditorState): readonly VirtualDomNode[] => {
   const { initial, textInfos } = state
   if (initial && textInfos.length === 0) {
     return []
   }
 
   return getEditorVirtualDom(state)
+}
+
+const isFastScroll = (oldState: EditorState, newState: EditorState): boolean => {
+  return Math.abs(newState.minLineY - oldState.minLineY) > 1
 }
 
 export const renderIncremental = (oldState: EditorState, newState: EditorState): any => {
