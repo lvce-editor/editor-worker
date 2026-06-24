@@ -16,8 +16,6 @@ export const getDom = (state: EditorState): readonly VirtualDomNode[] => {
 export const renderIncremental = (oldState: EditorState, newState: EditorState): any => {
   const oldDom: readonly VirtualDomNode[] = oldState.initial ? getDom(oldState) : RenderedDoms.get(newState.uid) || getDom(oldState)
   const newDom: readonly VirtualDomNode[] = getDom(newState)
-<<<<<<< Updated upstream
-=======
   if (isFastScroll(oldState, newState)) {
     RenderedDoms.set(newState.uid, newDom)
     return [
@@ -31,7 +29,6 @@ export const renderIncremental = (oldState: EditorState, newState: EditorState):
       ],
     ]
   }
->>>>>>> Stashed changes
   const patches = diffTree(oldDom, newDom)
   if (patches.length === 0) {
     return []
