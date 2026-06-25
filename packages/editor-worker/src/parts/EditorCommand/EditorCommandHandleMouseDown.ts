@@ -4,16 +4,24 @@ import * as EditorHandleDoubleClick from './EditorCommandHandleDoubleClick.ts'
 import * as EditorHandleSingleClick from './EditorCommandHandleSingleClick.ts'
 import * as EditorHandleTripleClick from './EditorCommandHandleTripleClick.ts'
 
-export const handleMouseDown = (state: any, button: number, altKey: boolean, ctrlKey: boolean, x: number, y: number, detail: any) => {
+export const handleMouseDown = async (state: any, button: number, altKey: boolean, ctrlKey: boolean, x: number, y: number, detail: any) => {
   const modifier = GetModifier.getModifier(altKey, ctrlKey)
+  let newState
   switch (detail) {
     case ClickDetailType.Double:
-      return EditorHandleDoubleClick.handleDoubleClick(state, modifier, x, y)
+      newState = await EditorHandleDoubleClick.handleDoubleClick(state, modifier, x, y)
+      break
     case ClickDetailType.Single:
-      return EditorHandleSingleClick.handleSingleClick(state, modifier, x, y)
+      newState = await EditorHandleSingleClick.handleSingleClick(state, modifier, x, y)
+      break
     case ClickDetailType.Triple:
-      return EditorHandleTripleClick.handleTripleClick(state, modifier, x, y)
+      newState = EditorHandleTripleClick.handleTripleClick(state, modifier, x, y)
+      break
     default:
       return state
+  }
+  return {
+    ...newState,
+    isSelecting: true,
   }
 }
