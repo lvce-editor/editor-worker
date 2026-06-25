@@ -1,6 +1,6 @@
 import { afterEach, expect, jest, test } from '@jest/globals'
-import * as EditorMoveSelectionAnchorState from '../src/parts/EditorMoveSelectionAnchorState/EditorMoveSelectionAnchorState.ts'
 import * as EditorCommandMoveSelectionPx from '../src/parts/EditorCommand/EditorCommandMoveSelectionPx.ts'
+import * as EditorMoveSelectionAnchorState from '../src/parts/EditorMoveSelectionAnchorState/EditorMoveSelectionAnchorState.ts'
 
 afterEach(() => {
   jest.restoreAllMocks()

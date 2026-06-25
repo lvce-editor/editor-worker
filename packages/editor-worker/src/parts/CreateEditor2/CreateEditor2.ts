@@ -76,11 +76,11 @@ export const createEditor2 = (
     savedSelections: [],
     scrollBarHeight: 0,
     scrollBarWidth: 0,
-    selectionInfos: [],
     selectionAutoMovePosition: {
       columnIndex: 0,
       rowIndex: 0,
     },
+    selectionInfos: [],
     selections: new Uint32Array(),
     tabSize: 0,
     textInfos: [],

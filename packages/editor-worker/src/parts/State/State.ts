@@ -60,8 +60,8 @@ export interface EditorState {
   readonly savedSelections: readonly any[]
   readonly scrollBarHeight: number
   readonly scrollBarWidth: number
-  readonly selectionInfos: readonly any[]
   readonly selectionAutoMovePosition: { readonly rowIndex: number; readonly columnIndex: number }
+  readonly selectionInfos: readonly any[]
   readonly selections: Uint32Array
   readonly tabSize: number
   readonly textInfos: readonly any[]

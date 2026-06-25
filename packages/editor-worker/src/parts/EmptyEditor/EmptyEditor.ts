@@ -23,11 +23,11 @@ export const emptyEditor = {
   minLineY: 0,
   redoStack: [],
   scrollBarHeight: 0,
-  selectionInfos: [],
   selectionAutoMovePosition: {
     columnIndex: 0,
     rowIndex: 0,
   },
+  selectionInfos: [],
   selections: new Uint32Array(),
   textInfos: [],
   tokenizerId: 0,
