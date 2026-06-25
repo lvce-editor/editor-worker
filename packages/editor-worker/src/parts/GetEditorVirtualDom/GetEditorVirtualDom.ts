@@ -23,16 +23,12 @@ interface EditorVirtualDomOptions {
 
 export const getEditorVirtualDom = ({
   cursorInfos = [],
-  deltaY = 0,
   diagnostics = [],
   differences,
-  finalDeltaY = 0,
   gutterInfos = [],
-  height = 0,
   highlightedLine = -1,
   lineNumbers = true,
   scrollBarDiagnostics = [],
-  scrollBarHeight = 0,
   selectionInfos = [],
   textInfos,
 }: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
@@ -48,15 +44,11 @@ export const getEditorVirtualDom = ({
     ...gutterDom,
     ...GetEditorContentVirtualDom.getEditorContentVirtualDom({
       cursorInfos,
-      deltaY,
       diagnostics,
       differences,
-      finalDeltaY,
-      height,
       highlightedLine,
       lineNumbers,
       scrollBarDiagnostics,
-      scrollBarHeight,
       selectionInfos,
       textInfos,
     }),
