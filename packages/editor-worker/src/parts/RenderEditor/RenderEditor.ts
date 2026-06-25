@@ -1,5 +1,6 @@
 import { ViewletCommand } from '@lvce-editor/constants'
 import type { EditorState } from '../State/State.ts'
+import * as DiffCss from '../DiffCss/DiffCss.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
@@ -7,8 +8,8 @@ import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagno
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
 import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
+import { renderCss as renderCssCommand } from '../RenderCss/RenderCss.ts'
 import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
-import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 const renderLines = {
   apply(oldState: EditorState, newState: EditorState) {
@@ -45,25 +46,9 @@ const renderSelections = {
   isEqual: (oldState: any, newState: any) => oldState.cursorInfos === newState.cursorInfos && oldState.selectionInfos === newState.selectionInfos,
 }
 
-const renderScrollBarY = {
-  apply(oldState: EditorState, newState: EditorState) {
-    const scrollBarY = ScrollBarFunctions.getScrollBarY(newState.deltaY, newState.finalDeltaY, newState.height, newState.scrollBarHeight)
-    const translate = `0 ${scrollBarY}px`
-    const heightPx = `${newState.scrollBarHeight}px`
-    return [/* method */ 'setScrollBar', translate, heightPx]
-  },
-  isEqual: (oldState: EditorState, newState: EditorState) =>
-    oldState.deltaY === newState.deltaY && oldState.scrollBarHeight === newState.scrollBarHeight,
-}
-
-const renderScrollBarX = {
-  apply(oldState: EditorState, newState: EditorState) {
-    const scrollBarWidth = ScrollBarFunctions.getScrollBarSize(newState.width, newState.longestLineWidth, newState.minimumSliderSize)
-    const scrollBarX = (newState.deltaX / newState.longestLineWidth) * newState.width
-    return [/* method */ 'setScrollBarHorizontal', /* scrollBarX */ scrollBarX, /* scrollBarWidth */ scrollBarWidth, /* deltaX */ newState.deltaX]
-  },
-  isEqual: (oldState: EditorState, newState: EditorState) =>
-    oldState.longestLineWidth === newState.longestLineWidth && oldState.deltaX === newState.deltaX,
+const renderCss = {
+  apply: renderCssCommand,
+  isEqual: DiffCss.isEqual,
 }
 
 const renderFocus = {
@@ -172,8 +157,7 @@ const renderWidgets = {
 const render = [
   renderLines,
   renderSelections,
-  renderScrollBarX,
-  renderScrollBarY,
+  renderCss,
   renderFocus,
   renderDecorations,
   renderGutterInfo,
