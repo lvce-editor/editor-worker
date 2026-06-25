@@ -14,6 +14,8 @@ export const test: Test = async ({ expect, FileSystem, Locator, Main, Settings, 
   await Main.openUri(filePath)
 
   // assert
-  await expect(Locator('.EditorContent')).toBeVisible()
-  await expect(Locator('.Gutter')).toHaveCount(0)
+  const editorContent = Locator('.EditorContent')
+  const gutter = Locator('.Gutter')
+  await expect(editorContent).toBeVisible()
+  await expect(gutter).toHaveCount(0)
 }
