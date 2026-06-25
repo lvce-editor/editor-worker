@@ -1,5 +1,4 @@
 import * as Assert from '../Assert/Assert.ts'
-import * as EditorMoveSelectionAnchorState from '../EditorMoveSelectionAnchorState/EditorMoveSelectionAnchorState.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as RequestAnimationFrame from '../RequestAnimationFrame/RequestAnimationFrame.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
@@ -14,7 +13,7 @@ const getNewEditor = (editor, position) => {
     const newMinLineY = position.rowIndex
     const newMaxLineY = position.rowIndex + diff
     const newDeltaY = position.rowIndex * rowHeight
-    const anchor = EditorMoveSelectionAnchorState.getPosition()
+    const anchor = editor.selectionAnchorPosition
     const newSelections = new Uint32Array([position.rowIndex - 1, position.columnIndex, anchor.rowIndex, anchor.columnIndex])
     return {
       ...editor,
@@ -29,7 +28,7 @@ const getNewEditor = (editor, position) => {
     const newMinLineY = position.rowIndex - diff
     const newMaxLineY = position.rowIndex
     const newDeltaY = newMinLineY * rowHeight
-    const anchor = EditorMoveSelectionAnchorState.getPosition()
+    const anchor = editor.selectionAnchorPosition
     const newSelections = new Uint32Array([anchor.rowIndex, anchor.columnIndex, position.rowIndex + 1, position.columnIndex])
     return {
       ...editor,
