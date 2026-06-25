@@ -178,3 +178,21 @@ test('getEditorVirtualDom', () => {
     },
   ])
 })
+
+test('getEditorVirtualDom - line numbers disabled', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    differences: [],
+    gutterInfos: [1],
+    lineNumbers: false,
+    textInfos: [],
+  })
+
+  expect(dom[0]).toEqual({
+    childCount: 1,
+    className: 'Viewlet Editor',
+    onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+    role: 'code',
+    type: VirtualDomElements.Div,
+  })
+  expect(dom.some((node) => node.className === 'Gutter')).toBe(false)
+})

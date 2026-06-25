@@ -97,16 +97,18 @@ const renderDecorations = {
 const renderGutterInfo = {
   apply(oldState: EditorState, newState: EditorState) {
     const { lineNumbers, maxLineY, minLineY } = newState
+    if (!lineNumbers) {
+      return []
+    }
     const gutterInfos = []
-    if (lineNumbers) {
-      for (let i = minLineY; i < maxLineY; i++) {
-        gutterInfos.push(i + 1)
-      }
+    for (let i = minLineY; i < maxLineY; i++) {
+      gutterInfos.push(i + 1)
     }
     const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos)
     return ['renderGutter', dom]
   },
-  isEqual: (oldState: EditorState, newState: EditorState) => oldState.minLineY === newState.minLineY && oldState.maxLineY === newState.maxLineY,
+  isEqual: (oldState: EditorState, newState: EditorState) =>
+    oldState.lineNumbers === newState.lineNumbers && oldState.minLineY === newState.minLineY && oldState.maxLineY === newState.maxLineY,
 }
 
 const renderWidgets = {
