@@ -10,9 +10,11 @@ export const emptyEditor = {
   differences: [],
   embeds: [],
   focused: false,
+  hasListener: false,
   height: 0,
   highlightedLine: -1,
   incrementalEdits: emptyIncrementalEdits,
+  isSelecting: false,
   languageId: '', // TODO use numeric language id?
   lineCache: [],
   lines: [],
@@ -21,6 +23,10 @@ export const emptyEditor = {
   minLineY: 0,
   redoStack: [],
   scrollBarHeight: 0,
+  selectionAutoMovePosition: {
+    columnIndex: 0,
+    rowIndex: 0,
+  },
   selectionInfos: [],
   selections: new Uint32Array(),
   textInfos: [],
