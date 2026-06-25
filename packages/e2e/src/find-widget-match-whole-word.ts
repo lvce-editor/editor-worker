@@ -1,6 +1,6 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
-export const name = 'find-widget.no-results'
+export const name = 'find-widget-match-whole-word'
 
 export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
   // arrange
@@ -12,16 +12,16 @@ content 2`,
   )
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
-  await Editor.setSelections(new Uint32Array([0, 0, 0, 0]))
+  await Editor.setSelections(new Uint32Array([0, 0, 0, 3]))
   await Editor.openFind()
+  await FindWidget.setValue(`con`)
 
   // act
-  await FindWidget.setValue('not-found')
+  await FindWidget.toggleMatchWholeWord()
 
   // assert
-  const findWidgetInput = Locator('.FindWidget .MultilineInputBox')
-  await expect(findWidgetInput).toBeVisible()
-  await expect(findWidgetInput).toHaveValue('not-found')
+  const matchCaseCheckBox = Locator(`.SearchFieldButton[name="MatchWholeWord"]`)
+  await expect(matchCaseCheckBox).toHaveAttribute(`aria-checked`, 'true')
   const findWidgetMatchCount = Locator(`.FindWidgetMatchCount`)
   await expect(findWidgetMatchCount).toBeVisible()
   await expect(findWidgetMatchCount).toHaveText('No Results')
