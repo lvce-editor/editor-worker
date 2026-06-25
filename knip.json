@@ -1,0 +1,33 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "workspaces": {
+    ".": {
+      "project": ["*.js"],
+      "ignoreDependencies": ["@lerna/legacy-package-management"]
+    },
+    "packages/build": {
+      "project": ["src/**/*.ts"],
+      "ignoreDependencies": ["esbuild", "playwright"]
+    },
+    "packages/e2e": {
+      "entry": ["src/**/*.ts", "fixtures/**/main.js"],
+      "project": ["src/**/*.ts", "fixtures/**/*.js"],
+      "ignoreFiles": ["fixtures/editor.syntax-highlighting-nested-extension/src/*.js"]
+    },
+    "packages/editor-worker": {
+      "entry": ["src/editorWorkerMain.ts", "test/**/*.test.ts"],
+      "project": ["src/**/*.ts", "test/**/*.ts"],
+      "ignoreFiles": ["src/parts/**"],
+      "ignoreIssues": {
+        "src/parts/**": ["duplicates", "exports", "types"]
+      }
+    },
+    "packages/evaluation-worker": {
+      "project": ["src/**/*.ts", "test/**/*.ts"],
+      "ignoreDependencies": ["@jest/globals", "@lvce-editor/rpc"]
+    },
+    "packages/server": {
+      "project": ["src/**/*.js"]
+    }
+  }
+}
