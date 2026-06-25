@@ -1,5 +1,5 @@
 {
-  "name": "text-search-worker",
+  "name": "editor-worker",
   "image": "mcr.microsoft.com/devcontainers/node:24",
   "postCreateCommand": "npm ci",
   "customizations": {
