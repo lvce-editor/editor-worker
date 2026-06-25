@@ -27,6 +27,7 @@ export interface EditorState {
   readonly fontWeight: number
   readonly handleOffset: number
   readonly handleOffsetX: number
+  readonly hasListener: boolean
   readonly height: number
   readonly highlightedLine: number
   readonly id: number
@@ -38,6 +39,7 @@ export interface EditorState {
   readonly isAutoClosingTagsEnabled: boolean
   readonly isMonospaceFont: boolean
   readonly isQuickSuggestionsEnabled: boolean
+  readonly isSelecting: boolean
   readonly itemHeight: number
   readonly languageId: string
   readonly letterSpacing: number
@@ -59,6 +61,7 @@ export interface EditorState {
   readonly scrollBarHeight: number
   readonly scrollBarWidth: number
   readonly selectionInfos: readonly any[]
+  readonly selectionAutoMovePosition: { readonly rowIndex: number; readonly columnIndex: number }
   readonly selections: Uint32Array
   readonly tabSize: number
   readonly textInfos: readonly any[]

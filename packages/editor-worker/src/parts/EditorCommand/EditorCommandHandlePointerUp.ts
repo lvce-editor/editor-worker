@@ -1,6 +1,11 @@
-import * as EditorSelectionAutoMoveState from '../EditorSelectionAutoMoveState/EditorSelectionAutoMoveState.ts'
-
 export const handlePointerUp = (editor: any) => {
-  EditorSelectionAutoMoveState.clearEditor()
-  return editor
+  return {
+    ...editor,
+    hasListener: false,
+    isSelecting: false,
+    selectionAutoMovePosition: {
+      columnIndex: 0,
+      rowIndex: 0,
+    },
+  }
 }
