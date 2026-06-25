@@ -7,7 +7,11 @@ export const applyRender = (oldState: EditorState, newState: EditorState, diffRe
     const fn = GetRenderer.getRenderer(item)
     const result = fn(oldState, newState)
     if (result.length > 0) {
-      commands.push(result)
+      if (Array.isArray(result[0])) {
+        commands.push(...result)
+      } else {
+        commands.push(result)
+      }
     }
   }
   return commands
