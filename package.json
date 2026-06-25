@@ -11,7 +11,7 @@
     "dev": "node packages/build/src/dev.ts",
     "format": "prettier --write .",
     "postinstall": "lerna bootstrap --ci",
-    "lint": "eslint . && prettier --check .",
+    "lint": "eslint . && prettier --check . && knip --no-config-hints",
     "test": "lerna run test",
     "trigger-ci-branches": "bash packages/build/trigger-ci-branches.sh",
     "type-check": "tsc -b"
@@ -24,7 +24,10 @@
   "devDependencies": {
     "@lerna/legacy-package-management": "^8.2.4",
     "@lvce-editor/eslint-config": "^13.5.0",
+    "@lvce-editor/eslint-plugin-github-actions": "^13.5.0",
+    "@lvce-editor/eslint-plugin-tsconfig": "^13.5.0",
     "eslint": "^10.5.0",
+    "knip": "^6.20.0",
     "lerna": "^8.2.4",
     "prettier": "^3.8.4",
     "typescript": "^6.0.3"
