@@ -1,6 +1,5 @@
 import { afterEach, expect, jest, test } from '@jest/globals'
 import * as EditorCommandMoveSelectionPx from '../src/parts/EditorCommand/EditorCommandMoveSelectionPx.ts'
-import * as EditorMoveSelectionAnchorState from '../src/parts/EditorMoveSelectionAnchorState/EditorMoveSelectionAnchorState.ts'
 
 afterEach(() => {
   jest.restoreAllMocks()
@@ -11,10 +10,6 @@ test('moveSelectionPx - sets selection auto move state when moving outside visib
   Object.defineProperty(globalThis, 'requestAnimationFrame', {
     configurable: true,
     value: requestAnimationFrame,
-  })
-  EditorMoveSelectionAnchorState.setPosition({
-    columnIndex: 0,
-    rowIndex: 0,
   })
   const editor = {
     charWidth: 8,
@@ -31,6 +26,10 @@ test('moveSelectionPx - sets selection auto move state when moving outside visib
     maxLineY: 1,
     minLineY: 0,
     rowHeight: 20,
+    selectionAnchorPosition: {
+      columnIndex: 0,
+      rowIndex: 0,
+    },
     selectionAutoMovePosition: {
       columnIndex: 0,
       rowIndex: 0,

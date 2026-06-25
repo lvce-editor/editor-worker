@@ -34,6 +34,10 @@ test('handlePointerDown - sets collapsed selection like single click', async () 
   expect(result).toMatchObject({
     focused: true,
     isSelecting: true,
+    selectionAnchorPosition: {
+      columnIndex: 0,
+      rowIndex: 0,
+    },
     selections: new Uint32Array([0, 0, 0, 0]),
   })
 })
