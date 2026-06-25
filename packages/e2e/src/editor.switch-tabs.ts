@@ -4,7 +4,8 @@ export const name = 'viewlet.editor-switch-tabs'
 
 export const test: Test = async ({ expect, FileSystem, Locator, Main, Workspace }) => {
   const shouldHaveActiveEditorText = async (expectedText: string): Promise<void> => {
-    await expect(Locator('.EditorRows')).toHaveText(expectedText)
+    const editorRows = Locator('.EditorRows')
+    await expect(editorRows).toHaveText(expectedText)
   }
 
   // arrange
@@ -23,28 +24,31 @@ export const test: Test = async ({ expect, FileSystem, Locator, Main, Workspace 
   await Main.openUri(firstFile)
 
   // assert
-  await expect(Locator(`.MainTab.MainTabSelected[title$="${firstName}"]`)).toBeVisible()
+  const firstTab = Locator(`.MainTab[title$="${firstName}"]`)
+  const selectedFirstTab = Locator(`.MainTab.MainTabSelected[title$="${firstName}"]`)
+  await expect(selectedFirstTab).toBeVisible()
   await shouldHaveActiveEditorText('first file content')
 
   // act
   await Main.openUri(secondFile)
 
   // assert
-  await expect(Locator(`.MainTab[title$="${firstName}"]`)).toBeVisible()
-  await expect(Locator(`.MainTab.MainTabSelected[title$="${secondName}"]`)).toBeVisible()
+  const selectedSecondTab = Locator(`.MainTab.MainTabSelected[title$="${secondName}"]`)
+  await expect(firstTab).toBeVisible()
+  await expect(selectedSecondTab).toBeVisible()
   await shouldHaveActiveEditorText('second file content')
 
   // act
   await Main.selectTab(0, 0)
 
   // assert
-  await expect(Locator(`.MainTab.MainTabSelected[title$="${firstName}"]`)).toBeVisible()
+  await expect(selectedFirstTab).toBeVisible()
   await shouldHaveActiveEditorText('first file content')
 
   // act
   await Main.selectTab(0, 1)
 
   // assert
-  await expect(Locator(`.MainTab.MainTabSelected[title$="${secondName}"]`)).toBeVisible()
+  await expect(selectedSecondTab).toBeVisible()
   await shouldHaveActiveEditorText('second file content')
 }
