@@ -5,6 +5,11 @@ import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts
 export const getEditorInputVirtualDom = (): readonly VirtualDomNode[] => {
   return [
     {
+      childCount: 1,
+      className: 'EditorInput',
+      type: VirtualDomElements.Div,
+    },
+    {
       ariaAutoComplete: 'list',
       ariaMultiLine: 'true',
       ariaRoleDescription: 'editor',
@@ -12,7 +17,6 @@ export const getEditorInputVirtualDom = (): readonly VirtualDomNode[] => {
       autocomplete: 'off',
       autocorrect: 'off',
       childCount: 0,
-      className: 'EditorInput',
       name: 'editor',
       onBeforeInput: DomEventListenerFunctions.HandleBeforeInput,
       onBlur: DomEventListenerFunctions.HandleBlur,
