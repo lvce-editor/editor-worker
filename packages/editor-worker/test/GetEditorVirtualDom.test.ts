@@ -56,6 +56,11 @@ test('getEditorVirtualDom', () => {
       type: VirtualDomElements.Div,
     },
     {
+      childCount: 1,
+      className: 'EditorInput',
+      type: VirtualDomElements.Div,
+    },
+    {
       ariaAutoComplete: 'list',
       ariaMultiLine: 'true',
       ariaRoleDescription: 'editor',
@@ -63,7 +68,6 @@ test('getEditorVirtualDom', () => {
       autocomplete: 'off',
       autocorrect: 'off',
       childCount: 0,
-      className: 'EditorInput',
       name: 'editor',
       onBeforeInput: DomEventListenerFunctions.HandleBeforeInput,
       onBlur: DomEventListenerFunctions.HandleBlur,
