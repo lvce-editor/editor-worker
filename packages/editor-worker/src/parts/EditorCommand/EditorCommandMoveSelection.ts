@@ -2,8 +2,6 @@
 import * as CompareResultType from '../CompareResultType/CompareResultType.ts'
 // @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
-// @ts-ignore
-import * as EditorMoveSelectionAnchorState from '../EditorMoveSelectionAnchorState/EditorMoveSelectionAnchorState.ts'
 
 // @ts-ignore
 const compare = (positionA, positionB) => {
@@ -53,7 +51,7 @@ const getNewSelections = (anchor, position) => {
 
 // @ts-ignore
 export const editorMoveSelection = (editor, position) => {
-  const anchor = EditorMoveSelectionAnchorState.getPosition()
+  const anchor = editor.selectionAnchorPosition
   const newSelections = getNewSelections(anchor, position)
   // TODO if selection equals previous selection -> do nothing
   return Editor.scheduleSelections(editor, newSelections)
