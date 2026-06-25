@@ -36,15 +36,16 @@ export const getEditorVirtualDom = ({
   selectionInfos = [],
   textInfos,
 }: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
+  const gutterDom = lineNumbers ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(gutterInfos) : []
   return [
     {
-      childCount: 2,
+      childCount: lineNumbers ? 2 : 1,
       className: 'Viewlet Editor',
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
       role: 'code',
       type: VirtualDomElements.Div,
     },
-    ...GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(gutterInfos),
+    ...gutterDom,
     ...GetEditorContentVirtualDom.getEditorContentVirtualDom({
       cursorInfos,
       deltaY,
