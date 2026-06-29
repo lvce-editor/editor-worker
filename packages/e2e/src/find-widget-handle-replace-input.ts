@@ -1,6 +1,6 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
-export const name = 'find-widget.no-results'
+export const name = 'find-widget-handle-replace-input'
 
 export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
   // arrange
@@ -14,15 +14,13 @@ content 2`,
   await Main.openUri(`${tmpDir}/file1.txt`)
   await Editor.setSelections(new Uint32Array([0, 0, 0, 0]))
   await Editor.openFind()
+  await FindWidget.toggleReplace()
 
   // act
-  await FindWidget.setValue('not-found')
+  await FindWidget.setReplaceValue('abc')
 
   // assert
-  const findWidgetInput = Locator('.FindWidget .MultilineInputBox')
-  await expect(findWidgetInput).toBeVisible()
-  await expect(findWidgetInput).toHaveValue('not-found')
-  const findWidgetMatchCount = Locator(`.FindWidgetMatchCount`)
-  await expect(findWidgetMatchCount).toBeVisible()
-  await expect(findWidgetMatchCount).toHaveText('No Results')
+  const findWidgetReplaceInput = Locator('.FindWidget [name="replace-value"]')
+  await expect(findWidgetReplaceInput).toBeVisible()
+  await expect(findWidgetReplaceInput).toHaveValue('abc')
 }
