@@ -4,6 +4,7 @@ import { renderCss } from '../RenderCss/RenderCss.ts'
 import { renderFocus } from '../RenderFocus/RenderFocus.ts'
 import * as RenderFocusContext from '../RenderFocusContext/RenderFocusContext.ts'
 import { renderIncremental } from '../RenderIncremental/RenderIncremental.ts'
+import { renderWidgets } from '../RenderWidgets/RenderWidgets.ts'
 
 export const getRenderer = (diffType: number): Renderer => {
   switch (diffType) {
@@ -15,6 +16,8 @@ export const getRenderer = (diffType: number): Renderer => {
       return RenderFocusContext.renderFocusContext
     case DiffType.RenderIncremental:
       return renderIncremental
+    case DiffType.RenderWidgets:
+      return renderWidgets
     default:
       throw new Error('unknown renderer')
   }
