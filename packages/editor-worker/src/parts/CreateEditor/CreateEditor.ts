@@ -113,6 +113,10 @@ export const createEditor = async ({
     savedSelections,
     scrollBarHeight: 0,
     scrollBarWidth: 0,
+    selectionAnchorPosition: {
+      columnIndex: 0,
+      rowIndex: 0,
+    },
     selectionAutoMovePosition: {
       columnIndex: 0,
       rowIndex: 0,

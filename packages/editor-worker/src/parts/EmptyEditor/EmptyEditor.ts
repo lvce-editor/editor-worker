@@ -23,6 +23,10 @@ export const emptyEditor = {
   minLineY: 0,
   redoStack: [],
   scrollBarHeight: 0,
+  selectionAnchorPosition: {
+    columnIndex: 0,
+    rowIndex: 0,
+  },
   selectionAutoMovePosition: {
     columnIndex: 0,
     rowIndex: 0,
