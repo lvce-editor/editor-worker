@@ -18,15 +18,35 @@ const commandsToForward = [
   'Viewlet.focusSelector',
 ]
 
+// The find-widget worker emits onFocus: 9, but older bundles omit the matching listener registration.
+const FindWidgetHandleFocus = 9
+
+const findWidgetFocusListener = {
+  name: FindWidgetHandleFocus,
+  params: ['executeWidgetCommand', 'FindWidget', 'FindWidget.handleFocus', 0, WidgetId.Find],
+}
+
+const withFindWidgetFocusListener = (command: readonly any[]): readonly any[] => {
+  if (command[0] !== RenderMethod.RegisterEventListeners) {
+    return command
+  }
+  const eventListeners = command[2]
+  if (!Array.isArray(eventListeners) || eventListeners.some((listener) => listener.name === FindWidgetHandleFocus)) {
+    return command
+  }
+  return [command[0], command[1], [...eventListeners, findWidgetFocusListener]]
+}
+
 export const render = (widget: IFindWidget) => {
   const commands: readonly any[] = FindWidgetRender.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
   const { uid } = widget.newState
   for (const command of commands) {
-    if (commandsToForward.includes(command[0])) {
-      wrappedCommands.push(command)
+    const normalizedCommand = withFindWidgetFocusListener(command)
+    if (commandsToForward.includes(normalizedCommand[0])) {
+      wrappedCommands.push(normalizedCommand)
     } else {
-      wrappedCommands.push(['Viewlet.send', uid, ...command])
+      wrappedCommands.push(['Viewlet.send', uid, ...normalizedCommand])
     }
   }
   return wrappedCommands
