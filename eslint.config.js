@@ -75,6 +75,7 @@ export default [
       'sonarjs/no-redundant-boolean': 'off',
       'sonarjs/regex-complexity': 'off',
       'sonarjs/single-char-in-character-classes': 'off',
+      'devcontainer/post-create-command': 'off',
     },
   },
 ]
