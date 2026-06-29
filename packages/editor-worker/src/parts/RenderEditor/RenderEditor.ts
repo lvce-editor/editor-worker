@@ -96,7 +96,7 @@ const renderGutterInfo = {
     oldState.lineNumbers === newState.lineNumbers && oldState.minLineY === newState.minLineY && oldState.maxLineY === newState.maxLineY,
 }
 
-const renderWidgets = {
+export const renderWidgets = {
   apply(oldState: any, newState: any) {
     const addedWidgets = []
     const changedWidgets = []
