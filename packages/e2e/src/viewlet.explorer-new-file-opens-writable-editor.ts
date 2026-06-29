@@ -4,7 +4,7 @@ export const name = 'viewlet.explorer-new-file-opens-writable-editor'
 
 export const skip = 1
 
-export const test: Test = async ({ Editor, Explorer, expect, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Editor, expect, Explorer, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   const filePath = `${tmpDir}/created.txt`
