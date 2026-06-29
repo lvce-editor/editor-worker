@@ -1,10 +1,10 @@
 import { WidgetId } from '@lvce-editor/constants'
 import type { FindWidgetState } from '../FindWidgetState/FindWidgetState.ts'
+import type { EditorState } from '../State/State.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
 import * as FindWidgetFactory from '../FindWidgetFactory/FindWidgetFactory.ts'
 import * as FindWidgetFunctions from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
-import { EditorState } from '../State/State.ts'
 
 const newStateGenerator = (state: FindWidgetState, parentUid: number): Promise<FindWidgetState> => {
   return FindWidgetFunctions.loadContent(state, parentUid)
