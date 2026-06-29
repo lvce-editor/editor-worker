@@ -8,6 +8,7 @@ export const test: Test = async ({ SideBar, Editor, expect, Explorer, FileSystem
   // arrange
   await SideBar.hide()
   await SideBar.open('Explorer')
+  await SideBar.open('Explorer')
   const tmpDir = await FileSystem.getTmpDir()
   const filePath = `${tmpDir}/created.txt`
   await Workspace.setPath(tmpDir)
