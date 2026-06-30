@@ -1,14 +1,11 @@
-import { WidgetId } from '@lvce-editor/constants'
 import { expect, test } from '@jest/globals'
+import { WidgetId } from '@lvce-editor/constants'
 import * as EditorFindWidget from '../src/parts/EditorFindWidget/EditorFindWidget.ts'
 
 const FindWidgetHandleFocus = 9
 
 test('render adds missing find widget focus listener', () => {
   const widget: any = {
-    oldState: {
-      commands: [],
-    },
     newState: {
       commands: [
         [
@@ -23,6 +20,9 @@ test('render adds missing find widget focus listener', () => {
         ],
       ],
       uid: 100,
+    },
+    oldState: {
+      commands: [],
     },
   }
 
@@ -50,12 +50,12 @@ test('render does not duplicate find widget focus listener', () => {
     params: ['executeWidgetCommand', 'FindWidget', 'FindWidget.handleFocus', 0, WidgetId.Find],
   }
   const widget: any = {
-    oldState: {
-      commands: [],
-    },
     newState: {
       commands: [['Viewlet.registerEventListeners', 100, [focusListener]]],
       uid: 100,
+    },
+    oldState: {
+      commands: [],
     },
   }
 

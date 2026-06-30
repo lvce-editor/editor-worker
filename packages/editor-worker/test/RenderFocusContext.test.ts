@@ -1,5 +1,5 @@
-import { ViewletCommand, WhenExpression } from '@lvce-editor/constants'
 import { expect, test } from '@jest/globals'
+import { ViewletCommand, WhenExpression } from '@lvce-editor/constants'
 import * as RenderFocusContext from '../src/parts/RenderFocusContext/RenderFocusContext.ts'
 
 test('renderFocusContext uses the new editor focus context', () => {
