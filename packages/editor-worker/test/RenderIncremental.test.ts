@@ -15,7 +15,7 @@ beforeEach(() => {
   RenderedDoms.clear()
 })
 
-test('renderIncremental uses full render when visible rows jump during fast scroll', () => {
+test('renderIncremental preserves surrounding dom when visible rows jump during fast scroll', () => {
   const oldState = createState(0, [
     [
       ' '.repeat(4),
@@ -63,12 +63,23 @@ test('renderIncremental uses full render when visible rows jump during fast scro
 
   expect(command[0]).toBe(ViewletCommand.SetPatches)
   expect(command[1]).toBe(1)
-  expect(command[2]).toEqual([
+  expect(command[2]).not.toEqual([
     {
       nodes: expect.any(Array),
       type: 6,
     },
   ])
+  expect(command[2]).not.toContainEqual(
+    expect.objectContaining({
+      type: 2,
+    }),
+  )
+  expect(command[2]).not.toContainEqual(
+    expect.objectContaining({
+      index: 3,
+      type: 9,
+    }),
+  )
 })
 
 test('renderIncremental diffs from the last emitted dom when editor state is mutated', () => {
