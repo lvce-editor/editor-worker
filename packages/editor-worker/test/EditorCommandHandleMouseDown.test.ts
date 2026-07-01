@@ -46,6 +46,17 @@ test('handleMouseDown - single click sets collapsed selection and starts selecti
   })
 })
 
+test('handleMouseDown - right click keeps selection unchanged', async () => {
+  const editor = {
+    ...createEditor(),
+    selections: new Uint32Array([0, 0, 0, 5]),
+  }
+
+  const result = await EditorCommandHandleMouseDown.handleMouseDown(editor as any, 2, false, false, 80, 0, 1)
+
+  expect(result).toBe(editor)
+})
+
 test('handleMouseDown - double click selects word and starts selecting', async () => {
   const editor = createEditor()
 
