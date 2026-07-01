@@ -111,6 +111,7 @@ export const createEditor = async ({
     redoStack: [],
     rowHeight,
     savedSelections,
+    saveOnBlur: true,
     scrollBarHeight: 0,
     scrollBarWidth: 0,
     selectionAnchorPosition: {

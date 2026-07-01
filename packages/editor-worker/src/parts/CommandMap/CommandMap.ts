@@ -111,6 +111,7 @@ import * as SelectWordRight from '../EditorCommand/EditorCommandSelectWordRight.
 import * as SetDecorations from '../EditorCommand/EditorCommandSetDecorations.ts'
 import * as SetDelta from '../EditorCommand/EditorCommandSetDelta.ts'
 import * as SetLanguageId from '../EditorCommand/EditorCommandSetLanguageId.ts'
+import * as SetSaveOnBlur from '../EditorCommand/EditorCommandSetSaveOnBlur.ts'
 import * as SetSelections from '../EditorCommand/EditorCommandSetSelections.ts'
 import * as SetText from '../EditorCommand/EditorCommandSetText.ts'
 import { showHover3 } from '../EditorCommand/EditorCommandShowHover3.ts'
@@ -334,6 +335,7 @@ export const commandMap = {
   'Editor.setDelta': wrapCommand(SetDelta.setDelta),
   'Editor.setDeltaY': wrapCommand(SetDelta.setDeltaY),
   'Editor.setLanguageId': wrapCommand(SetLanguageId.setLanguageId),
+  'Editor.setSaveOnBlur': wrapCommand(SetSaveOnBlur.setSaveOnBlur),
   'Editor.setSelections': wrapCommand(SetSelections.setSelections),
   'Editor.setSelections2': ExternalGetPositionAtCursor.setSelections2,
   'Editor.setText': wrapCommand(SetText.setText),

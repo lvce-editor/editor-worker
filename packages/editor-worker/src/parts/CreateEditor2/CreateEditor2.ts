@@ -74,6 +74,7 @@ export const createEditor2 = (
     redoStack: [],
     rowHeight: 0,
     savedSelections: [],
+    saveOnBlur: true,
     scrollBarHeight: 0,
     scrollBarWidth: 0,
     selectionAnchorPosition: {
