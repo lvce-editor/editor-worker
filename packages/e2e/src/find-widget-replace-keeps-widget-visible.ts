@@ -12,7 +12,6 @@ export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locat
   await FindWidget.setValue('foo')
   await FindWidget.toggleReplace()
   await FindWidget.setReplaceValue('baz')
-
   const findWidget = Locator('.FindWidget')
   const replaceSection = Locator('.FindWidget .FindWidgetReplace')
   await expect(findWidget).toBeVisible()
