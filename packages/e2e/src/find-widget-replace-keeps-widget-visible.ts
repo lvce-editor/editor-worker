@@ -19,7 +19,7 @@ export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locat
   await expect(replaceSection).toBeVisible()
 
   // act
-  await Locator('[title="Replace"]').click()
+  await FindWidget.replace()
 
   // assert
   await Editor.shouldHaveText('baz bar')
