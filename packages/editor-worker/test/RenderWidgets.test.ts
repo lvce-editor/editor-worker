@@ -59,7 +59,7 @@ test('renderWidgets renders added, changed, and removed widgets', () => {
   ])
 })
 
-test('renderWidgets filters focus context commands', () => {
+test('renderWidgets preserves focus context commands', () => {
   const widgetId = 804
   WidgetRegistry.set(widgetId, {
     add: () => [
@@ -68,9 +68,11 @@ test('renderWidgets filters focus context commands', () => {
     ],
   })
   const oldState: any = {
+    uid: 1,
     widgets: [],
   }
   const newState: any = {
+    uid: 1,
     widgets: [
       {
         id: widgetId,
@@ -81,5 +83,8 @@ test('renderWidgets filters focus context commands', () => {
     ],
   }
 
-  expect(RenderWidgets.renderWidgets(oldState, newState)).toEqual([['add-widget', 1]])
+  expect(RenderWidgets.renderWidgets(oldState, newState)).toEqual([
+    ['Viewlet.setFocusContext', 1, 1, 0, 1, 'Editor'],
+    ['add-widget', 1],
+  ])
 })
