@@ -30,16 +30,16 @@ test('restoreWidgetState - preserves unsupported widgets unchanged', async () =>
   }
   const editor = {
     newState: {
-      uid: 920002,
+      uid: 920_002,
       widgets: [unsupportedWidget],
     },
     oldState: {
-      uid: 920002,
+      uid: 920_002,
       widgets: [unsupportedWidget],
     },
   }
-  EditorStates.set(920002, editor.oldState, editor.newState)
-  const registeredEditor = EditorStates.get(920002)
+  EditorStates.set(920_002, editor.oldState, editor.newState)
+  const registeredEditor = EditorStates.get(920_002)
 
   const result = await RestoreWidgetState.restoreWidgetState(['920002'], Object.create(null))
 
@@ -68,16 +68,16 @@ test('restoreWidgetState - restores find widget commands', async () => {
   }
   const editor = {
     newState: {
-      uid: 920003,
+      uid: 920_003,
       widgets: [findWidget],
     },
     oldState: {
-      uid: 920003,
+      uid: 920_003,
       widgets: [findWidget],
     },
   }
-  EditorStates.set(920003, editor.oldState, editor.newState)
-  const registeredEditor = EditorStates.get(920003)
+  EditorStates.set(920_003, editor.oldState, editor.newState)
+  const registeredEditor = EditorStates.get(920_003)
   invokeMock.mockImplementation(async (method: string) => {
     if (method === 'FindWidget.diff2') {
       return [1]
@@ -92,7 +92,7 @@ test('restoreWidgetState - restores find widget commands', async () => {
     '920003:2': savedState,
   })
 
-  expect(invokeMock).toHaveBeenCalledWith('FindWidget.create', 2, 10, 20, 300, 40, 920003)
+  expect(invokeMock).toHaveBeenCalledWith('FindWidget.create', 2, 10, 20, 300, 40, 920_003)
   expect(invokeMock).toHaveBeenCalledWith('FindWidget.loadContent', 2, savedState)
   expect(invokeMock).toHaveBeenCalledWith('FindWidget.diff2', 2)
   expect(invokeMock).toHaveBeenCalledWith('FindWidget.render2', 2, [1])

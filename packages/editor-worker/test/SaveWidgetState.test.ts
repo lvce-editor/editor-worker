@@ -23,10 +23,10 @@ test('saveWidgetState - skips missing editor key', async () => {
 
 test('saveWidgetState - skips widget without newState', async () => {
   EditorStates.set(
-    910002,
+    910_002,
     {},
     {
-      uid: 910002,
+      uid: 910_002,
       widgets: [
         {
           id: WidgetId.Find,
@@ -43,10 +43,10 @@ test('saveWidgetState - skips widget without newState', async () => {
 
 test('saveWidgetState - skips unsupported widget', async () => {
   EditorStates.set(
-    910003,
+    910_003,
     {},
     {
-      uid: 910003,
+      uid: 910_003,
       widgets: [
         {
           id: WidgetId.Completion,
@@ -69,10 +69,10 @@ test('saveWidgetState - saves find widget state', async () => {
     searchValue: 'abc',
   })
   EditorStates.set(
-    910004,
+    910_004,
     {},
     {
-      uid: 910004,
+      uid: 910_004,
       widgets: [
         {
           id: WidgetId.Find,
