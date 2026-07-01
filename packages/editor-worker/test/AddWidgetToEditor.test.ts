@@ -5,10 +5,7 @@ import * as EditorCommandBlur from '../src/parts/EditorCommand/EditorCommandBlur
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 
 const createDeferred = <T>() => {
-  let resolve: (value: T) => void = () => {}
-  const promise = new Promise<T>((innerResolve) => {
-    resolve = innerResolve
-  })
+  const { promise, resolve } = Promise.withResolvers<T>()
   return {
     promise,
     resolve,
@@ -25,11 +22,11 @@ const createEditor = (uid: number) => ({
 
 const createFactory = (widgetId: number, widgetUid: number) => () => ({
   id: widgetId,
-  oldState: {
+  newState: {
     editorUid: 0,
     uid: widgetUid,
   },
-  newState: {
+  oldState: {
     editorUid: 0,
     uid: widgetUid,
   },

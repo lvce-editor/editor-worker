@@ -15,8 +15,8 @@ const hydrateWidget = <K>(editor: any, widgetId: number, uid: number, newState: 
   const widget = editor.widgets[widgetIndex]
   const newWidget = {
     ...widget,
-    oldState: widget.newState,
     newState,
+    oldState: widget.newState,
   }
   return {
     ...editor,

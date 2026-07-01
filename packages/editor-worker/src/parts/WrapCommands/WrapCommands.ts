@@ -9,7 +9,6 @@ export const wrapCommand =
   async (editorUid: number, ...args: any[]) => {
     const oldInstance = Editors.get(editorUid)
     const state = oldInstance.newState
-    console.log(`exec`, fn.name)
     const newEditor = await fn(state, ...args)
     if (state === newEditor) {
       return newEditor
