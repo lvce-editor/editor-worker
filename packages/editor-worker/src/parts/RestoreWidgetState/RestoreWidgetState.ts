@@ -1,19 +1,30 @@
 import { get } from '../EditorStates/EditorStates.ts'
-import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
-import { getWidgetName } from '../SaveWidgetState/SaveWidgetState.ts'
+import * as GetWidgetHotReloadDescriptor from '../GetWidgetHotReloadDescriptor/GetWidgetHotReloadDescriptor.ts'
 
 export const restoreWidgetState = async (keys: readonly string[], savedStates: any): Promise<readonly any[]> => {
   const newEditors = []
   for (const key of keys) {
     const editorUid = parseInt(key)
     const editor = get(editorUid)
+    if (!editor?.newState || !Array.isArray(editor.newState.widgets)) {
+      continue
+    }
     const { widgets } = editor.newState
     const newWidgets = []
+    let hasRestoredWidget = false
     for (const widget of widgets) {
-      const invoke = getWidgetInvoke(widget.id)
+      if (!widget?.newState) {
+        newWidgets.push(widget)
+        continue
+      }
       const fullKey = `${key}:${widget.newState.uid}`
-      const savedState = savedStates[fullKey] || {}
-      const name = getWidgetName(widget.id)
+      const descriptor = GetWidgetHotReloadDescriptor.getWidgetHotReloadDescriptor(widget.id)
+      if (!descriptor || !savedStates || !Object.hasOwn(savedStates, fullKey)) {
+        newWidgets.push(widget)
+        continue
+      }
+      const { invoke, name } = descriptor
+      const savedState = savedStates[fullKey]
       await invoke(
         `${name}.create`,
         widget.newState.uid,
@@ -31,6 +42,11 @@ export const restoreWidgetState = async (keys: readonly string[], savedStates: a
         newState: { ...widget.newState, commands },
       }
       newWidgets.push(newWidget)
+      hasRestoredWidget = true
+    }
+    if (!hasRestoredWidget) {
+      newEditors.push(editor)
+      continue
     }
     newEditors.push({
       ...editor,

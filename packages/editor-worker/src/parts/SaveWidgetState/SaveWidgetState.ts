@@ -1,26 +1,26 @@
-import { WidgetId } from '@lvce-editor/constants'
 import { get } from '../EditorStates/EditorStates.ts'
-import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
-
-export const getWidgetName = (widgetId: number): string => {
-  switch (widgetId) {
-    case WidgetId.Find:
-      return `FindWidget`
-    default:
-      return ''
-  }
-}
+import * as GetWidgetHotReloadDescriptor from '../GetWidgetHotReloadDescriptor/GetWidgetHotReloadDescriptor.ts'
 
 export const saveWidgetState = async (keys: readonly string[]): Promise<any> => {
   const savedStates = Object.create(null)
   for (const key of keys) {
     const editor = get(parseInt(key))
+    if (!editor?.newState || !Array.isArray(editor.newState.widgets)) {
+      continue
+    }
     const { widgets } = editor.newState
     for (const widget of widgets) {
-      const invoke = getWidgetInvoke(widget.id)
-      const fullKey = `${key}:${widget.newState.uid}`
-      const name = getWidgetName(widget.id)
-      const savedState = await invoke(`${name}.saveState`, widget.newState.uid)
+      if (!widget?.newState) {
+        continue
+      }
+      const descriptor = GetWidgetHotReloadDescriptor.getWidgetHotReloadDescriptor(widget.id)
+      if (!descriptor) {
+        continue
+      }
+      const { invoke, name } = descriptor
+      const { uid } = widget.newState
+      const fullKey = `${key}:${uid}`
+      const savedState = await invoke(`${name}.saveState`, uid)
       savedStates[fullKey] = savedState
     }
   }
