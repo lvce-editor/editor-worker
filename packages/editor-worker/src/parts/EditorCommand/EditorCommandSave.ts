@@ -1,4 +1,5 @@
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
+import * as TabModifiedStatusChange from '../TabModifiedStatusChange/TabModifiedStatusChange.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { VError } from '../VError/VError.ts'
 import { getNewEditor } from './EditorCommandSave/getNewEditor.ts'
@@ -14,11 +15,17 @@ export const save = async (editor: any): Promise<any> => {
     if (isUntitledFile(uri)) {
       const pickedFilePath = await saveUntitledFile(uri, content, platform)
       if (pickedFilePath) {
+        if (editor.modified) {
+          await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false)
+        }
         return { ...newEditor, modified: false, uri: pickedFilePath }
       }
       return newEditor
     }
     await saveNormalFile(uri, content)
+    if (editor.modified) {
+      await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false)
+    }
     return { ...newEditor, modified: false }
   } catch (error) {
     // @ts-ignore

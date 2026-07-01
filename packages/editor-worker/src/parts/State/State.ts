@@ -58,6 +58,7 @@ export interface EditorState {
   readonly redoStack: readonly any[]
   readonly rowHeight: number
   readonly savedSelections: readonly any[]
+  readonly saveOnBlur: boolean
   readonly scrollBarHeight: number
   readonly scrollBarWidth: number
   readonly selectionAnchorPosition: { readonly rowIndex: number; readonly columnIndex: number }
