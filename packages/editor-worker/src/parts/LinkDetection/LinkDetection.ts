@@ -14,6 +14,48 @@ const HAS_SCHEME_PATTERN = /^(?:https?|ftp|ftps|file):\/\//
 // Regex to check if URL starts with www.
 const HAS_WWW_PATTERN = /^www\./
 
+const TRAILING_SENTENCE_PUNCTUATION = '.,;:!?'
+
+const OPENING_DELIMITER_MAP: Record<string, string> = {
+  ')': '(',
+  ']': '[',
+  '}': '{',
+  '>': '<',
+}
+
+const hasUnmatchedClosingDelimiter = (url: string, closingDelimiter: string): boolean => {
+  const openingDelimiter = OPENING_DELIMITER_MAP[closingDelimiter]
+  let balance = 0
+  for (const char of url) {
+    if (char === openingDelimiter) {
+      balance++
+    } else if (char === closingDelimiter) {
+      balance--
+    }
+  }
+  return balance < 0
+}
+
+const trimTrailingPunctuation = (url: string): string => {
+  let trimmed = url
+  while (trimmed.length > 0) {
+    const lastChar = trimmed.at(-1)
+    if (!lastChar) {
+      break
+    }
+    if (TRAILING_SENTENCE_PUNCTUATION.includes(lastChar)) {
+      trimmed = trimmed.slice(0, -1)
+      continue
+    }
+    if (lastChar in OPENING_DELIMITER_MAP && hasUnmatchedClosingDelimiter(trimmed, lastChar)) {
+      trimmed = trimmed.slice(0, -1)
+      continue
+    }
+    break
+  }
+  return trimmed
+}
+
 /**
  * Detects links in a given text and returns their positions
  * @param text The text to scan for links
@@ -24,7 +66,7 @@ export const detectLinks = (text: string): Link[] => {
   const links: Link[] = []
 
   for (const match of matches) {
-    const url = match[0]
+    const url = trimTrailingPunctuation(match[0])
     // Only consider as link if it has a scheme or starts with www.
     if (HAS_SCHEME_PATTERN.test(url) || HAS_WWW_PATTERN.test(url)) {
       links.push({
