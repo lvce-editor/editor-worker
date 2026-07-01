@@ -59,6 +59,18 @@ test('handles URL at end of line', () => {
   expect(links).toEqual([{ length: 19, start: 17 }])
 })
 
+test('handles markdown inline link followed by period', () => {
+  const url = 'https://github.com/lvce-editor/lvce-editor'
+  const links = LinkDetection.detectLinks(`[Lvce Editor](${url}).`)
+  expect(links).toEqual([{ length: url.length, start: 14 }])
+})
+
+test('preserves balanced parentheses inside URL', () => {
+  const url = 'https://example.com/path(foo)'
+  const links = LinkDetection.detectLinks(`See ${url}.`)
+  expect(links).toEqual([{ length: url.length, start: 4 }])
+})
+
 test('detects no links in plain text', () => {
   const links = LinkDetection.detectLinks('This is just plain text with no links')
   expect(links).toEqual([])
