@@ -60,10 +60,7 @@ test('cut - selection collapses to selection start', async () => {
 })
 
 test('cut - multiple selections collapse independently', async () => {
-  const editor = createEditor(
-    ['one alpha', 'two beta', 'three gamma'],
-    EditorSelection.fromRanges([0, 4, 0, 9], [1, 4, 1, 8]),
-  )
+  const editor = createEditor(['one alpha', 'two beta', 'three gamma'], EditorSelection.fromRanges([0, 4, 0, 9], [1, 4, 1, 8]))
 
   const newEditor = await EditorCommandCut.cut(editor)
 
