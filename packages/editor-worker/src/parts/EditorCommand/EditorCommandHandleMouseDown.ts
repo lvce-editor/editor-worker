@@ -4,7 +4,12 @@ import * as EditorHandleDoubleClick from './EditorCommandHandleDoubleClick.ts'
 import * as EditorHandleSingleClick from './EditorCommandHandleSingleClick.ts'
 import * as EditorHandleTripleClick from './EditorCommandHandleTripleClick.ts'
 
+const PrimaryButton = 0
+
 export const handleMouseDown = async (state: any, button: number, altKey: boolean, ctrlKey: boolean, x: number, y: number, detail: any) => {
+  if (button !== PrimaryButton) {
+    return state
+  }
   const modifier = GetModifier.getModifier(altKey, ctrlKey)
   let newState
   switch (detail) {
