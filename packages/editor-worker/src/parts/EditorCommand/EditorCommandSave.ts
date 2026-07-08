@@ -1,3 +1,4 @@
+import { PlatformType } from '@lvce-editor/constants'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { VError } from '../VError/VError.ts'
@@ -5,6 +6,7 @@ import { getNewEditor } from './EditorCommandSave/getNewEditor.ts'
 import { isUntitledFile } from './EditorCommandSave/isUntitledFile.ts'
 import { saveNormalFile } from './EditorCommandSave/saveNormalFile.ts'
 import { saveUntitledFile } from './EditorCommandSave/saveUntitledFile.ts'
+import { showSaveErrorDialog } from './EditorCommandSave/showSaveErrorDialog.ts'
 
 export const save = async (editor: any): Promise<any> => {
   try {
@@ -24,6 +26,13 @@ export const save = async (editor: any): Promise<any> => {
     // @ts-ignore
     const betterError = new VError(error, `Failed to save file "${editor.uri}"`)
     await ErrorHandling.handleError(betterError)
+    if (editor.platform === PlatformType.Electron) {
+      try {
+        await showSaveErrorDialog(betterError)
+      } catch (dialogError) {
+        await ErrorHandling.handleError(dialogError)
+      }
+    }
     return editor
   }
 }
