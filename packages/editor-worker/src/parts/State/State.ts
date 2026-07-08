@@ -46,6 +46,7 @@ export interface EditorState {
   readonly lineCache: readonly any[]
   readonly lineNumbers: boolean
   readonly lines: readonly string[]
+  readonly loadError?: string
   readonly longestLineWidth: number
   readonly maxLineY: number
   readonly minimumSliderSize: number
