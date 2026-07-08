@@ -13,9 +13,11 @@ RendererWorker.set(mockRpc)
 
 import * as EditorCommandUndo from '../src/parts/EditorCommand/EditorCommandUndo.ts'
 import * as EditOrigin from '../src/parts/EditOrigin/EditOrigin.ts'
+import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
 
 test('undo - inserted character', async () => {
   const editor = {
+    ...emptyEditor,
     decorations: [],
     invalidStartIndex: 0,
     lineCache: [],
@@ -47,6 +49,7 @@ test('undo - inserted character', async () => {
 
 test('undo - deleted character', async () => {
   const editor = {
+    ...emptyEditor,
     decorations: [],
     invalidStartIndex: 0,
     lineCache: [],
@@ -78,6 +81,7 @@ test('undo - deleted character', async () => {
 
 test('undo - empty undoStack', async () => {
   const editor = {
+    ...emptyEditor,
     decorations: [],
     invalidStartIndex: 0,
     lineCache: [],

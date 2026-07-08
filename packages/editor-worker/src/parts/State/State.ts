@@ -61,6 +61,7 @@ export interface EditorState {
   readonly savedSelections: readonly any[]
   readonly scrollBarHeight: number
   readonly scrollBarWidth: number
+  readonly scrollBarY?: number
   readonly selectionAnchorPosition: { readonly rowIndex: number; readonly columnIndex: number }
   readonly selectionAutoMovePosition: { readonly rowIndex: number; readonly columnIndex: number }
   readonly selectionInfos: readonly any[]

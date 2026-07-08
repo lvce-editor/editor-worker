@@ -1,3 +1,4 @@
+import type { EditorState } from '../State/State.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
@@ -7,7 +8,7 @@ import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts
 // when clicked at y > editor.height - editor.scrollBarHeight/2, position scrollbar at (y - scrollbarHeight/2)
 // additionally, when clicked on scrollbar, scrollbar position shouldn't move
 
-export const handleScrollBarPointerDown = async (state: any, eventY: number): Promise<any> => {
+export const handleScrollBarPointerDown = async (state: EditorState, eventY: number): Promise<EditorState> => {
   const { deltaY, finalDeltaY, height, scrollBarHeight, y } = state
   const relativeY = eventY - y
   const currentScrollBarY = ScrollBarFunctions.getScrollBarY(deltaY, finalDeltaY, height, scrollBarHeight)

@@ -1,10 +1,11 @@
 import * as ViewletRegistry from '@lvce-editor/viewlet-registry'
+import type { EditorState } from '../State/State.ts'
 
-const editorStates = ViewletRegistry.create<any>()
+const editorStates = ViewletRegistry.create<EditorState>()
 
 export const { diff, getCommandIds, registerCommands, wrapCommand, wrapGetter } = editorStates
 
-export const get = (id: number): any => {
+export const get = (id: number): ViewletRegistry.StateTuple<EditorState> => {
   return editorStates.get(id)
 }
 
@@ -13,6 +14,6 @@ export const getKeys = (): readonly string[] => {
   return keys.map(String)
 }
 
-export const set = (id: number, oldEditor: any, newEditor: any): void => {
+export const set = (id: number, oldEditor: EditorState, newEditor: EditorState): void => {
   editorStates.set(id, oldEditor, newEditor)
 }

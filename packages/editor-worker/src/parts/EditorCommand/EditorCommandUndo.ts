@@ -1,7 +1,8 @@
+import type { EditorState } from '../State/State.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as InverseChange from '../InverseChange/InverseChange.ts'
 
-export const undo = (state: any) => {
+export const undo = (state: EditorState): EditorState | Promise<EditorState> => {
   const { undoStack } = state
   if (undoStack.length === 0) {
     return state

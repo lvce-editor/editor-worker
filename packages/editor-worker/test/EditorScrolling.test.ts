@@ -1,8 +1,10 @@
 import { expect, test } from '@jest/globals'
 import * as EditorScrolling from '../src/parts/EditorScrolling/EditorScrolling.ts'
+import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
 
 test.skip('setDeltaY - same value', async () => {
   const editor = {
+    ...emptyEditor,
     deltaY: 0,
     finalDeltaY: 0,
     height: 0,
@@ -17,6 +19,7 @@ test.skip('setDeltaY - same value', async () => {
 
 test.skip('setDeltaY - scroll down', async () => {
   const editor = {
+    ...emptyEditor,
     deltaY: 1,
     finalDeltaY: 400,
     height: 400,

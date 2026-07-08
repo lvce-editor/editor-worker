@@ -1,3 +1,4 @@
+import type { EditorState } from '../State/State.ts'
 import * as ClickDetailType from '../ClickDetailType/ClickDetailType.ts'
 import * as GetModifier from '../GetModifier/GetModifier.ts'
 import * as EditorHandleDoubleClick from './EditorCommandHandleDoubleClick.ts'
@@ -6,7 +7,15 @@ import * as EditorHandleTripleClick from './EditorCommandHandleTripleClick.ts'
 
 const PrimaryButton = 0
 
-export const handleMouseDown = async (state: any, button: number, altKey: boolean, ctrlKey: boolean, x: number, y: number, detail: any) => {
+export const handleMouseDown = async (
+  state: EditorState,
+  button: number,
+  altKey: boolean,
+  ctrlKey: boolean,
+  x: number,
+  y: number,
+  detail: any,
+): Promise<EditorState> => {
   if (button !== PrimaryButton) {
     return state
   }

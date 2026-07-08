@@ -1,3 +1,4 @@
+import type { EditorState } from '../State/State.ts'
 import * as Arrays from '../Arrays/Arrays.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as JoinLines from '../JoinLines/JoinLines.ts'
@@ -64,7 +65,7 @@ export const getLine = (textDocument: any, index: number) => {
   return textDocument.lines[index]
 }
 
-export const getText = (state: any) => {
+export const getText = (state: EditorState): string => {
   return JoinLines.joinLines(state.lines)
 }
 
