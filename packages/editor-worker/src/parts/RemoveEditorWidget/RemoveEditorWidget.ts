@@ -7,7 +7,7 @@ const getIndex = (widgets: any, id: any) => {
   return -1
 }
 
-export const removeEditorWidget = (widgets: any[], id: any): any[] => {
+export const removeEditorWidget = (widgets: readonly any[], id: any): readonly any[] => {
   const index = getIndex(widgets, id)
   const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
   return newWidgets

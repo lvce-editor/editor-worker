@@ -56,7 +56,7 @@ export const getLines2 = (editorUid: number): readonly string[] => {
   return lines
 }
 
-export const getSelections2 = (editorUid: number): readonly string[] => {
+export const getSelections2 = (editorUid: number): Uint32Array => {
   const editor = GetEditor.getEditor(editorUid)
   const { selections } = editor
   return selections
