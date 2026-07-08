@@ -1,8 +1,10 @@
 import { expect, test } from '@jest/globals'
 import * as EditorCommandHandleScrollBarMove from '../src/parts/EditorCommand/EditorCommandHandleScrollBarMove.ts'
+import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
 
 test('handleScrollBarMove - dragging the thumb updates the scroll position', async () => {
   const editor = {
+    ...emptyEditor,
     charWidth: 8,
     decorations: [],
     deltaX: 0,
@@ -33,6 +35,7 @@ test('handleScrollBarMove - dragging the thumb updates the scroll position', asy
 
 test('handleScrollBarMove - defaults missing handle offset to zero', async () => {
   const editor = {
+    ...emptyEditor,
     charWidth: 8,
     decorations: [],
     deltaX: 0,

@@ -13,9 +13,11 @@ RendererWorker.set(mockRpc)
 
 import * as EditorCommandRedo from '../src/parts/EditorCommand/EditorCommandRedo.ts'
 import * as EditOrigin from '../src/parts/EditOrigin/EditOrigin.ts'
+import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
 
 test('redo - inserted character', async () => {
   const editor = {
+    ...emptyEditor,
     decorations: [],
     invalidStartIndex: 0,
     lineCache: [],
@@ -50,6 +52,7 @@ test('redo - inserted character', async () => {
 
 test('redo - empty redoStack', async () => {
   const editor = {
+    ...emptyEditor,
     decorations: [],
     invalidStartIndex: 0,
     lineCache: [],

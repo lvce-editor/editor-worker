@@ -3,6 +3,7 @@ export interface EditorState {
   readonly assetDir: string
   readonly charWidth: number
   readonly columnWidth: number
+  readonly completionsOnType?: boolean
   readonly completionState: string
   readonly completionTriggerCharacters: readonly string[]
   readonly completionUid: number
@@ -61,6 +62,7 @@ export interface EditorState {
   readonly savedSelections: readonly any[]
   readonly scrollBarHeight: number
   readonly scrollBarWidth: number
+  readonly scrollBarY?: number
   readonly selectionAnchorPosition: { readonly rowIndex: number; readonly columnIndex: number }
   readonly selectionAutoMovePosition: { readonly rowIndex: number; readonly columnIndex: number }
   readonly selectionInfos: readonly any[]
@@ -71,6 +73,7 @@ export interface EditorState {
   readonly uid: number
   readonly undoStack: readonly any[]
   readonly uri: string
+  readonly useFunctionalRendering?: boolean
   readonly validLines: readonly number[]
   readonly visualDecorations?: any // Visual decorations (objects) for diagnostic squiggly underlines
   readonly widgets: readonly any[]

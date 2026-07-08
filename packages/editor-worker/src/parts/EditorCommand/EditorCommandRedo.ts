@@ -1,6 +1,7 @@
+import type { EditorState } from '../State/State.ts'
 import * as Editor from '../Editor/Editor.ts'
 
-export const redo = (state: any) => {
+export const redo = (state: EditorState): EditorState | Promise<EditorState> => {
   const { redoStack = [] } = state
   if (redoStack.length === 0) {
     return state

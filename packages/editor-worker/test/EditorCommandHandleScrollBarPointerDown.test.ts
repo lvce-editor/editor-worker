@@ -1,8 +1,10 @@
 import { expect, test } from '@jest/globals'
 import * as EditorCommandHandleScrollBarPointerDown from '../src/parts/EditorCommand/EditorCommandHandleScrollBarPointerDown.ts'
+import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
 
 test('handleScrollBarPointerDown - clicking the track scrolls to the clicked position', async () => {
   const editor = {
+    ...emptyEditor,
     charWidth: 8,
     decorations: [],
     deltaX: 0,

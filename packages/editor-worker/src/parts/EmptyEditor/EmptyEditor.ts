@@ -1,3 +1,4 @@
+import type { EditorState } from '../State/State.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 
 export const emptyEditor = {
@@ -40,4 +41,4 @@ export const emptyEditor = {
   width: 0,
   x: 0,
   y: 0,
-}
+} satisfies Partial<EditorState> as unknown as EditorState

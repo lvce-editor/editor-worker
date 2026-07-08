@@ -1,3 +1,4 @@
+import type { EditorState } from '../State/State.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as Clamp from '../Clamp/Clamp.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
@@ -5,7 +6,7 @@ import * as ScrollingFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
 // TODO this should be in a separate scrolling module
-export const setDeltaY = async (state: any, value: number) => {
+export const setDeltaY = async (state: EditorState, value: number): Promise<EditorState> => {
   Assert.object(state)
   Assert.number(value)
   const { deltaY, finalDeltaY, height, itemHeight, numberOfVisibleLines, scrollBarHeight } = state
