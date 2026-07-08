@@ -194,3 +194,31 @@ test('getEditorVirtualDom - line numbers disabled', () => {
   })
   expect(dom.some((node) => node.className === 'Gutter')).toBe(false)
 })
+
+test('getEditorVirtualDom - load error', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    differences: [],
+    loadError: 'Failed to read file',
+    textInfos: [],
+  })
+
+  expect(dom).toEqual([
+    {
+      childCount: 2,
+      className: 'Viewlet TextEditorError',
+      role: 'code',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 0,
+      className: 'EditorTextIcon EditorTextIconError MaskIcon MaskIconError',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 1,
+      className: 'TextEditorErrorMessage',
+      type: VirtualDomElements.Div,
+    },
+    text('Failed to read file'),
+  ])
+})

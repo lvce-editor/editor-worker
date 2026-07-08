@@ -26,6 +26,13 @@ const getTokenizePath = (languages: readonly any[], languageId: string): string 
   return ''
 }
 
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) {
+    return error.message
+  }
+  return String(error)
+}
+
 export const loadContent = async (state: EditorState, savedState: unknown) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
@@ -68,11 +75,26 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     languageId: computedLanguageId,
     letterSpacing,
     lineNumbers,
+    loadError: '',
     rowHeight,
     tabSize,
     tokenizerId: newTokenizerId,
   }
-  const content = await RendererWorker.readFile(uri)
+  let content = ''
+  try {
+    content = await RendererWorker.readFile(uri)
+  } catch (error) {
+    const newEditor1 = Editor.setBounds(newEditor0, x, y, width, height, 9)
+    return {
+      ...newEditor1,
+      differences: [],
+      focus: WhenExpression.FocusEditorText,
+      focused: true,
+      initial: false,
+      loadError: getErrorMessage(error),
+      textInfos: [],
+    }
+  }
 
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds(newEditor0, x, y, width, height, 9)
