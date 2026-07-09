@@ -1,4 +1,5 @@
 import { expect, test } from '@jest/globals'
+import { commandMap } from '../src/parts/CommandMap/CommandMap.ts'
 import * as Resize from '../src/parts/Resize/Resize.ts'
 
 test('resize updates bounds and visible lines', () => {
@@ -79,4 +80,8 @@ test('resize clamps scroll position when height increases', () => {
     x: 1,
     y: 2,
   })
+})
+
+test('resize is available as an editor command', () => {
+  expect(commandMap['Editor.resize']).toBeDefined()
 })
