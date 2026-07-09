@@ -160,6 +160,7 @@ import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
 import { render2 } from '../Render2/Render2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
+import * as Resize from '../Resize/Resize.ts'
 import { saveState } from '../SaveState/SaveState.ts'
 import * as SendMessagePortToExtensionHostWorker from '../SendMessagePortToExtensionHostWorker/SendMessagePortToExtensionHostWorker.ts'
 import { sendMessagePortToExtensionManagementWorker } from '../SendMessagePortToExtensionManagementWorker/SendMessagePortToExtensionManagementWorker.ts'
@@ -311,6 +312,7 @@ export const commandMap = {
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
+  'Editor.resize': wrapCommand(Resize.resize),
   'Editor.save': wrapCommand(Save.save),
   'Editor.saveState': wrapGetter(saveState),
   'Editor.selectAll': wrapCommand(SelectAll.selectAll),
