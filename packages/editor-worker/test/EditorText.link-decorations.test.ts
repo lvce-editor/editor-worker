@@ -127,3 +127,46 @@ test("getVisible - decorations that don't align with token boundaries", async ()
   expect(linkTokens.length).toBeGreaterThan(0)
   expect(linkTokens[0].text).toBe('https://ex')
 })
+
+test('getVisible - keeps full multi-token line when editor width is narrow', async () => {
+  const line = '0123456789abcdefghijklmnopqrstuvwxyz'
+  const editor = {
+    averageCharWidth: 10,
+    charWidth: 10,
+    columnWidth: 10,
+    cursorWidth: 2,
+    decorations: [],
+    deltaX: 0,
+    deltaY: 0,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    height: 600,
+    id: 1,
+    invalidStartIndex: 0,
+    isMonospaceFont: true,
+    languageId: 'plaintext',
+    letterSpacing: 0,
+    lineCache: [
+      {
+        state: { state: 1 },
+        tokens: [1, 10, 1, 10, 1, 10, 1, 6],
+      },
+    ],
+    lines: [line],
+    minLineY: 0,
+    numberOfVisibleLines: 30,
+    rowHeight: 20,
+    selections: [],
+    tabSize: 2,
+    tokenizerId: 'builtin.plaintext',
+    width: 20,
+    x: 0,
+    y: 0,
+  }
+
+  const { textInfos } = await EditorText.getVisible(editor, false)
+  const visibleText = textInfos[0].filter((_, index) => index % 2 === 0).join('')
+
+  expect(visibleText).toBe(line)
+})
