@@ -259,20 +259,10 @@ const getLineInfoEmbeddedFull = (
   }
 }
 
-const getOffsets = (deltaX: any, width: any, averageCharWidth: any) => {
-  // TODO accurately measure char widths using offscreen canvas
-  // and use fast measurements for monospace ASCII text
-  if (deltaX === 0) {
-    return {
-      maxOffset: Math.ceil(width / averageCharWidth),
-      minOffset: 0,
-    }
-  }
-  const minOffset = Math.ceil(deltaX / averageCharWidth)
-  const maxOffset = minOffset + Math.ceil(width / averageCharWidth)
+const getOffsets = () => {
   return {
-    maxOffset,
-    minOffset,
+    maxOffset: Infinity,
+    minOffset: 0,
   }
 }
 
@@ -403,7 +393,7 @@ const getLineInfo = (
   deltaX: any,
   averageCharWidth: any,
 ) => {
-  const { maxOffset, minOffset } = getOffsets(deltaX, width, averageCharWidth)
+  const { maxOffset, minOffset } = getOffsets()
   if (embeddedResults.length > 0 && tokenResults.embeddedResultIndex !== undefined) {
     const embeddedResult = embeddedResults[tokenResults.embeddedResultIndex]
     if (embeddedResult?.isFull) {
