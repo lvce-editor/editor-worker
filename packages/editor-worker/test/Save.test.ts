@@ -7,7 +7,7 @@ afterEach(() => {
   jest.restoreAllMocks()
 })
 
-test('save - shows electron message box when saving file fails', async () => {
+test('save - shows a concise electron message box when permission is denied', async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {})
   using mockRpc = RendererWorker.registerMockRpc({
     'ElectronDialog.showMessageBox': async () => {
@@ -34,7 +34,42 @@ test('save - shows electron message box when saving file fails', async () => {
       {
         buttons: ['OK'],
         defaultId: 0,
-        detail: 'Failed to save file "file:///tmp/read-only.txt": EACCES: permission denied',
+        message: "You don't have permission to save changes to this file.",
+        title: 'Unable to Save File',
+        type: 'error',
+      },
+    ],
+  ])
+})
+
+test('save - shows error details for other electron save errors', async () => {
+  jest.spyOn(console, 'error').mockImplementation(() => {})
+  using mockRpc = RendererWorker.registerMockRpc({
+    'ElectronDialog.showMessageBox': async () => {
+      return 0
+    },
+    'FileSystem.writeFile': async () => {
+      throw new Error('Disk is full')
+    },
+  })
+  const editor = {
+    lines: ['hello world'],
+    modified: true,
+    platform: PlatformType.Electron,
+    uri: 'file:///tmp/example.txt',
+  }
+
+  const result = await EditorCommandSave.save(editor)
+
+  expect(result).toBe(editor)
+  expect(mockRpc.invocations).toEqual([
+    ['FileSystem.writeFile', 'file:///tmp/example.txt', 'hello world'],
+    [
+      'ElectronDialog.showMessageBox',
+      {
+        buttons: ['OK'],
+        defaultId: 0,
+        detail: 'Failed to save file "file:///tmp/example.txt": Disk is full',
         message: 'Saving the file failed.',
         title: 'Failed to Save File',
         type: 'error',
