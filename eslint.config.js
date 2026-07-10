@@ -23,6 +23,7 @@ export default [
     rules: {
       '@cspell/spellchecker': 'off',
       'github-actions/permissions': 'off',
+      'jest/no-disabled-tests': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
@@ -76,6 +77,12 @@ export default [
       'sonarjs/regex-complexity': 'off',
       'sonarjs/single-char-in-character-classes': 'off',
       'devcontainer/post-create-command': 'off',
+    },
+  },
+  {
+    files: ['packages/e2e/**/*.ts'],
+    rules: {
+      'e2e/prefer-filesystem-set-files': 'off',
     },
   },
 ]
