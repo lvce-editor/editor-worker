@@ -11,7 +11,7 @@ export const getProblems = async (): Promise<readonly Problem[]> => {
   // or query the diagnostics for the problems view directtly from the extension host worker
   const keys = Editors.getKeys()
   const editors = keys.map((key) => {
-    const numericKey = parseInt(key)
+    const numericKey = Number(key)
     const editor = Editors.get(numericKey)
     return editor
   })
