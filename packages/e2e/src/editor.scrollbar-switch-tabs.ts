@@ -17,12 +17,12 @@ export const test: Test = async ({ expect, FileSystem, Locator, Main, Workspace 
 
   const editorRows = Locator('.EditorRows')
   const verticalThumb = Locator('.ScrollBarThumbVertical')
-  await expect(verticalThumb).toBeHidden()
+  await expect(verticalThumb).toHaveCSS('height', '0px')
 
   await Main.openUri(longFilePath)
   await expect(verticalThumb).toBeVisible()
 
   await Main.selectTab(0, 0)
   await expect(editorRows).toHaveText('short')
-  await expect(verticalThumb).toBeHidden()
+  await expect(verticalThumb).toHaveCSS('height', '0px')
 }
