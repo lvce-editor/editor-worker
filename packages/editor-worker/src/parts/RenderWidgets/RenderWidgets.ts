@@ -1,6 +1,13 @@
 import type { EditorState } from '../State/State.ts'
 import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
 
+const normalizeWidgetCommand = (command: readonly any[], editorUid: number): readonly any[] => {
+  if (command[0] === 'Viewlet.setFocusContext' && command.length === 2) {
+    return [command[0], editorUid, command[1], 0, editorUid, 'Editor']
+  }
+  return command
+}
+
 export const renderWidgets = (oldState: EditorState, newState: EditorState): readonly any[] => {
   const addedWidgets = []
   const changedWidgets = []
@@ -51,5 +58,5 @@ export const renderWidgets = (oldState: EditorState, newState: EditorState): rea
     }
   }
   const allCommands = [...addCommands, ...changeCommands, ...removeCommands]
-  return allCommands.filter((item) => item[0] !== 'Viewlet.setFocusContext')
+  return allCommands.map((command) => normalizeWidgetCommand(command, newState.uid))
 }
