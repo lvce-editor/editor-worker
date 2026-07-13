@@ -16,6 +16,6 @@ export const renderCss = (oldState: EditorState, newState: EditorState): readonl
   const scrollBarTop = ScrollBarFunctions.getScrollBarY(deltaY, finalDeltaY, height, scrollBarHeight)
   const scrollBarWidth = ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize)
   const scrollBarLeft = getScrollBarLeft(deltaX, longestLineWidth, width)
-  const css = getCss(rowHeight, scrollBarHeight, scrollBarTop, scrollBarWidth, scrollBarLeft)
+  const css = getCss(uid, rowHeight, scrollBarHeight, scrollBarTop, scrollBarWidth, scrollBarLeft)
   return [ViewletCommand.SetCss, uid, css]
 }

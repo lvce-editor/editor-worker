@@ -24,12 +24,14 @@ test('getEditorVirtualDom', () => {
     scrollBarHeight: 24,
     selectionInfos: [1, 2, 3, 4],
     textInfos: [['#', 'Token Comment']],
+    uid: 42,
   })
 
   expect(dom).toEqual([
     {
       childCount: 2,
       className: 'Viewlet Editor',
+      'data-uid': 42,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
       role: 'code',
       type: VirtualDomElements.Div,
@@ -183,11 +185,13 @@ test('getEditorVirtualDom - line numbers disabled', () => {
     gutterInfos: [1],
     lineNumbers: false,
     textInfos: [],
+    uid: 42,
   })
 
   expect(dom[0]).toEqual({
     childCount: 1,
     className: 'Viewlet Editor',
+    'data-uid': 42,
     onContextMenu: DomEventListenerFunctions.HandleContextMenu,
     role: 'code',
     type: VirtualDomElements.Div,
@@ -200,12 +204,14 @@ test('getEditorVirtualDom - load error', () => {
     differences: [],
     loadError: 'Failed to read file',
     textInfos: [],
+    uid: 42,
   })
 
   expect(dom).toEqual([
     {
       childCount: 2,
       className: 'Viewlet TextEditorError',
+      'data-uid': 42,
       role: 'code',
       type: VirtualDomElements.Div,
     },
