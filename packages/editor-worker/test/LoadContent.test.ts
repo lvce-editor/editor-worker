@@ -177,3 +177,15 @@ test('loadContent preserves loaded text and diagnostics', async () => {
   expect(result.lines).toEqual(['test'])
   expect(getEditorWithDiagnosticsMock).toHaveBeenCalledTimes(1)
 })
+
+test('loadContent uses a tokenizer from a later contribution for the same language', async () => {
+  getLanguagesMock.mockResolvedValue([
+    { extensions: ['.txt'], id: 'plaintext' },
+    { id: 'plaintext', tokenize: '/test/tokenizePlainText.js' },
+  ])
+  readFileMock.mockResolvedValue('test')
+
+  await LoadContent.loadContent(createState(), undefined)
+
+  expect(loadTokenizerMock).toHaveBeenCalledWith('plaintext', '/test/tokenizePlainText.js')
+})
