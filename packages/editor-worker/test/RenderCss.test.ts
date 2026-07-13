@@ -19,22 +19,22 @@ test('renderCss', () => {
   expect(renderCss({} as any, newState as any)).toEqual([
     ViewletCommand.SetCss,
     1,
-    `.Editor {
+    `.Editor[data-uid="1"] {
   --EditorRowHeight: 20px;
   --ScrollBarHeight: 24px;
   --ScrollBarTop: 8px;
   --ScrollBarWidth: 40px;
   --ScrollBarLeft: 20px;
 }
-.Editor .EditorRow {
+.Editor[data-uid="1"] .EditorRow {
   height: var(--EditorRowHeight);
   line-height: var(--EditorRowHeight);
 }
-.Editor .ScrollBarThumbVertical {
+.Editor[data-uid="1"] .ScrollBarThumbVertical {
   height: var(--ScrollBarHeight);
   translate: 0px var(--ScrollBarTop);
 }
-.Editor .ScrollBarThumbHorizontal {
+.Editor[data-uid="1"] .ScrollBarThumbHorizontal {
   width: var(--ScrollBarWidth);
   translate: var(--ScrollBarLeft) 0px;
 }

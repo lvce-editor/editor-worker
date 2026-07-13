@@ -21,6 +21,7 @@ interface EditorVirtualDomOptions {
   readonly selectionInfos?: readonly any[]
   readonly selections?: any
   readonly textInfos: readonly any[]
+  readonly uid: number
 }
 
 export const getEditorVirtualDom = ({
@@ -34,12 +35,14 @@ export const getEditorVirtualDom = ({
   scrollBarDiagnostics = [],
   selectionInfos = [],
   textInfos,
+  uid,
 }: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
   if (loadError) {
     return [
       {
         childCount: 2,
         className: 'Viewlet TextEditorError',
+        'data-uid': uid,
         role: 'code',
         type: VirtualDomElements.Div,
       },
@@ -61,6 +64,7 @@ export const getEditorVirtualDom = ({
     {
       childCount: lineNumbers ? 2 : 1,
       className: 'Viewlet Editor',
+      'data-uid': uid,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
       role: 'code',
       type: VirtualDomElements.Div,
