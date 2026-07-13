@@ -19,8 +19,8 @@ import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 const getTokenizePath = (languages: readonly any[], languageId: string): string => {
   for (const language of languages) {
-    if (language?.id === languageId) {
-      return language.tokenize || ''
+    if (language?.id === languageId && language.tokenize) {
+      return language.tokenize
     }
   }
   return ''
