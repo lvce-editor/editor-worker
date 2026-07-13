@@ -1,7 +1,9 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 
 const getEditorPreferencesMock: any = jest.fn()
+const getEditorWithDiagnosticsMock: any = jest.fn()
 const getLanguagesMock: any = jest.fn()
+const getVisibleMock: any = jest.fn()
 const getTokenizerMock: any = jest.fn()
 const loadTokenizerMock: any = jest.fn()
 const measureCharacterWidthMock: any = jest.fn()
@@ -37,6 +39,10 @@ jest.unstable_mockModule('../src/parts/GetEditorPreferences/GetEditorPreferences
   getEditorPreferences: getEditorPreferencesMock,
 }))
 
+jest.unstable_mockModule('../src/parts/EditorText/EditorText.ts', () => ({
+  getVisible: getVisibleMock,
+}))
+
 jest.unstable_mockModule('../src/parts/GetLanguages/GetLanguages.ts', () => ({
   getLanguages: getLanguagesMock,
 }))
@@ -48,6 +54,10 @@ jest.unstable_mockModule('../src/parts/MeasureCharacterWidth/MeasureCharacterWid
 jest.unstable_mockModule('../src/parts/Tokenizer/Tokenizer.ts', () => ({
   getTokenizer: getTokenizerMock,
   loadTokenizer: loadTokenizerMock,
+}))
+
+jest.unstable_mockModule('../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts', () => ({
+  getEditorWithDiagnostics: getEditorWithDiagnosticsMock,
 }))
 
 const LoadContent = await import('../src/parts/LoadContent/LoadContent.ts')
@@ -95,7 +105,9 @@ const createState = () =>
 
 beforeEach(() => {
   getEditorPreferencesMock.mockReset()
+  getEditorWithDiagnosticsMock.mockReset()
   getLanguagesMock.mockReset()
+  getVisibleMock.mockReset()
   getTokenizerMock.mockReset()
   loadTokenizerMock.mockReset()
   measureCharacterWidthMock.mockReset()
@@ -117,7 +129,9 @@ beforeEach(() => {
     tabSize: 2,
   })
   getLanguagesMock.mockResolvedValue([{ extensions: ['.txt'], id: 'plaintext', tokenize: '' }])
+  getVisibleMock.mockResolvedValue({ differences: [], textInfos: [] })
   getTokenizerMock.mockReturnValue({})
+  getEditorWithDiagnosticsMock.mockImplementation(async (editor: any) => editor)
   measureCharacterWidthMock.mockResolvedValue(8)
 })
 
@@ -132,4 +146,34 @@ test('loadContent returns error state when reading file fails', async () => {
   expect(result.textInfos).toEqual([])
   expect(result.height).toBe(200)
   expect(readFileMock).toHaveBeenCalledWith('file:///test.txt')
+})
+
+test('loadContent preserves loaded text and diagnostics', async () => {
+  const diagnostics = [{ message: 'diagnostic' }]
+  getEditorPreferencesMock.mockResolvedValue({
+    completionTriggerCharacters: [],
+    diagnosticsEnabled: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    isAutoClosingBracketsEnabled: false,
+    isAutoClosingQuotesEnabled: false,
+    isAutoClosingTagsEnabled: false,
+    isQuickSuggestionsEnabled: false,
+    letterSpacing: 0,
+    lineNumbers: true,
+    rowHeight: 20,
+    tabSize: 2,
+  })
+  readFileMock.mockResolvedValue('test')
+  getEditorWithDiagnosticsMock.mockImplementation(async (editor: any) => ({
+    ...editor,
+    diagnostics,
+  }))
+
+  const result = await LoadContent.loadContent(createState(), undefined)
+
+  expect(result.diagnostics).toBe(diagnostics)
+  expect(result.lines).toEqual(['test'])
+  expect(getEditorWithDiagnosticsMock).toHaveBeenCalledTimes(1)
 })
