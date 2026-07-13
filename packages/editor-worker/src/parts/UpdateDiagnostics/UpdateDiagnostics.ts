@@ -7,47 +7,63 @@ import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagn
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UpdateDiagnosticsWithLinks from './UpdateDiagnosticsWithLinks.ts'
 
-export const updateDiagnostics = async (newState: any): Promise<any> => {
+const getDiagnostics = async (editor: any): Promise<readonly any[]> => {
+  const content = TextDocument.getText(editor)
+  // @ts-ignore
+  await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, editor.uri, editor.id, editor.languageId, content)
+  return ExtensionHostDiagnostic.executeDiagnosticProvider(editor)
+}
+
+const addDiagnostics = async (editor: any, diagnostics: readonly any[]): Promise<any> => {
+  const visualDecorations = await GetVisibleDiagnostics.getVisibleDiagnostics(editor, diagnostics)
+  const diagnosticDecorations = visualDecorations.flatMap((decoration: any) => [
+    decoration.offset,
+    decoration.length,
+    decoration.type,
+    decoration.modifiers || 0,
+  ])
+  const decorations = UpdateDiagnosticsWithLinks.mergeLinksWithDiagnosticDecorations(editor, diagnosticDecorations)
+  return {
+    ...editor,
+    decorations,
+    diagnostics,
+    visualDecorations,
+  }
+}
+
+const handleError = (error: unknown, editor: any): any => {
+  if (error instanceof Error && error.message.includes('No diagnostic provider found')) {
+    return editor
+  }
+  console.error(`Failed to update diagnostics: ${error}`)
+  return editor
+}
+
+export const getEditorWithDiagnostics = async (editor: any): Promise<any> => {
   try {
-    // TODO handle error
-    // TODO handle race condition
+    const diagnostics = await getDiagnostics(editor)
+    if (!EditorState.get(editor.id)) {
+      return editor
+    }
+    return addDiagnostics(editor, diagnostics)
+  } catch (error) {
+    return handleError(error, editor)
+  }
+}
 
-    // TODO sync textdocument incrementally
-    // TODO sync and ask for diagnostics at the same time?
-    // TODO throttle diagnostics
-    const content = TextDocument.getText(newState)
-
-    // TODO don't really need text document sync response
-    // could perhaps save a lot of messages by using send instead of invoke
-    // @ts-ignore
-    await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, newState.uri, newState.id, newState.languageId, content)
-
-    const diagnostics = await ExtensionHostDiagnostic.executeDiagnosticProvider(newState)
-    const latest = EditorState.get(newState.id)
+export const updateDiagnostics = async (editor: any): Promise<any> => {
+  try {
+    const diagnostics = await getDiagnostics(editor)
+    const latest = EditorState.get(editor.id)
     if (!latest) {
-      return newState
+      return editor
     }
-    const visualDecorations = await GetVisibleDiagnostics.getVisibleDiagnostics(latest.newState, diagnostics)
-    // Get diagnostic decorations from visual decorations (if any)
-    const diagnosticDecorations = visualDecorations.flatMap((deco: any) => [deco.offset, deco.length, deco.type, deco.modifiers || 0])
-    // Merge link decorations with diagnostic decorations
-    const mergedDecorations = UpdateDiagnosticsWithLinks.mergeLinksWithDiagnosticDecorations(latest.newState, diagnosticDecorations)
-    const newEditor = {
-      ...latest.newState,
-      decorations: mergedDecorations, // Text-level decorations (flat array) for CSS classes
-      diagnostics,
-      visualDecorations, // Visual decorations (objects with x, y, width, height) for squiggly underlines
-    }
-    EditorState.set(newState.id, latest.oldState, newEditor)
+    const newEditor = await addDiagnostics(latest.newState, diagnostics)
+    EditorState.set(editor.id, latest.oldState, newEditor)
     // @ts-ignore
-    await RendererWorker.invoke('Editor.rerender', newState.id)
+    await RendererWorker.invoke('Editor.rerender', editor.id)
     return newEditor
   } catch (error) {
-    // @ts-ignore
-    if (error && error.message.includes('No diagnostic provider found')) {
-      return newState
-    }
-    console.error(`Failed to update diagnostics: ${error}`)
-    return newState
+    return handleError(error, editor)
   }
 }

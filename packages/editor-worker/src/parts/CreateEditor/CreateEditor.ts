@@ -174,15 +174,12 @@ export const createEditor = async ({
   // @ts-ignore
   await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, languageId, content)
 
-  // TODO await promise
-  if (diagnosticsEnabled) {
-    await UpdateDiagnostics.updateDiagnostics(newEditor4)
-  }
+  const editorWithDiagnostics = diagnosticsEnabled ? await UpdateDiagnostics.updateDiagnostics(newEditor4) : newEditor4
 
   const completionsOnTypeRaw = await Preferences.get('editor.completionsOnType')
   const completionsOnType = Boolean(completionsOnTypeRaw)
   EditorState.set(id, emptyEditor, {
-    ...newEditor4,
+    ...editorWithDiagnostics,
     completionsOnType,
   })
 }
