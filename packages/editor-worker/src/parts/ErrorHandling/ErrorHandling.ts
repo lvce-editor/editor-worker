@@ -1,59 +1,23 @@
-// @ts-nocheck
-import * as PrettyError from '../PrettyError/PrettyError.ts'
+import { ErrorWorker } from '@lvce-editor/rpc-registry'
 
-const state = {
-  /**
-   * @type {string[]}
-   */
-  seenWarnings: [],
+const logError = async (error: unknown, prefix: string): Promise<void> => {
+  const prettyError = await ErrorWorker.invoke('Errors.prepare', error)
+  await ErrorWorker.invoke('Errors.print', prettyError, prefix)
 }
 
-const logError = async (error) => {
-  const prettyError = await PrettyError.prepare(error)
-  const prettyErrorString = PrettyError.print(prettyError)
-  console.error(prettyErrorString)
-  return prettyError
-}
-
-export const handleError = async (error) => {
-  try {
-    await logError(error)
-  } catch (otherError) {
-    console.warn('ErrorHandling error')
-    console.warn(otherError)
-    console.error(error)
-  }
-}
-
-const warn = (...args) => {
-  const stringified = JSON.stringify(args)
-  if (state.seenWarnings.includes(stringified)) {
+const logFallback = (error: unknown, prefix: string): void => {
+  if (prefix) {
+    console.error(prefix, error)
     return
   }
-  state.seenWarnings.push(stringified)
-  console.warn(...args)
+  console.error(error)
 }
 
-/**
- * @param {PromiseRejectionEvent} event
- */
-const handleUnhandledRejection = async (event) => {
+export const handleError = async (error: unknown, prefix = ''): Promise<void> => {
   try {
-    event.preventDefault()
-    await handleError(event.reason)
-  } catch {
-    console.error(event.reason)
-  }
-}
-
-/**
- * @param {ErrorEvent} event
- */
-const handleUnhandledError = async (event) => {
-  try {
-    event.preventDefault()
-    await handleError(event.error)
-  } catch {
-    console.error(event.error)
+    await logError(error, prefix)
+  } catch (otherError) {
+    console.warn('ErrorHandling error', otherError)
+    logFallback(error, prefix)
   }
 }
