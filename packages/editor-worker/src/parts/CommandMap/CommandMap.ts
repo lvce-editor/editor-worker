@@ -54,6 +54,7 @@ import * as ContextMenu from '../EditorCommand/EditorCommandHandleContextMenu.ts
 import * as EditorCommandHandleContextMenu from '../EditorCommand/EditorCommandHandleContextMenu.ts'
 import * as HandleDoubleClick from '../EditorCommand/EditorCommandHandleDoubleClick.ts'
 import * as HandleFocus from '../EditorCommand/EditorCommandHandleFocus.ts'
+import * as HandleKeyUp from '../EditorCommand/EditorCommandHandleKeyUp.ts'
 import * as HandleMouseDown from '../EditorCommand/EditorCommandHandleMouseDown.ts'
 import * as HandleMouseMove from '../EditorCommand/EditorCommandHandleMouseMove.ts'
 import * as EditorCommandHandleMouseMoveWithAltKey from '../EditorCommand/EditorCommandHandleMouseMoveWithAltKey.ts'
@@ -262,6 +263,7 @@ export const commandMap = {
   'Editor.handleContextMenu': wrapCommand(EditorCommandHandleContextMenu.handleContextMenu),
   'Editor.handleDoubleClick': wrapCommand(HandleDoubleClick.handleDoubleClick),
   'Editor.handleFocus': wrapCommand(HandleFocus.handleFocus),
+  'Editor.handleKeyUp': wrapCommand(HandleKeyUp.handleKeyUp),
   'Editor.handleMouseDown': wrapCommand(HandleMouseDown.handleMouseDown),
   'Editor.handleMouseMove': wrapCommand(HandleMouseMove.handleMouseMove),
   'Editor.handleMouseMoveWithAltKey': wrapCommand(EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey),

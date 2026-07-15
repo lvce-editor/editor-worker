@@ -1,4 +1,5 @@
 export const Link = 1
+export const DefinitionLink = 2
 
 export const Ts2816 = 2816
 export const Ts2817 = 2817

@@ -3,6 +3,13 @@ import { EventExpression } from '@lvce-editor/constants'
 import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as RenderEventListeners from '../src/parts/RenderEventListeners/RenderEventListeners.ts'
 
+test('renderEventListeners - handles Alt key release', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleKeyUp,
+    params: ['handleKeyUp', EventExpression.Key],
+  })
+})
+
 test.skip('renderEventListeners', () => {
   const eventListeners = RenderEventListeners.renderEventListeners()
   expect(eventListeners).toEqual([

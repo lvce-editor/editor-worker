@@ -13,6 +13,10 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
       params: ['handleMouseMove', EventExpression.ClientX, EventExpression.ClientY, EventExpression.AltKey],
     },
     {
+      name: DomEventListenerFunctions.HandleKeyUp,
+      params: ['handleKeyUp', EventExpression.Key],
+    },
+    {
       name: DomEventListenerFunctions.HandleBlur,
       params: ['handleBlur'],
     },

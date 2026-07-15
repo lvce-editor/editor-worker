@@ -20,6 +20,7 @@ test('getEditorContentVirtualDom', () => {
   expect(dom[0]).toEqual({
     childCount: 5,
     className: 'EditorContent',
+    onKeyUp: DomEventListenerFunctions.HandleKeyUp,
     onMouseMove: DomEventListenerFunctions.HandleMouseMove,
     type: VirtualDomElements.Div,
   })

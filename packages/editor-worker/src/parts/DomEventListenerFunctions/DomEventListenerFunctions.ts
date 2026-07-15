@@ -31,3 +31,4 @@ export const HandleScrollBarVerticalPointerDown = 30
 export const HandleScrollBarVerticalPointerMove = 31
 export const HandleScrollBarVerticalPointerUp = 32
 export const HandleWheel = 33
+export const HandleKeyUp = 34

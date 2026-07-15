@@ -170,3 +170,44 @@ test('getVisible - keeps full multi-token line when editor width is narrow', asy
 
   expect(visibleText).toBe(line)
 })
+
+test('getVisible - renders a definition link decoration with its dedicated class', async () => {
+  const editor = {
+    averageCharWidth: 9,
+    charWidth: 9,
+    columnWidth: 9,
+    cursorWidth: 2,
+    decorations: [7, 6, DecorationType.DefinitionLink, 0],
+    deltaX: 0,
+    deltaY: 0,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    height: 600,
+    id: 1,
+    invalidStartIndex: 0,
+    isMonospaceFont: true,
+    languageId: 'plaintext',
+    letterSpacing: 0,
+    lineCache: [
+      {
+        state: { state: 1 },
+        tokens: [1, 19],
+      },
+    ],
+    lines: ['before target after'],
+    minLineY: 0,
+    numberOfVisibleLines: 30,
+    rowHeight: 20,
+    selections: [],
+    tabSize: 2,
+    tokenizerId: 'builtin.plaintext',
+    width: 800,
+    x: 0,
+    y: 0,
+  }
+
+  const { textInfos } = await EditorText.getVisible(editor, false)
+
+  expect(textInfos[0]).toEqual(['before ', 'Token Unknown', 'target', 'Token Unknown EditorGoToDefinitionLink', ' after', 'Token Unknown'])
+})
