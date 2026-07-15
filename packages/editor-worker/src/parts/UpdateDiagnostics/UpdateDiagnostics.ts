@@ -1,5 +1,6 @@
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as EditorState from '../EditorStates/EditorStates.ts'
+import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
@@ -31,11 +32,11 @@ const addDiagnostics = async (editor: any, diagnostics: readonly any[]): Promise
   }
 }
 
-const handleError = (error: unknown, editor: any): any => {
+const handleError = async (error: unknown, editor: any): Promise<any> => {
   if (error instanceof Error && error.message.includes('No diagnostic provider found')) {
     return editor
   }
-  console.error(`Failed to update diagnostics: ${error}`)
+  await ErrorHandling.handleError(error, 'Failed to update diagnostics: ')
   return editor
 }
 
