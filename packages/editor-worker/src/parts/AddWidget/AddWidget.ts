@@ -1,8 +1,10 @@
 import { WidgetId } from '@lvce-editor/constants'
 import type { Widget } from '../Widget/Widget.ts'
+import * as LocalWidgetId from '../WidgetId/WidgetId.ts'
 
 const isFunctional = (widgetId: number | string): boolean => {
   switch (widgetId) {
+    case LocalWidgetId.Message:
     case WidgetId.ColorPicker:
     case WidgetId.Completion:
     case WidgetId.Find:
