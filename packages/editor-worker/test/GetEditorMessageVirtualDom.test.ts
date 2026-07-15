@@ -4,12 +4,11 @@ import { text } from '../src/parts/VirtualDomHelpers/VirtualDomHelpers.ts'
 
 test('getEditorMessageVirtualDom - basic message', () => {
   const message = 'Test message'
-  const dom = GetEditorMessageVirtualDom.getEditorMessageVirtualDom(message, 12, 34)
+  const dom = GetEditorMessageVirtualDom.getEditorMessageVirtualDom(message)
   expect(dom).toEqual([
     {
       childCount: 2,
-      className: 'Viewlet EditorMessage EditorOverlayMessage',
-      style: 'position:fixed;left:12px;top:34px;',
+      className: 'Viewlet EditorMessage',
       tabIndex: -1,
       type: 4,
     },
