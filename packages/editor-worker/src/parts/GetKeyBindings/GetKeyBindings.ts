@@ -4,6 +4,11 @@ import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
 export const getKeyBindings = () => {
   return [
     {
+      command: 'Editor.closeColorPicker',
+      key: KeyCode.Escape,
+      when: WhenExpression.FocusColorPicker,
+    },
+    {
       command: 'Editor.closeSourceAction',
       key: KeyCode.Escape,
       when: WhenExpression.FocusSourceActions,
