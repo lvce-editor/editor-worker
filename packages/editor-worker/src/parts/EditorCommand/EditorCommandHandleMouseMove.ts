@@ -1,4 +1,6 @@
+import * as DefinitionLinkDecoration from '../DefinitionLinkDecoration/DefinitionLinkDecoration.ts'
 import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
+import * as EditorCommandHandleMouseMoveWithAltKey from './EditorCommandHandleMouseMoveWithAltKey.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
 
 const showHover = async (editor: any, position: any) => {
@@ -23,16 +25,19 @@ const onHoverIdle = async () => {
 
 const hoverDelay = 300
 
-// @ts-ignore
-export const handleMouseMove = (editor, x, y) => {
-  if (!editor.hoverEnabled) {
-    return editor
+export const handleMouseMove = async (editor: any, x: number, y: number, altKey: boolean) => {
+  if (altKey) {
+    return EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey(editor, x, y)
+  }
+  const editorWithoutDefinitionLink = DefinitionLinkDecoration.clear(editor)
+  if (!editorWithoutDefinitionLink.hoverEnabled) {
+    return editorWithoutDefinitionLink
   }
   const oldState = EditorHoverState.get()
   if (oldState.timeout !== -1) {
     clearTimeout(oldState.timeout)
   }
   const timeout = setTimeout(onHoverIdle, hoverDelay)
-  EditorHoverState.set(editor, timeout, x, y)
-  return editor
+  EditorHoverState.set(editorWithoutDefinitionLink, timeout, x, y)
+  return editorWithoutDefinitionLink
 }

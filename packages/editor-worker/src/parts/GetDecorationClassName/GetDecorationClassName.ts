@@ -3,6 +3,8 @@ import * as DecorationType from '../DecorationType/DecorationType.ts'
 
 export const getDecorationClassName = (type: any) => {
   switch (type) {
+    case DecorationType.DefinitionLink:
+      return DecorationClassName.EditorGoToDefinitionLink
     case DecorationType.Link:
       return DecorationClassName.Link
     case DecorationType.Ts1024:
