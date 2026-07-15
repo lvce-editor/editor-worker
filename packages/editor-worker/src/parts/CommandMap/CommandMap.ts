@@ -5,6 +5,7 @@ import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 import { createEditor2 } from '../CreateEditor2/CreateEditor2.ts'
 import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import { diff2 } from '../Diff2/Diff2.ts'
+import * as DisposeEditor from '../DisposeEditor/DisposeEditor.ts'
 import * as AddCursorAbove from '../EditorCommand/EditorCommandAddCursorAbove.ts'
 import * as AddCursorBelow from '../EditorCommand/EditorCommandAddCursorBelow.ts'
 import * as EditorCommandApplyDocumentEdits from '../EditorCommand/EditorCommandApplyDocumentEdits.ts'
@@ -225,6 +226,7 @@ export const commandMap = {
   'Editor.deleteWordPartRight': wrapCommand(DeleteWordPartRight.deleteWordPartRight),
   'Editor.deleteWordRight': wrapCommand(DeleteWordRight.deleteWordRight),
   'Editor.diff2': diff2,
+  'Editor.dispose': DisposeEditor.disposeEditor,
   'Editor.executeWidgetCommand': wrapCommand(ExecuteWidgetCommand.executeWidgetCommand),
   'Editor.findAllReferences': wrapCommand(FindAllReferences.findAllReferences),
   'Editor.format': wrapCommand(EditorFormat.format),

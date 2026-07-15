@@ -3,7 +3,7 @@ import type { EditorState } from '../State/State.ts'
 
 const editorStates = ViewletRegistry.create<EditorState>()
 
-export const { diff, getCommandIds, registerCommands, wrapCommand, wrapGetter } = editorStates
+export const { diff, dispose, getCommandIds, registerCommands, wrapCommand, wrapGetter } = editorStates
 
 export const get = (id: number): ViewletRegistry.StateTuple<EditorState> => {
   return editorStates.get(id)

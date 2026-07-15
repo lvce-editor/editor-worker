@@ -16,5 +16,5 @@ test('remove widget', () => {
       uid: 123,
     },
   }
-  expect(RemoveWidget.removeWidget(widget)).toEqual([['Viewlet.send', 123, 'dispose']])
+  expect(RemoveWidget.removeWidget(widget)).toEqual([['Viewlet.dispose', 123]])
 })
