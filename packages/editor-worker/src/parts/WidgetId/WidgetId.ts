@@ -6,3 +6,4 @@ export const Find = 5
 export const Hover = 6
 export const Rename = 7
 export const SourceAction = 8
+export const Message = 9
