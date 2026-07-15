@@ -38,3 +38,17 @@ test('isEqual - returns true when the editor becomes unfocused', () => {
 
   expect(DiffFocus.isEqual(oldState as any, newState as any)).toBe(true)
 })
+
+test('isEqual - returns false when focus changes while the editor is unfocused', () => {
+  const oldState = {
+    focus: 1,
+    focused: false,
+    isSelecting: false,
+  }
+  const newState = {
+    ...oldState,
+    focus: 2,
+  }
+
+  expect(DiffFocus.isEqual(oldState as any, newState as any)).toBe(false)
+})

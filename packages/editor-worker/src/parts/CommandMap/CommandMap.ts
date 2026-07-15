@@ -186,6 +186,7 @@ export const commandMap = {
   'Editor.braceCompletion': wrapCommand(EditorBraceCompletion.braceCompletion),
   'Editor.cancelSelection': wrapCommand(CancelSelection.cancelSelection),
   'Editor.closeCodeGenerator': wrapCommand(EditorCommandCloseCodeGenerator.closeCodeGenerator),
+  'Editor.closeColorPicker': wrapCommand(EditorOpenColorPicker.closeColorPicker),
   'Editor.closeFind': wrapCommand(EditorCommandCloseFind.closeFind),
   'Editor.closeFind2': ExternalGetPositionAtCursor.closeFind2,
   'Editor.closeRename': wrapCommand(CloseRename.closeRename),

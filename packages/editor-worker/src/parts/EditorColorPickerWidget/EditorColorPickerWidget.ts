@@ -8,6 +8,7 @@ const commandsToForward = [
   RenderMethod.SetDom2,
   RenderMethod.SetCss,
   RenderMethod.AppendToBody,
+  RenderMethod.FocusSelector,
   RenderMethod.SetBounds2,
   RenderMethod.RegisterEventListeners,
   RenderMethod.SetUid,
