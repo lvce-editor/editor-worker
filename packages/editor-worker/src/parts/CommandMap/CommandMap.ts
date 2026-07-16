@@ -152,6 +152,7 @@ import * as GetSelections from '../GetSelections/GetSelections.ts'
 import * as GetText from '../GetText/GetText.ts'
 import * as HandleBeforeInput from '../HandleBeforeInput/HandleBeforeInput.ts'
 import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
+import { handleSettingsChanged } from '../HandleSettingsChanged/HandleSettingsChanged.ts'
 import * as HandleTab from '../HandleTab/HandleTab.ts'
 import { hotReload } from '../HotReload/HotReload.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
@@ -283,6 +284,7 @@ export const commandMap = {
   'Editor.handleScrollBarVerticalMove': wrapCommand(EditorCommandHandleScrollBarMove.handleScrollBarVerticalPointerMove),
   'Editor.handleScrollBarVerticalPointerDown': wrapCommand(HandleScrollBarPointerDown.handleScrollBarPointerDown),
   'Editor.handleScrollBarVerticalPointerMove': wrapCommand(EditorCommandHandleScrollBarMove.handleScrollBarVerticalPointerMove),
+  'Editor.handleSettingsChanged': wrapCommand(handleSettingsChanged),
   'Editor.handleSingleClick': wrapCommand(HandleSingleClick.handleSingleClick),
   'Editor.handleTab': wrapCommand(HandleTab.handleTab),
   'Editor.handleTouchEnd': wrapCommand(HandleTouchEnd.handleTouchEnd),
