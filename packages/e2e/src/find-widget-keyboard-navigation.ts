@@ -17,11 +17,11 @@ content 3`,
   await Editor.openFind()
 
   // assert - find input should be focused initially
-  const findWidgetInput = Locator('.FindWidget [name="search-value"]')
+  const findWidgetInput = Locator('.FindWidget [name="search-value"]:focus')
   await expect(findWidgetInput).toBeVisible()
   await expect(findWidgetInput).toBeFocused()
 
-  const findWidgetMatchCount = Locator(`.FindWidgetMatchCount`)
+  const findWidgetMatchCount = Locator(`.FindWidget:has([name="search-value"]:focus) .FindWidgetMatchCount`)
   await expect(findWidgetMatchCount).toHaveText('1 of 3')
 
   // act - go to next match using the real keyboard path

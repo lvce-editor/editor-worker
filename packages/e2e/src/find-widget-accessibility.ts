@@ -33,7 +33,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-find-widget-accessibility'
 
-export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(
@@ -59,4 +59,5 @@ content 2`,
   await expect(findWidgetButtonFocusNext).toHaveAttribute('title', 'Next Match')
   const findWidgetButtonClose = Locator('.FindWidget [name="Close"]')
   await expect(findWidgetButtonClose).toHaveAttribute('title', 'Close')
+  await FindWidget.close()
 }
