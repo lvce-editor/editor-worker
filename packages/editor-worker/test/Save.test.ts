@@ -97,3 +97,27 @@ test('save - does not show electron message box when saving file fails outside e
   expect(result).toBe(editor)
   expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/read-only.txt', 'hello world']])
 })
+
+test('save - clears the modified status after saving', async () => {
+  using mockRpc = RendererWorker.registerMockRpc({
+    'FileSystem.writeFile': async () => {},
+    'Main.handleModifiedStatusChange': async () => {},
+  })
+  const editor = {
+    lines: ['hello world'],
+    modified: true,
+    platform: PlatformType.Web,
+    uri: 'file:///tmp/example.txt',
+  }
+
+  const result = await EditorCommandSave.save(editor)
+
+  expect(result).toEqual({
+    ...editor,
+    modified: false,
+  })
+  expect(mockRpc.invocations).toEqual([
+    ['FileSystem.writeFile', 'file:///tmp/example.txt', 'hello world'],
+    ['Main.handleModifiedStatusChange', 'file:///tmp/example.txt', false],
+  ])
+})
