@@ -6,6 +6,7 @@ interface EventMap {
   'ColorPicker.render': (oldState: any, newState: any) => Promise<any>
   'Editor.create': (options: any) => Promise<void>
   'Editor.dispose': (editorUid: number) => Promise<readonly any[]>
+  'Editor.getLanguages': (platform: number, assetDir: string) => Promise<readonly any[]>
   'Editor.getQuickPickMenuEntries': () => Promise<readonly any[]>
   'Editor.offsetAt': (textDocument: any, positionRowIndex: number, positionColumnIndex: number) => Promise<any>
   'Editor.render': (editorUid: number) => Promise<any>
