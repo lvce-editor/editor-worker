@@ -1,4 +1,5 @@
 import { WidgetId } from '@lvce-editor/constants'
+import * as DefinitionLinkDecoration from '../DefinitionLinkDecoration/DefinitionLinkDecoration.ts'
 import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
@@ -8,7 +9,6 @@ import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor
 import { getEditorSourceActions } from '../GetSourceActions/GetSourceActions.ts'
 import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
-import * as RenameDecoration from '../RenameDecoration/RenameDecoration.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
@@ -85,7 +85,7 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
     focused: true,
     widgets: newWidgets,
   }
-  const newEditor = widgetId === WidgetId.Rename ? RenameDecoration.clear(newEditorWithWidgets) : newEditorWithWidgets
+  const newEditor = widgetId === WidgetId.Rename ? DefinitionLinkDecoration.clearRename(newEditorWithWidgets) : newEditorWithWidgets
   const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
   Editors.set(editorUid, editor, newEditorWithDerivedState)
   await SetFocus.setFocus(WhenExpression.FocusEditorText)
