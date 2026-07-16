@@ -2,9 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'find-widget-keyboard-navigation'
 
-export const skip = 1
-
-export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, KeyBoard, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(
@@ -26,11 +24,15 @@ content 3`,
   const findWidgetMatchCount = Locator(`.FindWidgetMatchCount`)
   await expect(findWidgetMatchCount).toHaveText('1 of 3')
 
-  // act - go to next match
-  await FindWidget.focusNext()
+  // act - go to next match using the real keyboard path
+  await KeyBoard.press('Enter')
 
-  // assert - should move to next match
+  // assert - should move to next match without inserting a line break
+  await expect(findWidgetInput).toBeFocused()
   await expect(findWidgetMatchCount).toHaveText('2 of 3')
+  await Editor.shouldHaveText(`content 1
+content 2
+content 3`)
 
   // act - go to previous match
   await FindWidget.focusPrevious()
