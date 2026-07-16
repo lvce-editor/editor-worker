@@ -1,6 +1,8 @@
 import type { EditorState } from '../State/State.ts'
+import * as Preferences from '../Preferences/Preferences.ts'
+import * as EditorCommandSave from './EditorCommandSave.ts'
 
-export const handleBlur = (editor: EditorState): EditorState => {
+export const handleBlur = async (editor: EditorState): Promise<EditorState> => {
   if (!editor.focused) {
     return editor
   }
@@ -8,5 +10,12 @@ export const handleBlur = (editor: EditorState): EditorState => {
     ...editor,
     focused: false,
   }
-  return newEditor
+  if (!editor.modified) {
+    return newEditor
+  }
+  const autoSave = await Preferences.get('files.autoSave')
+  if (autoSave === 'off') {
+    return newEditor
+  }
+  return EditorCommandSave.save(newEditor)
 }
