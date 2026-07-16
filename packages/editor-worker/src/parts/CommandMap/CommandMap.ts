@@ -144,7 +144,6 @@ import * as Font from '../Font/Font.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
 import * as GetKeys from '../GetKeys/GetKeys.ts'
-import { getLanguages } from '../GetLanguages/GetLanguages.ts'
 import { getMenuEntries } from '../GetMenuEntries/GetMenuEntries.ts'
 import { getMenuIds } from '../GetMenuIds/GetMenuIds.ts'
 import { getProblems } from '../GetProblems/GetProblems.ts'
@@ -238,7 +237,6 @@ export const commandMap = {
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
   'Editor.getKeys': GetKeys.getKeys,
   'Editor.getLanguageId': ExternalGetPositionAtCursor.getLanguageId,
-  'Editor.getLanguages': getLanguages,
   'Editor.getLines2': ExternalGetPositionAtCursor.getLines2,
   'Editor.getMenuEntries': getMenuEntries,
   'Editor.getMenuEntries2': getMenuEntries,

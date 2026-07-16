@@ -133,10 +133,6 @@ export const editorShowHover = () => {
   return I18nString.i18nString(UiStrings.EditorShowHover)
 }
 
-export const changeLanguageMode = () => {
-  return I18nString.i18nString(UiStrings.ChangeLanguageMode)
-}
-
 export const editorFormatDocumentForced = () => {
   return I18nString.i18nString(UiStrings.EditorFormatDocumentForced)
 }

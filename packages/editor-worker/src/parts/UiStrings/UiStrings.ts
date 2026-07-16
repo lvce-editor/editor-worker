@@ -1,4 +1,3 @@
-export const ChangeLanguageMode = 'Change Language Mode'
 export const Copy = 'Copy'
 export const CopyLineDown = 'Copy Line Down'
 export const CopyLineUp = 'Copy Line Up'

@@ -4,11 +4,6 @@ import * as EditorStrings from '../EditorStrings/EditorStrings.ts'
 export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
   return [
     {
-      args: ['QuickPick', 'language-mode'],
-      id: 'Viewlet.openWidget',
-      label: EditorStrings.changeLanguageMode(),
-    },
-    {
       id: 'Editor.format',
       label: EditorStrings.formatDocument(),
     },
