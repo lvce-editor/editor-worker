@@ -5,8 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "e2e": "node ./node_modules/@lvce-editor/test-with-playwright/bin/test-with-playwright.js  --only-extension=. --test-path=. --server-path=../server/src/server.js",
-    "e2e:headless": "node ./node_modules/@lvce-editor/test-with-playwright/bin/test-with-playwright.js  --only-extension=. --test-path=. --server-path=../server/src/server.js --headless",
+    "e2e": "node ./node_modules/@lvce-editor/test-with-playwright/bin/test-with-playwright.js  --only-extension=. --test-path=. --server-path=../server/src/server.js --reuse-page",
+    "e2e:headless": "node ./node_modules/@lvce-editor/test-with-playwright/bin/test-with-playwright.js  --only-extension=. --test-path=. --server-path=../server/src/server.js --headless --reuse-page",
     "type-check": "tsc"
   },
   "devDependencies": {
