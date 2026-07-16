@@ -18,6 +18,9 @@ ${editorSelector} .EditorRow {
   height: var(--EditorRowHeight);
   line-height: var(--EditorRowHeight);
 }
+${editorSelector} .Token.EditorRenameHighlight {
+  background-color: var(--EditorRenameHighlightBackground, rgba(173, 214, 255, 0.25));
+}
 ${editorSelector} .ScrollBarThumbVertical {
   height: var(--ScrollBarHeight);
   translate: 0px var(--ScrollBarTop);

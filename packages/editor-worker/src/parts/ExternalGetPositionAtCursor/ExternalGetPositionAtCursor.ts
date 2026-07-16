@@ -8,6 +8,7 @@ import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor
 import { getEditorSourceActions } from '../GetSourceActions/GetSourceActions.ts'
 import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
+import * as RenameDecoration from '../RenameDecoration/RenameDecoration.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
@@ -79,11 +80,12 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
   }
   await invoke(`${widgetName}.dispose`)
   const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
-  const newEditor = {
+  const newEditorWithWidgets = {
     ...editor,
     focused: true,
     widgets: newWidgets,
   }
+  const newEditor = widgetId === WidgetId.Rename ? RenameDecoration.clear(newEditorWithWidgets) : newEditorWithWidgets
   const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
   Editors.set(editorUid, editor, newEditorWithDerivedState)
   await SetFocus.setFocus(WhenExpression.FocusEditorText)

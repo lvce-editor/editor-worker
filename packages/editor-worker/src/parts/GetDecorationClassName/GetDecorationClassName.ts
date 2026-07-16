@@ -7,6 +7,8 @@ export const getDecorationClassName = (type: any) => {
       return DecorationClassName.EditorGoToDefinitionLink
     case DecorationType.Link:
       return DecorationClassName.Link
+    case DecorationType.Rename:
+      return DecorationClassName.EditorRenameHighlight
     case DecorationType.Ts1024:
     case DecorationType.Ts1536:
     case DecorationType.Ts1537:
