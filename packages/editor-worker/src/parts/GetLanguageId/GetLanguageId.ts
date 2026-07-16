@@ -21,6 +21,11 @@ const getLanguageByFileName = (languages: readonly any[], fileNameLower: string)
   return ''
 }
 
+const getFileName = (uri: string): string => {
+  const slashIndex = Math.max(uri.lastIndexOf('/'), uri.lastIndexOf('\\'))
+  return uri.slice(slashIndex + 1)
+}
+
 export const getLanguageId = (uri: string, languages: readonly any[]): string => {
   Assert.string(uri)
   // TODO this is inefficient for icon theme, as file extension is computed twice
@@ -33,7 +38,7 @@ export const getLanguageId = (uri: string, languages: readonly any[]): string =>
   if (candidate1) {
     return candidate1
   }
-  const fileNameLower = uri.toLowerCase()
+  const fileNameLower = getFileName(uri).toLowerCase()
   const secondExtensionIndex = GetFileExtension.getNthFileExtension(uri, extensionIndex - 1)
   const secondExtension = uri.slice(secondExtensionIndex)
   const candidate2 = getLanguageByExtension(languages, secondExtension)
