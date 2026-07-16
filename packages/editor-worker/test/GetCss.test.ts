@@ -13,6 +13,9 @@ test('getCss', () => {
   height: var(--EditorRowHeight);
   line-height: var(--EditorRowHeight);
 }
+.Editor[data-uid="42"] .Token.EditorRenameHighlight {
+  background-color: var(--EditorRenameHighlightBackground, rgba(173, 214, 255, 0.25));
+}
 .Editor[data-uid="42"] .ScrollBarThumbVertical {
   height: var(--ScrollBarHeight);
   translate: 0px var(--ScrollBarTop);
