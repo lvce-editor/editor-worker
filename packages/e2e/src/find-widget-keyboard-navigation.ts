@@ -17,7 +17,7 @@ content 3`,
   await Editor.openFind()
 
   // assert - find input should be focused initially
-  const findWidgetInput = Locator('.FindWidget .MultilineInputBox')
+  const findWidgetInput = Locator('.FindWidget [name="search-value"]')
   await expect(findWidgetInput).toBeVisible()
   await expect(findWidgetInput).toBeFocused()
 
