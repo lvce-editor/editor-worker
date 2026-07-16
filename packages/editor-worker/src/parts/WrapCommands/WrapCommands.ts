@@ -1,24 +1,34 @@
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
+const queues: (Promise<void> | undefined)[] = []
+
 // TODO wrap commands globally, not per editor
 // TODO only store editor state in editor worker, not in renderer worker also
 
 export const wrapCommand =
   (fn: any) =>
-  async (editorUid: number, ...args: any[]) => {
-    const oldInstance = Editors.get(editorUid)
-    const state = oldInstance.newState
-    const newEditor = await fn(state, ...args)
-    if (state === newEditor) {
-      return newEditor
+  async (uid: number, ...args: any[]) => {
+    const previous = queues[uid]
+    const { promise: next, resolve } = Promise.withResolvers<void>()
+    queues[uid] = next
+    if (previous) {
+      await previous
     }
-    const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
-
-    // TODO if editor did not change, no need to update furthur
-
-    // TODO combine neweditor with latest editor?
-
-    Editors.set(editorUid, state, newEditorWithDerivedState)
-    return newEditorWithDerivedState
+    try {
+      const oldInstance = Editors.get(uid)
+      const state = oldInstance.newState
+      const newEditor = await fn(state, ...args)
+      if (state === newEditor) {
+        return newEditor
+      }
+      const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
+      Editors.set(uid, state, newEditorWithDerivedState)
+      return newEditorWithDerivedState
+    } finally {
+      resolve()
+      if (queues[uid] === next) {
+        queues[uid] = undefined
+      }
+    }
   }
