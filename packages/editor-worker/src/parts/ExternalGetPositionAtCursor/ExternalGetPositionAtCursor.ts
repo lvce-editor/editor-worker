@@ -81,6 +81,7 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
   const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
   const newEditor = {
     ...editor,
+    decorations: widgetId === WidgetId.Rename ? editor.decorations.slice(0, -4) : editor.decorations,
     focused: true,
     widgets: newWidgets,
   }

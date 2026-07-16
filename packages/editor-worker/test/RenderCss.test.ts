@@ -30,6 +30,7 @@ test('renderCss', () => {
   height: var(--EditorRowHeight);
   line-height: var(--EditorRowHeight);
 }
+.Editor[data-uid="1"] .R{background-color:#add6ff40}
 .Editor[data-uid="1"] .ScrollBarThumbVertical {
   height: var(--ScrollBarHeight);
   translate: 0px var(--ScrollBarTop);

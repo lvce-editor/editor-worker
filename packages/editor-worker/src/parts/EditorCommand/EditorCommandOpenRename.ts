@@ -3,6 +3,7 @@ import type { RenameState } from '../RenameState/RenameState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
+import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as RenameWidgetFactory from '../RenameWidgetFactory/RenameWidgetFactory.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
@@ -30,7 +31,7 @@ export const openRename = async (editor: any) => {
   }
 
   const fullFocus = true
-  return AddWidgetToEditor.addWidgetToEditor(
+  const editorWithRenameWidget = await AddWidgetToEditor.addWidgetToEditor(
     WidgetId.Rename,
     FocusKey.FocusEditorRename,
     editor,
@@ -38,4 +39,13 @@ export const openRename = async (editor: any) => {
     newStateGenerator,
     fullFocus,
   )
+  if (editorWithRenameWidget === editor) {
+    return editor
+  }
+  const wordBefore = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
+  const offset = GetOffsetAtCursor.getOffsetAtCursor(editor) - wordBefore.length
+  return {
+    ...editorWithRenameWidget,
+    decorations: [...editorWithRenameWidget.decorations, offset, word.length, 3, 0],
+  }
 }
