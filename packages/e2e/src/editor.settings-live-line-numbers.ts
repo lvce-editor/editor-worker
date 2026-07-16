@@ -2,9 +2,13 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.settings-live-line-numbers'
 
-export const test: Test = async ({ Command, expect, Locator, Main, Settings }) => {
+export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, Settings, Workspace }) => {
   await Settings.update({ 'editor.lineNumbers': false })
-  await Main.openUri('app://settings.json')
+  const tmpDir = await FileSystem.getTmpDir()
+  const filePath = `${tmpDir}/settings-live-line-numbers.txt`
+  await FileSystem.writeFile(filePath, 'line 1\nline 2')
+  await Workspace.setPath(tmpDir)
+  await Main.openUri(filePath)
 
   const editorContent = Locator('.EditorContent')
   const gutter = Locator('.Gutter')
