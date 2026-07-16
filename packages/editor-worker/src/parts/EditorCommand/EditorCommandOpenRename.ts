@@ -1,7 +1,6 @@
 import { WidgetId } from '@lvce-editor/constants'
 import type { RenameState } from '../RenameState/RenameState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
-import * as DefinitionLinkDecoration from '../DefinitionLinkDecoration/DefinitionLinkDecoration.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
@@ -45,5 +44,8 @@ export const openRename = async (editor: any) => {
   }
   const wordBefore = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   const offset = GetOffsetAtCursor.getOffsetAtCursor(editor) - wordBefore.length
-  return DefinitionLinkDecoration.setRename(editorWithRenameWidget, offset, word.length)
+  return {
+    ...editorWithRenameWidget,
+    decorations: [...editorWithRenameWidget.decorations, offset, word.length, 3, 0],
+  }
 }

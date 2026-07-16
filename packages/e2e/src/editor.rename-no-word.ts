@@ -17,6 +17,6 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Wo
   // assert
   const renameWidget = Locator('.EditorRename:has(.RenameInputBox:focus)')
   await expect(renameWidget).toBeHidden()
-  const renameHighlight = Locator('.Token.EditorRenameHighlight')
+  const renameHighlight = Locator('.Token.R')
   await expect(renameHighlight).toBeHidden()
 }

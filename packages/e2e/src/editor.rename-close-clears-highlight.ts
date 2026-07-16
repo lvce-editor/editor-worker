@@ -12,7 +12,7 @@ export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator
   await Editor.setCursor(0, 8)
   await Editor.openRename()
   const renameWidget = Locator('.EditorRename:has(.RenameInputBox:focus)')
-  const renameHighlight = Locator('.Token.EditorRenameHighlight')
+  const renameHighlight = Locator('.Token.R')
   await expect(renameHighlight).toBeVisible()
 
   // act

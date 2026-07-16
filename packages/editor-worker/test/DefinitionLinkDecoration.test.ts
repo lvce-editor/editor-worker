@@ -45,33 +45,3 @@ test('clear - returns the same editor when there is no definition link decoratio
 
   expect(DefinitionLinkDecoration.clear(editor)).toBe(editor)
 })
-
-test('setRename - adds a rename decoration and preserves other decorations', () => {
-  const editor = {
-    decorations: [1, 3, DecorationType.Link, 0],
-  }
-
-  expect(DefinitionLinkDecoration.setRename(editor, 8, 5)).toEqual({
-    decorations: [1, 3, DecorationType.Link, 0, 8, 5, DecorationType.Rename, 0],
-  })
-})
-
-test('setRename - replaces an existing rename decoration', () => {
-  const editor = {
-    decorations: [1, 3, DecorationType.Rename, 0],
-  }
-
-  expect(DefinitionLinkDecoration.setRename(editor, 8, 5)).toEqual({
-    decorations: [8, 5, DecorationType.Rename, 0],
-  })
-})
-
-test('clearRename - removes rename decorations and preserves other decorations', () => {
-  const editor = {
-    decorations: [1, 3, DecorationType.Rename, 0, 8, 5, DecorationType.DefinitionLink, 0],
-  }
-
-  expect(DefinitionLinkDecoration.clearRename(editor)).toEqual({
-    decorations: [8, 5, DecorationType.DefinitionLink, 0],
-  })
-})

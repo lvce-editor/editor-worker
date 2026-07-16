@@ -20,7 +20,7 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Wo
   const renameInput = Locator('.RenameInputBox:focus')
   await expect(renameInput).toBeVisible()
   await expect(renameInput).toBeFocused()
-  const renameHighlight = Locator('.Token.EditorRenameHighlight')
+  const renameHighlight = Locator('.Token.R')
   await expect(renameHighlight).toHaveText('alpha')
   await expect(renameHighlight).toHaveCSS('background-color', 'rgba(173, 214, 255, 0.25)')
 }

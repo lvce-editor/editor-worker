@@ -2,25 +2,25 @@ import * as DecorationType from '../DecorationType/DecorationType.ts'
 
 const stride = 4
 
-const isDecorationType = (decorations: readonly number[], index: number, type: number): boolean => {
-  return decorations[index + 2] === type
+const isDefinitionLink = (decorations: readonly number[], index: number): boolean => {
+  return decorations[index + 2] === DecorationType.DefinitionLink
 }
 
-const matchesType = (editor: any, offset: number, length: number, type: number): boolean => {
+export const matches = (editor: any, offset: number, length: number): boolean => {
   const { decorations } = editor
   for (let i = 0; i < decorations.length; i += stride) {
-    if (isDecorationType(decorations, i, type)) {
+    if (isDefinitionLink(decorations, i)) {
       return decorations[i] === offset && decorations[i + 1] === length
     }
   }
   return false
 }
 
-const clearType = (editor: any, type: number): any => {
+export const clear = (editor: any): any => {
   const { decorations } = editor
   const filtered: number[] = []
   for (let i = 0; i < decorations.length; i += stride) {
-    if (!isDecorationType(decorations, i, type)) {
+    if (!isDefinitionLink(decorations, i)) {
       filtered.push(decorations[i], decorations[i + 1], decorations[i + 2], decorations[i + 3])
     }
   }
@@ -33,33 +33,13 @@ const clearType = (editor: any, type: number): any => {
   }
 }
 
-const setType = (editor: any, offset: number, length: number, type: number): any => {
-  if (matchesType(editor, offset, length, type)) {
+export const set = (editor: any, offset: number, length: number): any => {
+  if (matches(editor, offset, length)) {
     return editor
   }
-  const editorWithoutDecoration = clearType(editor, type)
+  const editorWithoutDefinitionLink = clear(editor)
   return {
-    ...editorWithoutDecoration,
-    decorations: [...editorWithoutDecoration.decorations, offset, length, type, 0],
+    ...editorWithoutDefinitionLink,
+    decorations: [...editorWithoutDefinitionLink.decorations, offset, length, DecorationType.DefinitionLink, 0],
   }
-}
-
-export const matches = (editor: any, offset: number, length: number): boolean => {
-  return matchesType(editor, offset, length, DecorationType.DefinitionLink)
-}
-
-export const clear = (editor: any): any => {
-  return clearType(editor, DecorationType.DefinitionLink)
-}
-
-export const set = (editor: any, offset: number, length: number): any => {
-  return setType(editor, offset, length, DecorationType.DefinitionLink)
-}
-
-export const clearRename = (editor: any): any => {
-  return clearType(editor, DecorationType.Rename)
-}
-
-export const setRename = (editor: any, offset: number, length: number): any => {
-  return setType(editor, offset, length, DecorationType.Rename)
 }

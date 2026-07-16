@@ -1,5 +1,4 @@
 import { WidgetId } from '@lvce-editor/constants'
-import * as DefinitionLinkDecoration from '../DefinitionLinkDecoration/DefinitionLinkDecoration.ts'
 import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
@@ -80,12 +79,12 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
   }
   await invoke(`${widgetName}.dispose`)
   const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
-  const newEditorWithWidgets = {
+  const newEditor = {
     ...editor,
+    decorations: widgetId === WidgetId.Rename ? editor.decorations.slice(0, -4) : editor.decorations,
     focused: true,
     widgets: newWidgets,
   }
-  const newEditor = widgetId === WidgetId.Rename ? DefinitionLinkDecoration.clearRename(newEditorWithWidgets) : newEditorWithWidgets
   const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
   Editors.set(editorUid, editor, newEditorWithDerivedState)
   await SetFocus.setFocus(WhenExpression.FocusEditorText)

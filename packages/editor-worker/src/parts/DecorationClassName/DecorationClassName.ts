@@ -1,6 +1,5 @@
 export const Link = 'Link'
 export const EditorGoToDefinitionLink = 'EditorGoToDefinitionLink'
-export const EditorRenameHighlight = 'EditorRenameHighlight'
 export const Function = 'Function'
 export const Parameter = 'Parameter'
 export const Type = 'Type'
