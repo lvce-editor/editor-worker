@@ -4,9 +4,9 @@ import * as GetLanguageId from '../src/parts/GetLanguageId/GetLanguageId.ts'
 test('getLanguageId - file name in uri', () => {
   const languages = [
     {
-      id: 'dotenv',
       extensions: ['.env'],
       fileNames: ['.env.sample'],
+      id: 'dotenv',
     },
   ]
 
@@ -16,9 +16,9 @@ test('getLanguageId - file name in uri', () => {
 test('getLanguageId - Windows file name', () => {
   const languages = [
     {
-      id: 'dotenv',
       extensions: ['.env'],
       fileNames: ['.env.sample'],
+      id: 'dotenv',
     },
   ]
 
