@@ -10,17 +10,23 @@ export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, KeyBo
   await Editor.openFind()
   await FindWidget.setValue('target')
 
-  const findWidgetInput = Locator('.FindWidget .MultilineInputBox')
-  const findWidgetMatchCount = Locator('.FindWidgetMatchCount')
+  const findWidget = Locator('.FindWidget:has(.MultilineInputBox:focus)')
+  const findWidgetInputs = Locator('.FindWidget .MultilineInputBox')
+  const findWidgetInput = findWidget.locator('.MultilineInputBox')
+  const findWidgetMatchCount = findWidget.locator('.FindWidgetMatchCount')
   await expect(findWidgetInput).toHaveValue('target')
   await expect(findWidgetInput).toBeFocused()
   await expect(findWidgetMatchCount).toHaveText('1 of 6')
 
   const editorInput = Locator('[name="editor"]')
-  await editorInput.type('')
-  await expect(findWidgetInput).not.toBeFocused()
+  const editorRow = Locator('.EditorRow').first()
+  // No test page object exposes editor DOM focus without changing the document.
+  // eslint-disable-next-line e2e/no-direct-click
+  await editorRow.click()
+  await expect(editorInput).toBeFocused()
   await KeyBoard.press('Control+f')
 
+  await expect(findWidgetInputs).toHaveCount(1)
   await expect(findWidgetInput).toBeFocused()
   await expect(findWidgetInput).toHaveValue('target')
   await expect(findWidgetMatchCount).toHaveText('1 of 6')
