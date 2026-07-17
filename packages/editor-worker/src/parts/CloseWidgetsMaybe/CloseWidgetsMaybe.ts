@@ -7,5 +7,5 @@ export const closeWidgetsMaybe = (widgets: readonly any[]): readonly any[] => {
   if (widgets.length === 0) {
     return widgets
   }
-  return widgets.filter(isPersistentWidget)
+  return widgets.filter((widget) => isPersistentWidget(widget.id))
 }

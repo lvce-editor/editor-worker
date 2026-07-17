@@ -10,3 +10,11 @@ test('Escape closes the focused color picker', () => {
     when: WhenExpression.FocusColorPicker,
   })
 })
+
+test('Escape closes focused editor completions', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.closeCompletion',
+    key: KeyCode.Escape,
+    when: WhenExpression.FocusEditorCompletions,
+  })
+})

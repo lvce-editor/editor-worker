@@ -144,7 +144,7 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorCompletions,
     },
     {
-      command: 'EditorCompletion.close',
+      command: 'Editor.closeCompletion',
       key: KeyCode.Escape,
       when: WhenExpression.FocusEditorCompletions,
     },

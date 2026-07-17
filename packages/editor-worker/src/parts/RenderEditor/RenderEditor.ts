@@ -66,7 +66,7 @@ const renderAdditionalFocusContext = {
     if (newState.additionalFocus) {
       return ['Viewlet.setAdditionalFocus', newState.uid, newState.additionalFocus]
     }
-    return ['viewlet.unsetAdditionalFocus', newState.uid, newState.additionalFocus]
+    return ['Viewlet.unsetAdditionalFocus', newState.uid, oldState.additionalFocus]
   },
   isEqual: (oldState: EditorState, newState: EditorState) => oldState.additionalFocus === newState.additionalFocus,
 }
