@@ -224,6 +224,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.fold',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.BracketLeft,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.closeFind',
       key: KeyCode.Escape,
       when: WhenExpression.FocusFindWidget,
@@ -251,6 +256,11 @@ export const getKeyBindings = () => {
     {
       command: 'Editor.indentMore',
       key: KeyModifier.CtrlCmd | KeyCode.BracketRight,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.unfold',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.BracketRight,
       when: WhenExpression.FocusEditorText,
     },
     {

@@ -48,6 +48,7 @@ import * as DeleteWordPartLeft from '../EditorCommand/EditorCommandDeleteWordPar
 import * as DeleteWordPartRight from '../EditorCommand/EditorCommandDeleteWordPartRight.ts'
 import * as DeleteWordRight from '../EditorCommand/EditorCommandDeleteWordRight.ts'
 import * as FindAllReferences from '../EditorCommand/EditorCommandFindAllReferences.ts'
+import { fold } from '../EditorCommand/EditorCommandFold.ts'
 import * as EditorFormat from '../EditorCommand/EditorCommandFormat.ts'
 import * as GetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as EditorGoToDefinition from '../EditorCommand/EditorCommandGoToDefinition.ts'
@@ -130,6 +131,7 @@ import * as EditorToggleLineComment from '../EditorCommand/EditorCommandToggleLi
 import * as EditorType from '../EditorCommand/EditorCommandType.ts'
 import * as EditorTypeWithAutoClosing from '../EditorCommand/EditorCommandTypeWithAutoClosing.ts'
 import * as EditorUndo from '../EditorCommand/EditorCommandUndo.ts'
+import { unfold } from '../EditorCommand/EditorCommandUnfold.ts'
 import * as Unindent from '../EditorCommand/EditorCommandUnindent.ts'
 import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorCompletionWidget.ts'
 import * as EditorFindWidget from '../EditorFindWidget/EditorFindWidget.ts'
@@ -238,6 +240,7 @@ export const commandMap = {
   'Editor.dispose': DisposeEditor.disposeEditor,
   'Editor.executeWidgetCommand': wrapCommand(ExecuteWidgetCommand.executeWidgetCommand),
   'Editor.findAllReferences': wrapCommand(FindAllReferences.findAllReferences),
+  'Editor.fold': wrapCommand(fold),
   'Editor.format': wrapCommand(EditorFormat.format),
   'Editor.getCommandIds': getCommandIds,
   'Editor.getDiagnostics': ExternalGetPositionAtCursor.getDiagnostics,
@@ -368,6 +371,7 @@ export const commandMap = {
   'Editor.type': wrapCommand(EditorType.type),
   'Editor.typeWithAutoClosing': wrapCommand(EditorTypeWithAutoClosing.typeWithAutoClosing),
   'Editor.undo': wrapCommand(EditorUndo.undo),
+  'Editor.unfold': wrapCommand(unfold),
   'Editor.unIndent': wrapCommand(Unindent.editorUnindent),
   'Editor.updateDebugInfo': UpdateDebugInfo.updateDebugInfo,
   'Editor.updateDiagnostics': wrapCommand(UpdateDiagnostics.updateDiagnostics),

@@ -1,5 +1,6 @@
 import * as ApplyWidgetChanges from '../ApplyWidgetChanges/ApplyWidgetChanges.ts'
 import * as Assert from '../Assert/Assert.ts'
+import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
@@ -10,7 +11,6 @@ import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as ListenerType from '../ListenerType/ListenerType.ts'
 import * as NotifyListeners from '../NotifyListeners/NotifyListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
-import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as TabModifiedStatusChange from '../TabModifiedStatusChange/TabModifiedStatusChange.ts'
@@ -66,6 +66,14 @@ export const scheduleSelections = (editor: any, selectionEdits: any) => {
   return EditorSelection.setSelections(editor, selectionEdits)
 }
 
+const updateLines = (editor: any, lines: readonly string[]) => {
+  const newEditor = {
+    ...editor,
+    lines,
+  }
+  return 'foldingRanges' in editor ? EditorFolding.updateLayout(newEditor, []) : newEditor
+}
+
 /**
  * TODO make this synchronous maybe?
  * @param {any} editor
@@ -80,10 +88,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     return editor
   }
   const newLines = TextDocument.applyEdits(editor, changes)
-  const partialNewEditor = {
-    ...editor,
-    lines: newLines,
-  }
+  const partialNewEditor = updateLines(editor, newLines)
   const newSelections = selectionChanges || EditorSelection.applyEdit(partialNewEditor, changes)
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
@@ -153,10 +158,7 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes)
     return editor
   }
   const newLines = TextDocument.applyEdits(editor, changes)
-  const partialNewEditor = {
-    ...editor,
-    lines: newLines,
-  }
+  const partialNewEditor = updateLines(editor, newLines)
   const newSelections = EditorSelection.applyEdit(partialNewEditor, changes)
   const invalidStartIndex = Math.min(editor.invalidStartIndex, changes[0].start.rowIndex)
   const newEditor = {
@@ -204,9 +206,8 @@ export const scheduleDocument = async (editor, changes) => {
   // const scrollBarHeight = editor.scrollBarHeight
 
   const newEditor = {
-    ...editor,
+    ...updateLines(editor, newLines),
     invalidStartIndex,
-    lines: newLines,
     redoStack: [],
     undoStack: [...editor.undoStack, changes],
   }
@@ -251,19 +252,11 @@ export const setBounds = (editor: any, x: number, y: number, width: number, heig
 
 export const setText = (editor: any, text: string) => {
   const lines = SplitLines.splitLines(text)
-  const { itemHeight, minimumSliderSize, numberOfVisibleLines } = editor
-  const total = lines.length
-  const maxLineY = Math.min(numberOfVisibleLines, total)
-  const finalY = Math.max(total - numberOfVisibleLines, 0)
-  const finalDeltaY = finalY * itemHeight
-  const contentHeight = lines.length * editor.rowHeight
-  const scrollBarHeight = ScrollBarFunctions.getScrollBarSize(editor.height, contentHeight, minimumSliderSize)
-  return {
-    ...editor,
-    finalDeltaY,
-    finalY,
-    lines,
-    maxLineY,
-    scrollBarHeight,
-  }
+  return EditorFolding.updateLayout(
+    {
+      ...editor,
+      lines,
+    },
+    [],
+  )
 }

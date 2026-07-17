@@ -166,7 +166,7 @@ test('getVisible - keeps full multi-token line when editor width is narrow', asy
   }
 
   const { textInfos } = await EditorText.getVisible(editor, false)
-  const visibleText = textInfos[0].filter((_, index) => index % 2 === 0).join('')
+  const visibleText = textInfos[0].filter((_: string, index: number) => index % 2 === 0).join('')
 
   expect(visibleText).toBe(line)
 })

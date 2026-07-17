@@ -26,6 +26,7 @@ interface EditorVirtualDomOptions {
   readonly selections?: any
   readonly textInfos: readonly any[]
   readonly uid: number
+  readonly visibleLineIndices?: readonly number[]
 }
 
 export const getEditorVirtualDom = ({
@@ -43,6 +44,7 @@ export const getEditorVirtualDom = ({
   selectionInfos = [],
   textInfos,
   uid,
+  visibleLineIndices,
 }: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
   if (loadError) {
     return [
@@ -66,7 +68,8 @@ export const getEditorVirtualDom = ({
       text(loadError),
     ]
   }
-  const visibleGutterInfos = breakPoints.length > 0 ? getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers) : gutterInfos
+  const visibleGutterInfos =
+    breakPoints.length > 0 || visibleLineIndices ? getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices) : gutterInfos
   const showGutter = lineNumbers || breakPoints.length > 0
   const gutterDom = showGutter ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos) : []
   return [

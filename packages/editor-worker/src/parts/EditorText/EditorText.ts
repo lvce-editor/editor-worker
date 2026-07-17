@@ -490,14 +490,24 @@ const getLineInfosViewport = (
   }
 }
 
-export const getVisible = async (editor: any, syncIncremental: boolean) => {
+export const getVisible = async (editor: any, syncIncremental: boolean): Promise<{ differences: number[]; textInfos: string[][] }> => {
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
   // invalidStartIndex, lineCache, etc. just for testing editorType
   // editor.invalidStartIndex = changes[0].start.rowIndex
   // @ts-ignore
-  const { charWidth, deltaX, fontFamily, fontSize, fontWeight, letterSpacing, lines, minLineY, numberOfVisibleLines, width } = editor
-  const maxLineY = Math.min(minLineY + numberOfVisibleLines, lines.length)
+  const { charWidth, deltaX, lines, width } = editor
+  const visibleLineIndices =
+    editor.visibleLineIndices ||
+    Array.from({ length: Math.min(editor.numberOfVisibleLines, lines.length - editor.minLineY) }, (_, index) => editor.minLineY + index)
+  if (visibleLineIndices.length === 0) {
+    return {
+      differences: [],
+      textInfos: [],
+    }
+  }
+  const minLineY = visibleLineIndices[0]
+  const maxLineY = visibleLineIndices.at(-1) + 1
   // @ts-ignore
   let { embeddedResults, tokenizersToLoad, tokens } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
   for (let i = 0; tokenizersToLoad.length > 0 && i < maxTokenizerLoadPasses; i++) {
@@ -508,7 +518,7 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
   }
   const minLineOffset = await TextDocument.offsetAtSync(editor, minLineY, 0)
   const averageCharWidth = charWidth
-  const { differences, result } = getLineInfosViewport(
+  const { differences: allDifferences, result: allTextInfos } = getLineInfosViewport(
     editor,
     tokens,
     embeddedResults,
@@ -519,8 +529,9 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
     deltaX,
     averageCharWidth,
   )
+  const relativeIndices = visibleLineIndices.map((rowIndex: number) => rowIndex - minLineY)
   return {
-    differences,
-    textInfos: result,
+    differences: relativeIndices.map((index: number) => allDifferences[index]),
+    textInfos: relativeIndices.map((index: number) => allTextInfos[index]),
   }
 }

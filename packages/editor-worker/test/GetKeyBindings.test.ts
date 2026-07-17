@@ -51,6 +51,23 @@ test('PageDown advances the editor viewport', () => {
   })
 })
 
+test('Ctrl/Cmd+Shift+brackets fold and unfold', () => {
+  expect(GetKeyBindings.getKeyBindings()).toEqual(
+    expect.arrayContaining([
+      {
+        command: 'Editor.fold',
+        key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.BracketLeft,
+        when: WhenExpression.FocusEditorText,
+      },
+      {
+        command: 'Editor.unfold',
+        key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.BracketRight,
+        when: WhenExpression.FocusEditorText,
+      },
+    ]),
+  )
+})
+
 test('Escape closes focused editor completions', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.closeCompletion',

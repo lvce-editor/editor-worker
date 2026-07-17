@@ -180,6 +180,27 @@ test('getEditorVirtualDom', () => {
   ])
 })
 
+test('getEditorVirtualDom - folded line numbers', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    differences: [],
+    maxLineY: 5,
+    minLineY: 0,
+    textInfos: [],
+    uid: 1,
+    visibleLineIndices: [0, 3, 4],
+  })
+  expect(dom).toContainEqual({
+    childCount: 0,
+    text: 4,
+    type: VirtualDomElements.Text,
+  })
+  expect(dom).not.toContainEqual({
+    childCount: 0,
+    text: 2,
+    type: VirtualDomElements.Text,
+  })
+})
+
 test('getEditorVirtualDom - line numbers disabled', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     differences: [],

@@ -43,3 +43,40 @@ test('reveals a selection above the viewport', () => {
     selections,
   })
 })
+
+test('skips hidden rows when moving into a folded range', () => {
+  const selections = new Uint32Array([1, 0, 1, 0])
+  expect(
+    setSelections(
+      {
+        ...createEditor(),
+        foldingRanges: [{ end: 3, start: 0 }],
+        minimumSliderSize: 20,
+        rowHeight: 20,
+        selections: new Uint32Array([0, 0, 0, 0]),
+      },
+      selections,
+    ),
+  ).toMatchObject({
+    selections: new Uint32Array([4, 0, 4, 0]),
+  })
+})
+
+test('rebuilds visible row indices when revealing a selection without folds', () => {
+  const selections = new Uint32Array([4, 0, 4, 0])
+  expect(
+    setSelections(
+      {
+        ...createEditor(),
+        foldingRanges: [],
+        minimumSliderSize: 20,
+        rowHeight: 20,
+        selections: new Uint32Array([0, 0, 0, 0]),
+      },
+      selections,
+    ),
+  ).toMatchObject({
+    selections,
+    visibleLineIndices: [3, 4],
+  })
+})

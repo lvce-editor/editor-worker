@@ -104,3 +104,49 @@ test('updateDerivedState skips visible text recomputation when textInfos are alr
 
   expect(getVisibleTextMock).not.toHaveBeenCalled()
 })
+
+test('updateDerivedState rebuilds visible row indices after multiline edits', async () => {
+  const oldState: any = {
+    cursorWidth: 2,
+    deltaY: 0,
+    differences: [],
+    finalDeltaY: 0,
+    focused: true,
+    foldingRanges: [],
+    fontFamily: 'Fira Code',
+    fontSize: 14,
+    fontWeight: 400,
+    height: 100,
+    isMonospaceFont: true,
+    itemHeight: 20,
+    letterSpacing: 0,
+    lines: ['a', 'b', 'c'],
+    maxLineY: 3,
+    minimumSliderSize: 20,
+    minLineY: 0,
+    numberOfVisibleLines: 5,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [],
+    visibleLineIndices: [0, 1, 2],
+    width: 100,
+  }
+  const newState = {
+    ...oldState,
+    lines: ['ac'],
+  }
+  getVisibleTextMock.mockResolvedValue({
+    differences: [],
+    textInfos: [],
+  })
+  getVisibleSelectionsMock.mockResolvedValue({
+    cursorInfos: [],
+    selectionInfos: [],
+  })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(result.visibleLineIndices).toEqual([0])
+  expect(getVisibleTextMock).toHaveBeenCalledWith(expect.objectContaining({ visibleLineIndices: [0] }), false)
+})
