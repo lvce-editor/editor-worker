@@ -1,4 +1,4 @@
-import { WidgetId } from '@lvce-editor/constants'
+import { WhenExpression, WidgetId } from '@lvce-editor/constants'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 
 const isMatchingWidget = (widget: any) => {
@@ -14,6 +14,8 @@ export const closeFind = (editor: any) => {
   const newWidgets = RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.Find)
   return {
     ...editor,
+    additionalFocus: 0,
+    focus: WhenExpression.FocusEditorText,
     focused: true,
     widgets: newWidgets,
   }
