@@ -1,6 +1,7 @@
 export interface EditorState {
   readonly additionalFocus: number
   readonly assetDir: string
+  readonly breakPoints: readonly number[]
   readonly charWidth: number
   readonly columnWidth: number
   readonly completionsOnType?: boolean

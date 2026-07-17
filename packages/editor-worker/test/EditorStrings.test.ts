@@ -107,6 +107,10 @@ test('toggleBlockComment', () => {
   expect(EditorStrings.toggleBlockComment()).toBe('Toggle Block Comment')
 })
 
+test('toggleBreakpoint', () => {
+  expect(EditorStrings.toggleBreakpoint()).toBe('Toggle Breakpoint')
+})
+
 test('editorOpenColorPicker', () => {
   expect(EditorStrings.editorOpenColorPicker()).toBe('Editor: Open Color Picker')
 })

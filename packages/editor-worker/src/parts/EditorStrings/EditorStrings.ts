@@ -97,6 +97,10 @@ export const toggleBlockComment = () => {
   return I18nString.i18nString(UiStrings.ToggleBlockComment)
 }
 
+export const toggleBreakpoint = () => {
+  return I18nString.i18nString(UiStrings.ToggleBreakpoint)
+}
+
 export const separator = () => {
   return ''
 }

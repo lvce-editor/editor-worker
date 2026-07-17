@@ -8,6 +8,7 @@ import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtual
 import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
 import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
+import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
 import * as RenderAdditionalFocusContext from '../RenderAdditionalFocusContext/RenderAdditionalFocusContext.ts'
 import { renderCss as renderCssCommand } from '../RenderCss/RenderCss.ts'
@@ -78,19 +79,19 @@ const renderDecorations = {
 
 const renderGutterInfo = {
   apply(oldState: EditorState, newState: EditorState) {
-    const { lineNumbers, maxLineY, minLineY } = newState
-    if (!lineNumbers) {
-      return []
+    const { breakPoints, lineNumbers, maxLineY, minLineY } = newState
+    if (!lineNumbers && breakPoints.length === 0) {
+      return ['renderGutter', []]
     }
-    const gutterInfos = []
-    for (let i = minLineY; i < maxLineY; i++) {
-      gutterInfos.push(i + 1)
-    }
+    const gutterInfos = getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers)
     const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos)
     return ['renderGutter', dom]
   },
   isEqual: (oldState: EditorState, newState: EditorState) =>
-    oldState.lineNumbers === newState.lineNumbers && oldState.minLineY === newState.minLineY && oldState.maxLineY === newState.maxLineY,
+    oldState.breakPoints === newState.breakPoints &&
+    oldState.lineNumbers === newState.lineNumbers &&
+    oldState.minLineY === newState.minLineY &&
+    oldState.maxLineY === newState.maxLineY,
 }
 
 const renderWidgets = {

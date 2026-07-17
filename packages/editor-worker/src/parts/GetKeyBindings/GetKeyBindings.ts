@@ -359,6 +359,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.toggleBreakpoint',
+      key: KeyCode.F9,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'EditorRename.accept',
       key: KeyCode.Enter,
       when: WhenExpression.FocusEditorRename,

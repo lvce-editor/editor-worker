@@ -2,10 +2,12 @@ import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as GetEditorContentVirtualDom from '../GetEditorContentVirtualDom/GetEditorContentVirtualDom.ts'
 import * as GetEditorGutterLayerVirtualDom from '../GetEditorGutterLayerVirtualDom/GetEditorGutterLayerVirtualDom.ts'
+import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 interface EditorVirtualDomOptions {
+  readonly breakPoints?: readonly number[]
   readonly cursorInfos?: readonly any[]
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
@@ -16,6 +18,8 @@ interface EditorVirtualDomOptions {
   readonly highlightedLine?: number
   readonly lineNumbers?: boolean
   readonly loadError?: string
+  readonly maxLineY?: number
+  readonly minLineY?: number
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
   readonly selectionInfos?: readonly any[]
@@ -25,6 +29,7 @@ interface EditorVirtualDomOptions {
 }
 
 export const getEditorVirtualDom = ({
+  breakPoints = [],
   cursorInfos = [],
   diagnostics = [],
   differences,
@@ -32,6 +37,8 @@ export const getEditorVirtualDom = ({
   highlightedLine = -1,
   lineNumbers = true,
   loadError = '',
+  maxLineY = 0,
+  minLineY = 0,
   scrollBarDiagnostics = [],
   selectionInfos = [],
   textInfos,
@@ -59,10 +66,12 @@ export const getEditorVirtualDom = ({
       text(loadError),
     ]
   }
-  const gutterDom = lineNumbers ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(gutterInfos) : []
+  const visibleGutterInfos = breakPoints.length > 0 ? getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers) : gutterInfos
+  const showGutter = lineNumbers || breakPoints.length > 0
+  const gutterDom = showGutter ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos) : []
   return [
     {
-      childCount: lineNumbers ? 2 : 1,
+      childCount: showGutter ? 2 : 1,
       className: 'Viewlet Editor',
       'data-uid': uid,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,

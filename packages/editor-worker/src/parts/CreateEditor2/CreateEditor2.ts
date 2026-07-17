@@ -18,6 +18,7 @@ export const createEditor2 = (
   const editor: EditorState = {
     additionalFocus: 0,
     assetDir,
+    breakPoints: [],
     charWidth: 0,
     columnWidth: 0,
     completionState: '',

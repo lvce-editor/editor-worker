@@ -123,6 +123,7 @@ import * as EditorCommandShowSourceActions3 from '../EditorCommand/EditorCommand
 import * as SortLinesAscending from '../EditorCommand/EditorCommandSortLinesAscending.ts'
 import * as EditorTabCompletion from '../EditorCommand/EditorCommandTabCompletion.ts'
 import * as EditorToggleBlockComment from '../EditorCommand/EditorCommandToggleBlockComment.ts'
+import { toggleBreakpoint } from '../EditorCommand/EditorCommandToggleBreakpoint.ts'
 import * as EditorToggleComment from '../EditorCommand/EditorCommandToggleComment.ts'
 import * as EditorToggleLineComment from '../EditorCommand/EditorCommandToggleLineComment.ts'
 import * as EditorType from '../EditorCommand/EditorCommandType.ts'
@@ -359,6 +360,7 @@ export const commandMap = {
   'Editor.tabCompletion': wrapCommand(EditorTabCompletion.tabCompletion),
   'Editor.terminate': terminate,
   'Editor.toggleBlockComment': wrapCommand(EditorToggleBlockComment.toggleBlockComment),
+  'Editor.toggleBreakpoint': wrapCommand(toggleBreakpoint),
   'Editor.toggleComment': wrapCommand(EditorToggleComment.toggleComment),
   'Editor.toggleLineComment': wrapCommand(EditorToggleLineComment.editorToggleLineComment),
   'Editor.type': wrapCommand(EditorType.type),

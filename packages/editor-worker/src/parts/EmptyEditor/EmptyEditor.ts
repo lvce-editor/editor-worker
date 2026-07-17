@@ -2,6 +2,7 @@ import type { EditorState } from '../State/State.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 
 export const emptyEditor = {
+  breakPoints: [],
   cursorInfos: [],
   debugEnabled: false,
   decorations: [],

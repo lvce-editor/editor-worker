@@ -35,6 +35,14 @@ test('Shift+Alt+A toggles a block comment', () => {
   })
 })
 
+test('F9 toggles a breakpoint', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.toggleBreakpoint',
+    key: KeyCode.F9,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
 test('Escape closes focused editor completions', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.closeCompletion',
