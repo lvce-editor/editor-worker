@@ -35,6 +35,23 @@ test('Ctrl/Cmd+Shift+K deletes the active line', () => {
   })
 })
 
+test('Ctrl/Cmd+Home and Ctrl/Cmd+End move to document boundaries', () => {
+  expect(GetKeyBindings.getKeyBindings()).toEqual(
+    expect.arrayContaining([
+      {
+        command: 'Editor.cursorDocumentStart',
+        key: KeyModifier.CtrlCmd | KeyCode.Home,
+        when: WhenExpression.FocusEditorText,
+      },
+      {
+        command: 'Editor.cursorDocumentEnd',
+        key: KeyModifier.CtrlCmd | KeyCode.End,
+        when: WhenExpression.FocusEditorText,
+      },
+    ]),
+  )
+})
+
 test('Shift+Alt+A toggles a block comment', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.toggleBlockComment',

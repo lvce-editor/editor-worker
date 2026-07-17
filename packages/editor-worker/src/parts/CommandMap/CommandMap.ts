@@ -26,6 +26,8 @@ import * as CopyLineDown from '../EditorCommand/EditorCommandCopyLineDown.ts'
 import * as CopyLineUp from '../EditorCommand/EditorCommandCopyLineUp.ts'
 import * as CursorCharacterLeft from '../EditorCommand/EditorCommandCursorCharacterLeft.ts'
 import * as CursorCharacterRight from '../EditorCommand/EditorCommandCursorCharacterRight.ts'
+import * as CursorDocumentEnd from '../EditorCommand/EditorCommandCursorDocumentEnd.ts'
+import * as CursorDocumentStart from '../EditorCommand/EditorCommandCursorDocumentStart.ts'
 import * as CursorDown from '../EditorCommand/EditorCommandCursorDown.ts'
 import * as CursorEnd from '../EditorCommand/EditorCommandCursorEnd.ts'
 import * as CursorHome from '../EditorCommand/EditorCommandCursorHome.ts'
@@ -212,6 +214,8 @@ export const commandMap = {
   'Editor.create2': createEditor2,
   'Editor.cursorCharacterLeft': wrapCommand(CursorCharacterLeft.cursorCharacterLeft),
   'Editor.cursorCharacterRight': wrapCommand(CursorCharacterRight.cursorCharacterRight),
+  'Editor.cursorDocumentEnd': wrapCommand(CursorDocumentEnd.cursorDocumentEnd),
+  'Editor.cursorDocumentStart': wrapCommand(CursorDocumentStart.cursorDocumentStart),
   'Editor.cursorDown': wrapCommand(CursorDown.cursorDown),
   'Editor.cursorEnd': wrapCommand(CursorEnd.cursorEnd),
   'Editor.cursorHome': wrapCommand(CursorHome.cursorHome),
