@@ -27,6 +27,14 @@ test('Ctrl/Cmd+Alt+Down adds a cursor below', () => {
   })
 })
 
+test('Shift+Alt+A toggles a block comment', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.toggleBlockComment',
+    key: KeyModifier.Shift | KeyModifier.Alt | KeyCode.KeyA,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
 test('Escape closes focused editor completions', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.closeCompletion',
