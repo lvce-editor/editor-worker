@@ -46,13 +46,39 @@ test('handleMouseDown - single click sets collapsed selection and starts selecti
   })
 })
 
-test('handleMouseDown - right click keeps selection unchanged', async () => {
+test('handleMouseDown - right click inside selection keeps selection unchanged', async () => {
+  const editor = {
+    ...createEditor(),
+    selections: new Uint32Array([0, 0, 0, 5]),
+  }
+
+  const result = await EditorCommandHandleMouseDown.handleMouseDown(editor as any, 2, false, false, 24, 0, 1)
+
+  expect(result).toBe(editor)
+})
+
+test('handleMouseDown - right click outside selection moves cursor', async () => {
   const editor = {
     ...createEditor(),
     selections: new Uint32Array([0, 0, 0, 5]),
   }
 
   const result = await EditorCommandHandleMouseDown.handleMouseDown(editor as any, 2, false, false, 80, 0, 1)
+
+  expect(result).toMatchObject({
+    focused: true,
+    isSelecting: false,
+    selections: new Uint32Array([0, 10, 0, 10]),
+  })
+})
+
+test('handleMouseDown - right click inside reversed selection keeps selection unchanged', async () => {
+  const editor = {
+    ...createEditor(),
+    selections: new Uint32Array([0, 5, 0, 0]),
+  }
+
+  const result = await EditorCommandHandleMouseDown.handleMouseDown(editor as any, 2, false, false, 24, 0, 1)
 
   expect(result).toBe(editor)
 })
