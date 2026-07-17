@@ -43,6 +43,7 @@ import * as DeleteAllRight from '../EditorCommand/EditorCommandDeleteAllRight.ts
 import * as DeleteCharacterLeft from '../EditorCommand/EditorCommandDeleteCharacterLeft.ts'
 import * as DeleteCharacterRight from '../EditorCommand/EditorCommandDeleteCharacterRight.ts'
 import * as DeleteHorizontalRight from '../EditorCommand/EditorCommandDeleteHorizontalRight.ts'
+import * as DeleteLine from '../EditorCommand/EditorCommandDeleteLine.ts'
 import * as DeleteWordLeft from '../EditorCommand/EditorCommandDeleteWordLeft.ts'
 import * as DeleteWordPartLeft from '../EditorCommand/EditorCommandDeleteWordPartLeft.ts'
 import * as DeleteWordPartRight from '../EditorCommand/EditorCommandDeleteWordPartRight.ts'
@@ -231,6 +232,7 @@ export const commandMap = {
   'Editor.deleteCharacterRight': wrapCommand(DeleteCharacterRight.deleteCharacterRight),
   'Editor.deleteHorizontalRight': wrapCommand(DeleteHorizontalRight.editorDeleteHorizontalRight),
   'Editor.deleteLeft': wrapCommand(DeleteCharacterLeft.deleteCharacterLeft),
+  'Editor.deleteLine': wrapCommand(DeleteLine.deleteLine),
   'Editor.deleteRight': wrapCommand(DeleteCharacterRight.deleteCharacterRight),
   'Editor.deleteWordLeft': wrapCommand(DeleteWordLeft.deleteWordLeft),
   'Editor.deleteWordPartLeft': wrapCommand(DeleteWordPartLeft.deleteWordPartLeft),

@@ -299,6 +299,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.deleteLine',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.KeyK,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.cancelSelection',
       key: KeyCode.Escape,
       when: WhenExpression.FocusEditorText,
