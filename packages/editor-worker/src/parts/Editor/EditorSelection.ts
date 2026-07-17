@@ -32,17 +32,20 @@ const getSelectionFromChange = (change: any) => {
 export const setSelections = (editor: any, selections: any) => {
   Assert.object(editor)
   const { foldingRanges = [] } = editor
-  if (foldingRanges.length > 0) {
-    const normalizedSelections = EditorSelection.map(
-      selections,
-      (result: Uint32Array, index: number, startRow: number, startColumn: number, endRow: number, endColumn: number) => {
-        const previousRow = editor.selections[index + 2] ?? endRow
-        result[index] = EditorFolding.getUnhiddenRow(startRow, previousRow, editor.lines.length, foldingRanges)
-        result[index + 1] = startColumn
-        result[index + 2] = EditorFolding.getUnhiddenRow(endRow, previousRow, editor.lines.length, foldingRanges)
-        result[index + 3] = endColumn
-      },
-    )
+  if ('foldingRanges' in editor) {
+    const normalizedSelections =
+      foldingRanges.length === 0
+        ? selections
+        : EditorSelection.map(
+            selections,
+            (result: Uint32Array, index: number, startRow: number, startColumn: number, endRow: number, endColumn: number) => {
+              const previousRow = editor.selections[index + 2] ?? endRow
+              result[index] = EditorFolding.getUnhiddenRow(startRow, previousRow, editor.lines.length, foldingRanges)
+              result[index + 1] = startColumn
+              result[index + 2] = EditorFolding.getUnhiddenRow(endRow, previousRow, editor.lines.length, foldingRanges)
+              result[index + 3] = endColumn
+            },
+          )
     const rowIndex = normalizedSelections[editor.primarySelectionIndex || 0]
     const visualRow = EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges)
     const startVisualRow = Math.floor(editor.deltaY / editor.itemHeight)

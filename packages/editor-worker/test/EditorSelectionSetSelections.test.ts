@@ -61,3 +61,22 @@ test('skips hidden rows when moving into a folded range', () => {
     selections: new Uint32Array([4, 0, 4, 0]),
   })
 })
+
+test('rebuilds visible row indices when revealing a selection without folds', () => {
+  const selections = new Uint32Array([4, 0, 4, 0])
+  expect(
+    setSelections(
+      {
+        ...createEditor(),
+        foldingRanges: [],
+        minimumSliderSize: 20,
+        rowHeight: 20,
+        selections: new Uint32Array([0, 0, 0, 0]),
+      },
+      selections,
+    ),
+  ).toMatchObject({
+    selections,
+    visibleLineIndices: [3, 4],
+  })
+})

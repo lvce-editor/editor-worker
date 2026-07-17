@@ -66,6 +66,14 @@ export const scheduleSelections = (editor: any, selectionEdits: any) => {
   return EditorSelection.setSelections(editor, selectionEdits)
 }
 
+const updateLines = (editor: any, lines: readonly string[]) => {
+  const newEditor = {
+    ...editor,
+    lines,
+  }
+  return 'foldingRanges' in editor ? EditorFolding.updateLayout(newEditor, []) : newEditor
+}
+
 /**
  * TODO make this synchronous maybe?
  * @param {any} editor
@@ -80,10 +88,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     return editor
   }
   const newLines = TextDocument.applyEdits(editor, changes)
-  const partialNewEditor = {
-    ...editor,
-    lines: newLines,
-  }
+  const partialNewEditor = updateLines(editor, newLines)
   const newSelections = selectionChanges || EditorSelection.applyEdit(partialNewEditor, changes)
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
@@ -153,10 +158,7 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes)
     return editor
   }
   const newLines = TextDocument.applyEdits(editor, changes)
-  const partialNewEditor = {
-    ...editor,
-    lines: newLines,
-  }
+  const partialNewEditor = updateLines(editor, newLines)
   const newSelections = EditorSelection.applyEdit(partialNewEditor, changes)
   const invalidStartIndex = Math.min(editor.invalidStartIndex, changes[0].start.rowIndex)
   const newEditor = {
@@ -204,9 +206,8 @@ export const scheduleDocument = async (editor, changes) => {
   // const scrollBarHeight = editor.scrollBarHeight
 
   const newEditor = {
-    ...editor,
+    ...updateLines(editor, newLines),
     invalidStartIndex,
-    lines: newLines,
     redoStack: [],
     undoStack: [...editor.undoStack, changes],
   }

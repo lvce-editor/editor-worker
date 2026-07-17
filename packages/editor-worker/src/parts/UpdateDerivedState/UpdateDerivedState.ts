@@ -47,7 +47,7 @@ const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorStat
 }
 
 export const updateDerivedState = async (oldState: EditorState, newState: EditorState): Promise<EditorState> => {
-  const nextState = oldState.lines !== newState.lines && oldState.foldingRanges?.length > 0 ? EditorFolding.updateLayout(newState, []) : newState
+  const nextState = oldState.lines !== newState.lines && 'foldingRanges' in newState ? EditorFolding.updateLayout(newState, []) : newState
   let finalState = nextState
   if (shouldUpdateVisibleTextData(oldState, nextState)) {
     const syncIncremental = SyncIncremental.getEnabled()
