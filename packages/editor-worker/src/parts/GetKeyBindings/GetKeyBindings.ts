@@ -174,6 +174,16 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.cursorDocumentEnd',
+      key: KeyModifier.CtrlCmd | KeyCode.End,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.cursorDocumentStart',
+      key: KeyModifier.CtrlCmd | KeyCode.Home,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.deleteWordPartLeft',
       key: KeyModifier.Alt | KeyCode.Backspace,
       when: WhenExpression.FocusEditorText,
