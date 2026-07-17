@@ -92,6 +92,22 @@ test('editorSelectNextOccurrence - one selection and more selections possible af
   expect(newEditor.selections).toEqual(EditorSelection.fromRanges([0, 0, 0, 4], [1, 0, 1, 4]))
 })
 
+test('editorSelectNextOccurrence - reversed selection and more selections possible after', () => {
+  const editor = {
+    finalDeltaY: 1000,
+    lineCache: [],
+    lines: ['foo foo', 'foo'],
+    maxLineY: 1000,
+    minLineY: 0,
+    primarySelectionIndex: 0,
+    rowHeight: 20,
+    selections: EditorSelection.fromRange(0, 3, 0, 0),
+    width: 1000,
+  }
+  const newEditor = EditorSelectNextOccurrence.selectNextOccurrence(editor)
+  expect(newEditor.selections).toEqual(EditorSelection.fromRanges([0, 3, 0, 0], [0, 4, 0, 7]))
+})
+
 test('editorSelectNextOccurrence - one selection and more selections possible before', () => {
   const editor = {
     finalDeltaY: 1000,

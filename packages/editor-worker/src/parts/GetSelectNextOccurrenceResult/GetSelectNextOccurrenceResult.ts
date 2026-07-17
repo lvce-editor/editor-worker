@@ -23,9 +23,7 @@ import * as GetWordMatchAtPosition from '../GetWordMatchAtPosition/GetWordMatchA
 
 const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
   const lastSelectionIndex = selections.length - 4
-  const rowIndex = selections[lastSelectionIndex]
-  const lastSelectionStartColumnIndex = selections[lastSelectionIndex + 1]
-  const lastSelectionEndColumnIndex = selections[lastSelectionIndex + 3]
+  const [rowIndex, lastSelectionStartColumnIndex, , lastSelectionEndColumnIndex] = GetSelectionPairs.getSelectionPairs(selections, lastSelectionIndex)
   const line = lines[rowIndex]
   const word = line.slice(lastSelectionStartColumnIndex, lastSelectionEndColumnIndex)
   const columnIndexAfter = line.indexOf(word, lastSelectionEndColumnIndex)
