@@ -1,4 +1,5 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
+import { WidgetId } from '@lvce-editor/constants'
 import type { EditorState } from '../src/parts/State/State.ts'
 
 const getPreferenceMock = jest.fn<(key: string) => Promise<string>>()
@@ -21,8 +22,10 @@ beforeEach(() => {
 
 const createEditor = (overrides: Partial<EditorState> = {}): EditorState => {
   return {
+    additionalFocus: 0,
     focused: true,
     modified: true,
+    widgets: [],
     ...overrides,
   } as EditorState
 }
@@ -48,6 +51,25 @@ test('handleBlur clears focus without saving an unmodified editor', async () => 
   })
   expect(getPreferenceMock).not.toHaveBeenCalled()
   expect(saveMock).not.toHaveBeenCalled()
+})
+
+test('handleBlur closes transient widgets and clears additional focus', async () => {
+  const completionWidget = { id: WidgetId.Completion }
+  const findWidget = { id: WidgetId.Find }
+  const editor = createEditor({
+    additionalFocus: 9,
+    modified: false,
+    widgets: [completionWidget, findWidget],
+  })
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toEqual({
+    ...editor,
+    additionalFocus: 0,
+    focused: false,
+    widgets: [findWidget],
+  })
 })
 
 test('handleBlur does not save when auto save is off', async () => {

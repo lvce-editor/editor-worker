@@ -1,5 +1,6 @@
 import { ViewletCommand } from '@lvce-editor/constants'
 import type { EditorState } from '../State/State.ts'
+import * as DiffAdditionalFocus from '../DiffAdditionalFocus/DiffAdditionalFocus.ts'
 import * as DiffCss from '../DiffCss/DiffCss.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
@@ -8,6 +9,7 @@ import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagno
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
 import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
+import * as RenderAdditionalFocusContext from '../RenderAdditionalFocusContext/RenderAdditionalFocusContext.ts'
 import { renderCss as renderCssCommand } from '../RenderCss/RenderCss.ts'
 import { renderWidgets as renderWidgetsCommand } from '../RenderWidgets/RenderWidgets.ts'
 
@@ -62,13 +64,8 @@ const renderFocusContext = {
 }
 
 const renderAdditionalFocusContext = {
-  apply(oldState: EditorState, newState: EditorState) {
-    if (newState.additionalFocus) {
-      return ['Viewlet.setAdditionalFocus', newState.uid, newState.additionalFocus]
-    }
-    return ['viewlet.unsetAdditionalFocus', newState.uid, newState.additionalFocus]
-  },
-  isEqual: (oldState: EditorState, newState: EditorState) => oldState.additionalFocus === newState.additionalFocus,
+  apply: RenderAdditionalFocusContext.renderAdditionalFocusContext,
+  isEqual: DiffAdditionalFocus.isEqual,
 }
 
 const renderDecorations = {

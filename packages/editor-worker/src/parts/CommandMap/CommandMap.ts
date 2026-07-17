@@ -15,6 +15,7 @@ import * as EditorBlur from '../EditorCommand/EditorCommandBlur.ts'
 import * as EditorBraceCompletion from '../EditorCommand/EditorCommandBraceCompletion.ts'
 import * as CancelSelection from '../EditorCommand/EditorCommandCancelSelection.ts'
 import * as EditorCommandCloseCodeGenerator from '../EditorCommand/EditorCommandCloseCodeGenerator.ts'
+import * as EditorCommandCloseCompletion from '../EditorCommand/EditorCommandCloseCompletion.ts'
 import * as EditorCommandCloseFind from '../EditorCommand/EditorCommandCloseFind.ts'
 import * as CloseRename from '../EditorCommand/EditorCommandCloseRename.ts'
 import * as EditorCommandCloseSourceAction from '../EditorCommand/EditorCommandCloseSourceAction.ts'
@@ -189,6 +190,7 @@ export const commandMap = {
   'Editor.cancelSelection': wrapCommand(CancelSelection.cancelSelection),
   'Editor.closeCodeGenerator': wrapCommand(EditorCommandCloseCodeGenerator.closeCodeGenerator),
   'Editor.closeColorPicker': wrapCommand(EditorOpenColorPicker.closeColorPicker),
+  'Editor.closeCompletion': wrapCommand(EditorCommandCloseCompletion.closeCompletion),
   'Editor.closeFind': wrapCommand(EditorCommandCloseFind.closeFind),
   'Editor.closeFind2': ExternalGetPositionAtCursor.closeFind2,
   'Editor.closeRename': wrapCommand(CloseRename.closeRename),
