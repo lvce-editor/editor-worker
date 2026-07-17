@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'find-widget-keyboard-navigation'
 
-export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(
@@ -31,6 +31,21 @@ content 3`,
   // assert - should move to next match without inserting a line break
   await expect(findWidgetInput).toBeFocused()
   await expect(findWidgetMatchCount).toHaveText('2 of 3')
+  await Editor.shouldHaveSelections(new Uint32Array([1, 0, 1, 7]))
+
+  // act - go to the previous match without inserting a line break
+  await Command.execute('TestFrameWork.performKeyBoardAction', 'press', {
+    bubbles: true,
+    cancelable: true,
+    key: 'Enter',
+    shiftKey: true,
+  })
+
+  // assert - query and document stay unchanged
+  await expect(findWidgetInput).toBeFocused()
+  await expect(findWidgetInput).toHaveValue('content')
+  await expect(findWidgetMatchCount).toHaveText('1 of 3')
+  await Editor.shouldHaveSelections(new Uint32Array([0, 0, 0, 7]))
   await Editor.shouldHaveText(`content 1
 content 2
 content 3`)
