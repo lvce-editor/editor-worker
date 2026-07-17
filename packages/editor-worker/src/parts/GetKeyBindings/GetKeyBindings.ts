@@ -425,12 +425,12 @@ export const getKeyBindings = () => {
     },
     {
       command: 'Editor.addCursorAbove',
-      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.UpArrow,
+      key: KeyModifier.Alt | KeyModifier.CtrlCmd | KeyCode.UpArrow,
       when: WhenExpression.FocusEditorText,
     },
     {
       command: 'Editor.addCursorBelow',
-      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.DownArrow,
+      key: KeyModifier.Alt | KeyModifier.CtrlCmd | KeyCode.DownArrow,
       when: WhenExpression.FocusEditorText,
     },
     {
