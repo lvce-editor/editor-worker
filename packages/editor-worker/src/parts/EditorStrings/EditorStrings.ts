@@ -77,6 +77,10 @@ export const cut = () => {
   return I18nString.i18nString(UiStrings.Cut)
 }
 
+export const deleteLine = () => {
+  return I18nString.i18nString(UiStrings.DeleteLine)
+}
+
 export const copy = () => {
   return I18nString.i18nString(UiStrings.Copy)
 }

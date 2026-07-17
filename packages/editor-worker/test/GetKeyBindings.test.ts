@@ -27,6 +27,14 @@ test('Ctrl/Cmd+Alt+Down adds a cursor below', () => {
   })
 })
 
+test('Ctrl/Cmd+Shift+K deletes the active line', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.deleteLine',
+    key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.KeyK,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
 test('Shift+Alt+A toggles a block comment', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.toggleBlockComment',

@@ -12,6 +12,10 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       label: EditorStrings.unfold(),
     },
     {
+      id: 'Editor.deleteLine',
+      label: EditorStrings.deleteLine(),
+    },
+    {
       id: 'Editor.format',
       label: EditorStrings.formatDocument(),
     },

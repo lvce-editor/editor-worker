@@ -8,6 +8,13 @@ test('includes Toggle Breakpoint', () => {
   })
 })
 
+test('includes Delete Line', () => {
+  expect(getQuickPickMenuEntries()).toContainEqual({
+    id: 'Editor.deleteLine',
+    label: 'Delete Line',
+  })
+})
+
 test('includes folding commands', () => {
   expect(getQuickPickMenuEntries()).toEqual(
     expect.arrayContaining([
