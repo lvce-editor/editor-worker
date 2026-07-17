@@ -384,6 +384,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.toggleBlockComment',
+      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.KeyA,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.copy',
       key: KeyModifier.CtrlCmd | KeyCode.KeyC,
       when: WhenExpression.FocusEditorText,
