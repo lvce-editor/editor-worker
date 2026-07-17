@@ -11,6 +11,14 @@ test('Escape closes the focused color picker', () => {
   })
 })
 
+test('Shift+Enter focuses the previous find match', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'FindWidget.focusPrevious',
+    key: KeyModifier.Shift | KeyCode.Enter,
+    when: WhenExpression.FocusFindWidget,
+  })
+})
+
 test('Ctrl/Cmd+Alt+Up adds a cursor above', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.addCursorAbove',
