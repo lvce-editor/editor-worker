@@ -28,3 +28,15 @@ test('editorCursorEnd - with selection', () => {
     selections: EditorSelection.fromRange(0, 4, 0, 4),
   })
 })
+
+test('editorCursorEnd - before CRLF line ending', () => {
+  const editor = {
+    lineCache: [],
+    lines: ['first\r', 'second\r', ''],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
+  }
+  expect(EditorCursorEnd.cursorEnd(editor)).toMatchObject({
+    selections: EditorSelection.fromRange(0, 5, 0, 5),
+  })
+})
