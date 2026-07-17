@@ -50,6 +50,18 @@ test('editorCursorCharacterRight - at end of multiple lines', () => {
   })
 })
 
+test('editorCursorCharacterRight - skips CRLF line ending', () => {
+  const editor = {
+    lineCache: [],
+    lines: ['first\r', 'second\r', ''],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 5, 0, 5),
+  }
+  expect(EditorCursorCharacterRight.cursorCharacterRight(editor)).toMatchObject({
+    selections: EditorSelection.fromRange(1, 0, 1, 0),
+  })
+})
+
 test('editorCursorCharacterRight - emoji - 👮🏽‍♀️', () => {
   const editor = {
     lineCache: [],
