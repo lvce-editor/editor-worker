@@ -1,5 +1,6 @@
 import * as ApplyWidgetChanges from '../ApplyWidgetChanges/ApplyWidgetChanges.ts'
 import * as Assert from '../Assert/Assert.ts'
+import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
@@ -10,7 +11,6 @@ import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as ListenerType from '../ListenerType/ListenerType.ts'
 import * as NotifyListeners from '../NotifyListeners/NotifyListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
-import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as TabModifiedStatusChange from '../TabModifiedStatusChange/TabModifiedStatusChange.ts'
@@ -251,19 +251,11 @@ export const setBounds = (editor: any, x: number, y: number, width: number, heig
 
 export const setText = (editor: any, text: string) => {
   const lines = SplitLines.splitLines(text)
-  const { itemHeight, minimumSliderSize, numberOfVisibleLines } = editor
-  const total = lines.length
-  const maxLineY = Math.min(numberOfVisibleLines, total)
-  const finalY = Math.max(total - numberOfVisibleLines, 0)
-  const finalDeltaY = finalY * itemHeight
-  const contentHeight = lines.length * editor.rowHeight
-  const scrollBarHeight = ScrollBarFunctions.getScrollBarSize(editor.height, contentHeight, minimumSliderSize)
-  return {
-    ...editor,
-    finalDeltaY,
-    finalY,
-    lines,
-    maxLineY,
-    scrollBarHeight,
-  }
+  return EditorFolding.updateLayout(
+    {
+      ...editor,
+      lines,
+    },
+    [],
+  )
 }

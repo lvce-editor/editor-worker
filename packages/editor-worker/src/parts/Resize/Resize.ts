@@ -1,3 +1,4 @@
+import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 interface Dimensions {
@@ -27,27 +28,39 @@ export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, 
   const width = dimensions.width ?? state.width
   const height = dimensions.height ?? state.height
   const numberOfVisibleLines = Math.floor(height / state.itemHeight)
-  const total = state.lines.length
-  const finalY = Math.max(total - numberOfVisibleLines, 0)
-  const finalDeltaY = finalY * state.itemHeight
-  const deltaY = Math.min(state.deltaY, finalDeltaY)
-  const minLineY = Math.floor(deltaY / state.itemHeight)
-  const maxLineY = Math.min(minLineY + numberOfVisibleLines, total)
-  const contentHeight = total * state.rowHeight
-  const scrollBarHeight = ScrollBarFunctions.getScrollBarSize(height, contentHeight, state.minimumSliderSize)
-  return {
+  if (!('foldingRanges' in state)) {
+    const total = state.lines.length
+    const finalY = Math.max(total - numberOfVisibleLines, 0)
+    const finalDeltaY = finalY * state.itemHeight
+    const deltaY = Math.min(state.deltaY, finalDeltaY)
+    const minLineY = Math.floor(deltaY / state.itemHeight)
+    const maxLineY = Math.min(minLineY + numberOfVisibleLines, total)
+    const contentHeight = total * state.rowHeight
+    const scrollBarHeight = ScrollBarFunctions.getScrollBarSize(height, contentHeight, state.minimumSliderSize)
+    return {
+      ...state,
+      columnWidth,
+      deltaY,
+      finalDeltaY,
+      finalY,
+      height,
+      maxLineY,
+      minLineY,
+      numberOfVisibleLines,
+      scrollBarHeight,
+      width,
+      x,
+      y,
+    }
+  }
+  const resized = {
     ...state,
     columnWidth,
-    deltaY,
-    finalDeltaY,
-    finalY,
     height,
-    maxLineY,
-    minLineY,
     numberOfVisibleLines,
-    scrollBarHeight,
     width,
     x,
     y,
   }
+  return EditorFolding.updateLayout(resized, (state as any).foldingRanges) as T
 }

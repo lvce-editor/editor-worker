@@ -1,4 +1,5 @@
 import type { EditorState } from '../State/State.ts'
+import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
@@ -9,6 +10,7 @@ const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState)
     oldState.focused !== newState.focused ||
     oldState.minLineY !== newState.minLineY ||
     oldState.maxLineY !== newState.maxLineY ||
+    oldState.foldingRanges !== newState.foldingRanges ||
     oldState.differences !== newState.differences ||
     oldState.charWidth !== newState.charWidth ||
     oldState.cursorWidth !== newState.cursorWidth ||
@@ -39,23 +41,25 @@ const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorStat
     oldState.deltaX !== newState.deltaX ||
     oldState.width !== newState.width ||
     oldState.highlightedLine !== newState.highlightedLine ||
+    oldState.foldingRanges !== newState.foldingRanges ||
     oldState.debugEnabled !== newState.debugEnabled
   )
 }
 
 export const updateDerivedState = async (oldState: EditorState, newState: EditorState): Promise<EditorState> => {
-  let finalState = newState
-  if (shouldUpdateVisibleTextData(oldState, newState)) {
+  const nextState = oldState.lines !== newState.lines && oldState.foldingRanges?.length > 0 ? EditorFolding.updateLayout(newState, []) : newState
+  let finalState = nextState
+  if (shouldUpdateVisibleTextData(oldState, nextState)) {
     const syncIncremental = SyncIncremental.getEnabled()
-    const { differences, textInfos } = await EditorText.getVisible(newState, syncIncremental)
+    const { differences, textInfos } = await EditorText.getVisible(nextState, syncIncremental)
     finalState = {
-      ...newState,
+      ...nextState,
       differences,
       textInfos,
     }
   }
 
-  if (!shouldUpdateSelectionData(oldState, newState)) {
+  if (!shouldUpdateSelectionData(oldState, nextState)) {
     return finalState
   }
 

@@ -1,19 +1,36 @@
 import * as Assert from '../Assert/Assert.ts'
 import * as Clamp from '../Clamp/Clamp.ts'
+import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as GetAccurateColumnIndex from '../GetAccurateColumnIndex/GetAccurateColumnIndex.ts'
 
 export const at = async (editor: any, eventX: number, eventY: number) => {
   Assert.object(editor)
   Assert.number(eventX)
   Assert.number(eventY)
-  const { charWidth, deltaX, deltaY, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, lines, rowHeight, tabSize, x, y } = editor
-  const rowIndex = Math.floor((eventY - y + deltaY) / rowHeight)
-  if (rowIndex < 0) {
+  const {
+    charWidth,
+    deltaX,
+    deltaY,
+    foldingRanges = [],
+    fontFamily,
+    fontSize,
+    fontWeight,
+    isMonospaceFont,
+    letterSpacing,
+    lines,
+    rowHeight,
+    tabSize,
+    x,
+    y,
+  } = editor
+  const visualRowIndex = Math.floor((eventY - y + deltaY) / rowHeight)
+  if (visualRowIndex < 0) {
     return {
       columnIndex: 0,
       rowIndex: 0,
     }
   }
+  const rowIndex = EditorFolding.getDocumentRowForVisualRow(visualRowIndex, foldingRanges)
   const relativeX = eventX - x + deltaX
   const clampedRowIndex = Clamp.clamp(rowIndex, 0, lines.length - 1)
   const line = lines[clampedRowIndex]

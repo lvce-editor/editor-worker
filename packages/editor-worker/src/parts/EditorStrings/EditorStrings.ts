@@ -65,6 +65,10 @@ export const findAllReferences = () => {
   return I18nString.i18nString(UiStrings.FindAllReferences)
 }
 
+export const fold = () => {
+  return I18nString.i18nString(UiStrings.Fold)
+}
+
 export const findAllImplementations = () => {
   return I18nString.i18nString(UiStrings.FindAllImplementations)
 }
@@ -87,6 +91,10 @@ export const undo = () => {
 
 export const redo = () => {
   return I18nString.i18nString(UiStrings.Redo)
+}
+
+export const unfold = () => {
+  return I18nString.i18nString(UiStrings.Unfold)
 }
 
 export const toggleLineComment = () => {

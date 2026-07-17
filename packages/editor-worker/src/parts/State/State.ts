@@ -24,6 +24,7 @@ export interface EditorState {
   readonly focus: number
   readonly focused: boolean
   readonly focusKey: number
+  readonly foldingRanges: readonly { readonly end: number; readonly start: number }[]
   readonly fontFamily: string
   readonly fontSize: number
   readonly fontWeight: number
@@ -76,6 +77,7 @@ export interface EditorState {
   readonly uri: string
   readonly useFunctionalRendering?: boolean
   readonly validLines: readonly number[]
+  readonly visibleLineIndices: readonly number[]
   readonly visualDecorations?: any // Visual decorations (objects) for diagnostic squiggly underlines
   readonly widgets: readonly any[]
   readonly width: number
