@@ -37,6 +37,7 @@ export const getEditorContentVirtualDom = ({
       className: 'EditorContent',
       onKeyUp: DomEventListenerFunctions.HandleKeyUp,
       onMouseMove: DomEventListenerFunctions.HandleMouseMove,
+      onWheel: DomEventListenerFunctions.HandleWheel,
       type: VirtualDomElements.Div,
     },
     ...GetEditorInputVirtualDom.getEditorInputVirtualDom(),
