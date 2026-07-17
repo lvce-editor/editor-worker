@@ -1,9 +1,12 @@
 import { WidgetId } from '@lvce-editor/constants'
 import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
+import type { EditorState } from '../State/State.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import { createFns } from '../CreateFns/CreateFns.ts'
 import * as FindWidgetRender from '../FindWidgetRender/FindWidgetRender.ts'
+import * as Names from '../Names/Names.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
+import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 
 const commandsToForward = [
   RenderMethod.SetDom2,
@@ -37,6 +40,19 @@ export const add = (widget: IFindWidget) => {
 
 export const remove = (widget: IFindWidget) => {
   return [['Viewlet.dispose', widget.newState.uid]]
+}
+
+export const focusFindInput = <T extends Pick<EditorState, 'widgets'>>(editor: T): T => {
+  const widget = editor.widgets.find((widget: IFindWidget) => widget.id === WidgetId.Find)
+  if (!widget) {
+    return editor
+  }
+  const { uid } = widget.newState
+  const newState = {
+    ...widget.newState,
+    commands: [[RenderMethod.FocusSelector, uid, `[name="${Names.SearchValue}"]`]],
+  }
+  return UpdateWidget.updateWidget(editor, WidgetId.Find, newState)
 }
 
 export const {
