@@ -66,6 +66,10 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       label: EditorStrings.toggleBlockComment(),
     },
     {
+      id: 'Editor.toggleBreakpoint',
+      label: EditorStrings.toggleBreakpoint(),
+    },
+    {
       id: 'Editor.openColorPicker',
       label: EditorStrings.editorOpenColorPicker(),
     },
