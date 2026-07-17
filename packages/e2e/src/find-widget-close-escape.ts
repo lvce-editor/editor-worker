@@ -2,9 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'find-widget-close-escape'
 
-export const skip = 1
-
-export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(
@@ -17,18 +15,18 @@ content 2`,
   await Editor.setSelections(new Uint32Array([0, 0, 0, 7]))
   await Editor.openFind()
 
-  const findWidgetInput = Locator('.FindWidget .MultilineInputBox')
+  const findWidget = Locator('.FindWidget:has(.MultilineInputBox:focus)')
+  const findWidgetInput = findWidget.locator('.MultilineInputBox')
   await expect(findWidgetInput).toBeVisible()
   await expect(findWidgetInput).toBeFocused()
 
   // act - close the find widget
-  await FindWidget.close()
+  await KeyBoard.press('Escape')
 
   // assert - find widget should be hidden
-  const findWidget = Locator('.FindWidget')
   await expect(findWidget).toBeHidden()
 
   // assert - editor should have focus back
-  const editor = Locator('.Editor')
-  await expect(editor).toBeFocused()
+  const editorInput = Locator('.EditorInput textarea')
+  await expect(editorInput).toBeFocused()
 }
