@@ -29,6 +29,7 @@ import * as CursorCharacterRight from '../EditorCommand/EditorCommandCursorChara
 import * as CursorDown from '../EditorCommand/EditorCommandCursorDown.ts'
 import * as CursorEnd from '../EditorCommand/EditorCommandCursorEnd.ts'
 import * as CursorHome from '../EditorCommand/EditorCommandCursorHome.ts'
+import { cursorPageDown } from '../EditorCommand/EditorCommandCursorPageDown.ts'
 import * as EditorCursorSet from '../EditorCommand/EditorCommandCursorSet.ts'
 import * as CursorUp from '../EditorCommand/EditorCommandCursorUp.ts'
 import * as CursorWordLeft from '../EditorCommand/EditorCommandCursorWordLeft.ts'
@@ -212,6 +213,7 @@ export const commandMap = {
   'Editor.cursorEnd': wrapCommand(CursorEnd.cursorEnd),
   'Editor.cursorHome': wrapCommand(CursorHome.cursorHome),
   'Editor.cursorLeft': wrapCommand(CursorCharacterLeft.cursorCharacterLeft),
+  'Editor.cursorPageDown': wrapCommand(cursorPageDown),
   'Editor.cursorRight': wrapCommand(CursorCharacterRight.cursorCharacterRight),
   'Editor.cursorSet': wrapCommand(EditorCursorSet.cursorSet),
   'Editor.cursorUp': wrapCommand(CursorUp.cursorUp),

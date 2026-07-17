@@ -22,6 +22,7 @@ test('getEditorContentVirtualDom', () => {
     className: 'EditorContent',
     onKeyUp: DomEventListenerFunctions.HandleKeyUp,
     onMouseMove: DomEventListenerFunctions.HandleMouseMove,
+    onWheel: DomEventListenerFunctions.HandleWheel,
     type: VirtualDomElements.Div,
   })
 

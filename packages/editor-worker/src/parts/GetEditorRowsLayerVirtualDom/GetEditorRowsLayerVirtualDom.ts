@@ -16,7 +16,6 @@ export const getEditorRowsVirtualDom = (
       className: 'EditorRows',
       onMouseDown: DomEventListenerFunctions.HandleMouseDown,
       onPointerDown: DomEventListenerFunctions.HandlePointerDown,
-      onWheel: DomEventListenerFunctions.HandleWheel,
       type: VirtualDomElements.Div,
     },
     ...rowsDom,

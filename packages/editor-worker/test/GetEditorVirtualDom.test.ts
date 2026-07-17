@@ -56,6 +56,7 @@ test('getEditorVirtualDom', () => {
       className: 'EditorContent',
       onKeyUp: DomEventListenerFunctions.HandleKeyUp,
       onMouseMove: DomEventListenerFunctions.HandleMouseMove,
+      onWheel: DomEventListenerFunctions.HandleWheel,
       type: VirtualDomElements.Div,
     },
     {
@@ -109,7 +110,6 @@ test('getEditorVirtualDom', () => {
       className: 'EditorRows',
       onMouseDown: DomEventListenerFunctions.HandleMouseDown,
       onPointerDown: DomEventListenerFunctions.HandlePointerDown,
-      onWheel: DomEventListenerFunctions.HandleWheel,
       type: VirtualDomElements.Div,
     },
     {
