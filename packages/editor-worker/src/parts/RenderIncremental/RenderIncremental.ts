@@ -5,12 +5,15 @@ import { getEditorVirtualDom } from '../GetEditorVirtualDom/GetEditorVirtualDom.
 import * as RenderedDoms from '../RenderedDoms/RenderedDoms.ts'
 
 const getDom = (state: EditorState): readonly VirtualDomNode[] => {
-  const { initial, textInfos } = state
+  const { initial, textInfos, visualDecorations = [] } = state
   if (initial && textInfos.length === 0) {
     return []
   }
 
-  return getEditorVirtualDom(state)
+  return getEditorVirtualDom({
+    ...state,
+    diagnostics: visualDecorations,
+  })
 }
 
 export const renderIncremental = (oldState: EditorState, newState: EditorState): any => {
