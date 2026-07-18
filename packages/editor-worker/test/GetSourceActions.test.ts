@@ -20,6 +20,8 @@ test('getEditorSourceActions executes the activated extension-host provider', as
     ...emptyEditor,
     id: editorId,
     languageId: 'typescript',
+    lines: ['const value = unknownName'],
+    selections: new Uint32Array([0, 14, 0, 14]),
     uid: editorId,
     widgets: [],
   }
@@ -35,7 +37,7 @@ test('getEditorSourceActions executes the activated extension-host provider', as
 
   await expect(getEditorSourceActions(editorId)).resolves.toBe(actions)
   expect(executeMock).toHaveBeenCalledWith({
-    args: [],
+    args: [14],
     editor,
     event: 'onLanguage',
     method: 'ExtensionHostCodeActions.getSourceActions',
