@@ -136,3 +136,45 @@ test('renderIncremental diffs from the last emitted dom when editor state is mut
   expect(command[1]).toBe(1)
   expect(command[2]).not.toEqual([])
 })
+
+test('renderIncremental renders measured diagnostic decorations', () => {
+  const initialState = createState(0, [])
+  initialState.initial = true
+  const renderedState = {
+    ...createState(0, [['x', 'Token Identifier']]),
+    diagnostics: [
+      {
+        columnIndex: 0,
+        endColumnIndex: 1,
+        endRowIndex: 0,
+        message: "Type 'string' is not assignable to type 'number'.",
+        rowIndex: 0,
+        type: 'error',
+      },
+    ],
+    visualDecorations: [
+      {
+        height: 20,
+        type: 'error',
+        width: 9,
+        x: 0,
+        y: 0,
+      },
+    ],
+  }
+
+  const command = RenderIncremental.renderIncremental(initialState, renderedState)
+
+  expect(command[2]).toContainEqual({
+    nodes: expect.arrayContaining([
+      expect.objectContaining({
+        className: 'Diagnostic DiagnosticError',
+        height: 20,
+        left: 0,
+        top: 0,
+        width: 9,
+      }),
+    ]),
+    type: 6,
+  })
+})
