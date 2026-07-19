@@ -1,8 +1,10 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as GetEditorContentVirtualDom from '../GetEditorContentVirtualDom/GetEditorContentVirtualDom.ts'
 import * as GetEditorGutterLayerVirtualDom from '../GetEditorGutterLayerVirtualDom/GetEditorGutterLayerVirtualDom.ts'
 import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
+import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
@@ -50,14 +52,14 @@ export const getEditorVirtualDom = ({
     return [
       {
         childCount: 2,
-        className: 'Viewlet TextEditorError',
+        className: MergeClassNames.mergeClassNames('Viewlet', 'TextEditorError'),
         'data-uid': uid,
-        role: 'code',
+        role: AriaRoles.Code,
         type: VirtualDomElements.Div,
       },
       {
         childCount: 0,
-        className: 'EditorTextIcon EditorTextIconError MaskIcon MaskIconError',
+        className: MergeClassNames.mergeClassNames('EditorTextIcon', 'EditorTextIconError', 'MaskIcon', 'MaskIconError'),
         type: VirtualDomElements.Div,
       },
       {
@@ -75,10 +77,10 @@ export const getEditorVirtualDom = ({
   return [
     {
       childCount: showGutter ? 2 : 1,
-      className: 'Viewlet Editor',
+      className: MergeClassNames.mergeClassNames('Viewlet', 'Editor'),
       'data-uid': uid,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
-      role: 'code',
+      role: AriaRoles.Code,
       type: VirtualDomElements.Div,
     },
     ...gutterDom,
