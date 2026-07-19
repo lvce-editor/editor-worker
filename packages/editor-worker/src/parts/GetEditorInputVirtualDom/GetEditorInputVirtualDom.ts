@@ -1,4 +1,6 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as AriaBoolean from '../AriaBoolean/AriaBoolean.ts'
+import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
@@ -11,7 +13,7 @@ export const getEditorInputVirtualDom = (): readonly VirtualDomNode[] => {
     },
     {
       ariaAutoComplete: 'list',
-      ariaMultiLine: 'true',
+      ariaMultiLine: AriaBoolean.True,
       ariaRoleDescription: 'editor',
       autocapitalize: 'off',
       autocomplete: 'off',
@@ -26,7 +28,7 @@ export const getEditorInputVirtualDom = (): readonly VirtualDomNode[] => {
       onCut: DomEventListenerFunctions.HandleCut,
       onFocus: DomEventListenerFunctions.HandleFocus,
       onPaste: DomEventListenerFunctions.HandlePaste,
-      role: 'textbox',
+      role: AriaRoles.TextBox,
       spellcheck: false,
       type: VirtualDomElements.TextArea,
       wrap: 'off',

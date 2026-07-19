@@ -1,4 +1,7 @@
+export const Button = 'button'
 export const Checkbox = 'checkbox'
+export const Code = 'code'
 export const Group = 'group'
 export const None = 'none'
 export const Option = 'option'
+export const TextBox = 'textbox'
