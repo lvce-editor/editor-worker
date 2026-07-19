@@ -8,6 +8,7 @@ const getTokenizerMock: any = jest.fn()
 const loadTokenizerMock: any = jest.fn()
 const measureCharacterWidthMock: any = jest.fn()
 const readFileMock: any = jest.fn()
+const rendererInvokeMock: any = jest.fn()
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   ExtensionHost: {
@@ -20,7 +21,7 @@ jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   },
   RendererWorker: {
     getPreference: jest.fn(),
-    invoke: jest.fn(),
+    invoke: rendererInvokeMock,
     readFile: readFileMock,
   },
   SyntaxHighlightingWorker: {
@@ -112,6 +113,7 @@ beforeEach(() => {
   loadTokenizerMock.mockReset()
   measureCharacterWidthMock.mockReset()
   readFileMock.mockReset()
+  rendererInvokeMock.mockReset()
 
   getEditorPreferencesMock.mockResolvedValue({
     completionTriggerCharacters: [],
@@ -133,6 +135,7 @@ beforeEach(() => {
   getTokenizerMock.mockReturnValue({})
   getEditorWithDiagnosticsMock.mockImplementation(async (editor: any) => editor)
   measureCharacterWidthMock.mockResolvedValue(8)
+  rendererInvokeMock.mockResolvedValue(undefined)
 })
 
 test('loadContent returns error state when reading file fails', async () => {
@@ -188,4 +191,28 @@ test('loadContent uses a tokenizer from a later contribution for the same langua
   await LoadContent.loadContent(createState(), undefined)
 
   expect(loadTokenizerMock).toHaveBeenCalledWith('plaintext', '/test/tokenizePlainText.js')
+})
+
+test('loadContent restores the stored language mode', async () => {
+  getLanguagesMock.mockResolvedValue([
+    { extensions: ['.txt'], id: 'plaintext' },
+    { id: 'javascript', tokenize: '/test/tokenizeJavaScript.js' },
+  ])
+  rendererInvokeMock.mockResolvedValue('javascript')
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), undefined)
+
+  expect(rendererInvokeMock).toHaveBeenCalledWith('LocalStorage.getJson', 'editor.language-mode:file:///test.txt')
+  expect(loadTokenizerMock).toHaveBeenCalledWith('javascript', '/test/tokenizeJavaScript.js')
+  expect(result.languageId).toBe('javascript')
+})
+
+test('loadContent falls back to detection when storage fails', async () => {
+  rendererInvokeMock.mockRejectedValue(new Error('storage unavailable'))
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), undefined)
+
+  expect(result.languageId).toBe('plaintext')
 })
