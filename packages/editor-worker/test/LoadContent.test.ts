@@ -3,12 +3,12 @@ import { beforeEach, expect, jest, test } from '@jest/globals'
 const getEditorPreferencesMock: any = jest.fn()
 const getEditorWithDiagnosticsMock: any = jest.fn()
 const getLanguagesMock: any = jest.fn()
-const getStoredLanguageModeMock: any = jest.fn()
 const getVisibleMock: any = jest.fn()
 const getTokenizerMock: any = jest.fn()
 const loadTokenizerMock: any = jest.fn()
 const measureCharacterWidthMock: any = jest.fn()
 const readFileMock: any = jest.fn()
+const rendererInvokeMock: any = jest.fn()
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   ExtensionHost: {
@@ -21,7 +21,7 @@ jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   },
   RendererWorker: {
     getPreference: jest.fn(),
-    invoke: jest.fn(),
+    invoke: rendererInvokeMock,
     readFile: readFileMock,
   },
   SyntaxHighlightingWorker: {
@@ -46,10 +46,6 @@ jest.unstable_mockModule('../src/parts/EditorText/EditorText.ts', () => ({
 
 jest.unstable_mockModule('../src/parts/GetLanguages/GetLanguages.ts', () => ({
   getLanguages: getLanguagesMock,
-}))
-
-jest.unstable_mockModule('../src/parts/LanguageModeStorage/LanguageModeStorage.ts', () => ({
-  get: getStoredLanguageModeMock,
 }))
 
 jest.unstable_mockModule('../src/parts/MeasureCharacterWidth/MeasureCharacterWidth.ts', () => ({
@@ -112,12 +108,12 @@ beforeEach(() => {
   getEditorPreferencesMock.mockReset()
   getEditorWithDiagnosticsMock.mockReset()
   getLanguagesMock.mockReset()
-  getStoredLanguageModeMock.mockReset()
   getVisibleMock.mockReset()
   getTokenizerMock.mockReset()
   loadTokenizerMock.mockReset()
   measureCharacterWidthMock.mockReset()
   readFileMock.mockReset()
+  rendererInvokeMock.mockReset()
 
   getEditorPreferencesMock.mockResolvedValue({
     completionTriggerCharacters: [],
@@ -135,11 +131,11 @@ beforeEach(() => {
     tabSize: 2,
   })
   getLanguagesMock.mockResolvedValue([{ extensions: ['.txt'], id: 'plaintext', tokenize: '' }])
-  getStoredLanguageModeMock.mockResolvedValue('')
   getVisibleMock.mockResolvedValue({ differences: [], textInfos: [] })
   getTokenizerMock.mockReturnValue({})
   getEditorWithDiagnosticsMock.mockImplementation(async (editor: any) => editor)
   measureCharacterWidthMock.mockResolvedValue(8)
+  rendererInvokeMock.mockResolvedValue(undefined)
 })
 
 test('loadContent returns error state when reading file fails', async () => {
@@ -202,12 +198,21 @@ test('loadContent restores the stored language mode', async () => {
     { extensions: ['.txt'], id: 'plaintext' },
     { id: 'javascript', tokenize: '/test/tokenizeJavaScript.js' },
   ])
-  getStoredLanguageModeMock.mockResolvedValue('javascript')
+  rendererInvokeMock.mockResolvedValue('javascript')
   readFileMock.mockResolvedValue('test')
 
   const result = await LoadContent.loadContent(createState(), undefined)
 
-  expect(getStoredLanguageModeMock).toHaveBeenCalledWith('file:///test.txt')
+  expect(rendererInvokeMock).toHaveBeenCalledWith('LocalStorage.getJson', 'editor.language-mode:file:///test.txt')
   expect(loadTokenizerMock).toHaveBeenCalledWith('javascript', '/test/tokenizeJavaScript.js')
   expect(result.languageId).toBe('javascript')
+})
+
+test('loadContent falls back to detection when storage fails', async () => {
+  rendererInvokeMock.mockRejectedValue(new Error('storage unavailable'))
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), undefined)
+
+  expect(result.languageId).toBe('plaintext')
 })
