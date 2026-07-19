@@ -2,7 +2,12 @@ import { beforeEach, expect, jest, test } from '@jest/globals'
 
 const getTokenizerMock = jest.fn()
 const loadTokenizerMock = jest.fn()
+const setStoredLanguageModeMock = jest.fn()
 const setTokenizerMock = jest.fn()
+
+jest.unstable_mockModule('../src/parts/LanguageModeStorage/LanguageModeStorage.ts', () => ({
+  set: setStoredLanguageModeMock,
+}))
 
 jest.unstable_mockModule('../src/parts/Tokenizer/Tokenizer.ts', () => ({
   getTokenizer: getTokenizerMock,
@@ -18,6 +23,7 @@ const { setLanguageId } = await import('../src/parts/EditorCommand/EditorCommand
 beforeEach(() => {
   getTokenizerMock.mockReset()
   loadTokenizerMock.mockReset()
+  setStoredLanguageModeMock.mockReset()
   setTokenizerMock.mockReset()
 })
 
@@ -29,6 +35,7 @@ test('setLanguageId loads the tokenizer and invalidates syntax highlighting', as
     languageId: 'plaintext',
     tokenizerId: 2,
     uid: 1,
+    uri: 'file:///test.txt',
   }
   const tokenizer = {
     tokenizeLine() {},
@@ -39,6 +46,7 @@ test('setLanguageId loads the tokenizer and invalidates syntax highlighting', as
 
   expect(loadTokenizerMock).toHaveBeenCalledWith('xyz', '/extensions/test/tokenizeXyz.js')
   expect(setTokenizerMock).toHaveBeenCalledWith(3, tokenizer)
+  expect(setStoredLanguageModeMock).toHaveBeenCalledWith('file:///test.txt', 'xyz')
   expect(result).toEqual({
     ...editor,
     focused: true,

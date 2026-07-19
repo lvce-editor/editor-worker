@@ -3,6 +3,7 @@ import { beforeEach, expect, jest, test } from '@jest/globals'
 const getEditorPreferencesMock: any = jest.fn()
 const getEditorWithDiagnosticsMock: any = jest.fn()
 const getLanguagesMock: any = jest.fn()
+const getStoredLanguageModeMock: any = jest.fn()
 const getVisibleMock: any = jest.fn()
 const getTokenizerMock: any = jest.fn()
 const loadTokenizerMock: any = jest.fn()
@@ -45,6 +46,10 @@ jest.unstable_mockModule('../src/parts/EditorText/EditorText.ts', () => ({
 
 jest.unstable_mockModule('../src/parts/GetLanguages/GetLanguages.ts', () => ({
   getLanguages: getLanguagesMock,
+}))
+
+jest.unstable_mockModule('../src/parts/LanguageModeStorage/LanguageModeStorage.ts', () => ({
+  get: getStoredLanguageModeMock,
 }))
 
 jest.unstable_mockModule('../src/parts/MeasureCharacterWidth/MeasureCharacterWidth.ts', () => ({
@@ -107,6 +112,7 @@ beforeEach(() => {
   getEditorPreferencesMock.mockReset()
   getEditorWithDiagnosticsMock.mockReset()
   getLanguagesMock.mockReset()
+  getStoredLanguageModeMock.mockReset()
   getVisibleMock.mockReset()
   getTokenizerMock.mockReset()
   loadTokenizerMock.mockReset()
@@ -129,6 +135,7 @@ beforeEach(() => {
     tabSize: 2,
   })
   getLanguagesMock.mockResolvedValue([{ extensions: ['.txt'], id: 'plaintext', tokenize: '' }])
+  getStoredLanguageModeMock.mockResolvedValue('')
   getVisibleMock.mockResolvedValue({ differences: [], textInfos: [] })
   getTokenizerMock.mockReturnValue({})
   getEditorWithDiagnosticsMock.mockImplementation(async (editor: any) => editor)
@@ -188,4 +195,19 @@ test('loadContent uses a tokenizer from a later contribution for the same langua
   await LoadContent.loadContent(createState(), undefined)
 
   expect(loadTokenizerMock).toHaveBeenCalledWith('plaintext', '/test/tokenizePlainText.js')
+})
+
+test('loadContent restores the stored language mode', async () => {
+  getLanguagesMock.mockResolvedValue([
+    { extensions: ['.txt'], id: 'plaintext' },
+    { id: 'javascript', tokenize: '/test/tokenizeJavaScript.js' },
+  ])
+  getStoredLanguageModeMock.mockResolvedValue('javascript')
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), undefined)
+
+  expect(getStoredLanguageModeMock).toHaveBeenCalledWith('file:///test.txt')
+  expect(loadTokenizerMock).toHaveBeenCalledWith('javascript', '/test/tokenizeJavaScript.js')
+  expect(result.languageId).toBe('javascript')
 })

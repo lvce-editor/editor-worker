@@ -8,6 +8,7 @@ import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
+import * as LanguageModeStorage from '../LanguageModeStorage/LanguageModeStorage.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
@@ -54,7 +55,8 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
   TokenizerState.setTokenizePaths(languages)
-  const computedLanguageId = getLanguageId(uri, languages)
+  const storedLanguageId = await LanguageModeStorage.get(uri)
+  const computedLanguageId = storedLanguageId || getLanguageId(uri, languages)
   const tokenizePath = getTokenizePath(languages, computedLanguageId)
   await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
   const tokenizer = Tokenizer.getTokenizer(computedLanguageId)
