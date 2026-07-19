@@ -54,12 +54,11 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
   TokenizerState.setTokenizePaths(languages)
-  let storedLanguageId = ''
+  let computedLanguageId = getLanguageId(uri, languages)
   try {
     const value = await RendererWorker.invoke('LocalStorage.getJson', `editor.language-mode:${uri}`)
-    storedLanguageId = typeof value === 'string' ? value : ''
+    if (typeof value === 'string' && value) computedLanguageId = value
   } catch {}
-  const computedLanguageId = storedLanguageId || getLanguageId(uri, languages)
   const tokenizePath = getTokenizePath(languages, computedLanguageId)
   await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
   const tokenizer = Tokenizer.getTokenizer(computedLanguageId)
