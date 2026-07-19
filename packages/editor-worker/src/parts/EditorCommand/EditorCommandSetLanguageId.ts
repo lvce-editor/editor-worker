@@ -5,8 +5,8 @@ import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 export const setLanguageId = async (editor: any, languageId: string, tokenizePath: string) => {
   await Tokenizer.loadTokenizer(languageId, tokenizePath)
   const tokenizer = Tokenizer.getTokenizer(languageId)
-  const newTokenizerId = editor.tokenizerId + 1
-  TokenizerMap.set(newTokenizerId, tokenizer)
+  const tokenizerId = editor.tokenizerId + 1
+  TokenizerMap.set(tokenizerId, tokenizer)
   try {
     await RendererWorker.invoke('LocalStorage.setJson', `editor.language-mode:${editor.uri}`, languageId)
   } catch {}
@@ -16,6 +16,6 @@ export const setLanguageId = async (editor: any, languageId: string, tokenizePat
     focused: true,
     invalidStartIndex: 0,
     languageId,
-    tokenizerId: newTokenizerId,
+    tokenizerId,
   }
 }
