@@ -1,5 +1,6 @@
 import type { Widget } from '../Widget/Widget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
+import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
@@ -18,7 +19,7 @@ export const render = (widget: MessageWidget): readonly any[] => {
   const dom = [
     {
       childCount: 1,
-      className: 'Viewlet EditorMessage EditorMessageText EditorOverlayMessage',
+      className: MergeClassNames.mergeClassNames('Viewlet', 'EditorMessage', 'EditorMessageText', 'EditorOverlayMessage'),
       style: `left:${x}px;top:${y}px;`,
       type: VirtualDomElements.Div,
     },

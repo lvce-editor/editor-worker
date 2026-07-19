@@ -4,6 +4,7 @@ import * as tsconfig from '@lvce-editor/eslint-plugin-tsconfig'
 
 export default [
   ...config.default,
+  ...config.recommendedVirtualDom,
   ...actions.default,
   ...tsconfig.default,
   {
@@ -77,6 +78,47 @@ export default [
       'sonarjs/regex-complexity': 'off',
       'sonarjs/single-char-in-character-classes': 'off',
       'devcontainer/post-create-command': 'off',
+    },
+  },
+  {
+    files: [
+      'packages/editor-worker/src/parts/{ColorPickerWorker,EditorCommand,EditorCompletionDetailWidget,EditorFolding,EditorScrolling,EditorSourceActionFocusNext,HandleSettingsChanged,HandleWheel,HotReload,HoverWorker,LoadContent,LoadHoverContent,MeasureTextWidthState,RenameWorker,Resize,SafeTokenizeLine,SourceActionWorker,SyncIncremental,SyntaxHighlightingState,TextDocument,TokenizerState}/**/*.ts',
+    ],
+    rules: {
+      'virtual-dom/prefer-state-destructuring': 'off',
+    },
+  },
+  {
+    files: [
+      'packages/editor-worker/src/parts/EditorCommand/{EditorCommandDeleteHorizontal,EditorCommandMoveLineDown,EditorCommandMoveLineUp,EditorIndent}.ts',
+      'packages/editor-worker/src/parts/EditorCommand/EditorCommandSave/showSaveErrorDialog.ts',
+    ],
+    rules: {
+      'virtual-dom/no-object-attribute-values': 'off',
+      'virtual-dom/prefer-constants': 'off',
+    },
+  },
+  {
+    files: ['packages/editor-worker/src/parts/EditorMessageWidget/**/*.ts'],
+    rules: {
+      'virtual-dom/no-inline-style': 'off',
+    },
+  },
+  {
+    files: ['packages/editor-worker/src/parts/GetSearchToggleButtonVirtualDom/**/*.ts'],
+    rules: {
+      'virtual-dom/no-inline-event-handlers': 'off',
+    },
+  },
+  {
+    files: ['packages/editor-worker/test/**/*.ts'],
+    rules: {
+      'virtual-dom/no-inline-style': 'off',
+      'virtual-dom/no-object-attribute-values': 'off',
+      'virtual-dom/no-raw-text-children': 'off',
+      'virtual-dom/prefer-constants': 'off',
+      'virtual-dom/prefer-merge-class-names': 'off',
+      'virtual-dom/prefer-state-destructuring': 'off',
     },
   },
   {
