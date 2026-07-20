@@ -1,5 +1,6 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
+import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as Px from '../Px/Px.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
@@ -11,7 +12,7 @@ export const getEditorRowsVirtualDom = (textInfos: any, differences: any, lineNu
     const difference = differences[i]
     let className = ClassNames.EditorRow
     if (i === highlightedLine) {
-      className += ' ' + ClassNames.EditorRowHighlighted
+      className = MergeClassNames.mergeClassNames(className, ClassNames.EditorRowHighlighted)
     }
     dom.push({
       childCount: textInfo.length / 2,

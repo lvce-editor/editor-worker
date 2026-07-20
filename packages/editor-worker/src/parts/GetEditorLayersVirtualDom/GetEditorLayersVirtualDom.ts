@@ -5,6 +5,12 @@ import * as GetEditorRowsLayerVirtualDom from '../GetEditorRowsLayerVirtualDom/G
 import * as GetEditorSelectionsVirtualDom from '../GetEditorSelectionsVirtualDom/GetEditorSelectionsVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
+const editorLayersNode: VirtualDomNode = {
+  childCount: 4,
+  className: 'EditorLayers',
+  type: VirtualDomElements.Div,
+}
+
 export const getEditorLayersVirtualDom = (
   selectionInfos: readonly any[],
   textInfos: readonly any[],
@@ -15,11 +21,7 @@ export const getEditorLayersVirtualDom = (
   diagnostics: readonly any[] = [],
 ): readonly VirtualDomNode[] => {
   return [
-    {
-      childCount: 4,
-      className: 'EditorLayers',
-      type: VirtualDomElements.Div,
-    },
+    editorLayersNode,
     ...GetEditorSelectionsVirtualDom.getEditorSelectionsVirtualDom(selectionInfos),
     ...GetEditorRowsLayerVirtualDom.getEditorRowsVirtualDom(textInfos, differences, lineNumbers, highlightedLine),
     ...GetEditorCursorsVirtualDom.getEditorCursorsVirtualDom(cursorInfos),
