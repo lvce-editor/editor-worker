@@ -18,6 +18,12 @@ const hoverProblemDetail: VirtualDomNode = {
   type: VirtualDomElements.Span,
 }
 
+const hoverDocumentationNode: VirtualDomNode = {
+  childCount: 1,
+  className: ClassNames.HoverDocumentation,
+  type: VirtualDomElements.Div,
+}
+
 const getChildCount = (lineInfos: any, documentation: any, diagnostics: any): number => {
   const documentationCount = documentation ? 1 : 0
   const diagnosticsCount = diagnostics && diagnostics.length > 0 ? 1 : 0
@@ -55,14 +61,7 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
   }
 
   if (documentation) {
-    dom.push(
-      {
-        childCount: 1,
-        className: ClassNames.HoverDocumentation,
-        type: VirtualDomElements.Div,
-      },
-      text(documentation),
-    )
+    dom.push(hoverDocumentationNode, text(documentation))
   }
 
   dom.push({

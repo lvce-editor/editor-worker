@@ -8,6 +8,12 @@ import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
+const textEditorErrorMessageNode: VirtualDomNode = {
+  childCount: 1,
+  className: 'TextEditorErrorMessage',
+  type: VirtualDomElements.Div,
+}
+
 interface EditorVirtualDomOptions {
   readonly breakPoints?: readonly number[]
   readonly cursorInfos?: readonly any[]
@@ -62,11 +68,7 @@ export const getEditorVirtualDom = ({
         className: MergeClassNames.mergeClassNames('EditorTextIcon', 'EditorTextIconError', 'MaskIcon', 'MaskIconError'),
         type: VirtualDomElements.Div,
       },
-      {
-        childCount: 1,
-        className: 'TextEditorErrorMessage',
-        type: VirtualDomElements.Div,
-      },
+      textEditorErrorMessageNode,
       text(loadError),
     ]
   }

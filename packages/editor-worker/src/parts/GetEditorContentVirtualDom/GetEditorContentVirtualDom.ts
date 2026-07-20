@@ -6,6 +6,15 @@ import * as GetEditorScrollBarDiagnosticsVirtualDom from '../GetEditorScrollBarD
 import * as GetScrollBarVirtualDom from '../GetScrollBarVirtualDom/GetScrollBarVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
+const editorContentNode: VirtualDomNode = {
+  childCount: 5,
+  className: 'EditorContent',
+  onKeyUp: DomEventListenerFunctions.HandleKeyUp,
+  onMouseMove: DomEventListenerFunctions.HandleMouseMove,
+  onWheel: DomEventListenerFunctions.HandleWheel,
+  type: VirtualDomElements.Div,
+}
+
 interface EditorContentVirtualDomOptions {
   readonly cursorInfos?: readonly any[]
   readonly deltaY?: number
@@ -32,14 +41,7 @@ export const getEditorContentVirtualDom = ({
   textInfos,
 }: EditorContentVirtualDomOptions): readonly VirtualDomNode[] => {
   return [
-    {
-      childCount: 5,
-      className: 'EditorContent',
-      onKeyUp: DomEventListenerFunctions.HandleKeyUp,
-      onMouseMove: DomEventListenerFunctions.HandleMouseMove,
-      onWheel: DomEventListenerFunctions.HandleWheel,
-      type: VirtualDomElements.Div,
-    },
+    editorContentNode,
     ...GetEditorInputVirtualDom.getEditorInputVirtualDom(),
     ...GetEditorLayersVirtualDom.getEditorLayersVirtualDom(
       selectionInfos,
