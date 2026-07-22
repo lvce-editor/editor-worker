@@ -358,6 +358,7 @@ export const commandMap = {
   'Editor.setDecorations': wrapCommand(SetDecorations.setDecorations),
   'Editor.setDelta': wrapCommand(SetDelta.setDelta),
   'Editor.setDeltaY': wrapCommand(SetDelta.setDeltaY),
+  'Editor.setDiagnostics': wrapCommand(UpdateDiagnostics.addDiagnostics),
   'Editor.setLanguageId': wrapCommand(SetLanguageId.setLanguageId),
   'Editor.setSelections': wrapCommand(SetSelections.setSelections),
   'Editor.setSelections2': ExternalGetPositionAtCursor.setSelections2,

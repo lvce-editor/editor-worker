@@ -15,7 +15,7 @@ const getDiagnostics = async (editor: any): Promise<readonly any[]> => {
   return ExtensionHostDiagnostic.executeDiagnosticProvider(editor)
 }
 
-const addDiagnostics = async (editor: any, diagnostics: readonly any[]): Promise<any> => {
+export const addDiagnostics = async (editor: any, diagnostics: readonly any[]): Promise<any> => {
   const visualDecorations = await GetVisibleDiagnostics.getVisibleDiagnostics(editor, diagnostics)
   const diagnosticDecorations = visualDecorations.flatMap((decoration: any) => [
     decoration.offset,

@@ -26,7 +26,7 @@ export const getVisibleDiagnostics = async (editor: any, diagnostics: readonly D
       charWidth,
       endLineDifference,
     )
-    const y = GetY.getY(rowIndex, minLineY, rowHeight) - rowHeight
+    const y = GetY.getY(rowIndex, minLineY, rowHeight)
     visibleDiagnostics.push({
       height: rowHeight,
       type: GetDiagnosticType.getDiagnosticType(diagnostic),
