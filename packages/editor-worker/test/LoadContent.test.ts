@@ -1,7 +1,7 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 
+const extensionManagementWorkerInvoke = jest.fn()
 const getEditorPreferencesMock: any = jest.fn()
-const getEditorWithDiagnosticsMock: any = jest.fn()
 const getLanguagesMock: any = jest.fn()
 const getVisibleMock: any = jest.fn()
 const getTokenizerMock: any = jest.fn()
@@ -16,7 +16,7 @@ jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
     set: jest.fn(),
   },
   ExtensionManagementWorker: {
-    invoke: jest.fn(),
+    invoke: extensionManagementWorkerInvoke,
   },
   RendererWorker: {
     getPreference: jest.fn(),
@@ -54,10 +54,6 @@ jest.unstable_mockModule('../src/parts/MeasureCharacterWidth/MeasureCharacterWid
 jest.unstable_mockModule('../src/parts/Tokenizer/Tokenizer.ts', () => ({
   getTokenizer: getTokenizerMock,
   loadTokenizer: loadTokenizerMock,
-}))
-
-jest.unstable_mockModule('../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts', () => ({
-  getEditorWithDiagnostics: getEditorWithDiagnosticsMock,
 }))
 
 const LoadContent = await import('../src/parts/LoadContent/LoadContent.ts')
@@ -104,8 +100,8 @@ const createState = () =>
   }) as any
 
 beforeEach(() => {
+  extensionManagementWorkerInvoke.mockReset()
   getEditorPreferencesMock.mockReset()
-  getEditorWithDiagnosticsMock.mockReset()
   getLanguagesMock.mockReset()
   getVisibleMock.mockReset()
   getTokenizerMock.mockReset()
@@ -131,7 +127,6 @@ beforeEach(() => {
   getLanguagesMock.mockResolvedValue([{ extensions: ['.txt'], id: 'plaintext', tokenize: '' }])
   getVisibleMock.mockResolvedValue({ differences: [], textInfos: [] })
   getTokenizerMock.mockReturnValue({})
-  getEditorWithDiagnosticsMock.mockImplementation(async (editor: any) => editor)
   measureCharacterWidthMock.mockResolvedValue(8)
 })
 
@@ -148,8 +143,7 @@ test('loadContent returns error state when reading file fails', async () => {
   expect(readFileMock).toHaveBeenCalledWith('file:///test.txt')
 })
 
-test('loadContent preserves loaded text and diagnostics', async () => {
-  const diagnostics = [{ message: 'diagnostic' }]
+test('loadContent returns loaded text without requesting diagnostics', async () => {
   getEditorPreferencesMock.mockResolvedValue({
     completionTriggerCharacters: [],
     diagnosticsEnabled: true,
@@ -166,16 +160,11 @@ test('loadContent preserves loaded text and diagnostics', async () => {
     tabSize: 2,
   })
   readFileMock.mockResolvedValue('test')
-  getEditorWithDiagnosticsMock.mockImplementation(async (editor: any) => ({
-    ...editor,
-    diagnostics,
-  }))
 
   const result = await LoadContent.loadContent(createState(), undefined)
 
-  expect(result.diagnostics).toBe(diagnostics)
   expect(result.lines).toEqual(['test'])
-  expect(getEditorWithDiagnosticsMock).toHaveBeenCalledTimes(1)
+  expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
 })
 
 test('loadContent uses a tokenizer from a later contribution for the same language', async () => {

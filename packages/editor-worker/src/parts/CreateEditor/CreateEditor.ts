@@ -16,7 +16,6 @@ import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
-import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 export const createEditor = async ({
   assetDir,
@@ -177,12 +176,10 @@ export const createEditor = async ({
   // @ts-ignore
   await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, languageId, content)
 
-  const editorWithDiagnostics = diagnosticsEnabled ? await UpdateDiagnostics.updateDiagnostics(newEditor4) : newEditor4
-
   const completionsOnTypeRaw = await Preferences.get('editor.completionsOnType')
   const completionsOnType = Boolean(completionsOnTypeRaw)
   EditorState.set(id, emptyEditor, {
-    ...editorWithDiagnostics,
+    ...newEditor4,
     completionsOnType,
   })
 }

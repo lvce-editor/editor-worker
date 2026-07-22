@@ -1,4 +1,3 @@
-import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as EditorState from '../EditorStates/EditorStates.ts'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
@@ -40,19 +39,10 @@ const handleError = async (error: unknown, editor: any): Promise<any> => {
   return editor
 }
 
-export const getEditorWithDiagnostics = async (editor: any): Promise<any> => {
-  try {
-    const diagnostics = await getDiagnostics(editor)
-    if (!EditorState.get(editor.id)) {
-      return editor
-    }
-    return addDiagnostics(editor, diagnostics)
-  } catch (error) {
-    return handleError(error, editor)
-  }
-}
-
 export const updateDiagnostics = async (editor: any): Promise<any> => {
+  if (!editor.diagnosticsEnabled) {
+    return editor
+  }
   try {
     const diagnostics = await getDiagnostics(editor)
     const latest = EditorState.get(editor.id)
@@ -61,8 +51,6 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
     }
     const newEditor = await addDiagnostics(latest.newState, diagnostics)
     EditorState.set(editor.id, latest.oldState, newEditor)
-    // @ts-ignore
-    await RendererWorker.invoke('Editor.rerender', editor.id)
     return newEditor
   } catch (error) {
     return handleError(error, editor)

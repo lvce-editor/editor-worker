@@ -15,7 +15,6 @@ import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
-import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 const getTokenizePath = (languages: readonly any[], languageId: string): string => {
   for (const language of languages) {
@@ -123,12 +122,10 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   // @ts-ignore
   await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, computedLanguageId, content)
 
-  const editorWithDiagnostics = diagnosticsEnabled ? await UpdateDiagnostics.getEditorWithDiagnostics(newEditor4) : newEditor4
-
   const completionsOnTypeRaw = await Preferences.get('editor.completionsOnType')
   const completionsOnType = Boolean(completionsOnTypeRaw)
   const newEditor5: EditorState = {
-    ...editorWithDiagnostics,
+    ...newEditor4,
     completionsOnType,
     initial: false,
   }
