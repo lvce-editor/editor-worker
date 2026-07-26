@@ -53,12 +53,16 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
   TokenizerState.setTokenizePaths(languages)
-  const computedLanguageId = getLanguageId(uri, languages)
-  const tokenizePath = getTokenizePath(languages, computedLanguageId)
-  await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
-  const tokenizer = Tokenizer.getTokenizer(computedLanguageId)
-  const newTokenizerId = state.tokenizerId + 1
-  TokenizerMap.set(newTokenizerId, tokenizer)
+  let languageId = getLanguageId(uri, languages)
+  try {
+    const value = await RendererWorker.invoke('LocalStorage.getJson', `editor.language-mode:${uri}`)
+    if (typeof value === 'string' && value) languageId = value
+  } catch {}
+  const tokenizePath = getTokenizePath(languages, languageId)
+  await Tokenizer.loadTokenizer(languageId, tokenizePath)
+  const tokenizer = Tokenizer.getTokenizer(languageId)
+  const tokenizerId = state.tokenizerId + 1
+  TokenizerMap.set(tokenizerId, tokenizer)
   const newEditor0: EditorState = {
     ...state,
     charWidth,
@@ -71,13 +75,13 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
     isQuickSuggestionsEnabled,
-    languageId: computedLanguageId,
+    languageId,
     letterSpacing,
     lineNumbers,
     loadError: '',
     rowHeight,
     tabSize,
-    tokenizerId: newTokenizerId,
+    tokenizerId,
   }
   let content = ''
   try {
@@ -120,7 +124,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   // TODO only sync when needed
   // e.g. it might not always be necessary to send text to extension host worker
   // @ts-ignore
-  await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, computedLanguageId, content)
+  await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, languageId, content)
 
   const completionsOnTypeRaw = await Preferences.get('editor.completionsOnType')
   const completionsOnType = Boolean(completionsOnTypeRaw)
