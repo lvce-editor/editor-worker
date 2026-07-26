@@ -1,3 +1,4 @@
+import { editorDiagnosticEffect } from '../EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
@@ -24,7 +25,15 @@ export const wrapCommand =
       }
       const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
       Editors.set(uid, state, newEditorWithDerivedState)
-      return newEditorWithDerivedState
+      if (!editorDiagnosticEffect.isActive(state, newEditorWithDerivedState)) {
+        return newEditorWithDerivedState
+      }
+      const newEditorWithDiagnostics = await editorDiagnosticEffect.apply(newEditorWithDerivedState)
+      if (!Editors.get(uid)) {
+        return newEditorWithDiagnostics
+      }
+      Editors.set(uid, state, newEditorWithDiagnostics)
+      return newEditorWithDiagnostics
     } finally {
       resolve()
       if (queues[uid] === next) {
