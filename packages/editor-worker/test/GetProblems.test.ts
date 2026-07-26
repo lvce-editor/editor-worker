@@ -1,38 +1,56 @@
-import { expect, test } from '@jest/globals'
+import { afterEach, expect, test } from '@jest/globals'
 import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { getProblems } from '../src/parts/GetProblems/GetProblems.ts'
 
-test('getProblems preserves fractional editor ids', async () => {
+afterEach(() => {
+  for (const key of EditorStates.getKeys()) {
+    EditorStates.dispose(Number(key))
+  }
+})
+
+test('getProblems returns cached diagnostics and preserves fractional editor ids', async () => {
   const editorId = 0.123456
+  const diagnostics = [
+    {
+      message: 'cached problem',
+      uri: '/test.js',
+    },
+  ]
   const editor = {
+    diagnostics,
     id: editorId,
     languageId: 'javascript',
     lines: ['const value = 1'],
     uid: editorId,
     uri: '/test.js',
   }
-  const diagnostics = [
-    {
-      message: 'test problem',
-      uri: editor.uri,
-    },
-  ]
   EditorStates.set(editorId, editor as any, editor as any)
   using mockRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': () => diagnostics,
+    'Extensions.executeDiagnosticProvider': () => [{ message: 'new problem' }],
   })
 
   await expect(getProblems()).resolves.toEqual(diagnostics)
-  expect(mockRpc.invocations).toEqual([
-    [
-      'Extensions.executeDiagnosticProvider',
-      {
-        documentId: editorId,
-        languageId: editor.languageId,
-        text: editor.lines[0],
-        uri: editor.uri,
-      },
-    ],
-  ])
+  expect(mockRpc.invocations).toEqual([])
+})
+
+test('getProblems ignores open editors without diagnostics', async () => {
+  const javascriptEditor = {
+    diagnostics: [{ message: 'javascript problem', uri: '/test.js' }],
+    id: 1,
+    languageId: 'javascript',
+    lines: ["let x = ''", 'x++'],
+    uri: '/test.js',
+  }
+  const settingsEditor = {
+    diagnostics: [],
+    id: 2,
+    languageId: 'json',
+    lines: ['{}'],
+    uri: 'app://settings.json',
+  }
+  EditorStates.set(1, javascriptEditor as any, javascriptEditor as any)
+  EditorStates.set(2, settingsEditor as any, settingsEditor as any)
+
+  await expect(getProblems()).resolves.toEqual(javascriptEditor.diagnostics)
 })
