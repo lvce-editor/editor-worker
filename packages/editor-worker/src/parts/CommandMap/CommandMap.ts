@@ -4,6 +4,7 @@ import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept
 import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 import { createEditor2 } from '../CreateEditor2/CreateEditor2.ts'
 import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
+import { createStandaloneEditor } from '../CreateStandaloneEditor/CreateStandaloneEditor.ts'
 import { diff2 } from '../Diff2/Diff2.ts'
 import * as DisposeEditor from '../DisposeEditor/DisposeEditor.ts'
 import * as AddCursorAbove from '../EditorCommand/EditorCommandAddCursorAbove.ts'
@@ -212,6 +213,7 @@ export const commandMap = {
   'Editor.copyLineUp': wrapCommand(CopyLineUp.copyLineUp),
   'Editor.create': CreateEditor.createEditor,
   'Editor.create2': createEditor2,
+  'Editor.createStandalone': createStandaloneEditor,
   'Editor.cursorCharacterLeft': wrapCommand(CursorCharacterLeft.cursorCharacterLeft),
   'Editor.cursorCharacterRight': wrapCommand(CursorCharacterRight.cursorCharacterRight),
   'Editor.cursorDocumentEnd': wrapCommand(CursorDocumentEnd.cursorDocumentEnd),
