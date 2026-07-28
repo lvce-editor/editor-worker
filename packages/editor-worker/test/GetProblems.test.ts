@@ -54,3 +54,20 @@ test('getProblems ignores open editors without diagnostics', async () => {
 
   await expect(getProblems()).resolves.toEqual(javascriptEditor.diagnostics)
 })
+
+test('getProblems ignores editor entries without a readable state', async () => {
+  const editor = {
+    diagnostics: [{ message: 'stale problem', uri: '/stale.js' }],
+    id: undefined,
+    languageId: 'javascript',
+    lines: [''],
+    uri: '/stale.js',
+  }
+  EditorStates.set(undefined as any, editor as any, editor as any)
+
+  try {
+    await expect(getProblems()).resolves.toEqual([])
+  } finally {
+    EditorStates.dispose(undefined as any)
+  }
+})

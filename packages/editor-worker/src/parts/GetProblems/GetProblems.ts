@@ -6,6 +6,9 @@ export const getProblems = async (): Promise<readonly Problem[]> => {
   const diagnostics = keys.flatMap((key) => {
     const numericKey = Number(key)
     const editor = Editors.get(numericKey)
+    if (!editor?.newState) {
+      return []
+    }
     return editor.newState.diagnostics
   })
   return diagnostics
