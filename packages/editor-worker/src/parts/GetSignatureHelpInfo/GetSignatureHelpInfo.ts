@@ -1,7 +1,7 @@
 import * as Assert from '../Assert/Assert.ts'
-import * as EditorPosition from '../EditorCommand/EditorCommandPosition.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as GetSignatureHelpContent from '../GetSignatureHelpContent/GetSignatureHelpContent.ts'
+import * as GetSignatureHelpWidgetBounds from '../GetSignatureHelpWidgetBounds/GetSignatureHelpWidgetBounds.ts'
 import * as MeasureTextHeight from '../MeasureTextHeight/MeasureTextHeight.ts'
 import * as SignatureHelp from '../SignatureHelp/SignatureHelp.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
@@ -14,9 +14,6 @@ const borderLeft = 1
 const borderRight = 1
 const paddingLeft = 8
 const paddingRight = 8
-const fullWidth = 600
-const documentationWidth = fullWidth - paddingLeft - paddingRight - borderLeft - borderRight
-
 export const getSignatureHelpInfo = async (editorUid: number) => {
   Assert.number(editorUid)
   const instance = Editors.get(editorUid)
@@ -35,6 +32,8 @@ export const getSignatureHelpInfo = async (editorUid: number) => {
   }
   const { displayString, documentation } = content
   const lineInfos = await TokenizeCodeBlock.tokenizeCodeBlock(displayString, editor.languageId || 'typescript', '')
+  const fullWidth = Math.min(600, editor.width)
+  const documentationWidth = fullWidth - paddingLeft - paddingRight - borderLeft - borderRight
   const documentationHeight = await MeasureTextHeight.measureTextBlockHeight(
     documentation,
     documentationFontFamily,
@@ -42,13 +41,17 @@ export const getSignatureHelpInfo = async (editorUid: number) => {
     documentationLineHeight,
     documentationWidth,
   )
-  const x = EditorPosition.x(editor, rowIndex, columnIndex)
-  const y = editor.height - EditorPosition.y(editor, rowIndex) + editor.y + 40
-  return {
-    documentation,
+  const bounds = GetSignatureHelpWidgetBounds.getSignatureHelpWidgetBounds(
+    editor,
+    rowIndex,
+    columnIndex,
+    lineInfos.length,
     documentationHeight,
+    Boolean(documentation),
+  )
+  return {
+    ...bounds,
+    documentation,
     lineInfos,
-    x,
-    y,
   }
 }
