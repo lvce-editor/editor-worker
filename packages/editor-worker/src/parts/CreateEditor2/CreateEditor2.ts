@@ -48,6 +48,7 @@ export const createEditor2 = (
     hasListener: false,
     height,
     highlightedLine: -1,
+    hoverEnabled: false,
     id,
     incrementalEdits: emptyIncrementalEdits,
     initial: true,

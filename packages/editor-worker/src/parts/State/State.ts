@@ -33,6 +33,7 @@ export interface EditorState {
   readonly hasListener: boolean
   readonly height: number
   readonly highlightedLine: number
+  readonly hoverEnabled: boolean
   readonly id: number
   readonly incrementalEdits: readonly any[]
   readonly initial: boolean

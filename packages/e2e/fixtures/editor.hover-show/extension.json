@@ -1,5 +1,5 @@
 {
-  "id": "test.source-actions-open",
+  "id": "test.editor-hover-show",
   "name": "Hover Show Open",
   "description": "Test Empty",
   "activation": ["onLanguage:xyz", "onHover:xyz"],

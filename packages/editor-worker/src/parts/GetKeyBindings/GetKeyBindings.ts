@@ -399,6 +399,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.goToDefinition',
+      key: KeyCode.F12,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'EditorRename.accept',
       key: KeyCode.Enter,
       when: WhenExpression.FocusEditorRename,
@@ -480,7 +485,7 @@ export const getKeyBindings = () => {
     },
     {
       command: 'Editor.findAllReferences',
-      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.F12,
+      key: KeyModifier.Shift | KeyCode.F12,
       when: WhenExpression.FocusEditorText,
     },
     {
