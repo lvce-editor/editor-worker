@@ -50,6 +50,11 @@ const createFn = (key: string, name: string, widgetId: number) => {
     const { uid } = state
     const invoke = GetWidgetInvoke.getWidgetInvoke(widgetId)
     await invoke(`${name}.${key}`, uid, ...args)
+    const latestAfterInvoke = Editors.get(editor.uid).newState
+    const latestChildIndex = latestAfterInvoke.widgets.findIndex(isWidget)
+    if (latestChildIndex === -1) {
+      return latestAfterInvoke
+    }
     const diff = await invoke(`${name}.diff2`, uid)
     const commands = await invoke(`${name}.render2`, uid, diff)
     const latest = Editors.get(editor.uid).newState
