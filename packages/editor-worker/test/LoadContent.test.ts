@@ -1,4 +1,4 @@
-import { beforeEach, expect, jest, test } from '@jest/globals'
+import { afterEach, beforeEach, expect, jest, test } from '@jest/globals'
 
 const extensionManagementWorkerInvoke = jest.fn()
 const getEditorPreferencesMock: any = jest.fn()
@@ -57,6 +57,7 @@ jest.unstable_mockModule('../src/parts/Tokenizer/Tokenizer.ts', () => ({
 }))
 
 const LoadContent = await import('../src/parts/LoadContent/LoadContent.ts')
+const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
 
 const createState = () =>
   ({
@@ -132,6 +133,10 @@ beforeEach(() => {
   measureCharacterWidthMock.mockResolvedValue(8)
 })
 
+afterEach(() => {
+  EditorStates.dispose(2)
+})
+
 test('loadContent returns error state when reading file fails', async () => {
   readFileMock.mockRejectedValue(new Error('Failed to read file'))
 
@@ -181,4 +186,26 @@ test('loadContent uses a tokenizer from a later contribution for the same langua
   await LoadContent.loadContent(createState(), undefined)
 
   expect(loadTokenizerMock).toHaveBeenCalledWith('plaintext', '/test/tokenizePlainText.js')
+})
+
+test('loadContent reuses unsaved content from another editor for the same uri', async () => {
+  const existingEditor = {
+    ...createState(),
+    id: 2,
+    initial: false,
+    lines: ['unsaved content'],
+    modified: true,
+    redoStack: ['redo'],
+    uid: 2,
+    undoStack: ['undo'],
+  }
+  EditorStates.set(2, existingEditor, existingEditor)
+
+  const result = await LoadContent.loadContent(createState(), undefined)
+
+  expect(result.lines).toEqual(['unsaved content'])
+  expect(result.modified).toBe(true)
+  expect(result.redoStack).toBe(existingEditor.redoStack)
+  expect(result.undoStack).toBe(existingEditor.undoStack)
+  expect(readFileMock).not.toHaveBeenCalled()
 })

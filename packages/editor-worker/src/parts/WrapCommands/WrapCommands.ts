@@ -1,8 +1,9 @@
 import { editorDiagnosticEffect } from '../EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
+import { syncEditorStates } from '../SyncEditorStates/SyncEditorStates.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
-const queues: (Promise<void> | undefined)[] = []
+const queues = new Map<number | string, Promise<void>>()
 
 // TODO wrap commands globally, not per editor
 // TODO only store editor state in editor worker, not in renderer worker also
@@ -10,9 +11,11 @@ const queues: (Promise<void> | undefined)[] = []
 export const wrapCommand =
   (fn: any) =>
   async (uid: number, ...args: any[]) => {
-    const previous = queues[uid]
+    const initialInstance = Editors.get(uid)
+    const queueKey = initialInstance?.newState.uri || uid
+    const previous = queues.get(queueKey)
     const { promise: next, resolve } = Promise.withResolvers<void>()
-    queues[uid] = next
+    queues.set(queueKey, next)
     if (previous) {
       await previous
     }
@@ -25,19 +28,20 @@ export const wrapCommand =
       }
       const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
       Editors.set(uid, state, newEditorWithDerivedState)
-      if (!editorDiagnosticEffect.isActive(state, newEditorWithDerivedState)) {
-        return newEditorWithDerivedState
+      let finalEditor = newEditorWithDerivedState
+      if (editorDiagnosticEffect.isActive(state, newEditorWithDerivedState)) {
+        finalEditor = await editorDiagnosticEffect.apply(newEditorWithDerivedState)
+        if (!Editors.get(uid)) {
+          return finalEditor
+        }
+        Editors.set(uid, state, finalEditor)
       }
-      const newEditorWithDiagnostics = await editorDiagnosticEffect.apply(newEditorWithDerivedState)
-      if (!Editors.get(uid)) {
-        return newEditorWithDiagnostics
-      }
-      Editors.set(uid, state, newEditorWithDiagnostics)
-      return newEditorWithDiagnostics
+      await syncEditorStates(uid, state, finalEditor)
+      return finalEditor
     } finally {
       resolve()
-      if (queues[uid] === next) {
-        queues[uid] = undefined
+      if (queues.get(queueKey) === next) {
+        queues.delete(queueKey)
       }
     }
   }

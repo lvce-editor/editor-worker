@@ -5,6 +5,7 @@ import * as Editor from '../Editor/Editor.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
+import { getEditorByUri } from '../GetEditorByUri/GetEditorByUri.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
@@ -12,6 +13,7 @@ import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
+import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
@@ -81,9 +83,12 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     tabSize,
     tokenizerId: newTokenizerId,
   }
-  let content = ''
+  const existingEditor = getEditorByUri(uri, id)
+  let content = existingEditor ? TextDocument.getText(existingEditor) : ''
   try {
-    content = await RendererWorker.readFile(uri)
+    if (!existingEditor) {
+      content = await RendererWorker.readFile(uri)
+    }
   } catch (error) {
     const newEditor1 = Editor.setBounds(newEditor0, x, y, width, height, 9)
     return {
@@ -130,6 +135,9 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     ...newEditor4,
     completionsOnType,
     initial: false,
+    modified: existingEditor?.modified || false,
+    redoStack: existingEditor?.redoStack || [],
+    undoStack: existingEditor?.undoStack || [],
   }
   return newEditor5
 }
