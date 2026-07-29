@@ -36,6 +36,7 @@ beforeEach(() => {
 
 afterEach(() => {
   EditorStates.dispose(1)
+  EditorStates.dispose(2)
 })
 
 test('serializes concurrent commands for the same editor', async () => {
@@ -73,4 +74,104 @@ test('applies diagnostics after a command changes the editor text', async () => 
   expect(editorDiagnosticEffectApplyMock).toHaveBeenCalledWith(newState)
   expect(result).toBe(stateWithDiagnostics)
   expect(EditorStates.get(1).newState).toBe(stateWithDiagnostics)
+})
+
+test('serializes commands for editors showing the same uri', async () => {
+  const firstState = {
+    initial: false,
+    lines: [''],
+    modified: false,
+    redoStack: [],
+    text: '',
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///same.txt',
+  }
+  const secondState = {
+    ...firstState,
+    uid: 2,
+  }
+  EditorStates.set(1, firstState as any, firstState as any)
+  EditorStates.set(2, secondState as any, secondState as any)
+  const order: string[] = []
+  const command = WrapCommands.wrapCommand(async (state: any, label: string) => {
+    order.push(`start-${label}`)
+    await Promise.resolve()
+    order.push(`end-${label}`)
+    return {
+      ...state,
+      text: state.text + label,
+    }
+  })
+
+  await Promise.all([command(1, 'left'), command(2, 'right')])
+
+  expect(order).toEqual(['start-left', 'end-left', 'start-right', 'end-right'])
+})
+
+test('synchronizes document state with another editor showing the same uri', async () => {
+  const firstState = {
+    decorations: [],
+    diagnostics: [],
+    incrementalEdits: [],
+    initial: false,
+    invalidStartIndex: 0,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///same.txt',
+    visualDecorations: [],
+  }
+  const secondState = {
+    ...firstState,
+    focused: true,
+    uid: 2,
+  }
+  EditorStates.set(1, firstState as any, firstState as any)
+  EditorStates.set(2, secondState as any, secondState as any)
+  const edit = [{ inserted: ['x'] }]
+  const command = WrapCommands.wrapCommand((state: any) => ({
+    ...state,
+    lines: ['abcx'],
+    modified: true,
+    undoStack: [edit],
+  }))
+
+  await command(1)
+
+  expect(EditorStates.get(2).newState).toMatchObject({
+    focused: true,
+    lines: ['abcx'],
+    modified: true,
+    undoStack: [edit],
+  })
+})
+
+test('does not synchronize document state with another uri', async () => {
+  const firstState = {
+    initial: false,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  const secondState = {
+    ...firstState,
+    uid: 2,
+    uri: 'file:///two.txt',
+  }
+  EditorStates.set(1, firstState as any, firstState as any)
+  EditorStates.set(2, secondState as any, secondState as any)
+  const command = WrapCommands.wrapCommand((state: any) => ({
+    ...state,
+    lines: ['abcx'],
+  }))
+
+  await command(1)
+
+  expect(EditorStates.get(2).newState).toBe(secondState)
 })
