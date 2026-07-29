@@ -1,6 +1,6 @@
 import type { EditorState } from '../State/State.ts'
-import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
+import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as InverseChange from '../InverseChange/InverseChange.ts'
 import { transformSelections } from '../TransformSelections/TransformSelections.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
@@ -17,11 +17,11 @@ const hasDocumentChange = (oldState: EditorState, newState: EditorState): boolea
 const getAppliedChanges = (oldState: EditorState, newState: EditorState): readonly any[] => {
   const oldUndoStack = oldState.undoStack || []
   const newUndoStack = newState.undoStack || []
-  const oldRedoStack = oldState.redoStack || []
-  const newRedoStack = newState.redoStack || []
   if (newUndoStack.length > oldUndoStack.length) {
     return newUndoStack.at(-1) || []
   }
+  const oldRedoStack = oldState.redoStack || []
+  const newRedoStack = newState.redoStack || []
   if (newRedoStack.length > oldRedoStack.length) {
     const undoneChanges = newRedoStack.at(-1) || []
     return undoneChanges.map(InverseChange.inverseChange)
