@@ -495,8 +495,13 @@ export const getKeyBindings = () => {
     },
     {
       command: 'Editor.selectionGrow',
-      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.Space,
+      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.RightArrow,
       when: WhenExpression.FocusEditor,
+    },
+    {
+      command: 'Editor.showSignatureHelp',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.Space,
+      when: WhenExpression.FocusEditorText,
     },
   ]
 }

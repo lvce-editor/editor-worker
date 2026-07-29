@@ -92,6 +92,22 @@ test('Shift+F12 finds all references', () => {
   })
 })
 
+test('Ctrl/Cmd+Shift+Space shows signature help', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.showSignatureHelp',
+    key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.Space,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Shift+Alt+Right grows the selection', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.selectionGrow',
+    key: KeyModifier.Shift | KeyModifier.Alt | KeyCode.RightArrow,
+    when: WhenExpression.FocusEditor,
+  })
+})
+
 test('PageDown advances the editor viewport', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.cursorPageDown',
