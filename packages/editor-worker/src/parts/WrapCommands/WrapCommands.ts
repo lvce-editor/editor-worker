@@ -1,6 +1,6 @@
 import { editorDiagnosticEffect } from '../EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
-import { syncEditorStates } from '../SyncEditorStates/SyncEditorStates.ts'
+import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
 const queues: Record<string, Promise<void> | undefined> = {}
@@ -36,7 +36,37 @@ export const wrapCommand =
         }
         Editors.set(uid, state, finalEditor)
       }
-      await syncEditorStates(uid, state, finalEditor)
+      const { initial, lines, modified, redoStack, undoStack, uri } = state
+      if (
+        !initial &&
+        uri === finalEditor.uri &&
+        (lines !== finalEditor.lines ||
+          modified !== finalEditor.modified ||
+          redoStack !== finalEditor.redoStack ||
+          undoStack !== finalEditor.undoStack)
+      ) {
+        for (const key of Editors.getKeys()) {
+          const otherUid = Number(key)
+          const instance = Editors.get(otherUid)
+          const editor = instance?.newState
+          if (otherUid === uid || !instance || !editor || editor.initial || editor.uri !== finalEditor.uri) {
+            continue
+          }
+          const synchronizedEditor = await UpdateDerivedState.updateDerivedState(editor, {
+            ...editor,
+            decorations: finalEditor.decorations,
+            diagnostics: finalEditor.diagnostics,
+            incrementalEdits: emptyIncrementalEdits,
+            invalidStartIndex: Math.min(editor.invalidStartIndex, finalEditor.invalidStartIndex),
+            lines: finalEditor.lines,
+            modified: finalEditor.modified,
+            redoStack: finalEditor.redoStack,
+            undoStack: finalEditor.undoStack,
+            visualDecorations: finalEditor.visualDecorations,
+          })
+          Editors.set(otherUid, instance.oldState, synchronizedEditor)
+        }
+      }
       return finalEditor
     } finally {
       resolve()
