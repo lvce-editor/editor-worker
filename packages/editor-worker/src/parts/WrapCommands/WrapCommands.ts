@@ -3,7 +3,7 @@ import * as Editors from '../EditorStates/EditorStates.ts'
 import { syncEditorStates } from '../SyncEditorStates/SyncEditorStates.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
-const queues: Record<string, Promise<void> | undefined> = Object.create(null)
+const queues: Record<string, Promise<void> | undefined> = {}
 
 // TODO wrap commands globally, not per editor
 // TODO only store editor state in editor worker, not in renderer worker also
