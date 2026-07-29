@@ -3,7 +3,7 @@ import * as Editors from '../EditorStates/EditorStates.ts'
 import { syncEditorStates } from '../SyncEditorStates/SyncEditorStates.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
-const queues = new Map<number | string, Promise<void>>()
+const queues: Record<string, Promise<void> | undefined> = Object.create(null)
 
 // TODO wrap commands globally, not per editor
 // TODO only store editor state in editor worker, not in renderer worker also
@@ -13,9 +13,9 @@ export const wrapCommand =
   async (uid: number, ...args: any[]) => {
     const initialInstance = Editors.get(uid)
     const queueKey = initialInstance?.newState.uri || uid
-    const previous = queues.get(queueKey)
+    const previous = queues[queueKey]
     const { promise: next, resolve } = Promise.withResolvers<void>()
-    queues.set(queueKey, next)
+    queues[queueKey] = next
     if (previous) {
       await previous
     }
@@ -40,8 +40,8 @@ export const wrapCommand =
       return finalEditor
     } finally {
       resolve()
-      if (queues.get(queueKey) === next) {
-        queues.delete(queueKey)
+      if (queues[queueKey] === next) {
+        delete queues[queueKey]
       }
     }
   }

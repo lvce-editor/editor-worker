@@ -2,10 +2,10 @@ import { WhenExpression } from '@lvce-editor/constants'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as Editor from '../Editor/Editor.ts'
+import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
-import { getEditorByUri } from '../GetEditorByUri/GetEditorByUri.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
@@ -83,7 +83,14 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     tabSize,
     tokenizerId: newTokenizerId,
   }
-  const existingEditor = getEditorByUri(uri, id)
+  let existingEditor: EditorState | undefined
+  for (const key of EditorStates.getKeys()) {
+    const editor = EditorStates.get(Number(key))?.newState
+    if (editor && editor.id !== id && !editor.initial && editor.uri === uri) {
+      existingEditor = editor
+      break
+    }
+  }
   let content = existingEditor ? TextDocument.getText(existingEditor) : ''
   try {
     if (!existingEditor) {
