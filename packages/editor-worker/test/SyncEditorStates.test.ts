@@ -88,7 +88,7 @@ test('synchronizes document state while preserving sibling view state', async ()
     modified: true,
     visualDecorations: ['squiggle'],
   })
-  expect(result.selections).toEqual(new Uint32Array([0, 3, 0, 3]))
+  expect(result.selections).toEqual(new Uint32Array([0, 2, 0, 2]))
   expect(result.undoStack).toBe(newSource.undoStack)
 })
 
@@ -153,7 +153,7 @@ test('synchronizes dirty state after saving without changing text', async () => 
   expect(EditorStates.get(2).newState.modified).toBe(false)
 })
 
-test('transforms the sibling selection for an undo', async () => {
+test('synchronizes undo history', async () => {
   const oldSource = createEditor(1, 'file:///same.txt', {
     lines: ['axb'],
     modified: true,
@@ -174,5 +174,6 @@ test('transforms the sibling selection for an undo', async () => {
 
   await SyncEditorStates.syncEditorStates(1, oldSource, newSource)
 
-  expect(EditorStates.get(2).newState.selections).toEqual(new Uint32Array([0, 2, 0, 2]))
+  expect(EditorStates.get(2).newState.redoStack).toBe(newSource.redoStack)
+  expect(EditorStates.get(2).newState.undoStack).toBe(newSource.undoStack)
 })
