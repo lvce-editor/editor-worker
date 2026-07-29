@@ -1,7 +1,18 @@
-import { expect, test } from '@jest/globals'
+import { afterEach, expect, jest, test } from '@jest/globals'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as DecorationType from '../src/parts/DecorationType/DecorationType.ts'
-import * as EditorCommandHandleMouseMove from '../src/parts/EditorCommand/EditorCommandHandleMouseMove.ts'
+import * as Editors from '../src/parts/EditorStates/EditorStates.ts'
+
+const showHover2 = jest.fn(async (editor: any, _position: any) => ({
+  ...editor,
+  widgets: [{ id: 'hover' }],
+}))
+
+jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandShowHover2.ts', () => ({
+  showHover2,
+}))
+
+const EditorCommandHandleMouseMove = await import('../src/parts/EditorCommand/EditorCommandHandleMouseMove.ts')
 
 const editor = {
   charWidth: 10,
@@ -17,9 +28,17 @@ const editor = {
   lines: ['target'],
   rowHeight: 20,
   tabSize: 2,
+  uid: 1,
+  widgets: [],
   x: 0,
   y: 0,
 }
+
+afterEach(() => {
+  jest.useRealTimers()
+  showHover2.mockClear()
+  Editors.dispose(editor.uid)
+})
 
 test('handleMouseMove - uses definition hover when Alt is pressed', async () => {
   using _mockRpc = RendererWorker.registerMockRpc({
@@ -44,4 +63,28 @@ test('handleMouseMove - clears the definition link when Alt is not pressed', asy
   const result = await EditorCommandHandleMouseMove.handleMouseMove(editorWithDefinitionLink, 0, 10, false)
 
   expect(result.decorations).toEqual([])
+})
+
+test('handleMouseMove - opens hover at the mouse position after the hover delay', async () => {
+  jest.useFakeTimers()
+  const editorWithHover = {
+    ...editor,
+    hoverEnabled: true,
+  }
+  Editors.set(editor.uid, editorWithHover as any, editorWithHover as any)
+  using _mockRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': jest.fn(),
+  })
+
+  await EditorCommandHandleMouseMove.handleMouseMove(editorWithHover, 25, 10, false)
+  await jest.advanceTimersByTimeAsync(300)
+
+  expect(showHover2).toHaveBeenCalledWith(
+    editorWithHover,
+    expect.objectContaining({
+      columnIndex: expect.any(Number),
+      rowIndex: 0,
+    }),
+  )
+  expect(Editors.get(editor.uid).newState.widgets).toEqual([{ id: 'hover' }])
 })

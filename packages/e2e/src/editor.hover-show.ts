@@ -2,10 +2,9 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.hover-show'
 
-export const skip = 1
-
-export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main }) => {
+export const test: Test = async ({ Command, Editor, expect, Extension, FileSystem, Locator, Main, Settings }) => {
   // arrange
+  await Settings.update({ 'editor.hover': true })
   const url = import.meta.resolve('../fixtures/editor.hover-show')
   await Extension.addWebExtension(url)
   const tmpDir = await FileSystem.getTmpDir()
@@ -14,7 +13,7 @@ export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locato
   await Editor.setCursor(0, 11)
 
   // act
-  await Editor.openHover()
+  await Command.execute('Editor.showHover2')
 
   // assert
   const hover = Locator('.EditorHover')

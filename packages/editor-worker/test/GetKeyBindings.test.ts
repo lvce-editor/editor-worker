@@ -76,6 +76,22 @@ test('F9 toggles a breakpoint', () => {
   })
 })
 
+test('F12 goes to definition', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.goToDefinition',
+    key: KeyCode.F12,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Shift+F12 finds all references', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.findAllReferences',
+    key: KeyModifier.Shift | KeyCode.F12,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
 test('PageDown advances the editor viewport', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.cursorPageDown',

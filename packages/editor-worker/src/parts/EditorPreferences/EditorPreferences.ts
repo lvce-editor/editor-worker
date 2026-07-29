@@ -40,7 +40,7 @@ export const getFontSize = async () => {
 }
 
 export const getHoverEnabled = async () => {
-  return (await Preferences.get(kHover)) ?? false
+  return (await Preferences.get(kHover)) ?? true
 }
 
 export const getFontFamily = async () => {
