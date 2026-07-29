@@ -7,13 +7,14 @@ export const loadSignatureHelpContent = async (state: HoverState): Promise<Hover
   if (!signatureHelpInfo) {
     return undefined
   }
-  const { documentation, lineInfos, x, y } = signatureHelpInfo
+  const { documentation, height, lineInfos, width, x, y } = signatureHelpInfo
   return {
     ...state,
     diagnostics: [],
     documentation,
+    height,
     lineInfos,
-    width: 600,
+    width,
     x,
     y,
   }
