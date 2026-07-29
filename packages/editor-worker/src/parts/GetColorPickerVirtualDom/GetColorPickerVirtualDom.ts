@@ -4,6 +4,13 @@ import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEven
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
+const colorPickerNode: VirtualDomNode = {
+  childCount: 3,
+  className: MergeClassNames.mergeClassNames(ClassNames.Viewlet, ClassNames.ColorPicker),
+  onPointerDown: DomEventListenerFunctions.HandlePointerDown,
+  type: VirtualDomElements.Div,
+}
+
 const colorPickerRectangleNode: VirtualDomNode = {
   childCount: 3,
   className: ClassNames.ColorPickerRectangle,
@@ -42,12 +49,7 @@ const colorPickerSliderThumbNode: VirtualDomNode = {
 
 export const getColorPickerVirtualDom = () => {
   return [
-    {
-      childCount: 3,
-      className: MergeClassNames.mergeClassNames(ClassNames.Viewlet, ClassNames.ColorPicker),
-      onPointerDown: DomEventListenerFunctions.HandlePointerDown,
-      type: VirtualDomElements.Div,
-    },
+    colorPickerNode,
     colorPickerRectangleNode,
     colorPickerBackgroundColorNode,
     colorPickerLightNode,

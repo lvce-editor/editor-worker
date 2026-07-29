@@ -7,6 +7,12 @@ import * as TabIndex from '../TabIndex/TabIndex.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
+const completionDetailNode: VirtualDomNode = {
+  childCount: 2,
+  className: MergeClassNames.mergeClassNames('Viewlet', 'EditorCompletionDetails'),
+  type: VirtualDomElements.Div,
+}
+
 const completionDetailContentNode: VirtualDomNode = {
   childCount: 1,
   className: ClassNames.CompletionDetailContent,
@@ -22,21 +28,19 @@ const completionDetailCloseButtonNode: VirtualDomNode = {
   type: VirtualDomElements.Div,
 }
 
+const completionDetailCloseIconNode: VirtualDomNode = {
+  childCount: 0,
+  className: MergeClassNames.mergeClassNames(ClassNames.MaskIcon, ClassNames.IconClose),
+  type: VirtualDomElements.Div,
+}
+
 export const getCompletionDetailVirtualDom = (content: string) => {
   const dom: any[] = [
-    {
-      childCount: 2,
-      className: MergeClassNames.mergeClassNames('Viewlet', 'EditorCompletionDetails'),
-      type: VirtualDomElements.Div,
-    },
+    completionDetailNode,
     completionDetailContentNode,
     text(content),
     completionDetailCloseButtonNode,
-    {
-      childCount: 0,
-      className: MergeClassNames.mergeClassNames(ClassNames.MaskIcon, ClassNames.IconClose),
-      type: VirtualDomElements.Div,
-    },
+    completionDetailCloseIconNode,
   ]
   return dom
 }
