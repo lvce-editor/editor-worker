@@ -8,6 +8,12 @@ import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
+const textEditorErrorIconNode: VirtualDomNode = {
+  childCount: 0,
+  className: MergeClassNames.mergeClassNames('EditorTextIcon', 'EditorTextIconError', 'MaskIcon', 'MaskIconError'),
+  type: VirtualDomElements.Div,
+}
+
 const textEditorErrorMessageNode: VirtualDomNode = {
   childCount: 1,
   className: 'TextEditorErrorMessage',
@@ -63,11 +69,7 @@ export const getEditorVirtualDom = ({
         role: AriaRoles.Code,
         type: VirtualDomElements.Div,
       },
-      {
-        childCount: 0,
-        className: MergeClassNames.mergeClassNames('EditorTextIcon', 'EditorTextIconError', 'MaskIcon', 'MaskIconError'),
-        type: VirtualDomElements.Div,
-      },
+      textEditorErrorIconNode,
       textEditorErrorMessageNode,
       text(loadError),
     ]

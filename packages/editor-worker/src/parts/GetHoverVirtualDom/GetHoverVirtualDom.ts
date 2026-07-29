@@ -24,6 +24,13 @@ const hoverDocumentationNode: VirtualDomNode = {
   type: VirtualDomElements.Div,
 }
 
+const hoverSashNode: VirtualDomNode = {
+  childCount: 0,
+  className: MergeClassNames.mergeClassNames('Sash', 'SashVertical', 'SashResize'),
+  onPointerDown: DomEventListenerFunctions.HandleSashPointerDown,
+  type: VirtualDomElements.Div,
+}
+
 const getChildCount = (lineInfos: any, documentation: any, diagnostics: any): number => {
   const documentationCount = documentation ? 1 : 0
   const diagnosticsCount = diagnostics && diagnostics.length > 0 ? 1 : 0
@@ -64,12 +71,7 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
     dom.push(hoverDocumentationNode, text(documentation))
   }
 
-  dom.push({
-    childCount: 0,
-    className: MergeClassNames.mergeClassNames('Sash', 'SashVertical', 'SashResize'),
-    onPointerDown: DomEventListenerFunctions.HandleSashPointerDown,
-    type: VirtualDomElements.Div,
-  })
+  dom.push(hoverSashNode)
 
   return dom
 }
