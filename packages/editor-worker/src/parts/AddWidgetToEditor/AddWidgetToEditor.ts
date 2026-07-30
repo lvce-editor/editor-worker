@@ -1,6 +1,8 @@
 import { WhenExpression } from '@lvce-editor/constants'
 import type { Widget } from '../Widget/Widget.ts'
+import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as HasWidget from '../HasWidget/HasWidget.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 export const addWidgetToEditor = async <K, T extends Widget<K>>(
   widgetId: number,
@@ -14,12 +16,16 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
   if (HasWidget.hasWidget(widgets, widgetId)) {
     return editor
   }
+  const widgetRevision = WidgetRevision.next(editor.uid)
   const widget = factory()
   // @ts-ignore
   widget.newState.editorUid = editor.uid
   const newState = await newStateGenerator(widget.newState, editor.uid)
   if (!newState) {
     return editor
+  }
+  if (WidgetRevision.get(editor.uid) !== widgetRevision) {
+    return EditorStates.get(editor.uid)?.newState || editor
   }
   // @ts-ignore
   newState.editorUid = editor.uid
@@ -35,6 +41,7 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
     additionalFocus: fullFocus ? 0 : focusKey,
     focus: fullFocus ? focusKey : WhenExpression.FocusEditorText,
     focused: newFocus,
+    widgetRevision,
     widgets: newWidgets,
   }
   return newEditor

@@ -11,7 +11,6 @@ import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 const commandsToForward = [
   RenderMethod.SetDom2,
   RenderMethod.SetCss,
-  RenderMethod.AppendToBody,
   RenderMethod.SetBounds2,
   RenderMethod.RegisterEventListeners,
   RenderMethod.SetSelectionByName,
@@ -39,7 +38,7 @@ export const add = (widget: IFindWidget) => {
 }
 
 export const remove = (widget: IFindWidget) => {
-  return [['Viewlet.dispose', widget.newState.uid]]
+  return []
 }
 
 export const focusFindInput = <T extends Pick<EditorState, 'widgets'>>(editor: T): T => {

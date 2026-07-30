@@ -31,10 +31,7 @@ test('disposes editor widgets and state', async () => {
   }
   EditorStates.set(editorUid, editor as any, editor as any)
 
-  await expect(DisposeEditor.disposeEditor(editorUid)).resolves.toEqual([
-    ['Viewlet.dispose', 900_002],
-    ['Viewlet.dispose', 900_004],
-  ])
+  await expect(DisposeEditor.disposeEditor(editorUid)).resolves.toEqual([['Viewlet.setWidgets', 900_001, 1, []]])
   expect(ColorPickerWorker.invoke).toHaveBeenCalledWith('ColorPicker.dispose', 900_002)
   expect(EditorStates.get(editorUid)).toBeUndefined()
 })

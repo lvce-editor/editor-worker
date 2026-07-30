@@ -1,5 +1,6 @@
-import { expect, jest, test } from '@jest/globals'
+import { beforeEach, expect, jest, test } from '@jest/globals'
 import { WhenExpression, WidgetId } from '@lvce-editor/constants'
+import * as WidgetRevision from '../src/parts/WidgetRevision/WidgetRevision.ts'
 
 jest.unstable_mockModule('../src/parts/AddWidgetToEditor/AddWidgetToEditor.ts', () => ({
   addWidgetToEditor: jest.fn(),
@@ -9,6 +10,10 @@ const AddWidgetToEditor = await import('../src/parts/AddWidgetToEditor/AddWidget
 const EditorCommandColorPicker = await import('../src/parts/EditorCommand/EditorCommandColorPicker.ts')
 const ColorPickerWidgetFactory = await import('../src/parts/ColorPickerWidgetFactory/ColorPickerWidgetFactory.ts')
 const FocusKey = await import('../src/parts/FocusKey/FocusKey.ts')
+
+beforeEach(() => {
+  WidgetRevision.reset()
+})
 
 test('openColorPicker gives the color picker full focus', async () => {
   const editor = { uid: 1, widgets: [] }
@@ -36,6 +41,7 @@ test('closeColorPicker restores editor focus', () => {
     additionalFocus: 0,
     focus: WhenExpression.FocusEditorText,
     focused: true,
+    widgetRevision: 1,
     widgets: [otherWidget],
   })
 })

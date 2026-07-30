@@ -80,6 +80,7 @@ export interface EditorState {
   readonly validLines: readonly number[]
   readonly visibleLineIndices: readonly number[]
   readonly visualDecorations?: any // Visual decorations (objects) for diagnostic squiggly underlines
+  readonly widgetRevision: number
   readonly widgets: readonly any[]
   readonly width: number
   readonly x: number

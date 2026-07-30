@@ -27,6 +27,7 @@ content 3`,
 
   // act - go to next match using the real keyboard path
   await KeyBoard.press('Enter')
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
   // assert - should move to next match without inserting a line break
   await expect(findWidgetInput).toBeFocused()
@@ -40,6 +41,7 @@ content 3`,
     key: 'Enter',
     shiftKey: true,
   })
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
   // assert - query and document stay unchanged
   await expect(findWidgetInput).toBeFocused()

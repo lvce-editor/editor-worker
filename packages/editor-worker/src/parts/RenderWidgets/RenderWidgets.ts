@@ -1,10 +1,10 @@
 import type { EditorState } from '../State/State.ts'
 import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 export const renderWidgets = (oldState: EditorState, newState: EditorState): readonly any[] => {
   const addedWidgets = []
   const changedWidgets = []
-  const removedWidgets = []
   const oldWidgets = oldState.widgets || []
   const newWidgets = newState.widgets || []
   const oldWidgetMap = Object.create(null)
@@ -19,7 +19,7 @@ export const renderWidgets = (oldState: EditorState, newState: EditorState): rea
     if (Object.hasOwn(newWidgetMap, oldWidget.id)) {
       changedWidgets.push(newWidgetMap[oldWidget.id])
     } else {
-      removedWidgets.push(oldWidget)
+      // Layout disposes widgets that are absent from the complete declaration.
     }
   }
   for (const newWidget of newWidgets) {
@@ -43,13 +43,10 @@ export const renderWidgets = (oldState: EditorState, newState: EditorState): rea
       changeCommands.push(...childCommands)
     }
   }
-  const removeCommands = []
-  for (const removedWidget of removedWidgets) {
-    const childCommands = RenderWidget.removeWidget(removedWidget)
-    if (childCommands.length > 0) {
-      removeCommands.push(...childCommands)
-    }
-  }
-  const allCommands = [...addCommands, ...changeCommands, ...removeCommands]
-  return allCommands.filter((item) => item[0] !== 'Viewlet.setFocusContext')
+  const hasDeclaredRevision = typeof newState.widgetRevision === 'number' && newState.widgetRevision > (oldState.widgetRevision || 0)
+  const declaredRevision = hasDeclaredRevision ? newState.widgetRevision : WidgetRevision.next(newState.uid)
+  WidgetRevision.record(newState.uid, declaredRevision)
+  const widgetUids = newWidgets.map((widget) => widget.newState.uid)
+  const allCommands = [...addCommands, ...changeCommands, ['Viewlet.setWidgets', newState.uid, declaredRevision, widgetUids]]
+  return allCommands.filter((item) => item[0] !== 'Viewlet.setFocusContext' && item[0] !== 'Viewlet.appendToBody')
 }

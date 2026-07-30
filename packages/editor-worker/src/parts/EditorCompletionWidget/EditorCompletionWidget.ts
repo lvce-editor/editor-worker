@@ -8,7 +8,6 @@ import * as RenderRename from '../RenderRename/RenderRename.ts'
 const commandsToForward = [
   RenderMethod.SetDom2,
   RenderMethod.SetCss,
-  RenderMethod.AppendToBody,
   RenderMethod.SetBounds2,
   RenderMethod.RegisterEventListeners,
   RenderMethod.SetSelectionByName,
@@ -37,7 +36,7 @@ export const add = (widget: CompletionWidget) => {
 }
 
 export const remove = (widget: CompletionWidget) => {
-  return [['Viewlet.dispose', widget.newState.uid]]
+  return []
 }
 
 export const {

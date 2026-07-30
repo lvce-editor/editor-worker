@@ -11,6 +11,7 @@ import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 export const getPositionAtCursor = (editorUid: number): any => {
   const editor = GetEditor.getEditor(editorUid)
@@ -71,6 +72,7 @@ export const setSelections2 = async (editorUid: number, selections: Uint32Array)
 
 export const closeWidget2 = async (editorUid: number, widgetId: number, widgetName: string, unsetAdditionalFocus: number) => {
   const editor = GetEditor.getEditor(editorUid)
+  const widgetRevision = WidgetRevision.next(editorUid)
   const invoke = getWidgetInvoke(widgetId)
   const { widgets } = editor
   const index = widgets.findIndex((widget: any) => widget.id === widgetId)
@@ -83,6 +85,7 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
     ...editor,
     decorations: widgetId === WidgetId.Rename ? editor.decorations.slice(0, -4) : editor.decorations,
     focused: true,
+    widgetRevision,
     widgets: newWidgets,
   }
   const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)

@@ -11,17 +11,17 @@ export const getRemoteUrl = (path) => {
   return `/remote/${url}`
 }
 
-const nodeModulesPath = join(root, 'packages', 'server', 'node_modules')
-
 const editorWorkerPath = join(root, '.tmp', 'dist', 'dist', 'editorWorkerMain.js')
 
-const staticPath = join(nodeModulesPath, '@lvce-editor', 'static-server', 'static')
+const staticServerPackagePath = fileURLToPath(import.meta.resolve('@lvce-editor/static-server/package.json'))
+const staticPath = join(dirname(staticServerPackagePath), 'static')
 const indexHtmlPath = join(staticPath, 'index.html')
 
 const remoteUrl = getRemoteUrl(editorWorkerPath)
 
 const config = {
   'develop.editorWorkerPath': remoteUrl,
+  'developer.editorWorkerPath': remoteUrl,
 }
 const stringifiedConfig = JSON.stringify(config, null, 2)
 
@@ -41,9 +41,16 @@ await replace({
 const folders = await readdir(staticPath, { withFileTypes: true })
 const commitHash = folders.find((item) => item.isDirectory() && item.name !== 'auth')?.name || ''
 const rendererProcessPath = join(staticPath, commitHash, 'packages', 'renderer-process', 'dist', 'rendererProcessMain.js')
+const rendererWorkerPath = join(staticPath, commitHash, 'packages', 'renderer-worker', 'dist', 'rendererWorkerMain.js')
 
 await replace({
   uri: rendererProcessPath,
+  occurrence: '`${assetDir}/packages/editor-worker/dist/editorWorkerMain.js`',
+  replacement: `\`${remoteUrl}\``,
+})
+
+await replace({
+  uri: rendererWorkerPath,
   occurrence: '`${assetDir}/packages/editor-worker/dist/editorWorkerMain.js`',
   replacement: `\`${remoteUrl}\``,
 })
