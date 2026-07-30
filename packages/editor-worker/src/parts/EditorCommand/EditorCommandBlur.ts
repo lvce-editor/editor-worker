@@ -8,11 +8,12 @@ export const handleBlur = async (editor: EditorState): Promise<EditorState> => {
   if (!editor.focused) {
     return editor
   }
-  WidgetRevision.next(editor.uid)
+  const widgetRevision = WidgetRevision.next(editor.uid)
   const newEditor = {
     ...editor,
     additionalFocus: 0,
     focused: false,
+    widgetRevision,
     widgets: CloseWidgetsMaybe.closeWidgetsMaybe(editor.widgets || []),
   }
   if (!editor.modified) {

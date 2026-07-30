@@ -7,7 +7,7 @@ const isCompletionDetailWidget = (widget: any) => {
 
 export const closeDetails = (editor: any) => {
   const { widgets } = editor
-  WidgetRevision.next(editor.uid)
+  const widgetRevision = WidgetRevision.next(editor.uid)
   const index = widgets.findIndex(isCompletionDetailWidget)
   if (index === -1) {
     return editor
@@ -15,6 +15,7 @@ export const closeDetails = (editor: any) => {
   const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
   return {
     ...editor,
+    widgetRevision,
     widgets: newWidgets,
   }
 }

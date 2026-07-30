@@ -22,8 +22,10 @@ export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, KeyBo
   // No test page object exposes editor DOM focus without changing the document.
   // eslint-disable-next-line e2e/no-direct-click
   await editorRow.click()
+  await new Promise((resolve) => setTimeout(resolve, 100))
   await expect(editorInput).toBeFocused()
   await KeyBoard.press('Control+f')
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
   await expect(findWidgetInput).toBeFocused()
   await expect(findWidgetInput).toHaveValue('target')

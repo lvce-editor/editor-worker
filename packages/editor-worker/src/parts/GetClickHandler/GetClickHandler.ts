@@ -6,12 +6,13 @@ import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 const handleSingleClickDefault = (editor: any, position: any) => {
   const widgets = closeWidgetsMaybe(editor.widgets)
-  WidgetRevision.next(editor.uid)
+  const widgetRevision = WidgetRevision.next(editor.uid)
   return {
     ...editor,
     focused: true,
     selectionAnchorPosition: position,
     selections: new Uint32Array([position.rowIndex, position.columnIndex, position.rowIndex, position.columnIndex]),
+    widgetRevision,
     widgets,
   }
 }

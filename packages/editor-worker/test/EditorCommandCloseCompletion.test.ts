@@ -1,6 +1,11 @@
-import { expect, test } from '@jest/globals'
+import { beforeEach, expect, test } from '@jest/globals'
 import { WidgetId } from '@lvce-editor/constants'
 import * as EditorCommandCloseCompletion from '../src/parts/EditorCommand/EditorCommandCloseCompletion.ts'
+import * as WidgetRevision from '../src/parts/WidgetRevision/WidgetRevision.ts'
+
+beforeEach(() => {
+  WidgetRevision.reset()
+})
 
 test('closeCompletion removes the completion widget and its additional focus', () => {
   const editor = {
@@ -18,6 +23,7 @@ test('closeCompletion removes the completion widget and its additional focus', (
   expect(EditorCommandCloseCompletion.closeCompletion(editor)).toEqual({
     ...editor,
     additionalFocus: 0,
+    widgetRevision: 1,
     widgets: [],
   })
 })

@@ -42,9 +42,7 @@ const createFn = (key: string, name: string, widgetId: number) => {
       return editorOrUid
     }
     const shouldClose = isClose(args)
-    if (shouldClose) {
-      WidgetRevision.next(editor.uid)
-    }
+    const widgetRevision = shouldClose ? WidgetRevision.next(editor.uid) : editor.widgetRevision
     const childIndex = editor.widgets.findIndex(isWidget)
     if (childIndex === -1) {
       return editor
@@ -67,6 +65,7 @@ const createFn = (key: string, name: string, widgetId: number) => {
       const newEditor = {
         ...latest,
         focused: true,
+        widgetRevision,
         widgets: RemoveEditorWidget.removeEditorWidget(latest.widgets, widgetId),
       }
       Editors.set(editor.uid, latest, newEditor)

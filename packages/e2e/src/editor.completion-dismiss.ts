@@ -17,6 +17,7 @@ export const test: Test = async ({ Editor, expect, Extension, FileSystem, KeyBoa
   await expect(completions).toBeVisible()
 
   await KeyBoard.press('Escape')
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
   await expect(completions).toBeHidden()
 }

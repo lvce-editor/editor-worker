@@ -8,7 +8,7 @@ const isMatchingWidget = (widget: any) => {
 
 export const closeFind = (editor: any) => {
   const { widgets } = editor
-  WidgetRevision.next(editor.uid)
+  const widgetRevision = WidgetRevision.next(editor.uid)
   const index = widgets.findIndex(isMatchingWidget)
   if (index === -1) {
     return editor
@@ -19,6 +19,7 @@ export const closeFind = (editor: any) => {
     additionalFocus: 0,
     focus: WhenExpression.FocusEditorText,
     focused: true,
+    widgetRevision,
     widgets: newWidgets,
   }
 }

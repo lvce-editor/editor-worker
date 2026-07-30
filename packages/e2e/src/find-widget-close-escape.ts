@@ -22,6 +22,7 @@ content 2`,
 
   // act - close the find widget
   await KeyBoard.press('Escape')
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
   // assert - find widget should be hidden
   await expect(findWidget).toBeHidden()

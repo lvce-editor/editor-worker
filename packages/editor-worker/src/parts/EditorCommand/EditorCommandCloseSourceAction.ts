@@ -8,7 +8,7 @@ const isMatchingWidget = (widget: any) => {
 
 export const closeSourceAction = (editor: any) => {
   const { widgets } = editor
-  WidgetRevision.next(editor.uid)
+  const widgetRevision = WidgetRevision.next(editor.uid)
   const index = widgets.findIndex(isMatchingWidget)
   if (index === -1) {
     return editor
@@ -16,6 +16,7 @@ export const closeSourceAction = (editor: any) => {
   const newWidgets = RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.SourceAction)
   return {
     ...editor,
+    widgetRevision,
     widgets: newWidgets,
   }
 }

@@ -25,7 +25,7 @@ export const openColorPicker = async (editor: any) => {
 
 export const closeColorPicker = (editor: any) => {
   const { widgets } = editor
-  WidgetRevision.next(editor.uid)
+  const widgetRevision = WidgetRevision.next(editor.uid)
   if (widgets.every((widget: any) => widget.id !== WidgetId.ColorPicker)) {
     return editor
   }
@@ -34,6 +34,7 @@ export const closeColorPicker = (editor: any) => {
     additionalFocus: 0,
     focus: WhenExpression.FocusEditorText,
     focused: true,
+    widgetRevision,
     widgets: RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.ColorPicker),
   }
 }

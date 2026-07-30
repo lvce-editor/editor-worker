@@ -4,7 +4,7 @@ import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 export const closeCompletion = (editor: any) => {
   const { widgets } = editor
-  WidgetRevision.next(editor.uid)
+  const widgetRevision = WidgetRevision.next(editor.uid)
   if (widgets.every((widget: any) => widget.id !== WidgetId.Completion)) {
     return editor
   }
@@ -12,6 +12,7 @@ export const closeCompletion = (editor: any) => {
     ...editor,
     additionalFocus: 0,
     focused: true,
+    widgetRevision,
     widgets: RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.Completion),
   }
 }
