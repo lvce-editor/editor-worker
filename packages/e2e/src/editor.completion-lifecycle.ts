@@ -1,6 +1,6 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
-export const name = 'editor.completion-dismiss-on-editor-switch'
+export const name = 'editor.completion-lifecycle'
 
 export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main, Workspace }) => {
   const extensionUri = import.meta.resolve('../fixtures/editor.completion-one-result')
@@ -19,6 +19,14 @@ export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locato
   await expect(completions).toBeVisible()
 
   await Main.openUri(secondFile)
+
+  await expect(completions).toBeHidden()
+
+  await Main.selectTab(0, 0)
+
+  await expect(completions).toBeVisible()
+
+  await Main.closeAllEditors()
 
   await expect(completions).toBeHidden()
 }

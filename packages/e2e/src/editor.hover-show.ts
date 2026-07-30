@@ -19,4 +19,10 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   const hover = Locator('.EditorHover')
   await expect(hover).toBeVisible()
   await expect(hover).toHaveText('def')
+
+  // act
+  await Main.closeAllEditors()
+
+  // assert
+  await expect(hover).toBeHidden()
 }
