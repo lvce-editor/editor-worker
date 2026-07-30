@@ -1,5 +1,6 @@
 import { WhenExpression, WidgetId } from '@lvce-editor/constants'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 const isMatchingWidget = (widget: any) => {
   return widget.id === WidgetId.Find
@@ -7,6 +8,7 @@ const isMatchingWidget = (widget: any) => {
 
 export const closeFind = (editor: any) => {
   const { widgets } = editor
+  WidgetRevision.next(editor.uid)
   const index = widgets.findIndex(isMatchingWidget)
   if (index === -1) {
     return editor

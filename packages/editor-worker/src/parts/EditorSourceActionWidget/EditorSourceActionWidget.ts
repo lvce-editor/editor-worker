@@ -9,7 +9,6 @@ import * as RenderRename from '../RenderRename/RenderRename.ts'
 const commandsToForward = [
   RenderMethod.SetDom2,
   RenderMethod.SetCss,
-  RenderMethod.AppendToBody,
   RenderMethod.SetBounds2,
   RenderMethod.RegisterEventListeners,
   RenderMethod.SetSelectionByName,

@@ -5,6 +5,7 @@ import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 import * as ColorPickerWidgetFactory from '../ColorPickerWidgetFactory/ColorPickerWidgetFactory.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 const newStateGenerator = (state: ColorPickerState, parentUid: number): Promise<ColorPickerState> => {
   return ColorPicker.loadContent(state, parentUid)
@@ -24,6 +25,7 @@ export const openColorPicker = async (editor: any) => {
 
 export const closeColorPicker = (editor: any) => {
   const { widgets } = editor
+  WidgetRevision.next(editor.uid)
   if (widgets.every((widget: any) => widget.id !== WidgetId.ColorPicker)) {
     return editor
   }

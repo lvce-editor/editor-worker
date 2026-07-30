@@ -9,7 +9,6 @@ import * as RenderRename from '../RenderRename/RenderRename.ts'
 const commandsToForward = [
   RenderMethod.SetDom2,
   RenderMethod.SetCss,
-  RenderMethod.AppendToBody,
   RenderMethod.SetBounds2,
   RenderMethod.RegisterEventListeners,
   RenderMethod.SetSelectionByName,
@@ -49,7 +48,7 @@ export const add = (widget: HoverWidget) => {
 }
 
 export const remove = (widget: HoverWidget) => {
-  return [['Viewlet.dispose', widget.newState.uid]]
+  return []
 }
 
 export const { close } = createFns(['close'], '', WidgetId.Hover)

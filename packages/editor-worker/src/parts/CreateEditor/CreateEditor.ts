@@ -133,6 +133,7 @@ export const createEditor = async ({
     useFunctionalRendering,
     validLines: [],
     visibleLineIndices: [],
+    widgetRevision: 0,
     widgets: [],
     width,
     x,

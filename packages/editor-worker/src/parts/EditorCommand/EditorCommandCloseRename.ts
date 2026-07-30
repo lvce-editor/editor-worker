@@ -1,6 +1,7 @@
 import { WidgetId } from '@lvce-editor/constants'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 // TODO duplicate code
 const isRenameWidget = (widget: any) => {
@@ -9,6 +10,7 @@ const isRenameWidget = (widget: any) => {
 
 export const closeRename = async (editor: any) => {
   const { uid, widgets } = editor
+  WidgetRevision.next(uid)
   const renameWidgetIndex = widgets.findIndex(isRenameWidget)
   if (renameWidgetIndex === -1) {
     return editor

@@ -98,7 +98,7 @@ const renderGutterInfo = {
 
 const renderWidgets = {
   apply: renderWidgetsCommand,
-  isEqual: (oldState: any, newState: any) => oldState.widgets === newState.widgets,
+  isEqual: (oldState: any, newState: any) => oldState.widgets === newState.widgets && oldState.widgetRevision === newState.widgetRevision,
   multiple: true,
 }
 

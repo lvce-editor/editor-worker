@@ -3,6 +3,7 @@ import * as GetWidgetInvoke from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as Names from '../Names/Names.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 const getEditorByWidgetUid = (widgetUid: number, widgetId: number): any => {
   for (const key of Editors.getKeys()) {
@@ -40,6 +41,10 @@ const createFn = (key: string, name: string, widgetId: number) => {
     if (!editor) {
       return editorOrUid
     }
+    const shouldClose = isClose(args)
+    if (shouldClose) {
+      WidgetRevision.next(editor.uid)
+    }
     const childIndex = editor.widgets.findIndex(isWidget)
     if (childIndex === -1) {
       return editor
@@ -58,7 +63,7 @@ const createFn = (key: string, name: string, widgetId: number) => {
     const diff = await invoke(`${name}.diff2`, uid)
     const commands = await invoke(`${name}.render2`, uid, diff)
     const latest = Editors.get(editor.uid).newState
-    if (isClose(args)) {
+    if (shouldClose) {
       const newEditor = {
         ...latest,
         focused: true,

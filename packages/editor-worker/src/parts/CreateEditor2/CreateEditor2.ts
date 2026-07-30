@@ -98,6 +98,7 @@ export const createEditor2 = (
     validLines: [],
     visibleLineIndices: [],
     visualDecorations: [],
+    widgetRevision: 0,
     widgets: [],
     width,
     x,
