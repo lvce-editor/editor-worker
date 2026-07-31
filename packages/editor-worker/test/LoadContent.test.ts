@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, expect, jest, test } from '@jest/globals'
 
 const extensionManagementWorkerInvoke = jest.fn()
+const extensionHostInvoke = jest.fn()
 const getEditorPreferencesMock: any = jest.fn()
 const getLanguagesMock: any = jest.fn()
 const getVisibleMock: any = jest.fn()
@@ -11,7 +12,7 @@ const readFileMock: any = jest.fn()
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   ExtensionHost: {
-    invoke: jest.fn(),
+    invoke: extensionHostInvoke,
     invokeAndTransfer: jest.fn(),
     set: jest.fn(),
   },
@@ -102,6 +103,7 @@ const createState = () =>
   }) as any
 
 beforeEach(() => {
+  extensionHostInvoke.mockReset()
   extensionManagementWorkerInvoke.mockReset()
   getEditorPreferencesMock.mockReset()
   getLanguagesMock.mockReset()
@@ -173,6 +175,7 @@ test('loadContent returns loaded text without requesting diagnostics', async () 
 
   expect(result.lines).toEqual(['test'])
   expect(result.hoverEnabled).toBe(true)
+  expect(extensionHostInvoke).not.toHaveBeenCalled()
   expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
 })
 

@@ -2,7 +2,7 @@ import { beforeEach, expect, jest, test } from '@jest/globals'
 
 const executeMock = jest.fn<(...args: readonly unknown[]) => Promise<unknown>>()
 
-jest.unstable_mockModule('../src/parts/ExtensionHostEditor/ExtensionHostEditor.ts', () => ({
+jest.unstable_mockModule('../src/parts/ExtensionManagementEditor/ExtensionManagementEditor.ts', () => ({
   execute: executeMock,
 }))
 
@@ -14,7 +14,7 @@ beforeEach(() => {
   executeMock.mockReset()
 })
 
-test('getEditorSourceActions executes the activated extension-host provider', async () => {
+test('getEditorSourceActions executes the isolated extension provider', async () => {
   const editorId = 123_456
   const editor = {
     ...emptyEditor,
@@ -39,8 +39,9 @@ test('getEditorSourceActions executes the activated extension-host provider', as
   expect(executeMock).toHaveBeenCalledWith({
     args: [14],
     editor,
-    event: 'onLanguage',
-    method: 'ExtensionHostCodeActions.getSourceActions',
+    kind: 'code action',
+    method: 'provideCodeActions',
+    noProviderFoundResult: [],
   })
 })
 

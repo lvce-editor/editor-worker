@@ -1,6 +1,6 @@
 import { afterEach, expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { ExtensionHost, ExtensionManagementWorker, registerMockRpc, remove, RpcId } from '@lvce-editor/rpc-registry'
+import { ExtensionManagementWorker, registerMockRpc, remove, RpcId } from '@lvce-editor/rpc-registry'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { updateDiagnostics } from '../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts'
 
@@ -16,8 +16,8 @@ test('updateDiagnostics reports failures through the error worker', async () => 
     message: 'diagnostics failed',
     stack: error.stack,
   }
-  using extensionHostRpc = ExtensionHost.registerMockRpc({
-    'ExtensionHostTextDocument.syncFull': async () => {
+  using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeDiagnosticProvider': async () => {
       throw error
     },
   })
@@ -35,7 +35,17 @@ test('updateDiagnostics reports failures through the error worker', async () => 
   EditorStates.set(1, editor as any, editor as any)
 
   await expect(updateDiagnostics(editor)).resolves.toBe(editor)
-  expect(extensionHostRpc.invocations).toEqual([['ExtensionHostTextDocument.syncFull', '/test.ts', 1, 'typescript', 'const value: string = 1']])
+  expect(extensionManagementWorkerRpc.invocations).toEqual([
+    [
+      'Extensions.executeDiagnosticProvider',
+      {
+        documentId: 1,
+        languageId: 'typescript',
+        text: 'const value: string = 1',
+        uri: '/test.ts',
+      },
+    ],
+  ])
   expect(errorWorkerRpc.invocations).toEqual([
     ['Errors.prepare', error],
     ['Errors.print', prettyError, 'Failed to update diagnostics: '],
@@ -54,9 +64,6 @@ test('updateDiagnostics skips disabled diagnostics', async () => {
 test('updateDiagnostics ignores results after the editor is closed', async () => {
   const diagnosticsRequested = Promise.withResolvers<void>()
   const diagnosticsResult = Promise.withResolvers<readonly any[]>()
-  using extensionHostRpc = ExtensionHost.registerMockRpc({
-    'ExtensionHostTextDocument.syncFull': async () => undefined,
-  })
   ExtensionManagementWorker.set(
     MockRpc.create({
       commandMap: {},
@@ -82,5 +89,4 @@ test('updateDiagnostics ignores results after the editor is closed', async () =>
 
   await expect(pendingUpdate).resolves.toBe(editor)
   expect(EditorStates.get(1)).toBeUndefined()
-  expect(extensionHostRpc.invocations).toEqual([['ExtensionHostTextDocument.syncFull', '/test.ts', 1, 'typescript', 'const value = 1']])
 })
