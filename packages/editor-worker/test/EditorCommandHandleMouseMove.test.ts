@@ -3,13 +3,13 @@ import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as DecorationType from '../src/parts/DecorationType/DecorationType.ts'
 import * as Editors from '../src/parts/EditorStates/EditorStates.ts'
 
-const showHover2 = jest.fn(async (editor: any, _position: any) => ({
+const showHover = jest.fn(async (editor: any, _position: any) => ({
   ...editor,
   widgets: [{ id: 'hover' }],
 }))
 
-jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandShowHover2.ts', () => ({
-  showHover2,
+jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandShowHover.ts', () => ({
+  showHover,
 }))
 
 const EditorCommandHandleMouseMove = await import('../src/parts/EditorCommand/EditorCommandHandleMouseMove.ts')
@@ -36,7 +36,7 @@ const editor = {
 
 afterEach(() => {
   jest.useRealTimers()
-  showHover2.mockClear()
+  showHover.mockClear()
   Editors.dispose(editor.uid)
 })
 
@@ -79,7 +79,7 @@ test('handleMouseMove - opens hover at the mouse position after the hover delay'
   await EditorCommandHandleMouseMove.handleMouseMove(editorWithHover, 25, 10, false)
   await jest.advanceTimersByTimeAsync(300)
 
-  expect(showHover2).toHaveBeenCalledWith(
+  expect(showHover).toHaveBeenCalledWith(
     editorWithHover,
     expect.objectContaining({
       columnIndex: expect.any(Number),

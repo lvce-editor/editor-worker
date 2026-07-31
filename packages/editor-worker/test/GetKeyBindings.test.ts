@@ -100,6 +100,14 @@ test('Ctrl/Cmd+Shift+Space shows signature help', () => {
   })
 })
 
+test('Ctrl/Cmd+H shows hover', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.showHover',
+    key: KeyModifier.CtrlCmd | KeyCode.KeyH,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
 test('Shift+Alt+Right grows the selection', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.selectionGrow',
