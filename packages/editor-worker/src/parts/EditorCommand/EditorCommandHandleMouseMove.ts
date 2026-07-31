@@ -5,7 +5,7 @@ import * as Editors from '../EditorStates/EditorStates.ts'
 import * as Id from '../Id/Id.ts'
 import * as EditorCommandHandleMouseMoveWithAltKey from './EditorCommandHandleMouseMoveWithAltKey.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
-import * as EditorCommandShowHover2 from './EditorCommandShowHover2.ts'
+import * as EditorCommandShowHover from './EditorCommandShowHover.ts'
 
 const showHover = async (editor: any, position: any, token: number) => {
   const instance = Editors.get(editor.uid)
@@ -13,7 +13,7 @@ const showHover = async (editor: any, position: any, token: number) => {
     return
   }
   const latestEditor = instance.newState
-  const newEditor = await EditorCommandShowHover2.showHover2(latestEditor, position)
+  const newEditor = await EditorCommandShowHover.showHover(latestEditor, position)
   const latestInstance = Editors.get(editor.uid)
   if (latestEditor === newEditor || !latestInstance || latestInstance.newState !== latestEditor || EditorHoverState.get().token !== token) {
     return

@@ -444,7 +444,7 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
-      command: 'Editor.showHover2',
+      command: 'Editor.showHover',
       key: KeyModifier.CtrlCmd | KeyCode.KeyH,
       when: WhenExpression.FocusEditorText,
     },

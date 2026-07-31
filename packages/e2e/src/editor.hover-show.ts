@@ -13,7 +13,7 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   await Editor.setCursor(0, 11)
 
   // act
-  await Command.execute('Editor.showHover2')
+  await Command.execute('Editor.showHover')
 
   // assert
   const hover = Locator('.EditorHover')
