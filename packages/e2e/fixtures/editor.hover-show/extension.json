@@ -3,7 +3,14 @@
   "name": "Hover Show Open",
   "description": "Test Empty",
   "activation": ["onLanguage:xyz", "onHover:xyz"],
-  "browser": "main.js",
+  "browser": "dist/main.js",
+  "isolated": true,
+  "hoverProviders": [
+    {
+      "id": "xyz-hover",
+      "languageId": "xyz"
+    }
+  ],
   "languages": [
     {
       "id": "xyz",

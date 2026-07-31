@@ -1,4 +1,7 @@
+import { activate as activateExtensionApi, registerDiagnosticProvider } from '@lvce-editor/api'
+
 const diagnosticProvider = {
+  id: 'xyz-diagnostics',
   languageId: 'xyz',
   provideDiagnostics(textDocument, offset) {
     const { text } = textDocument
@@ -15,6 +18,5 @@ const diagnosticProvider = {
   },
 }
 
-export const activate = () => {
-  vscode.registerDiagnosticProvider(diagnosticProvider)
-}
+await activateExtensionApi()
+registerDiagnosticProvider(diagnosticProvider)

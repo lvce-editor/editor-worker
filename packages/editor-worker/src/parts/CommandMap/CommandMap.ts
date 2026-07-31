@@ -175,7 +175,10 @@ import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
 import { saveState } from '../SaveState/SaveState.ts'
-import { sendMessagePortToExtensionManagementWorker } from '../SendMessagePortToExtensionManagementWorker/SendMessagePortToExtensionManagementWorker.ts'
+import {
+  sendDeprecatedExtensionHostPortToExtensionManagementWorker,
+  sendMessagePortToExtensionManagementWorker,
+} from '../SendMessagePortToExtensionManagementWorker/SendMessagePortToExtensionManagementWorker.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
@@ -456,6 +459,7 @@ export const commandMap = {
   'Listener.register': RegisterListener.registerListener,
   'Listener.registerListener': EditorListeners.registerListener,
   'Listener.unregister': UnregisterListener.unregisterListener,
+  'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker': sendDeprecatedExtensionHostPortToExtensionManagementWorker,
   'SendMessagePortToExtensionManagementWorker.sendMessagePortToExtensionManagementWorker': sendMessagePortToExtensionManagementWorker,
 }
 

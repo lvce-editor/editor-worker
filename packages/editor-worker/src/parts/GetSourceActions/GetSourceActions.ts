@@ -1,18 +1,19 @@
+import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 import * as Editors from '../EditorStates/EditorStates.ts'
-import * as ExtensionManagementEditor from '../ExtensionManagementEditor/ExtensionManagementEditor.ts'
-import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
+
+interface SourceAction {
+  readonly languageId?: string
+}
+
+interface Extension {
+  readonly codeActions?: readonly SourceAction[]
+}
 
 export const getEditorSourceActions = async (editorId?: number): Promise<readonly any[]> => {
   if (!editorId) {
     return []
   }
   const { newState } = Editors.get(editorId)
-  const offset = GetOffsetAtCursor.getOffsetAtCursor(newState)
-  return ExtensionManagementEditor.execute({
-    args: [offset],
-    editor: newState,
-    kind: 'code action',
-    method: 'provideCodeActions',
-    noProviderFoundResult: [],
-  })
+  const extensions: readonly Extension[] = await ExtensionManagementWorker.invoke('Extensions.getAllExtensions', newState.assetDir, newState.platform)
+  return extensions.flatMap((extension) => extension.codeActions || []).filter((action) => action.languageId === newState.languageId)
 }

@@ -1,8 +1,11 @@
-import { RendererWorker } from '@lvce-editor/rpc-registry'
+import * as ExtensionManagementEditor from '../ExtensionManagementEditor/ExtensionManagementEditor.ts'
 
 // @ts-ignore
 export const getDefinition = async (editor, offset) => {
-  // @ts-ignore
-  const definition = await RendererWorker.invoke('ExtensionHostDefinition.executeDefinitionProvider', editor, offset)
-  return definition
+  return ExtensionManagementEditor.execute({
+    args: [offset],
+    editor,
+    kind: 'definition',
+    method: 'provideDefinition',
+  })
 }
