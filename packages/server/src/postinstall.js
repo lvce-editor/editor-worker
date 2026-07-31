@@ -1,4 +1,4 @@
-import { readdir, readFile, writeFile } from 'node:fs/promises'
+import { cp, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
@@ -42,6 +42,9 @@ const folders = await readdir(staticPath, { withFileTypes: true })
 const commitHash = folders.find((item) => item.isDirectory() && item.name !== 'auth')?.name || ''
 const rendererProcessPath = join(staticPath, commitHash, 'packages', 'renderer-process', 'dist', 'rendererProcessMain.js')
 const rendererWorkerPath = join(staticPath, commitHash, 'packages', 'renderer-worker', 'dist', 'rendererWorkerMain.js')
+const renameWorkerPath = join(staticPath, commitHash, 'packages', 'rename-worker', 'dist', 'renameWorkerMain.js')
+
+await cp(fileURLToPath(import.meta.resolve('@lvce-editor/rename-worker')), renameWorkerPath)
 
 await replace({
   uri: rendererProcessPath,
@@ -53,4 +56,10 @@ await replace({
   uri: rendererWorkerPath,
   occurrence: '`${assetDir}/packages/editor-worker/dist/editorWorkerMain.js`',
   replacement: `\`${remoteUrl}\``,
+})
+
+await replace({
+  uri: rendererWorkerPath,
+  occurrence: '`${assetDir}/packages/rename-worker/dist/renameWorkerMain.js`',
+  replacement: '`${assetDir}/packages/rename-worker/dist/renameWorkerMain.js?v=1.36.0`',
 })

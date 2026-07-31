@@ -1,10 +1,14 @@
-import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as Editor from '../Editor/Editor.ts'
-// import * as ExtensionHostSelection from '../ExtensionHost/ExtensionHostSelection.ts'
+import * as ExtensionManagementEditor from '../ExtensionManagementEditor/ExtensionManagementEditor.ts'
 
 const getNewSelections = async (editor: any, selections: any) => {
-  // @ts-ignore
-  const newSelections = await RendererWorker.invoke('ExtensionHostSelection.executeGrowSelection', editor, selections)
+  const newSelections = await ExtensionManagementEditor.execute({
+    args: [selections],
+    editor,
+    kind: 'selection',
+    method: 'provideSelections',
+    noProviderFoundResult: [],
+  })
   if (newSelections.length === 0) {
     return selections
   }

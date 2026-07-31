@@ -4,8 +4,6 @@ import type { EditorState } from '../State/State.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
-import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
-import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
@@ -130,11 +128,6 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     focused: true,
     textInfos,
   }
-
-  // TODO only sync when needed
-  // e.g. it might not always be necessary to send text to extension host worker
-  // @ts-ignore
-  await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, computedLanguageId, content)
 
   const completionsOnTypeRaw = await Preferences.get('editor.completionsOnType')
   const completionsOnType = Boolean(completionsOnTypeRaw)

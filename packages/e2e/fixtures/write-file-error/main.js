@@ -1,3 +1,5 @@
+import { activate as activateExtensionApi, registerFileSystemProvider } from '@lvce-editor/api'
+
 const contents = Object.create(null)
 
 contents['/test.txt'] = 'Hello World'
@@ -29,6 +31,5 @@ const fileSystemProvider = {
   },
 }
 
-export const activate = () => {
-  vscode.registerFileSystemProvider(fileSystemProvider)
-}
+await activateExtensionApi()
+registerFileSystemProvider(fileSystemProvider)

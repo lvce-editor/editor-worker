@@ -175,8 +175,10 @@ import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
 import { saveState } from '../SaveState/SaveState.ts'
-import * as SendMessagePortToExtensionHostWorker from '../SendMessagePortToExtensionHostWorker/SendMessagePortToExtensionHostWorker.ts'
-import { sendMessagePortToExtensionManagementWorker } from '../SendMessagePortToExtensionManagementWorker/SendMessagePortToExtensionManagementWorker.ts'
+import {
+  sendDeprecatedExtensionHostPortToExtensionManagementWorker,
+  sendMessagePortToExtensionManagementWorker,
+} from '../SendMessagePortToExtensionManagementWorker/SendMessagePortToExtensionManagementWorker.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
@@ -417,7 +419,6 @@ export const commandMap = {
   'EditorSourceAction.selectItem': EditorSourceActionWidget.selectItem,
   'EditorSourceAction.toggleDetails': EditorSourceActionWidget.toggleDetails,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
-  'ExtensionHostManagement.activateByEvent': ActivateByEvent.activateByEvent,
   'FindWidget.close': EditorFindWidget.close,
   'FindWidget.focusCloseButton': EditorFindWidget.focusCloseButton,
   'FindWidget.focusFind': EditorFindWidget.focusFind,
@@ -458,8 +459,7 @@ export const commandMap = {
   'Listener.register': RegisterListener.registerListener,
   'Listener.registerListener': EditorListeners.registerListener,
   'Listener.unregister': UnregisterListener.unregisterListener,
-  'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker':
-    SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker2,
+  'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker': sendDeprecatedExtensionHostPortToExtensionManagementWorker,
   'SendMessagePortToExtensionManagementWorker.sendMessagePortToExtensionManagementWorker': sendMessagePortToExtensionManagementWorker,
 }
 

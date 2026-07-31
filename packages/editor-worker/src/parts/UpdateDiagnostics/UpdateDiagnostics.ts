@@ -1,16 +1,10 @@
 import * as EditorState from '../EditorStates/EditorStates.ts'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
-import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
-import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
-import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as UpdateDiagnosticsWithLinks from './UpdateDiagnosticsWithLinks.ts'
 
 const getDiagnostics = async (editor: any): Promise<readonly any[]> => {
-  const content = TextDocument.getText(editor)
-  // @ts-ignore
-  await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, editor.uri, editor.id, editor.languageId, content)
   return ExtensionHostDiagnostic.executeDiagnosticProvider(editor)
 }
 

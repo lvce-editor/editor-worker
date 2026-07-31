@@ -1,3 +1,5 @@
+import { activate as activateExtensionApi, registerCodeActionsProvider } from '@lvce-editor/api'
+
 const organizeImports = {
   kind: 'source.organizeImports', // TODO use numeric code action type
   name: 'Organize Imports',
@@ -13,13 +15,12 @@ const organizeImports = {
 }
 
 const codeActionProvider = {
+  id: 'xyz-code-actions',
   languageId: 'xyz',
   async provideCodeActions() {
     return [organizeImports]
   },
 }
 
-export const activate = () => {
-  // @ts-ignore
-  vscode.registerCodeActionsProvider(codeActionProvider)
-}
+await activateExtensionApi()
+registerCodeActionsProvider(codeActionProvider)

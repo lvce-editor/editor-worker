@@ -1,50 +1,41 @@
-import { beforeEach, expect, jest, test } from '@jest/globals'
+import { afterEach, expect, test } from '@jest/globals'
+import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
+import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
+import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
+import { getEditorSourceActions } from '../src/parts/GetSourceActions/GetSourceActions.ts'
 
-const executeMock = jest.fn<(...args: readonly unknown[]) => Promise<unknown>>()
-
-jest.unstable_mockModule('../src/parts/ExtensionHostEditor/ExtensionHostEditor.ts', () => ({
-  execute: executeMock,
-}))
-
-const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
-const { emptyEditor } = await import('../src/parts/EmptyEditor/EmptyEditor.ts')
-const { getEditorSourceActions } = await import('../src/parts/GetSourceActions/GetSourceActions.ts')
-
-beforeEach(() => {
-  executeMock.mockReset()
+afterEach(() => {
+  for (const key of EditorStates.getKeys()) {
+    EditorStates.dispose(Number(key))
+  }
 })
 
-test('getEditorSourceActions executes the activated extension-host provider', async () => {
+test('getEditorSourceActions returns matching extension contributions', async () => {
   const editorId = 123_456
   const editor = {
     ...emptyEditor,
+    assetDir: '/assets',
     id: editorId,
     languageId: 'typescript',
-    lines: ['const value = unknownName'],
-    selections: new Uint32Array([0, 14, 0, 14]),
+    platform: 7,
     uid: editorId,
     widgets: [],
   }
-  const actions = [
-    {
-      kind: 'source.organizeImports',
-      languageId: 'typescript',
-      name: 'Organize Imports',
-    },
-  ]
+  const action = {
+    command: 'Editor.organizeImports',
+    kind: 'source.organizeImports',
+    languageId: 'typescript',
+    name: 'Organize Imports',
+  }
   EditorStates.set(editorId, editor, editor)
-  executeMock.mockResolvedValue(actions)
-
-  await expect(getEditorSourceActions(editorId)).resolves.toBe(actions)
-  expect(executeMock).toHaveBeenCalledWith({
-    args: [14],
-    editor,
-    event: 'onLanguage',
-    method: 'ExtensionHostCodeActions.getSourceActions',
+  using mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.getAllExtensions': () => [{ codeActions: [action, { languageId: 'javascript', name: 'Other' }] }, {}],
   })
+
+  await expect(getEditorSourceActions(editorId)).resolves.toEqual([action])
+  expect(mockRpc.invocations).toEqual([['Extensions.getAllExtensions', '/assets', 7]])
 })
 
 test('getEditorSourceActions returns no actions without an editor id', async () => {
   await expect(getEditorSourceActions()).resolves.toEqual([])
-  expect(executeMock).not.toHaveBeenCalled()
 })

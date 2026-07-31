@@ -7,8 +7,6 @@ import * as EditorState from '../EditorStates/EditorStates.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import { emptyEditor } from '../EmptyEditor/EmptyEditor.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
-import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
-import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
@@ -171,11 +169,6 @@ export const createEditor = async ({
   }
 
   EditorState.set(id, emptyEditor, newEditor4)
-
-  // TODO only sync when needed
-  // e.g. it might not always be necessary to send text to extension host worker
-  // @ts-ignore
-  await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, languageId, content)
 
   const completionsOnTypeRaw = await Preferences.get('editor.completionsOnType')
   const completionsOnType = Boolean(completionsOnTypeRaw)

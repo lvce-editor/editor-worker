@@ -3,7 +3,6 @@ import { DialogWorker, RendererWorker } from '@lvce-editor/rpc-registry'
 import * as CommandMap from '../CommandMap/CommandMap.ts'
 import { registerCommands } from '../EditorStates/EditorStates.ts'
 import { initializeErrorWorker } from '../InitializeErrorWorker/InitializeErrorWorker.ts'
-import { initializeExtensionHost } from '../InitializeExtensionHost/InitializeExtensionHost.ts'
 import { initializeExtensionManagementWorker } from '../InitializeExtensionManagementWorker/InitializeExtensionManagementWorker.ts'
 import { initializeOpenerWorker } from '../InitializeOpenerWorker/InitializeOpenerWorker.ts'
 import { initializeRendererWorker } from '../InitializeRendererWorker/InitializeRendererWorker.ts'
@@ -14,7 +13,6 @@ export const listen = async () => {
   await Promise.all([
     initializeRendererWorker(),
     initializeErrorWorker(),
-    initializeExtensionHost(),
     initializeExtensionManagementWorker(),
     initializeTextMeasurementWorker(),
     initializeOpenerWorker(),
