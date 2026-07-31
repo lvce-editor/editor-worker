@@ -1,5 +1,5 @@
 import { afterEach, expect, jest, test } from '@jest/globals'
-import { RendererWorker } from '@lvce-editor/rpc-registry'
+import { ExtensionManagementWorker, RendererWorker } from '@lvce-editor/rpc-registry'
 import * as DecorationType from '../src/parts/DecorationType/DecorationType.ts'
 import * as Editors from '../src/parts/EditorStates/EditorStates.ts'
 
@@ -41,11 +41,14 @@ afterEach(() => {
 })
 
 test('handleMouseMove - uses definition hover when Alt is pressed', async () => {
-  using _mockRpc = RendererWorker.registerMockRpc({
-    'ExtensionHostDefinition.executeDefinitionProvider': async () => ({
-      endOffset: 6,
-      startOffset: 0,
-      uri: 'file:///definition.xyz',
+  using _mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': async () => ({
+      found: true,
+      result: {
+        endOffset: 6,
+        startOffset: 0,
+        uri: 'file:///definition.xyz',
+      },
     }),
   })
 
