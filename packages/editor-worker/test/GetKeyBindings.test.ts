@@ -19,6 +19,28 @@ test('Shift+Enter focuses the previous find match', () => {
   })
 })
 
+test('Enter replaces the current find match from the replace input', () => {
+  const keyBindings = GetKeyBindings.getKeyBindings()
+  const replace = {
+    command: 'FindWidget.replace',
+    key: KeyCode.Enter,
+    when: WhenExpression.FocusFindWidgetReplace,
+  }
+  const focusNext = {
+    command: 'FindWidget.focusNext',
+    key: KeyCode.Enter,
+    when: WhenExpression.FocusFindWidget,
+  }
+  expect(keyBindings).toContainEqual(replace)
+  const replaceIndex = keyBindings.findIndex(
+    (keyBinding) => keyBinding.command === replace.command && keyBinding.key === replace.key && keyBinding.when === replace.when,
+  )
+  const focusNextIndex = keyBindings.findIndex(
+    (keyBinding) => keyBinding.command === focusNext.command && keyBinding.key === focusNext.key && keyBinding.when === focusNext.when,
+  )
+  expect(replaceIndex).toBeLessThan(focusNextIndex)
+})
+
 test('Ctrl/Cmd+Alt+Up adds a cursor above', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.addCursorAbove',

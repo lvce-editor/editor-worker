@@ -48,5 +48,5 @@ export const renderWidgets = (oldState: EditorState, newState: EditorState): rea
   WidgetRevision.record(newState.uid, declaredRevision)
   const widgetUids = newWidgets.map((widget) => widget.newState.uid)
   const allCommands = [...addCommands, ...changeCommands, ['Viewlet.setWidgets', newState.uid, declaredRevision, widgetUids]]
-  return allCommands.filter((item) => item[0] !== 'Viewlet.setFocusContext' && item[0] !== 'Viewlet.appendToBody')
+  return allCommands.filter((item) => item[0] !== 'Viewlet.appendToBody')
 }
