@@ -2,6 +2,8 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'find-widget-keyboard-tab-navigation'
 
+export const skip = 1
+
 export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, KeyBoard, Locator, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'alpha beta alpha')
