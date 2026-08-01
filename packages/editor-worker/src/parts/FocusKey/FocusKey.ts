@@ -8,6 +8,7 @@ export const FocusEditorRename = 11
 export const FocusFindWidgetCloseButton = 48
 export const FocusFindWidgetMatchCase = 45
 export const FocusFindWidgetNextMatchButton = 49
+export const FocusFindWidgetOptions = 44
 export const FocusFindWidgetPreviousMatchButton = 50
 export const FocusFindWidgetRegex = 44
 export const FocusFindWidgetReplace = 43

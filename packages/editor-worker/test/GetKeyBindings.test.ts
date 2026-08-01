@@ -1,5 +1,6 @@
 import { expect, test } from '@jest/globals'
 import { KeyCode, KeyModifier } from '@lvce-editor/constants'
+import * as FocusKey from '../src/parts/FocusKey/FocusKey.ts'
 import * as GetKeyBindings from '../src/parts/GetKeyBindings/GetKeyBindings.ts'
 import * as WhenExpression from '../src/parts/WhenExpression/WhenExpression.ts'
 
@@ -39,6 +40,34 @@ test('Enter replaces the current find match from the replace input', () => {
     (keyBinding) => keyBinding.command === focusNext.command && keyBinding.key === focusNext.key && keyBinding.when === focusNext.when,
   )
   expect(replaceIndex).toBeLessThan(focusNextIndex)
+})
+
+test('Tab and Shift+Tab traverse every find widget control', () => {
+  const keyBindings = GetKeyBindings.getKeyBindings()
+  const focusContexts = [
+    FocusKey.FindWidget,
+    FocusKey.FocusFindWidgetReplace,
+    FocusKey.FocusFindWidgetOptions,
+    FocusKey.FocusFindWidgetToggleReplace,
+    FocusKey.FocusFindWidgetPreviousMatchButton,
+    FocusKey.FocusFindWidgetNextMatchButton,
+    FocusKey.FocusFindWidgetCloseButton,
+    FocusKey.FocusFindWidgetReplaceButton,
+    FocusKey.FocusFindWidgetReplaceAllButton,
+  ]
+
+  for (const focusContext of focusContexts) {
+    expect(keyBindings).toContainEqual({
+      command: 'FindWidget.focusNextElement',
+      key: KeyCode.Tab,
+      when: focusContext,
+    })
+    expect(keyBindings).toContainEqual({
+      command: 'FindWidget.focusPreviousElement',
+      key: KeyModifier.Shift | KeyCode.Tab,
+      when: focusContext,
+    })
+  }
 })
 
 test('Ctrl/Cmd+Alt+Up adds a cursor above', () => {
