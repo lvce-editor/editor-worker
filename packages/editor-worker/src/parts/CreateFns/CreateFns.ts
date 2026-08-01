@@ -76,7 +76,7 @@ const createFn = (key: string, name: string, widgetId: number) => {
       commands,
     }
     const newEditor = UpdateWidget.updateWidget(latest, widgetId, newState)
-    Editors.set(editor.uid, latest, newEditor)
+    Editors.set(editor.uid, editor, newEditor)
     return newEditor
   }
   return fn
