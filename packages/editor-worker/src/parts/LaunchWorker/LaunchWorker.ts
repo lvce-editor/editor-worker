@@ -3,9 +3,14 @@ import { TransferMessagePortRpcParent } from '@lvce-editor/rpc'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as RendererWorkerIpcParentType from '../RendererWorkerIpcParentType/RendererWorkerIpcParentType.ts'
 
-export const launchWorker = async (name: string, url: string, intializeCommand?: string): Promise<Rpc> => {
+export const launchWorker = async (
+  name: string,
+  url: string,
+  intializeCommand?: string,
+  commandMap: Record<string, (...args: readonly any[]) => any> = {},
+): Promise<Rpc> => {
   const rpc = await TransferMessagePortRpcParent.create({
-    commandMap: {},
+    commandMap,
     isMessagePortOpen: true,
     async send(port) {
       await RendererWorker.invokeAndTransfer('IpcParent.create', {

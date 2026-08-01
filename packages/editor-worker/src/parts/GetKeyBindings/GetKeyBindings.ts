@@ -39,6 +39,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusSourceActions,
     },
     {
+      command: 'FindWidget.replace',
+      key: KeyCode.Enter,
+      when: WhenExpression.FocusFindWidgetReplace,
+    },
+    {
       command: 'FindWidget.focusNext',
       key: KeyCode.Enter,
       when: WhenExpression.FocusFindWidget,
