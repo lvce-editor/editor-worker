@@ -2,12 +2,83 @@ import { afterEach, expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
 import { ExtensionManagementWorker, registerMockRpc, remove, RendererWorker, RpcId } from '@lvce-editor/rpc-registry'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
-import { updateDiagnostics } from '../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts'
+import { updateDiagnostics, updateDiagnosticsAll } from '../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts'
 
 afterEach(() => {
-  EditorStates.dispose(1)
+  for (const key of EditorStates.getKeys()) {
+    EditorStates.dispose(Number(key))
+  }
   remove(RpcId.ErrorWorker)
   remove(RpcId.RendererWorker)
+})
+
+test('updateDiagnosticsAll refreshes every open editor', async () => {
+  using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeDiagnosticProvider': async (document: any) => [
+      {
+        message: `diagnostic for ${document.uri}`,
+        uri: document.uri,
+      },
+    ],
+  })
+  using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Layout.handleDiagnosticsChange': async () => undefined,
+  })
+  const firstEditor = {
+    diagnosticsEnabled: true,
+    id: 1,
+    languageId: 'javascript',
+    lines: ['const first = 1'],
+    uri: 'file:///first.js',
+  }
+  const secondEditor = {
+    diagnosticsEnabled: true,
+    id: 2,
+    languageId: 'typescript',
+    lines: ['const second = 2'],
+    uri: 'file:///second.ts',
+  }
+  EditorStates.set(1, firstEditor as any, firstEditor as any)
+  EditorStates.set(2, secondEditor as any, secondEditor as any)
+
+  await updateDiagnosticsAll()
+
+  expect(extensionManagementWorkerRpc.invocations).toEqual([
+    [
+      'Extensions.executeDiagnosticProvider',
+      {
+        documentId: 1,
+        languageId: 'javascript',
+        text: 'const first = 1',
+        uri: 'file:///first.js',
+      },
+    ],
+    [
+      'Extensions.executeDiagnosticProvider',
+      {
+        documentId: 2,
+        languageId: 'typescript',
+        text: 'const second = 2',
+        uri: 'file:///second.ts',
+      },
+    ],
+  ])
+  expect(EditorStates.get(1)?.newState.diagnostics).toEqual([
+    {
+      message: 'diagnostic for file:///first.js',
+      uri: 'file:///first.js',
+    },
+  ])
+  expect(EditorStates.get(2)?.newState.diagnostics).toEqual([
+    {
+      message: 'diagnostic for file:///second.ts',
+      uri: 'file:///second.ts',
+    },
+  ])
+  expect(rendererWorkerRpc.invocations).toEqual([
+    ['Layout.handleDiagnosticsChange', 'file:///first.js'],
+    ['Layout.handleDiagnosticsChange', 'file:///second.ts'],
+  ])
 })
 
 test('updateDiagnostics reports failures through the error worker', async () => {

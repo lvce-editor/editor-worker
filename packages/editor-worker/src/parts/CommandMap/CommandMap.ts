@@ -387,6 +387,7 @@ export const commandMap = {
   'Editor.unIndent': wrapCommand(Unindent.editorUnindent),
   'Editor.updateDebugInfo': UpdateDebugInfo.updateDebugInfo,
   'Editor.updateDiagnostics': wrapCommand(UpdateDiagnostics.updateDiagnostics),
+  'Editor.updateDiagnosticsAll': UpdateDiagnostics.updateDiagnosticsAll,
   'EditorCompletion.close': EditorCompletionWidget.close,
   'EditorCompletion.closeDetails': EditorCompletionWidget.closeDetails,
   'EditorCompletion.focusFirst': EditorCompletionWidget.focusFirst,

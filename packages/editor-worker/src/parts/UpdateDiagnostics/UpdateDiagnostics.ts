@@ -60,3 +60,12 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
     return handleError(error, editor)
   }
 }
+
+export const updateDiagnosticsAll = async (): Promise<void> => {
+  for (const key of EditorState.getKeys()) {
+    const editor = EditorState.get(Number(key))?.newState
+    if (editor) {
+      await updateDiagnostics(editor)
+    }
+  }
+}
