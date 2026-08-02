@@ -2,6 +2,7 @@ import * as EditorState from '../EditorStates/EditorStates.ts'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as UpdateDiagnosticsWithLinks from './UpdateDiagnosticsWithLinks.ts'
 
 const getDiagnostics = async (editor: any): Promise<readonly any[]> => {
@@ -33,6 +34,14 @@ const handleError = async (error: unknown, editor: any): Promise<any> => {
   return editor
 }
 
+const notifyDiagnosticsChange = async (uri: string): Promise<void> => {
+  try {
+    await RendererWorker.invoke('Layout.handleDiagnosticsChange', uri)
+  } catch {
+    // Older renderer workers do not support diagnostics change listeners.
+  }
+}
+
 export const updateDiagnostics = async (editor: any): Promise<any> => {
   if (!editor.diagnosticsEnabled) {
     return editor
@@ -45,6 +54,7 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
     }
     const newEditor = await addDiagnostics(latest.newState, diagnostics)
     EditorState.set(editor.id, latest.oldState, newEditor)
+    await notifyDiagnosticsChange(newEditor.uri)
     return newEditor
   } catch (error) {
     return handleError(error, editor)

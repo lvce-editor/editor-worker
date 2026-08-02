@@ -1,12 +1,13 @@
 import { afterEach, expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { ExtensionManagementWorker, registerMockRpc, remove, RpcId } from '@lvce-editor/rpc-registry'
+import { ExtensionManagementWorker, registerMockRpc, remove, RendererWorker, RpcId } from '@lvce-editor/rpc-registry'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { updateDiagnostics } from '../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts'
 
 afterEach(() => {
   EditorStates.dispose(1)
   remove(RpcId.ErrorWorker)
+  remove(RpcId.RendererWorker)
 })
 
 test('updateDiagnostics reports failures through the error worker', async () => {
@@ -89,4 +90,26 @@ test('updateDiagnostics ignores results after the editor is closed', async () =>
 
   await expect(pendingUpdate).resolves.toBe(editor)
   expect(EditorStates.get(1)).toBeUndefined()
+})
+
+test('updateDiagnostics notifies the renderer after storing diagnostics', async () => {
+  using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeDiagnosticProvider': async () => [],
+  })
+  using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Layout.handleDiagnosticsChange': async () => undefined,
+  })
+  const editor = {
+    diagnosticsEnabled: true,
+    id: 1,
+    languageId: 'typescript',
+    lines: ['const value = 1'],
+    uri: 'file:///test.ts',
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  await updateDiagnostics(editor)
+
+  expect(extensionManagementWorkerRpc.invocations).toHaveLength(1)
+  expect(rendererWorkerRpc.invocations).toEqual([['Layout.handleDiagnosticsChange', 'file:///test.ts']])
 })
