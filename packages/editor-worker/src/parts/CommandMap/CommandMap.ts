@@ -305,6 +305,7 @@ export const commandMap = {
   'Editor.handleScrollBarVerticalPointerMove': wrapCommand(EditorCommandHandleScrollBarMove.handleScrollBarVerticalPointerMove),
   'Editor.handleSettingsChanged': wrapCommand(handleSettingsChanged),
   'Editor.handleSingleClick': wrapCommand(HandleSingleClick.handleSingleClick),
+  'Editor.handleSourceActionClick': EditorSourceActionWidget.selectItem,
   'Editor.handleTab': wrapCommand(HandleTab.handleTab),
   'Editor.handleTouchEnd': wrapCommand(HandleTouchEnd.handleTouchEnd),
   'Editor.handleTouchMove': wrapCommand(HandleTouchMove.handleTouchMove),

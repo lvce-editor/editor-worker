@@ -56,6 +56,7 @@ const createFn = (key: string, name: string, widgetId: number) => {
     const latestAfterInvoke = Editors.get(editor.uid).newState
     const latestChildIndex = latestAfterInvoke.widgets.findIndex(isWidget)
     if (latestChildIndex === -1) {
+      Editors.set(editor.uid, editor, latestAfterInvoke)
       return latestAfterInvoke
     }
     const diff = await invoke(`${name}.diff2`, uid)

@@ -3,5 +3,6 @@ import * as SourceActionWidgetFactory from '../src/parts/SourceActionWidgetFacto
 
 test('create', () => {
   const widget = SourceActionWidgetFactory.create()
-  expect(widget).toBeDefined()
+  expect(widget.newState.editorUid).toBe(0)
+  expect(widget.oldState.editorUid).toBe(0)
 })

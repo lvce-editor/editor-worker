@@ -42,27 +42,27 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusSourceActions,
     },
     {
-      command: 'EditorSourceActions.focusNext',
+      command: 'EditorSourceAction.focusNext',
       key: KeyCode.DownArrow,
       when: WhenExpression.FocusSourceActions,
     },
     {
-      command: 'EditorSourceActions.focusPrevious',
+      command: 'EditorSourceAction.focusPrevious',
       key: KeyCode.UpArrow,
       when: WhenExpression.FocusSourceActions,
     },
     {
-      command: 'EditorSourceActions.focusFirst',
+      command: 'EditorSourceAction.focusFirst',
       key: KeyCode.Home,
       when: WhenExpression.FocusSourceActions,
     },
     {
-      command: 'EditorSourceActions.focusLast',
+      command: 'EditorSourceAction.focusLast',
       key: KeyCode.End,
       when: WhenExpression.FocusSourceActions,
     },
     {
-      command: 'EditorSourceActions.selectCurrent',
+      command: 'EditorSourceAction.selectCurrent',
       key: KeyCode.Enter,
       when: WhenExpression.FocusSourceActions,
     },
