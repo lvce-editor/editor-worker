@@ -21,9 +21,11 @@ const commandsToForward = [
 export const render = (widget: SourceActionWidget) => {
   const commands: readonly any[] = RenderRename.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
-  const { uid } = widget.newState
+  const { editorUid, uid } = widget.newState
   for (const command of commands) {
-    if (commandsToForward.includes(command[0])) {
+    if (command[0] === RenderMethod.SetFocusContext) {
+      wrappedCommands.push([command[0], editorUid, ...command.slice(1)])
+    } else if (commandsToForward.includes(command[0])) {
       wrappedCommands.push(command)
     } else {
       wrappedCommands.push(['Viewlet.send', uid, ...command])

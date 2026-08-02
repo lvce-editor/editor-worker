@@ -48,6 +48,40 @@ test('accept preserves an editor transition that removed the widget', async () =
   expect(Editors.get(editorUid).newState).toBe(editorWithoutRename)
 })
 
+test('accept preserves the pre-command state when a nested transition removed the widget', async () => {
+  const originalEditor = {
+    lines: ['before'],
+    uid: editorUid,
+    widgets: [
+      {
+        id: WidgetId.Rename,
+        newState: {
+          uid: widgetUid,
+        },
+      },
+    ],
+  }
+  const updatedEditor = {
+    ...originalEditor,
+    lines: ['after'],
+  }
+  const editorWithoutRename = {
+    ...updatedEditor,
+    widgets: [],
+  }
+  Editors.set(editorUid, originalEditor as any, originalEditor as any)
+  invoke.mockImplementation(async (method: string, ..._args: any[]) => {
+    if (method === 'Rename.accept') {
+      Editors.set(editorUid, updatedEditor as any, editorWithoutRename as any)
+    }
+  })
+  const { accept } = CreateFns.createFns(['accept'], 'Rename', WidgetId.Rename)
+
+  await expect(accept(editorUid)).resolves.toBe(editorWithoutRename)
+  expect(Editors.get(editorUid).oldState).toBe(originalEditor)
+  expect(Editors.get(editorUid).newState).toBe(editorWithoutRename)
+})
+
 test('handleInput preserves an editor transition while the widget remains open', async () => {
   const widgetState = {
     uid: widgetUid,

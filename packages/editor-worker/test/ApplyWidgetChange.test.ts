@@ -77,7 +77,7 @@ test('applyWidgetChange - deleteLeft', async () => {
   expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toBeUndefined()
 })
 
-test('applyWidgetChange - other', async () => {
+test('applyWidgetChange - other preserves the editor', async () => {
   const editor = {
     cursor: {
       columnIndex: 4,
@@ -103,7 +103,5 @@ test('applyWidgetChange - other', async () => {
       origin: EditOrigin.Unknown,
     },
   ]
-  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual({
-    updated: false,
-  })
+  expect(await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).toBe(editor)
 })

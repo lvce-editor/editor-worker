@@ -12,6 +12,38 @@ test('Escape closes the focused color picker', () => {
   })
 })
 
+test('source action keybindings use the editor source action widget commands', () => {
+  expect(GetKeyBindings.getKeyBindings()).toEqual(
+    expect.arrayContaining([
+      {
+        command: 'EditorSourceAction.focusNext',
+        key: KeyCode.DownArrow,
+        when: WhenExpression.FocusSourceActions,
+      },
+      {
+        command: 'EditorSourceAction.focusPrevious',
+        key: KeyCode.UpArrow,
+        when: WhenExpression.FocusSourceActions,
+      },
+      {
+        command: 'EditorSourceAction.focusFirst',
+        key: KeyCode.Home,
+        when: WhenExpression.FocusSourceActions,
+      },
+      {
+        command: 'EditorSourceAction.focusLast',
+        key: KeyCode.End,
+        when: WhenExpression.FocusSourceActions,
+      },
+      {
+        command: 'EditorSourceAction.selectCurrent',
+        key: KeyCode.Enter,
+        when: WhenExpression.FocusSourceActions,
+      },
+    ]),
+  )
+})
+
 test('Shift+Enter focuses the previous find match', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'FindWidget.focusPrevious',
