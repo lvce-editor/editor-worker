@@ -3,6 +3,34 @@ import { afterEach, beforeEach, expect, jest, test } from '@jest/globals'
 const updateDerivedStateMock = jest.fn()
 const editorDiagnosticEffectApplyMock: any = jest.fn()
 const editorDiagnosticEffectIsActiveMock: any = jest.fn()
+const autoSaveScheduleMock = jest.fn<(uid: number, save: (token: number) => Promise<void>) => void>()
+const autoSaveIsLatestMock = jest.fn<(uid: number, token: number) => boolean>()
+const autoSaveConsumeMock = jest.fn<(uid: number, token: number) => void>()
+const autoSaveDisposeMock = jest.fn<(uid: number) => void>()
+const saveMock = jest.fn()
+const getPreferenceMock = jest.fn<(key: string) => Promise<string>>()
+const rendererInvokeMock = jest.fn()
+
+jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
+  RendererWorker: {
+    invoke: rendererInvokeMock,
+  },
+}))
+
+jest.unstable_mockModule('../src/parts/AutoSave/AutoSave.ts', () => ({
+  consume: autoSaveConsumeMock,
+  dispose: autoSaveDisposeMock,
+  isLatest: autoSaveIsLatestMock,
+  schedule: autoSaveScheduleMock,
+}))
+
+jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandSave.ts', () => ({
+  save: saveMock,
+}))
+
+jest.unstable_mockModule('../src/parts/Preferences/Preferences.ts', () => ({
+  get: getPreferenceMock,
+}))
 
 jest.unstable_mockModule('../src/parts/UpdateDerivedState/UpdateDerivedState.ts', () => ({
   updateDerivedState: updateDerivedStateMock,
@@ -32,6 +60,19 @@ beforeEach(() => {
     await Promise.resolve()
     return newState
   })
+  autoSaveScheduleMock.mockReset()
+  autoSaveIsLatestMock.mockReset()
+  autoSaveIsLatestMock.mockReturnValue(true)
+  autoSaveConsumeMock.mockReset()
+  autoSaveDisposeMock.mockReset()
+  saveMock.mockReset()
+  saveMock.mockImplementation(async (editor: any) => ({
+    ...editor,
+    modified: false,
+  }))
+  getPreferenceMock.mockReset()
+  getPreferenceMock.mockResolvedValue('afterDelay')
+  rendererInvokeMock.mockReset()
 })
 
 afterEach(() => {
@@ -147,6 +188,152 @@ test('synchronizes document state with another editor showing the same uri', asy
     modified: true,
     undoStack: [edit],
   })
+  expect(autoSaveScheduleMock).toHaveBeenCalledWith(1, expect.any(Function))
+})
+
+test('schedules auto save when undo changes a modified document', async () => {
+  const state = {
+    initial: false,
+    lines: ['edited'],
+    modified: true,
+    redoStack: [],
+    uid: 1,
+    undoStack: [[{ inserted: ['edited'] }]],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['original'],
+    redoStack: editor.undoStack,
+    undoStack: [],
+  }))
+
+  await command(1)
+
+  expect(autoSaveScheduleMock).toHaveBeenCalledWith(1, expect.any(Function))
+})
+
+test('scheduled auto save uses the latest modified editor state', async () => {
+  const state = {
+    initial: false,
+    lines: ['original'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['edited'],
+    modified: true,
+  }))
+
+  await command(1)
+  const saveAfterDelay = autoSaveScheduleMock.mock.calls[0][1]
+  await saveAfterDelay(1)
+
+  expect(getPreferenceMock).toHaveBeenCalledWith('files.autoSave')
+  expect(saveMock).toHaveBeenCalledWith(expect.objectContaining({ lines: ['edited'], modified: true }))
+  expect(EditorStates.get(1).newState).toMatchObject({ lines: ['edited'], modified: false })
+  expect(rendererInvokeMock).toHaveBeenCalledWith('Editor.renderPending', 1)
+})
+
+test('scheduled auto save persists a document change even when modified is false', async () => {
+  const state = {
+    initial: false,
+    lines: ['original'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['edited'],
+  }))
+
+  await command(1)
+  const saveAfterDelay = autoSaveScheduleMock.mock.calls[0][1]
+  await saveAfterDelay(1)
+
+  expect(saveMock).toHaveBeenCalledWith(expect.objectContaining({ lines: ['edited'], modified: false }))
+  expect(rendererInvokeMock).toHaveBeenCalledWith('Editor.renderPending', 1)
+})
+
+test('cancels a pending auto save when the editor is saved explicitly', async () => {
+  const state = {
+    initial: false,
+    lines: ['edited'],
+    modified: true,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    modified: false,
+  }))
+
+  await command(1)
+
+  expect(autoSaveDisposeMock).toHaveBeenCalledWith(1)
+  expect(autoSaveScheduleMock).not.toHaveBeenCalled()
+})
+
+test('scheduled auto save does not save when the setting is off', async () => {
+  const state = {
+    initial: false,
+    lines: ['original'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['edited'],
+    modified: true,
+  }))
+  getPreferenceMock.mockResolvedValue('off')
+
+  await command(1)
+  const saveAfterDelay = autoSaveScheduleMock.mock.calls[0][1]
+  await saveAfterDelay(1)
+
+  expect(saveMock).not.toHaveBeenCalled()
+  expect(EditorStates.get(1).newState.modified).toBe(true)
+  expect(rendererInvokeMock).not.toHaveBeenCalled()
+})
+
+test('does not schedule auto save when document text is unchanged', async () => {
+  const state = {
+    initial: false,
+    lines: ['abc'],
+    modified: true,
+    redoStack: [],
+    selection: 0,
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    selection: 1,
+  }))
+
+  await command(1)
+
+  expect(autoSaveScheduleMock).not.toHaveBeenCalled()
 })
 
 test('does not synchronize document state with another uri', async () => {
