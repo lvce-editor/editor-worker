@@ -1,4 +1,5 @@
 import { WidgetId } from '@lvce-editor/constants'
+import * as EditorSelection from '../Editor/EditorSelection.ts'
 import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
@@ -65,7 +66,7 @@ export const getSelections2 = (editorUid: number): Uint32Array => {
 
 export const setSelections2 = async (editorUid: number, selections: Uint32Array): Promise<void> => {
   const editor = GetEditor.getEditor(editorUid)
-  const newEditor = { ...editor, selections }
+  const newEditor = EditorSelection.setSelections(editor, selections)
   const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
   Editors.set(editorUid, editor, newEditorWithDerivedState)
 }
