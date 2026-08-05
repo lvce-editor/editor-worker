@@ -118,6 +118,23 @@ test('Ctrl/Cmd+Alt+Down adds a cursor below', () => {
   })
 })
 
+test('Ctrl/Cmd+Shift+Z and Ctrl/Cmd+Y redo the last edit', () => {
+  expect(GetKeyBindings.getKeyBindings()).toEqual(
+    expect.arrayContaining([
+      {
+        command: 'Editor.redo',
+        key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.KeyZ,
+        when: WhenExpression.FocusEditorText,
+      },
+      {
+        command: 'Editor.redo',
+        key: KeyModifier.CtrlCmd | KeyCode.KeyY,
+        when: WhenExpression.FocusEditorText,
+      },
+    ]),
+  )
+})
+
 test('Ctrl/Cmd+Shift+K deletes the active line', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.deleteLine',

@@ -303,6 +303,16 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.redo',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.KeyZ,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.redo',
+      key: KeyModifier.CtrlCmd | KeyCode.KeyY,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.cursorLeft',
       key: KeyCode.LeftArrow,
       when: WhenExpression.FocusEditorText,
