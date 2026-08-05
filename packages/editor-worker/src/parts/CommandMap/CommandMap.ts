@@ -279,7 +279,7 @@ export const commandMap = {
   'Editor.getWordBefore2': ExternalGetPositionAtCursor.getWordBefore2,
   'Editor.goToDefinition': wrapCommand(EditorGoToDefinition.goToDefinition),
   'Editor.goToTypeDefinition': wrapCommand(EditorGoToTypeDefinition.goToTypeDefinition),
-  'Editor.handleBeforeInput': wrapCommand(HandleBeforeInput.handleBeforeInput),
+  'Editor.handleBeforeInput': wrapCommand(HandleBeforeInput.handleBeforeInput, true),
   'Editor.handleBeforeInputFromContentEditable': wrapCommand(
     EditorCommandHandleNativeBeforeInputFromContentEditable.handleBeforeInputFromContentEditable,
   ),
@@ -288,7 +288,7 @@ export const commandMap = {
   'Editor.handleContextMenu': wrapCommand(EditorCommandHandleContextMenu.handleContextMenu),
   'Editor.handleDoubleClick': wrapCommand(HandleDoubleClick.handleDoubleClick),
   'Editor.handleFocus': wrapCommand(HandleFocus.handleFocus),
-  'Editor.handleKeyUp': wrapCommand(HandleKeyUp.handleKeyUp),
+  'Editor.handleKeyUp': wrapCommand(HandleKeyUp.handleKeyUp, true),
   'Editor.handleMouseDown': wrapCommand(HandleMouseDown.handleMouseDown),
   'Editor.handleMouseMove': wrapCommand(HandleMouseMove.handleMouseMove),
   'Editor.handleMouseMoveWithAltKey': wrapCommand(EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey),
