@@ -43,7 +43,7 @@ const onHoverIdle = async (token: number) => {
   }
 }
 
-const hoverDelay = 300
+const hoverDelay = 200
 
 export const handleMouseMove = async (editor: any, x: number, y: number, altKey: boolean) => {
   if (altKey) {

@@ -80,7 +80,11 @@ test('handleMouseMove - opens hover at the mouse position after the hover delay'
   })
 
   await EditorCommandHandleMouseMove.handleMouseMove(editorWithHover, 25, 10, false)
-  await jest.advanceTimersByTimeAsync(300)
+  await jest.advanceTimersByTimeAsync(199)
+
+  expect(showHover).not.toHaveBeenCalled()
+
+  await jest.advanceTimersByTimeAsync(1)
 
   expect(showHover).toHaveBeenCalledWith(
     editorWithHover,
@@ -90,4 +94,26 @@ test('handleMouseMove - opens hover at the mouse position after the hover delay'
     }),
   )
   expect(Editors.get(editor.uid).newState.widgets).toEqual([{ id: 'hover' }])
+})
+
+test('handleMouseMove - commits hover removal after moving away', async () => {
+  jest.useFakeTimers()
+  const editorWithHover = {
+    ...editor,
+    hoverEnabled: true,
+    widgets: [{ id: 'hover' }],
+  }
+  Editors.set(editor.uid, editorWithHover as any, editorWithHover as any)
+  showHover.mockImplementationOnce(async (latestEditor: any) => ({
+    ...latestEditor,
+    widgets: [],
+  }))
+  using _mockRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': jest.fn(),
+  })
+
+  await EditorCommandHandleMouseMove.handleMouseMove(editorWithHover, 100, 10, false)
+  await jest.advanceTimersByTimeAsync(200)
+
+  expect(Editors.get(editor.uid).newState.widgets).toEqual([])
 })
