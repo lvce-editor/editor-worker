@@ -32,6 +32,23 @@ const getErrorMessage = (error: unknown): string => {
   return String(error)
 }
 
+const getSavedHistory = (
+  savedState: unknown,
+  content: string,
+): { readonly redoStack: readonly any[]; readonly undoStack: readonly any[] } | undefined => {
+  if (!savedState || typeof savedState !== 'object') {
+    return undefined
+  }
+  const { lines, redoStack, undoStack } = savedState as Record<string, unknown>
+  if (!Array.isArray(lines) || lines.some((line) => typeof line !== 'string') || lines.join('\n') !== content) {
+    return undefined
+  }
+  if (!Array.isArray(redoStack) || !Array.isArray(undoStack)) {
+    return undefined
+  }
+  return { redoStack, undoStack }
+}
+
 export const loadContent = async (state: EditorState, savedState: unknown) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
@@ -107,6 +124,8 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     }
   }
 
+  const savedHistory = existingEditor ? undefined : getSavedHistory(savedState, content)
+
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds(newEditor0, x, y, width, height, 9)
   const newEditor2 = Editor.setText(newEditor1, content)
@@ -136,8 +155,8 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     completionsOnType,
     initial: false,
     modified: existingEditor?.modified || false,
-    redoStack: existingEditor?.redoStack || [],
-    undoStack: existingEditor?.undoStack || [],
+    redoStack: existingEditor?.redoStack || savedHistory?.redoStack || [],
+    undoStack: existingEditor?.undoStack || savedHistory?.undoStack || [],
   }
   return newEditor5
 }
