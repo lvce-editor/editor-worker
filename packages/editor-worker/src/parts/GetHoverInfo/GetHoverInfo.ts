@@ -7,18 +7,6 @@ import * as MeasureTextHeight from '../MeasureTextHeight/MeasureTextHeight.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as TokenizeCodeBlock from '../TokenizeCodeBlock/TokenizeCodeBlock.ts'
 
-const getHoverPosition = (position: any, selections: any) => {
-  if (position) {
-    return position
-  }
-  const rowIndex = selections[0]
-  const columnIndex = selections[1]
-  return {
-    columnIndex,
-    rowIndex,
-  }
-}
-
 const containsPosition = (diagnostic: any, rowIndex: number, columnIndex: number): boolean => {
   const { columnIndex: startColumnIndex, endColumnIndex, endRowIndex, rowIndex: startRowIndex } = diagnostic
   if (rowIndex < startRowIndex || rowIndex > endRowIndex) {
@@ -43,45 +31,27 @@ const getMatchingDiagnostics = (diagnostics: any, rowIndex: number, columnIndex:
   return matching
 }
 
-const getHover = async (editor: any, offset: number): Promise<any> => {
-  try {
-    return await Hover.getHover(editor, offset)
-  } catch {
-    return undefined
-  }
-}
-
 const fallbackDisplayStringLanguageId = 'typescript' // TODO remove this
 
 const hoverDocumentationFontSize = 15
 const hoverDocumentationFontFamily = 'Fira Code'
 const hoverDocumentationLineHeight = '1.33333'
-const hoverBorderLeft = 1
-const hoverBorderRight = 1
-const hoverPaddingLeft = 8
-const hoverPaddingRight = 8
-const hovverFullWidth = 400
-const hoverDocumentationWidth = hovverFullWidth - hoverPaddingLeft - hoverPaddingRight - hoverBorderLeft - hoverBorderRight
-
-const getHoverPositionXy = (editor: any, rowIndex: number, wordStart: any, documentationHeight: any) => {
-  const x = EditorPosition.x(editor, rowIndex, wordStart)
-  const y = editor.height - EditorPosition.y(editor, rowIndex) + editor.y + 40
-  return {
-    x,
-    y,
-  }
-}
+const hoverWidth = 600
+const hoverDocumentationWidth = hoverWidth - 18
 
 export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   Assert.number(editorUid)
   const instance = Editors.get(editorUid)
   const editor = instance.newState
   const { selections } = editor
-  const { columnIndex, rowIndex } = getHoverPosition(position, selections)
+  const { columnIndex, rowIndex } = position || { columnIndex: selections[1], rowIndex: selections[0] }
   const offset = TextDocument.offsetAt(editor, rowIndex, columnIndex)
   const diagnostics = editor.diagnostics || []
   const matchingDiagnostics = getMatchingDiagnostics(diagnostics, rowIndex, columnIndex)
-  const hover = await getHover(editor, offset)
+  let hover
+  try {
+    hover = await Hover.getHover(editor, offset)
+  } catch {}
   if (!hover && matchingDiagnostics.length === 0) {
     return undefined
   }
@@ -99,9 +69,18 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
     hoverDocumentationLineHeight,
     hoverDocumentationWidth,
   )
-  const { x, y } = getHoverPositionXy(editor, rowIndex, wordStart, documentationHeight)
+  const height = Math.min(
+    (matchingDiagnostics.length > 0 ? 30 : 0) +
+      (lineInfos.length > 0 ? lineInfos.length * editor.rowHeight + 12 : 0) +
+      (documentation ? documentationHeight + 11 : 0) || 20,
+    editor.height,
+  )
+  const x = Math.max(editor.x, Math.min(EditorPosition.x(editor, rowIndex, wordStart), editor.x + editor.width - hoverWidth))
+  const rowBottom = EditorPosition.y(editor, rowIndex)
+  const y = rowBottom + height <= editor.y + editor.height ? rowBottom : Math.max(editor.y, rowBottom - editor.rowHeight - height)
   return {
     documentation,
+    height,
     lineInfos,
     matchingDiagnostics,
     x,
