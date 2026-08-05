@@ -17,9 +17,11 @@ SyntaxHighlightingWorker.set(
   }),
 )
 
+import { commandMap } from '../src/parts/CommandMap/CommandMap.ts'
 import * as Editor from '../src/parts/Editor/Editor.ts'
 import * as EditorCommandUndo from '../src/parts/EditorCommand/EditorCommandUndo.ts'
 import * as EditOrigin from '../src/parts/EditOrigin/EditOrigin.ts'
+import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
 
 const createChange = (text: string, columnIndex: number) => ({
@@ -111,6 +113,33 @@ test('schedule document edits - coalesces contiguous typing', async () => {
   editor = await Editor.scheduleDocumentAndCursorsSelections(editor, [createChange('b', 1)])
 
   expect(editor.undoStack).toEqual([[{ ...createChange('a', 0), inserted: ['ab'] }]])
+})
+
+test('beforeinput coalesces contiguous typing into one undo', async () => {
+  const uid = 1
+  const editor = {
+    ...emptyEditor,
+    initial: false,
+    invalidStartIndex: 0,
+    lines: [''],
+    modified: false,
+    numberOfVisibleLines: 32,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid,
+    uri: 'file:///test.txt',
+  }
+  EditorStates.set(uid, editor, editor)
+
+  await commandMap['Editor.handleBeforeInput'](uid, 'insertText', 'a')
+  await commandMap['Editor.handleKeyUp'](uid, 'a')
+  await commandMap['Editor.handleBeforeInput'](uid, 'insertText', 'b')
+  await commandMap['Editor.handleKeyUp'](uid, 'b')
+  await commandMap['Editor.handleBeforeInput'](uid, 'insertText', 'c')
+  await commandMap['Editor.handleKeyUp'](uid, 'c')
+  await commandMap['Editor.undo'](uid)
+
+  expect(EditorStates.get(uid).newState.lines).toEqual([''])
+  EditorStates.dispose(uid)
 })
 
 test('undo - deleted character', async () => {
