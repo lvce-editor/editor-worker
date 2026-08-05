@@ -37,6 +37,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusColorPicker,
     },
     {
+      command: 'Editor.cancelSelection',
+      key: KeyCode.Escape,
+      when: FocusKey.FocusEditorHover,
+    },
+    {
       command: 'Editor.closeSourceAction',
       key: KeyCode.Escape,
       when: WhenExpression.FocusSourceActions,

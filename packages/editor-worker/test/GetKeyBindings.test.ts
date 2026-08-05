@@ -231,3 +231,11 @@ test('Escape closes focused editor completions', () => {
     when: WhenExpression.FocusEditorCompletions,
   })
 })
+
+test('Escape dismisses the editor hover', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.cancelSelection',
+    key: KeyCode.Escape,
+    when: FocusKey.FocusEditorHover,
+  })
+})
