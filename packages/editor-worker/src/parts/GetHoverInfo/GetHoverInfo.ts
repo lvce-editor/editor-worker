@@ -60,13 +60,48 @@ const hoverBorderLeft = 1
 const hoverBorderRight = 1
 const hoverPaddingLeft = 8
 const hoverPaddingRight = 8
-const hovverFullWidth = 400
-const hoverDocumentationWidth = hovverFullWidth - hoverPaddingLeft - hoverPaddingRight - hoverBorderLeft - hoverBorderRight
+const hoverBorderHeight = 2
+const hoverSectionBorderHeight = 1
+const hoverSectionGap = 3
+const hoverSectionPaddingHeight = 8
+const hoverMinHeight = 20
+const hoverMaxWidth = 600
+const hoverDocumentationWidth = hoverMaxWidth - hoverPaddingLeft - hoverPaddingRight - hoverBorderLeft - hoverBorderRight
 
-const getHoverPositionXy = (editor: any, rowIndex: number, wordStart: any, documentationHeight: any) => {
-  const x = EditorPosition.x(editor, rowIndex, wordStart)
-  const y = editor.height - EditorPosition.y(editor, rowIndex) + editor.y + 40
+const getHoverHeight = (editor: any, lineInfos: readonly any[], documentation: string, documentationHeight: number, diagnostics: readonly any[]) => {
+  let height = hoverBorderHeight
+  let sectionCount = 0
+  if (diagnostics.length > 0) {
+    height += editor.rowHeight + hoverSectionPaddingHeight
+    sectionCount++
+  }
+  if (lineInfos.length > 0) {
+    height += lineInfos.length * editor.rowHeight + hoverSectionPaddingHeight
+    if (sectionCount > 0) {
+      height += hoverSectionBorderHeight
+    }
+    sectionCount++
+  }
+  if (documentation) {
+    height += documentationHeight + hoverSectionPaddingHeight
+    sectionCount++
+  }
+  height += Math.max(0, sectionCount - 1) * hoverSectionGap
+  return Math.min(Math.max(height, hoverMinHeight), editor.height)
+}
+
+const getHoverBounds = (editor: any, rowIndex: number, wordStart: number, height: number) => {
+  const width = Math.min(hoverMaxWidth, editor.width)
+  const editorRight = editor.x + editor.width
+  const preferredX = EditorPosition.x(editor, rowIndex, wordStart)
+  const x = Math.max(editor.x, Math.min(preferredX, editorRight - width))
+  const rowBottom = EditorPosition.y(editor, rowIndex)
+  const rowTop = rowBottom - editor.rowHeight
+  const editorBottom = editor.y + editor.height
+  const y = rowBottom + height <= editorBottom ? rowBottom : Math.max(editor.y, rowTop - height)
   return {
+    height,
+    width,
     x,
     y,
   }
@@ -99,11 +134,14 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
     hoverDocumentationLineHeight,
     hoverDocumentationWidth,
   )
-  const { x, y } = getHoverPositionXy(editor, rowIndex, wordStart, documentationHeight)
+  const height = getHoverHeight(editor, lineInfos, documentation, documentationHeight, matchingDiagnostics)
+  const { width, x, y } = getHoverBounds(editor, rowIndex, wordStart, height)
   return {
     documentation,
+    height,
     lineInfos,
     matchingDiagnostics,
+    width,
     x,
     y,
   }
