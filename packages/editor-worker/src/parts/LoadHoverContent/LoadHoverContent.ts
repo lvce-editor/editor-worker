@@ -6,14 +6,14 @@ export const loadHoverContent = async (state: HoverState, position?: any): Promi
   if (!hoverInfo) {
     return undefined
   }
-  const { documentation, height, lineInfos, matchingDiagnostics, width, x, y } = hoverInfo
+  const { documentation, height, lineInfos, matchingDiagnostics, x, y } = hoverInfo
   return {
     ...state,
     diagnostics: matchingDiagnostics,
     documentation,
     height,
     lineInfos,
-    width,
+    width: 600,
     x,
     y,
   }

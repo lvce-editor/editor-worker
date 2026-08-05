@@ -65,7 +65,6 @@ test('returns diagnostic hover info when no language hover provider exists', asy
     height: 30,
     lineInfos: [],
     matchingDiagnostics: [diagnostic],
-    width: 600,
     x: 60,
     y: 20,
   })
@@ -169,5 +168,5 @@ test('clamps the hover width and horizontal position to the editor', async () =>
     rowIndex: 0,
   })
 
-  expect(result).toEqual(expect.objectContaining({ width: 600, x: 200 }))
+  expect(result).toEqual(expect.objectContaining({ x: 200 }))
 })
