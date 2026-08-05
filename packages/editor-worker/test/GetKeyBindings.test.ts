@@ -135,6 +135,14 @@ test('Ctrl/Cmd+Shift+Z and Ctrl/Cmd+Y redo the last edit', () => {
   )
 })
 
+test('Ctrl/Cmd+U restores the last cursor operation', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.cursorUndo',
+    key: KeyModifier.CtrlCmd | KeyCode.KeyU,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
 test('Ctrl/Cmd+Shift+K deletes the active line', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.deleteLine',

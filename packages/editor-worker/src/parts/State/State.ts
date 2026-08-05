@@ -10,6 +10,7 @@ export interface EditorState {
   readonly completionTriggerCharacters: readonly string[]
   readonly completionUid: number
   readonly cursorInfos: readonly any[]
+  readonly cursorUndoStack?: readonly Uint32Array[]
   readonly cursorWidth: number
   readonly debugEnabled: boolean
   readonly decorations: any // Text-level decorations (flat array) for CSS classes like Link, Type, etc.

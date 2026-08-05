@@ -188,6 +188,105 @@ test('preserves typing coalescing for typing commands', async () => {
   expect(result.canCoalesceTyping).toBe(true)
 })
 
+test('records cursor and selection changes', async () => {
+  const selections = new Uint32Array([0, 0, 0, 0])
+  const state = {
+    initial: false,
+    isSelecting: false,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    selections,
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    selections: new Uint32Array([0, 1, 0, 1]),
+  }))
+
+  const result = await command(1)
+
+  expect(result.cursorUndoStack).toEqual([selections])
+  expect(result.cursorUndoStack[0]).not.toBe(selections)
+})
+
+test('groups pointer-drag selection changes', async () => {
+  const previousSelections = new Uint32Array([0, 0, 0, 0])
+  const state = {
+    cursorUndoStack: [previousSelections],
+    initial: false,
+    isSelecting: true,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    selections: new Uint32Array([0, 0, 0, 1]),
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    selections: new Uint32Array([0, 0, 0, 2]),
+  }))
+
+  const result = await command(1)
+
+  expect(result.cursorUndoStack).toEqual([previousSelections])
+})
+
+test('records a pointer drag that starts at the current cursor', async () => {
+  const selections = new Uint32Array([0, 0, 0, 0])
+  const state = {
+    initial: false,
+    isSelecting: false,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    selections,
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    isSelecting: true,
+  }))
+
+  const result = await command(1)
+
+  expect(result.cursorUndoStack).toEqual([selections])
+})
+
+test('clears cursor history after a document edit', async () => {
+  const state = {
+    cursorUndoStack: [new Uint32Array([0, 0, 0, 0])],
+    initial: false,
+    isSelecting: false,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    selections: new Uint32Array([0, 3, 0, 3]),
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['abcd'],
+    selections: new Uint32Array([0, 4, 0, 4]),
+  }))
+
+  const result = await command(1)
+
+  expect(result.cursorUndoStack).toEqual([])
+})
+
 test('synchronizes document state with another editor showing the same uri', async () => {
   const firstState = {
     decorations: [],
