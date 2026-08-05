@@ -150,6 +150,44 @@ test('serializes commands for editors showing the same uri', async () => {
   expect(order).toEqual(['start-left', 'end-left', 'start-right', 'end-right'])
 })
 
+test('breaks typing coalescing for other commands', async () => {
+  const state = {
+    canCoalesceTyping: true,
+    initial: false,
+    lines: ['abc'],
+    modified: true,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => editor)
+
+  const result = await command(1)
+
+  expect(result.canCoalesceTyping).toBe(false)
+})
+
+test('preserves typing coalescing for typing commands', async () => {
+  const state = {
+    canCoalesceTyping: true,
+    initial: false,
+    lines: ['abc'],
+    modified: true,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => editor, true)
+
+  const result = await command(1)
+
+  expect(result.canCoalesceTyping).toBe(true)
+})
+
 test('synchronizes document state with another editor showing the same uri', async () => {
   const firstState = {
     decorations: [],

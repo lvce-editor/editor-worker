@@ -99,16 +99,35 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   // then clear old undostack from indexeddb after 3 days
   // TODO should push to undostack after rendering
   const autoClosingRanges = applyAutoClosingRangesEdit(editor, changes)
+  const change = changes[0]
+  const canCoalesceTyping =
+    changes.length === 1 &&
+    change.origin === EditOrigin.EditorType &&
+    change.deleted[0] === '' &&
+    change.inserted[0].length > 0 &&
+    change.inserted.length === 1 &&
+    change.start.rowIndex === change.end.rowIndex &&
+    change.start.columnIndex === change.end.columnIndex
+  const previous = editor.undoStack.at(-1)?.[0]
+  const shouldCoalesce =
+    editor.canCoalesceTyping &&
+    canCoalesceTyping &&
+    change.start.rowIndex === previous.start.rowIndex &&
+    change.start.columnIndex === previous.start.columnIndex + previous.inserted[0].length
+  const undoStack = shouldCoalesce
+    ? [...editor.undoStack.slice(0, -1), [{ ...previous, inserted: [previous.inserted[0] + change.inserted[0]] }]]
+    : [...editor.undoStack, changes]
 
   const newEditor = {
     ...partialNewEditor,
     autoClosingRanges,
+    canCoalesceTyping,
     invalidStartIndex,
     lines: newLines,
     modified: true,
     redoStack: [],
     selections: newSelections,
-    undoStack: [...editor.undoStack, changes],
+    undoStack,
   }
   // Update link decorations after text changes
   const linkDecorations = LinkDetection.detectAllLinksAsDecorations(newEditor)

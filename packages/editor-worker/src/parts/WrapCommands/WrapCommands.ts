@@ -39,7 +39,7 @@ const saveAfterDelay = async (uid: number, token: number): Promise<void> => {
 // TODO only store editor state in editor worker, not in renderer worker also
 
 export const wrapCommand =
-  (fn: any) =>
+  (fn: any, preservesTypingCoalescing = false) =>
   async (uid: number, ...args: any[]) => {
     const initialInstance = Editors.get(uid)
     const queueKey = initialInstance?.newState.uri || uid
@@ -52,7 +52,8 @@ export const wrapCommand =
     try {
       const oldInstance = Editors.get(uid)
       const state = oldInstance.newState
-      const newEditor = await fn(state, ...args)
+      const commandResult = await fn(state, ...args)
+      const newEditor = !preservesTypingCoalescing && commandResult.canCoalesceTyping ? { ...commandResult, canCoalesceTyping: false } : commandResult
       if (state === newEditor) {
         return newEditor
       }
