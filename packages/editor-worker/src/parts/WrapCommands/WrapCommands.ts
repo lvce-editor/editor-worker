@@ -9,6 +9,22 @@ import * as Preferences from '../Preferences/Preferences.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
 const queues: Record<string, Promise<void> | undefined> = {}
+const cursorUndoLimit = 100
+
+const selectionsEqual = (left: Uint32Array, right: Uint32Array): boolean => {
+  if (left === right) {
+    return true
+  }
+  if (left.length !== right.length) {
+    return false
+  }
+  for (let i = 0; i < left.length; i++) {
+    if (left[i] !== right[i]) {
+      return false
+    }
+  }
+  return true
+}
 
 const saveAfterDelay = async (uid: number, token: number): Promise<void> => {
   if (!Editors.get(uid)) {
@@ -52,8 +68,24 @@ export const wrapCommand =
     try {
       const oldInstance = Editors.get(uid)
       const state = oldInstance.newState
+      const { cursorUndoStack, initial, isSelecting, lines, modified, redoStack, selections, undoStack, uri } = state
       const commandResult = await fn(state, ...args)
-      const newEditor = !preservesTypingCoalescing && commandResult.canCoalesceTyping ? { ...commandResult, canCoalesceTyping: false } : commandResult
+      let newEditor = !preservesTypingCoalescing && commandResult.canCoalesceTyping ? { ...commandResult, canCoalesceTyping: false } : commandResult
+      if (lines !== newEditor.lines && newEditor.cursorUndoStack?.length) {
+        newEditor = { ...newEditor, cursorUndoStack: [] }
+      } else if (
+        selections &&
+        newEditor.selections &&
+        !isSelecting &&
+        newEditor.cursorUndoStack === cursorUndoStack &&
+        (!selectionsEqual(selections, newEditor.selections) || newEditor.isSelecting)
+      ) {
+        const previousCursorUndoStack = cursorUndoStack || []
+        newEditor = {
+          ...newEditor,
+          cursorUndoStack: [...previousCursorUndoStack.slice(1 - cursorUndoLimit), new Uint32Array(selections)],
+        }
+      }
       if (state === newEditor) {
         return newEditor
       }
@@ -67,7 +99,6 @@ export const wrapCommand =
         }
         Editors.set(uid, state, finalEditor)
       }
-      const { initial, lines, modified, redoStack, undoStack, uri } = state
       if (
         !initial &&
         uri === finalEditor.uri &&
