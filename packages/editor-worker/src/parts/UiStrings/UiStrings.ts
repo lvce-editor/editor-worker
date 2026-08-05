@@ -1,6 +1,7 @@
 export const Copy = 'Copy'
 export const CopyLineDown = 'Copy Line Down'
 export const CopyLineUp = 'Copy Line Up'
+export const CursorUndo = 'Cursor Undo'
 export const Cut = 'Cut'
 export const DeleteLine = 'Delete Line'
 export const DuplicateSelection = 'Duplicate Selection'
