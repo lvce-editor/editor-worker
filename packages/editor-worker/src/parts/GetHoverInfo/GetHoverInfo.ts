@@ -19,14 +19,36 @@ const getHoverPosition = (position: any, selections: any) => {
   }
 }
 
+const containsPosition = (diagnostic: any, rowIndex: number, columnIndex: number): boolean => {
+  const { columnIndex: startColumnIndex, endColumnIndex, endRowIndex, rowIndex: startRowIndex } = diagnostic
+  if (rowIndex < startRowIndex || rowIndex > endRowIndex) {
+    return false
+  }
+  if (rowIndex === startRowIndex && columnIndex < startColumnIndex) {
+    return false
+  }
+  if (rowIndex === endRowIndex && columnIndex >= endColumnIndex) {
+    return false
+  }
+  return true
+}
+
 const getMatchingDiagnostics = (diagnostics: any, rowIndex: number, columnIndex: number) => {
   const matching: any[] = []
   for (const diagnostic of diagnostics) {
-    if (diagnostic.rowIndex === rowIndex) {
+    if (containsPosition(diagnostic, rowIndex, columnIndex)) {
       matching.push(diagnostic)
     }
   }
   return matching
+}
+
+const getHover = async (editor: any, offset: number): Promise<any> => {
+  try {
+    return await Hover.getHover(editor, offset)
+  } catch {
+    return undefined
+  }
 }
 
 const fallbackDisplayStringLanguageId = 'typescript' // TODO remove this
@@ -57,17 +79,17 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   const { selections } = editor
   const { columnIndex, rowIndex } = getHoverPosition(position, selections)
   const offset = TextDocument.offsetAt(editor, rowIndex, columnIndex)
-  const hover = await Hover.getHover(editor, offset)
-  if (!hover) {
+  const diagnostics = editor.diagnostics || []
+  const matchingDiagnostics = getMatchingDiagnostics(diagnostics, rowIndex, columnIndex)
+  const hover = await getHover(editor, offset)
+  if (!hover && matchingDiagnostics.length === 0) {
     return undefined
   }
-  const { displayString, displayStringLanguageId, documentation } = hover
+  const { displayString = '', displayStringLanguageId = '', documentation = '' } = hover || {}
   const tokenizerPath = ''
-  const lineInfos = await TokenizeCodeBlock.tokenizeCodeBlock(
-    displayString,
-    displayStringLanguageId || fallbackDisplayStringLanguageId,
-    tokenizerPath,
-  )
+  const lineInfos = displayString
+    ? await TokenizeCodeBlock.tokenizeCodeBlock(displayString, displayStringLanguageId || fallbackDisplayStringLanguageId, tokenizerPath)
+    : []
   const wordPart = GetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   const wordStart = columnIndex - wordPart.length
   const documentationHeight = await MeasureTextHeight.measureTextBlockHeight(
@@ -78,8 +100,6 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
     hoverDocumentationWidth,
   )
   const { x, y } = getHoverPositionXy(editor, rowIndex, wordStart, documentationHeight)
-  const diagnostics = editor.diagnostics || []
-  const matchingDiagnostics = getMatchingDiagnostics(diagnostics, rowIndex, columnIndex)
   return {
     documentation,
     lineInfos,
