@@ -212,3 +212,44 @@ test('loadContent reuses unsaved content from another editor for the same uri', 
   expect(result.undoStack).toBe(existingEditor.undoStack)
   expect(readFileMock).not.toHaveBeenCalled()
 })
+
+test('loadContent restores saved history when the file content is unchanged', async () => {
+  readFileMock.mockResolvedValue('saved content')
+  const redoStack = [['redo']]
+  const undoStack = [['undo']]
+
+  const result = await LoadContent.loadContent(createState(), {
+    lines: ['saved content'],
+    redoStack,
+    undoStack,
+  })
+
+  expect(result.redoStack).toBe(redoStack)
+  expect(result.undoStack).toBe(undoStack)
+})
+
+test('loadContent discards saved history when the file content changed', async () => {
+  readFileMock.mockResolvedValue('changed externally')
+
+  const result = await LoadContent.loadContent(createState(), {
+    lines: ['saved content'],
+    redoStack: [['redo']],
+    undoStack: [['undo']],
+  })
+
+  expect(result.redoStack).toEqual([])
+  expect(result.undoStack).toEqual([])
+})
+
+test('loadContent ignores malformed saved history', async () => {
+  readFileMock.mockResolvedValue('saved content')
+
+  const result = await LoadContent.loadContent(createState(), {
+    lines: ['saved content'],
+    redoStack: {},
+    undoStack: [['undo']],
+  })
+
+  expect(result.redoStack).toEqual([])
+  expect(result.undoStack).toEqual([])
+})
