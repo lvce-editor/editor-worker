@@ -29,3 +29,22 @@ test('includes folding commands', () => {
     ]),
   )
 })
+
+test('includes undo commands', () => {
+  expect(getQuickPickMenuEntries()).toEqual(
+    expect.arrayContaining([
+      {
+        id: 'Editor.undo',
+        label: 'Undo',
+      },
+      {
+        id: 'Editor.redo',
+        label: 'Redo',
+      },
+      {
+        id: 'Editor.cursorUndo',
+        label: 'Cursor Undo',
+      },
+    ]),
+  )
+})

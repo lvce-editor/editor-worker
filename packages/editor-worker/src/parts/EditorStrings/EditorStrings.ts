@@ -89,6 +89,10 @@ export const paste = () => {
   return I18nString.i18nString(UiStrings.Paste)
 }
 
+export const cursorUndo = () => {
+  return I18nString.i18nString(UiStrings.CursorUndo)
+}
+
 export const undo = () => {
   return I18nString.i18nString(UiStrings.Undo)
 }

@@ -4,6 +4,18 @@ import * as EditorStrings from '../EditorStrings/EditorStrings.ts'
 export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
   return [
     {
+      id: 'Editor.undo',
+      label: EditorStrings.undo(),
+    },
+    {
+      id: 'Editor.redo',
+      label: EditorStrings.redo(),
+    },
+    {
+      id: 'Editor.cursorUndo',
+      label: EditorStrings.cursorUndo(),
+    },
+    {
       id: 'Editor.fold',
       label: EditorStrings.fold(),
     },
