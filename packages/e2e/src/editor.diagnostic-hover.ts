@@ -39,6 +39,18 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await expect(hover).toHaveCSS('top', '75px')
 
   // act
+  await Editor.cancelSelection()
+
+  // assert
+  await expect(hover).toBeHidden()
+
+  // act
+  await Command.execute('Editor.showHover')
+
+  // assert
+  await expect(hover).toBeVisible()
+
+  // act
   await Editor.setCursor(0, 8)
   await Command.execute('Editor.showHover')
 
