@@ -2,8 +2,6 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-undo-redo-move-line-down'
 
-export const skip = 1
-
 export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'one\ntwo\nthree')
@@ -12,8 +10,8 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
   await Editor.setCursor(0, 0)
   await Command.execute('Editor.moveLineDown')
 
-  await Editor.undo()
-  await Editor.redo()
+  await Command.execute('Editor.undo')
+  await Command.execute('Editor.redo')
 
   await Editor.shouldHaveText('two\none\nthree')
 }
