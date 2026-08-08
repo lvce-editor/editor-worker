@@ -118,6 +118,22 @@ test('Ctrl/Cmd+Alt+Down adds a cursor below', () => {
   })
 })
 
+test('Ctrl/Cmd+Shift+Up moves lines up', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.moveLineUp',
+    key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.UpArrow,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Ctrl/Cmd+Shift+Down moves lines down', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.moveLineDown',
+    key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.DownArrow,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
 test('Ctrl/Cmd+Shift+Z and Ctrl/Cmd+Y redo the last edit', () => {
   expect(GetKeyBindings.getKeyBindings()).toEqual(
     expect.arrayContaining([
