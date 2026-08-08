@@ -14,6 +14,25 @@ RendererWorker.set(mockRpc)
 const HandleTab = await import('../src/parts/HandleTab/HandleTab.ts')
 const TabCompletion = await import('../src/parts/TabCompletion/TabCompletion.ts')
 
+test('handleTab - indent selection', async () => {
+  const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['one', 'two', 'three'],
+    minLineY: 0,
+    modified: true,
+    numberOfVisibleLines: 32,
+    primarySelectionIndex: 0,
+    selections: new Uint32Array([0, 1, 1, 2]),
+    undoStack: [],
+  }
+
+  expect(await HandleTab.handleTab(editor)).toMatchObject({
+    lines: ['  one', '  two', 'three'],
+  })
+})
+
 test.skip('handleTab - no result', async () => {
   // Skipped: Cannot spy on ES module exports (read-only properties)
   const getTabCompletionSpy = jest.spyOn(TabCompletion, 'getTabCompletion').mockResolvedValue(undefined)
