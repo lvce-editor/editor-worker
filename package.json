@@ -24,7 +24,7 @@
     "printWidth": 150
   },
   "devDependencies": {
-    "@lvce-editor/eslint-config": "^18.2.0",
+    "@lvce-editor/eslint-config": "^18.4.0",
     "@lvce-editor/eslint-plugin-tsconfig": "^16.5.0",
     "eslint": "^10.8.1",
     "knip": "^6.27.0",
