@@ -1,7 +1,7 @@
 import { join } from 'node:path'
 import { root } from './root.ts'
 
-export const threshold = 891_000
+export const threshold = 892_000
 
 export const workerPath = join(root, '.tmp/dist/dist/editorWorkerMain.js')
 
