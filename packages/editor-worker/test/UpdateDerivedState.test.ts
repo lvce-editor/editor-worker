@@ -150,3 +150,50 @@ test('updateDerivedState rebuilds visible row indices after multiline edits', as
   expect(result.visibleLineIndices).toEqual([0])
   expect(getVisibleTextMock).toHaveBeenCalledWith(expect.objectContaining({ visibleLineIndices: [0] }), false)
 })
+
+test('updateDerivedState repositions diagnostics after scrolling', async () => {
+  const diagnostics = [
+    {
+      columnIndex: 0,
+      endColumnIndex: 1,
+      rowIndex: 1,
+      type: 'warning',
+    },
+  ]
+  const oldState: any = {
+    charWidth: 8,
+    cursorWidth: 2,
+    diagnostics,
+    differences: [],
+    focused: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    letterSpacing: 0,
+    lines: ['first', 'second'],
+    maxLineY: 2,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [['first'], ['second']],
+    visualDecorations: [{ height: 20, type: 'warning', width: 8, x: 0, y: 20 }],
+    width: 100,
+  }
+  const newState: any = {
+    ...oldState,
+    differences: [],
+    maxLineY: 3,
+    minLineY: 1,
+    textInfos: [['second']],
+  }
+  getVisibleSelectionsMock.mockResolvedValue({
+    cursorInfos: [],
+    selectionInfos: [],
+  })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(result.visualDecorations).toEqual([{ height: 20, type: 'warning', width: 8, x: 0, y: 0 }])
+})

@@ -2,7 +2,26 @@ import type { EditorState } from '../State/State.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
+
+const shouldUpdateDiagnosticData = (oldState: EditorState, newState: EditorState): boolean => {
+  return (
+    oldState.diagnostics !== newState.diagnostics ||
+    ((newState.diagnostics?.length ?? 0) > 0 &&
+      (oldState.minLineY !== newState.minLineY ||
+        oldState.charWidth !== newState.charWidth ||
+        oldState.fontFamily !== newState.fontFamily ||
+        oldState.fontSize !== newState.fontSize ||
+        oldState.fontWeight !== newState.fontWeight ||
+        oldState.isMonospaceFont !== newState.isMonospaceFont ||
+        oldState.letterSpacing !== newState.letterSpacing ||
+        oldState.lines !== newState.lines ||
+        oldState.rowHeight !== newState.rowHeight ||
+        oldState.tabSize !== newState.tabSize ||
+        oldState.width !== newState.width))
+  )
+}
 
 const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState): boolean => {
   return (
@@ -56,6 +75,14 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
       ...nextState,
       differences,
       textInfos,
+    }
+  }
+
+  if (shouldUpdateDiagnosticData(oldState, nextState)) {
+    const visualDecorations = await GetVisibleDiagnostics.getVisibleDiagnostics(finalState, finalState.diagnostics ?? [])
+    finalState = {
+      ...finalState,
+      visualDecorations,
     }
   }
 
