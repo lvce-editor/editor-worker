@@ -34,6 +34,29 @@ test('getProblems returns cached diagnostics and preserves fractional editor ids
   expect(mockRpc.invocations).toEqual([])
 })
 
+test('getProblems adds the editor uri to diagnostics that omit it', async () => {
+  const diagnostics = [
+    {
+      message: 'language server problem',
+    },
+  ]
+  const editor = {
+    diagnostics,
+    id: 1,
+    languageId: 'elm',
+    lines: ['text missingValue'],
+    uri: '/src/Main.elm',
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  await expect(getProblems()).resolves.toEqual([
+    {
+      message: 'language server problem',
+      uri: '/src/Main.elm',
+    },
+  ])
+})
+
 test('getProblems ignores open editors without diagnostics', async () => {
   const javascriptEditor = {
     diagnostics: [{ message: 'javascript problem', uri: '/test.js' }],

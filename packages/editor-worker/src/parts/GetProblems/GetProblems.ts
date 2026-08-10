@@ -9,7 +9,10 @@ export const getProblems = async (): Promise<readonly Problem[]> => {
     if (!editor?.newState) {
       return []
     }
-    return editor.newState.diagnostics
+    return editor.newState.diagnostics.map((diagnostic: Problem) => ({
+      ...diagnostic,
+      uri: diagnostic.uri || editor.newState.uri,
+    }))
   })
   return diagnostics
 }
