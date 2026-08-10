@@ -1,6 +1,7 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
+import * as GetDiagnosticHoverDetail from '../GetDiagnosticHoverDetail/GetDiagnosticHoverDetail.ts'
 import * as GetLineInfosVirtualDom from '../GetLineInfosVirtualDom/GetLineInfosVirtualDom.ts'
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
@@ -51,7 +52,7 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
       type: VirtualDomElements.Div,
     })
     for (const diagnostic of diagnostics) {
-      dom.push(hoverProblemMessage, text(diagnostic.message), hoverProblemDetail, text(`${diagnostic.source} (${diagnostic.code})`))
+      dom.push(hoverProblemMessage, text(diagnostic.message), hoverProblemDetail, text(GetDiagnosticHoverDetail.getDiagnosticHoverDetail(diagnostic)))
     }
   }
 
