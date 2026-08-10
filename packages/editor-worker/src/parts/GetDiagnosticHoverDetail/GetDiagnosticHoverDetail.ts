@@ -4,11 +4,11 @@ interface DiagnosticHoverMetadata {
 }
 
 export const getDiagnosticHoverDetail = ({ code, source }: DiagnosticHoverMetadata): string => {
-  if (code === undefined || code === null) {
+  if (code === undefined) {
     return source || ''
   }
   if (!source) {
-    return `${code}`
+    return String(code)
   }
   return `${source} (${code})`
 }
