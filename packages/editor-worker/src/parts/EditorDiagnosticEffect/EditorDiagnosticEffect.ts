@@ -1,3 +1,4 @@
+import type { EditorState } from '../State/State.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 export const editorDiagnosticEffect = {
@@ -5,6 +6,5 @@ export const editorDiagnosticEffect = {
   apply(editor: any) {
     return UpdateDiagnostics.updateDiagnostics(editor)
   },
-  // TODO avoid slow comparison
-  isActive: (oldEditor: any, newEditor: any) => newEditor.diagnosticsEnabled && JSON.stringify(oldEditor.lines) !== JSON.stringify(newEditor.lines),
+  isActive: (oldEditor: EditorState, newEditor: EditorState) => newEditor.diagnosticsEnabled && oldEditor.lines !== newEditor.lines,
 }
