@@ -10,8 +10,11 @@ export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator
   await Main.openUri(`${tmpDir}/file1.txt`)
   await Editor.setCursor(0, 0)
 
-  for (let i = 0; i < 26; i++) {
-    await KeyBoard.press('Shift+ArrowDown')
+  await KeyBoard.press('Shift+ArrowDown')
+  await Editor.shouldHaveSelections(new Uint32Array([0, 0, 1, 0]))
+
+  for (let i = 1; i < 26; i++) {
+    await Editor.selectDown()
   }
 
   await Editor.shouldHaveSelections(new Uint32Array([0, 0, 26, 0]))
