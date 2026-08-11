@@ -15,6 +15,8 @@ export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator
   }
 
   await Editor.shouldHaveSelections(new Uint32Array([0, 0, 26, 0]))
-  await expect(Locator('.EditorCursor')).toBeVisible()
-  await expect(Locator('.EditorRow', { hasText: 'line 27' })).toBeVisible()
+  const cursor = Locator('.EditorCursor')
+  const line27 = Locator('.EditorRow', { hasText: 'line 27' })
+  await expect(cursor).toBeVisible()
+  await expect(line27).toBeVisible()
 }
