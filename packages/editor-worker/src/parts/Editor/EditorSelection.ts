@@ -74,7 +74,7 @@ export const setSelections = (editor: any, selections: any) => {
     selections,
   }
   const { maxLineY, minLineY, numberOfVisibleLines } = editor
-  if (maxLineY === undefined || minLineY === undefined || numberOfVisibleLines <= 0) {
+  if (maxLineY === undefined || minLineY === undefined || numberOfVisibleLines === undefined || numberOfVisibleLines <= 0) {
     return newEditor
   }
   const rowIndex = activeRowIndex
