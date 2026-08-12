@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals'
-import { scrollByLines } from '../src/parts/ScrollByLines/ScrollByLines.ts'
+import { scrollByLines } from '../src/parts/EditorCommand/EditorCommandSetDelta.ts'
 
 const createEditor = (deltaY: number) => ({
   charWidth: 8,

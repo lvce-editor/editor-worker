@@ -176,7 +176,6 @@ import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
 import { saveState } from '../SaveState/SaveState.ts'
-import * as ScrollByLines from '../ScrollByLines/ScrollByLines.ts'
 import {
   sendDeprecatedExtensionHostPortToExtensionManagementWorker,
   sendMessagePortToExtensionManagementWorker,
@@ -347,7 +346,7 @@ export const commandMap = {
   'Editor.resize': wrapCommand(Resize.resize),
   'Editor.save': wrapCommand(Save.save),
   'Editor.saveState': wrapGetter(saveState),
-  'Editor.scrollByLines': wrapCommand(ScrollByLines.scrollByLines),
+  'Editor.scrollByLines': wrapCommand(SetDelta.scrollByLines),
   'Editor.selectAll': wrapCommand(SelectAll.selectAll),
   'Editor.selectAllLeft': wrapCommand(SelectAllLeft.editorSelectAllLeft),
   'Editor.selectAllOccurrences': wrapCommand(SelectAllOccurrences.selectAllOccurrences),

@@ -15,6 +15,12 @@ export const setDeltaYFixedValue = (editor, deltaY) => {
 }
 
 // @ts-ignore
+export const scrollByLines = (editor, lineCount) => {
+  Assert.number(lineCount)
+  return Editor.setDeltaY(editor, lineCount * editor.itemHeight)
+}
+
+// @ts-ignore
 export const setDelta = (editor, deltaMode, eventDeltaX, eventDeltaY) => {
   Assert.number(deltaMode)
   Assert.number(eventDeltaX)
