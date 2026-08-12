@@ -58,6 +58,17 @@ export const getLines2 = (editorUid: number): readonly string[] => {
   return lines
 }
 
+export const getVisibleLineRange = (editorUid: number): { readonly endRowIndex: number; readonly startRowIndex: number } => {
+  const editor = GetEditor.getEditor(editorUid)
+  const { lines, maxLineY, minLineY, visibleLineIndices } = editor
+  const startRowIndex = visibleLineIndices[0] ?? minLineY
+  const endRowIndex = visibleLineIndices.at(-1) ?? Math.min(maxLineY, lines.length) - 1
+  return {
+    endRowIndex: Math.max(endRowIndex, startRowIndex),
+    startRowIndex,
+  }
+}
+
 export const getSelections2 = (editorUid: number): Uint32Array => {
   const editor = GetEditor.getEditor(editorUid)
   const { selections } = editor
