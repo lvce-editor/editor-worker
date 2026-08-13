@@ -8,7 +8,7 @@ export const undo = (state: EditorState): EditorState | Promise<EditorState> => 
     return state
   }
   const last = undoStack.at(-1)
-  const inverseChanges = last.map(InverseChange.inverseChange)
+  const inverseChanges = last.toReversed().map(InverseChange.inverseChange)
   const newState = {
     ...state,
     redoStack: [...(state.redoStack || []), last],
