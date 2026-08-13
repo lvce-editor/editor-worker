@@ -27,7 +27,7 @@ test('save - shows a concise electron message box when permission is denied', as
   const result = await EditorCommandSave.save(editor)
 
   expect(result).toBe(editor)
-  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/read-only.txt', 'hello world']])
+  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/read-only.txt', 'hello world', 'utf8', false]])
   expect(mockDialogRpc.invocations).toEqual([
     [
       'ElectronDialog.showMessageBox',
@@ -62,7 +62,7 @@ test('save - shows error details for other electron save errors', async () => {
   const result = await EditorCommandSave.save(editor)
 
   expect(result).toBe(editor)
-  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/example.txt', 'hello world']])
+  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/example.txt', 'hello world', 'utf8', false]])
   expect(mockDialogRpc.invocations).toEqual([
     [
       'ElectronDialog.showMessageBox',
@@ -95,7 +95,7 @@ test('save - does not show electron message box when saving file fails outside e
   const result = await EditorCommandSave.save(editor)
 
   expect(result).toBe(editor)
-  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/read-only.txt', 'hello world']])
+  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/read-only.txt', 'hello world', 'utf8', false]])
 })
 
 test('save - clears the modified status after saving', async () => {
@@ -117,7 +117,7 @@ test('save - clears the modified status after saving', async () => {
     modified: false,
   })
   expect(mockRpc.invocations).toEqual([
-    ['FileSystem.writeFile', 'file:///tmp/example.txt', 'hello world'],
+    ['FileSystem.writeFile', 'file:///tmp/example.txt', 'hello world', 'utf8', false],
     ['Main.handleModifiedStatusChange', 'file:///tmp/example.txt', false],
   ])
 })
