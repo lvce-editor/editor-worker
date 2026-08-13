@@ -39,6 +39,25 @@ const hoverDocumentationLineHeight = '1.33333'
 const hoverWidth = 600
 const hoverDocumentationWidth = hoverWidth - 18
 
+const getDiagnosticText = (diagnostic: any): string => {
+  return `${diagnostic.message} ${diagnostic.source} (${diagnostic.code})`
+}
+
+const getDiagnosticsHeight = async (diagnostics: readonly any[], editor: any): Promise<number> => {
+  if (diagnostics.length === 0) {
+    return 0
+  }
+  const text = diagnostics.map(getDiagnosticText).join('\n')
+  const contentHeight = await MeasureTextHeight.measureTextBlockHeight(
+    text,
+    editor.fontFamily,
+    editor.fontSize,
+    `${editor.rowHeight}px`,
+    hoverDocumentationWidth,
+  )
+  return contentHeight + 10
+}
+
 export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   Assert.number(editorUid)
   const instance = Editors.get(editorUid)
@@ -62,17 +81,18 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
     : []
   const wordPart = GetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   const wordStart = columnIndex - wordPart.length
-  const documentationHeight = await MeasureTextHeight.measureTextBlockHeight(
-    documentation,
-    hoverDocumentationFontFamily,
-    hoverDocumentationFontSize,
-    hoverDocumentationLineHeight,
-    hoverDocumentationWidth,
-  )
+  const documentationHeight = documentation
+    ? await MeasureTextHeight.measureTextBlockHeight(
+        documentation,
+        hoverDocumentationFontFamily,
+        hoverDocumentationFontSize,
+        hoverDocumentationLineHeight,
+        hoverDocumentationWidth,
+      )
+    : 0
+  const diagnosticsHeight = await getDiagnosticsHeight(matchingDiagnostics, editor)
   const height = Math.min(
-    (matchingDiagnostics.length > 0 ? 30 : 0) +
-      (lineInfos.length > 0 ? lineInfos.length * editor.rowHeight + 12 : 0) +
-      (documentation ? documentationHeight + 11 : 0) || 20,
+    diagnosticsHeight + (lineInfos.length > 0 ? lineInfos.length * editor.rowHeight + 12 : 0) + (documentation ? documentationHeight + 11 : 0) || 20,
     editor.height,
   )
   const x = Math.max(editor.x, Math.min(EditorPosition.x(editor, rowIndex, wordStart), editor.x + editor.width - hoverWidth))
