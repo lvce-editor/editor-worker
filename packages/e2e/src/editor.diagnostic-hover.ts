@@ -35,7 +35,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await expect(hover).toBeVisible()
   await expect(hover).toContainText('Example diagnostic')
   await expect(hover).toContainText('diagnostic-test (rule-a)')
-  await expect(hover).toHaveCSS('height', '30px')
+  await expect(hover).toHaveCSS('height', '36px')
   await expect(hover).toHaveCSS('top', '75px')
 
   // act

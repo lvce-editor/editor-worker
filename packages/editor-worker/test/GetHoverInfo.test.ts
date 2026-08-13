@@ -2,7 +2,7 @@ import { afterEach, expect, jest, test } from '@jest/globals'
 import * as Editors from '../src/parts/EditorStates/EditorStates.ts'
 
 const getHover = jest.fn<(...args: any[]) => Promise<any>>()
-const measureTextBlockHeight = jest.fn(async () => 20)
+const measureTextBlockHeight = jest.fn<(...args: any[]) => Promise<number>>(async () => 20)
 const tokenizeCodeBlock = jest.fn<(...args: any[]) => Promise<any[]>>(async () => [])
 
 jest.unstable_mockModule('../src/parts/Hover/Hover.ts', () => ({
@@ -34,6 +34,8 @@ const diagnostic = {
 const editor = {
   columnWidth: 10,
   diagnostics: [diagnostic],
+  fontFamily: 'Fira Code',
+  fontSize: 15,
   height: 400,
   lines: ['const unusedValue = 1'],
   rowHeight: 20,
@@ -69,6 +71,26 @@ test('returns diagnostic hover info when no language hover provider exists', asy
     y: 20,
   })
   expect(tokenizeCodeBlock).not.toHaveBeenCalled()
+})
+
+test('sizes a wrapped diagnostic hover to its measured content height', async () => {
+  getHover.mockRejectedValue(new Error('No hover provider found'))
+  measureTextBlockHeight.mockResolvedValueOnce(60)
+  Editors.set(editor.uid, editor as any, editor as any)
+
+  const result = await GetHoverInfo.getEditorHoverInfo(editor.uid, {
+    columnIndex: 8,
+    rowIndex: 0,
+  })
+
+  expect(result).toEqual(expect.objectContaining({ height: 70 }))
+  expect(measureTextBlockHeight).toHaveBeenCalledWith(
+    "'unusedValue' is assigned a value but never used. eslint (no-unused-vars)",
+    'Fira Code',
+    15,
+    '20px',
+    582,
+  )
 })
 
 test('sizes a combined diagnostic and language hover to its content', async () => {

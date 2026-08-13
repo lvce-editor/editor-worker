@@ -62,17 +62,30 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
     : []
   const wordPart = GetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   const wordStart = columnIndex - wordPart.length
-  const documentationHeight = await MeasureTextHeight.measureTextBlockHeight(
-    documentation,
-    hoverDocumentationFontFamily,
-    hoverDocumentationFontSize,
-    hoverDocumentationLineHeight,
-    hoverDocumentationWidth,
-  )
+  const documentationHeight = documentation
+    ? await MeasureTextHeight.measureTextBlockHeight(
+        documentation,
+        hoverDocumentationFontFamily,
+        hoverDocumentationFontSize,
+        hoverDocumentationLineHeight,
+        hoverDocumentationWidth,
+      )
+    : 0
+  let diagnosticText = ''
+  for (const diagnostic of matchingDiagnostics) {
+    diagnosticText += `${diagnosticText ? '\n' : ''}${diagnostic.message} ${diagnostic.source} (${diagnostic.code})`
+  }
+  const diagnosticsHeight = diagnosticText
+    ? (await MeasureTextHeight.measureTextBlockHeight(
+        diagnosticText,
+        editor.fontFamily,
+        editor.fontSize,
+        `${editor.rowHeight}px`,
+        hoverDocumentationWidth,
+      )) + 10
+    : 0
   const height = Math.min(
-    (matchingDiagnostics.length > 0 ? 30 : 0) +
-      (lineInfos.length > 0 ? lineInfos.length * editor.rowHeight + 12 : 0) +
-      (documentation ? documentationHeight + 11 : 0) || 20,
+    diagnosticsHeight + (lineInfos.length > 0 ? lineInfos.length * editor.rowHeight + 12 : 0) + (documentation ? documentationHeight + 11 : 0) || 20,
     editor.height,
   )
   const x = Math.max(editor.x, Math.min(EditorPosition.x(editor, rowIndex, wordStart), editor.x + editor.width - hoverWidth))
