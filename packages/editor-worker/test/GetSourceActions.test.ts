@@ -36,6 +36,41 @@ test('getEditorSourceActions returns matching extension contributions', async ()
   expect(mockRpc.invocations).toEqual([['Extensions.getAllExtensions', '/assets', 7]])
 })
 
+test('getEditorSourceActions excludes contributions from disabled extensions', async () => {
+  const editorId = 123_456
+  const editor = {
+    ...emptyEditor,
+    assetDir: '/assets',
+    id: editorId,
+    languageId: 'typescript',
+    platform: 7,
+    uid: editorId,
+    widgets: [],
+  }
+  const eslintAction = {
+    command: 'Eslint.applyFix',
+    kind: 'quickfix',
+    languageId: 'typescript',
+    name: "Fix 'prefer-const' problem",
+  }
+  EditorStates.set(editorId, editor, editor)
+  using mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.getAllExtensions': () => [
+      {
+        codeActions: [
+          { command: 'Editor.organizeImports', kind: 'source.organizeImports', languageId: 'typescript', name: 'Organize Imports' },
+          { command: 'Editor.sortImports', kind: 'source.sortImports', languageId: 'typescript', name: 'Sort Imports' },
+        ],
+        disabled: true,
+      },
+      { codeActions: [eslintAction] },
+    ],
+  })
+
+  await expect(getEditorSourceActions(editorId)).resolves.toEqual([eslintAction])
+  expect(mockRpc.invocations).toEqual([['Extensions.getAllExtensions', '/assets', 7]])
+})
+
 test('getEditorSourceActions returns no actions without an editor id', async () => {
   await expect(getEditorSourceActions()).resolves.toEqual([])
 })

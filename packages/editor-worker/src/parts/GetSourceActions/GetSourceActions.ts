@@ -7,6 +7,7 @@ interface SourceAction {
 
 interface Extension {
   readonly codeActions?: readonly SourceAction[]
+  readonly disabled?: boolean
 }
 
 export const getEditorSourceActions = async (editorId?: number): Promise<readonly any[]> => {
@@ -15,5 +16,8 @@ export const getEditorSourceActions = async (editorId?: number): Promise<readonl
   }
   const { newState } = Editors.get(editorId)
   const extensions: readonly Extension[] = await ExtensionManagementWorker.invoke('Extensions.getAllExtensions', newState.assetDir, newState.platform)
-  return extensions.flatMap((extension) => extension.codeActions || []).filter((action) => action.languageId === newState.languageId)
+  return extensions
+    .filter((extension) => !extension.disabled)
+    .flatMap((extension) => extension.codeActions || [])
+    .filter((action) => action.languageId === newState.languageId)
 }
