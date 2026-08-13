@@ -23,6 +23,7 @@ import * as EditorCommandUndo from '../src/parts/EditorCommand/EditorCommandUndo
 import * as EditOrigin from '../src/parts/EditOrigin/EditOrigin.ts'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
+import * as GetDocumentEdits from '../src/parts/GetDocumentEdits/GetDocumentEdits.ts'
 
 const createChange = (text: string, columnIndex: number) => ({
   deleted: [''],
@@ -96,6 +97,30 @@ test('undo - contiguous typing group', async () => {
   const newEditor = await EditorCommandUndo.undo(editor)
 
   expect(newEditor.lines).toEqual([''])
+})
+
+test('undo - replace all with shorter text', async () => {
+  const original = 'replace me; replace me; Replace Me'
+  const documentEdits = GetDocumentEdits.getDocumentEdits({ lines: [original] }, [
+    { endOffset: 10, inserted: 'updated', startOffset: 0 },
+    { endOffset: 22, inserted: 'updated', startOffset: 12 },
+    { endOffset: 34, inserted: 'Updated', startOffset: 24 },
+  ])
+  const editor = {
+    ...emptyEditor,
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['updated; updated; Updated'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    undoStack: [documentEdits],
+  }
+
+  const newEditor = await EditorCommandUndo.undo(editor)
+
+  expect(newEditor.lines).toEqual([original])
 })
 
 test('schedule document edits - coalesces contiguous typing', async () => {
