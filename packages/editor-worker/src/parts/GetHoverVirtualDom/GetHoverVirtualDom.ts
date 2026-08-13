@@ -38,11 +38,16 @@ const getChildCount = (lineInfos: any, documentation: any, diagnostics: any): nu
   return lineInfos.length + documentationCount + diagnosticsCount
 }
 
+const getEditorHoverClassName = (lineInfos: any, documentation: any, diagnostics: any): string => {
+  const isDiagnosticOnly = diagnostics?.length === 1 && lineInfos.length === 0 && !documentation
+  return MergeClassNames.mergeClassNames('Viewlet', 'EditorHover', isDiagnosticOnly ? ClassNames.EditorHoverDiagnosticOnly : '')
+}
+
 export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnostics: any): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = []
   dom.push({
     childCount: getChildCount(lineInfos, documentation, diagnostics) + 1,
-    className: MergeClassNames.mergeClassNames('Viewlet', 'EditorHover'),
+    className: getEditorHoverClassName(lineInfos, documentation, diagnostics),
     type: VirtualDomElements.Div,
   })
   if (diagnostics && diagnostics.length > 0) {
