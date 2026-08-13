@@ -39,25 +39,6 @@ const hoverDocumentationLineHeight = '1.33333'
 const hoverWidth = 600
 const hoverDocumentationWidth = hoverWidth - 18
 
-const getDiagnosticText = (diagnostic: any): string => {
-  return `${diagnostic.message} ${diagnostic.source} (${diagnostic.code})`
-}
-
-const getDiagnosticsHeight = async (diagnostics: readonly any[], editor: any): Promise<number> => {
-  if (diagnostics.length === 0) {
-    return 0
-  }
-  const text = diagnostics.map(getDiagnosticText).join('\n')
-  const contentHeight = await MeasureTextHeight.measureTextBlockHeight(
-    text,
-    editor.fontFamily,
-    editor.fontSize,
-    `${editor.rowHeight}px`,
-    hoverDocumentationWidth,
-  )
-  return contentHeight + 10
-}
-
 export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   Assert.number(editorUid)
   const instance = Editors.get(editorUid)
@@ -90,7 +71,19 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
         hoverDocumentationWidth,
       )
     : 0
-  const diagnosticsHeight = await getDiagnosticsHeight(matchingDiagnostics, editor)
+  let diagnosticText = ''
+  for (const diagnostic of matchingDiagnostics) {
+    diagnosticText += `${diagnosticText ? '\n' : ''}${diagnostic.message} ${diagnostic.source} (${diagnostic.code})`
+  }
+  const diagnosticsHeight = diagnosticText
+    ? (await MeasureTextHeight.measureTextBlockHeight(
+        diagnosticText,
+        editor.fontFamily,
+        editor.fontSize,
+        `${editor.rowHeight}px`,
+        hoverDocumentationWidth,
+      )) + 10
+    : 0
   const height = Math.min(
     diagnosticsHeight + (lineInfos.length > 0 ? lineInfos.length * editor.rowHeight + 12 : 0) + (documentation ? documentationHeight + 11 : 0) || 20,
     editor.height,
