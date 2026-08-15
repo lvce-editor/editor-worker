@@ -7,10 +7,9 @@ import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetColorPickerBounds from '../GetColorPickerBounds/GetColorPickerBounds.ts'
 import * as GetColorPickerRange from '../GetColorPickerRange/GetColorPickerRange.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
-import { updateColorPickerValue } from '../UpdateColorPickerValue/UpdateColorPickerValue.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
-export { updateColorPickerValue }
+export { updateColorPickerValue } from '../UpdateColorPickerValue/UpdateColorPickerValue.ts'
 
 const newStateGenerator = (state: ColorPickerState, parentUid: number): Promise<ColorPickerState> => {
   return ColorPicker.loadContent(state, parentUid)
