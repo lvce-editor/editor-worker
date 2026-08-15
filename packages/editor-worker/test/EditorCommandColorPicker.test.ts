@@ -6,10 +6,19 @@ jest.unstable_mockModule('../src/parts/AddWidgetToEditor/AddWidgetToEditor.ts', 
   addWidgetToEditor: jest.fn(),
 }))
 
+jest.unstable_mockModule('../src/parts/ColorPickerWidgetFactory/ColorPickerWidgetFactory.ts', () => ({
+  create: jest.fn(),
+}))
+
+jest.unstable_mockModule('../src/parts/GetColorPickerBounds/GetColorPickerBounds.ts', () => ({
+  getColorPickerBounds: jest.fn(() => ({ height: 200, width: 300, x: 10, y: 20 })),
+}))
+
 const AddWidgetToEditor = await import('../src/parts/AddWidgetToEditor/AddWidgetToEditor.ts')
 const EditorCommandColorPicker = await import('../src/parts/EditorCommand/EditorCommandColorPicker.ts')
 const ColorPickerWidgetFactory = await import('../src/parts/ColorPickerWidgetFactory/ColorPickerWidgetFactory.ts')
 const FocusKey = await import('../src/parts/FocusKey/FocusKey.ts')
+const GetColorPickerBounds = await import('../src/parts/GetColorPickerBounds/GetColorPickerBounds.ts')
 
 beforeEach(() => {
   WidgetRevision.reset()
@@ -22,10 +31,14 @@ test('openColorPicker gives the color picker full focus', async () => {
     WidgetId.ColorPicker,
     FocusKey.ColorPicker,
     editor,
-    ColorPickerWidgetFactory.create,
+    expect.any(Function),
     expect.any(Function),
     true,
   )
+  expect(GetColorPickerBounds.getColorPickerBounds).toHaveBeenCalledWith(editor)
+  const createWidget = (AddWidgetToEditor.addWidgetToEditor as jest.Mock).mock.calls[0][3] as () => unknown
+  createWidget()
+  expect(ColorPickerWidgetFactory.create).toHaveBeenCalledWith({ height: 200, width: 300, x: 10, y: 20 })
 })
 
 test('closeColorPicker restores editor focus', () => {
