@@ -1,4 +1,5 @@
 // TODO use numeric enum
+export const ColorPicker = 'colorPicker'
 export const CompositionUpdate = 'compositionUpdate'
 export const ContentEditableInput = 'contentEditableInput'
 export const Delete = 'delete'

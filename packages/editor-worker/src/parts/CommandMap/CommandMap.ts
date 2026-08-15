@@ -388,6 +388,7 @@ export const commandMap = {
   'Editor.undo': wrapCommand(EditorUndo.undo),
   'Editor.unfold': wrapCommand(unfold),
   'Editor.unIndent': wrapCommand(Unindent.editorUnindent),
+  'Editor.updateColorPickerValue': wrapCommand(EditorOpenColorPicker.updateColorPickerValue),
   'Editor.updateDebugInfo': UpdateDebugInfo.updateDebugInfo,
   'Editor.updateDiagnostics': wrapCommand(UpdateDiagnostics.updateDiagnostics),
   'Editor.updateDiagnosticsAll': UpdateDiagnostics.updateDiagnosticsAll,
