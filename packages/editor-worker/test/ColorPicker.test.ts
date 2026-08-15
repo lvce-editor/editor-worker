@@ -1,6 +1,6 @@
 import { expect, jest, test } from '@jest/globals'
 
-const invoke = jest.fn(async (method: string) => {
+const invoke = jest.fn<(...args: readonly unknown[]) => Promise<unknown>>(async (method: unknown) => {
   if (method === 'ColorPicker.diff2') {
     return [1]
   }
