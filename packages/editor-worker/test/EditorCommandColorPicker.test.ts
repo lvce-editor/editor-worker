@@ -15,7 +15,7 @@ jest.unstable_mockModule('../src/parts/GetColorPickerBounds/GetColorPickerBounds
 }))
 
 jest.unstable_mockModule('../src/parts/GetColorPickerRange/GetColorPickerRange.ts', () => ({
-  getColorPickerRange: jest.fn(() => ({ endOffset: 20, startOffset: 10 })),
+  getColorPickerRange: jest.fn(() => ({ endOffset: 20, startOffset: 10, value: '#000' })),
 }))
 
 jest.unstable_mockModule('../src/parts/GetDocumentEdits/GetDocumentEdits.ts', () => ({
@@ -63,7 +63,11 @@ test('openColorPicker gives the color picker full focus and captures the edited 
   expect(GetColorPickerRange.getColorPickerRange).toHaveBeenCalledWith(editor)
   const createWidget = (AddWidgetToEditor.addWidgetToEditor as jest.Mock).mock.calls[0][3] as () => unknown
   createWidget()
-  expect(ColorPickerWidgetFactory.create).toHaveBeenCalledWith({ height: 200, width: 300, x: 10, y: 20 }, { endOffset: 20, startOffset: 10 }, 0)
+  expect(ColorPickerWidgetFactory.create).toHaveBeenCalledWith(
+    { height: 200, width: 300, x: 10, y: 20 },
+    { endOffset: 20, startOffset: 10, value: '#000' },
+    0,
+  )
 })
 
 test('updateColorPickerValue replaces the captured range and advances its end offset', async () => {
