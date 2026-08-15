@@ -3,11 +3,13 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 export interface ColorRange {
   readonly endOffset: number
   readonly startOffset: number
+  readonly value: string
 }
 
 const noColorRange: ColorRange = {
   endOffset: -1,
   startOffset: -1,
+  value: '',
 }
 
 const colorPattern = /#[\da-f]{3,8}\b|\b(?:hsla?|rgba?)\([^)]*\)/gi
@@ -30,9 +32,12 @@ export const getColorPickerRange = (editor: any): ColorRange => {
     return noColorRange
   }
   if (selectionStartColumn !== selectionEndColumn) {
+    const startColumn = Math.min(selectionStartColumn, selectionEndColumn)
+    const endColumn = Math.max(selectionStartColumn, selectionEndColumn)
     return {
-      endOffset: TextDocument.offsetAt(editor, rowIndex, Math.max(selectionStartColumn, selectionEndColumn)),
-      startOffset: TextDocument.offsetAt(editor, rowIndex, Math.min(selectionStartColumn, selectionEndColumn)),
+      endOffset: TextDocument.offsetAt(editor, rowIndex, endColumn),
+      startOffset: TextDocument.offsetAt(editor, rowIndex, startColumn),
+      value: line.slice(startColumn, endColumn),
     }
   }
   const columnIndex = selectionEndColumn
@@ -43,6 +48,7 @@ export const getColorPickerRange = (editor: any): ColorRange => {
       return {
         endOffset: TextDocument.offsetAt(editor, rowIndex, endColumn),
         startOffset: TextDocument.offsetAt(editor, rowIndex, startColumn),
+        value: match[0],
       }
     }
   }

@@ -7,7 +7,7 @@ test('finds a short hex color under the cursor', () => {
     lines: ['x', '  color: #000;'],
     selections: EditorSelection.fromRange(1, 11, 1, 11),
   }
-  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 15, startOffset: 11 })
+  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 15, startOffset: 11, value: '#000' })
 })
 
 test('finds a functional color under the cursor', () => {
@@ -15,7 +15,7 @@ test('finds a functional color under the cursor', () => {
     lines: ['color: hsl(240, 100%, 50%);'],
     selections: EditorSelection.fromRange(0, 15, 0, 15),
   }
-  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 26, startOffset: 7 })
+  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 26, startOffset: 7, value: 'hsl(240, 100%, 50%)' })
 })
 
 test('uses a non-empty single-line selection', () => {
@@ -23,7 +23,7 @@ test('uses a non-empty single-line selection', () => {
     lines: ['color: rgba(1, 2, 3, 0.5);'],
     selections: EditorSelection.fromRange(0, 7, 0, 25),
   }
-  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 25, startOffset: 7 })
+  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 25, startOffset: 7, value: 'rgba(1, 2, 3, 0.5)' })
 })
 
 test('returns no range when the cursor is outside a color', () => {
@@ -31,7 +31,7 @@ test('returns no range when the cursor is outside a color', () => {
     lines: ['color: #000;'],
     selections: EditorSelection.fromRange(0, 2, 0, 2),
   }
-  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: -1, startOffset: -1 })
+  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: -1, startOffset: -1, value: '' })
 })
 
 test('returns no range for a multi-line selection', () => {
@@ -39,5 +39,5 @@ test('returns no range for a multi-line selection', () => {
     lines: ['color:', '#000'],
     selections: EditorSelection.fromRange(0, 2, 1, 2),
   }
-  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: -1, startOffset: -1 })
+  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: -1, startOffset: -1, value: '' })
 })
