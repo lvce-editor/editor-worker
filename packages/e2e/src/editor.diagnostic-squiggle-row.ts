@@ -12,7 +12,7 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, W
     {
       code: 1,
       columnIndex: 0,
-      endColumnIndex: 1,
+      endColumnIndex: 0,
       endRowIndex: 1,
       message: 'error',
       rowIndex: 1,
@@ -23,5 +23,6 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, W
   ])
 
   const diagnostic = Locator('.Diagnostic')
+  await expect(diagnostic).toBeVisible()
   await expect(diagnostic).toHaveCSS('top', '20px')
 }

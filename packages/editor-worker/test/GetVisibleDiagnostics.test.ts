@@ -39,3 +39,42 @@ test('renders a diagnostic on its reported row', async () => {
     },
   ])
 })
+
+test('renders a one-character highlight for an empty diagnostic range', async () => {
+  const editor = {
+    charWidth: 8,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    letterSpacing: 0,
+    lines: ['first', 'second'],
+    minLineY: 0,
+    rowHeight: 20,
+    tabSize: 2,
+    width: 800,
+  }
+  const diagnostics = [
+    {
+      code: 1,
+      columnIndex: 2,
+      endColumnIndex: 2,
+      endRowIndex: 1,
+      message: 'error',
+      rowIndex: 1,
+      source: 'eslint',
+      type: 'error',
+      uri: '/test.yml',
+    },
+  ]
+
+  await expect(getVisibleDiagnostics(editor, diagnostics)).resolves.toEqual([
+    {
+      height: 20,
+      type: 'error',
+      width: 8,
+      x: 16,
+      y: 20,
+    },
+  ])
+})

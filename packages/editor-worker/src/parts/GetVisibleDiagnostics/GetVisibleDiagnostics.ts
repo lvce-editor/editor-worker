@@ -8,7 +8,7 @@ export const getVisibleDiagnostics = async (editor: any, diagnostics: readonly D
   const { charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, lines, minLineY, rowHeight, tabSize, width } = editor
   for (const diagnostic of diagnostics) {
     const { columnIndex, endColumnIndex, rowIndex } = diagnostic
-    const columnDelta = endColumnIndex - columnIndex
+    const columnDelta = Math.max(1, endColumnIndex - columnIndex)
     const diagnosticWidth = columnDelta * charWidth
     const endLineDifference = 0
     const halfCursorWidth = 0
