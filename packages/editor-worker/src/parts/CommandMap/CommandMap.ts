@@ -15,6 +15,7 @@ import * as EditorCommandApplyWorkspaceEdit from '../EditorCommand/EditorCommand
 import * as EditorBlur from '../EditorCommand/EditorCommandBlur.ts'
 import * as EditorBraceCompletion from '../EditorCommand/EditorCommandBraceCompletion.ts'
 import * as CancelSelection from '../EditorCommand/EditorCommandCancelSelection.ts'
+import * as ChangeSelectedValue from '../EditorCommand/EditorCommandChangeSelectedValue.ts'
 import * as EditorCommandCloseCodeGenerator from '../EditorCommand/EditorCommandCloseCodeGenerator.ts'
 import * as EditorCommandCloseCompletion from '../EditorCommand/EditorCommandCloseCompletion.ts'
 import * as EditorCommandCloseFind from '../EditorCommand/EditorCommandCloseFind.ts'
@@ -235,6 +236,7 @@ export const commandMap = {
   'Editor.cursorWordPartRight': wrapCommand(CursorWordPartRight.cursorWordPartRight),
   'Editor.cursorWordRight': wrapCommand(CursorWordRight.cursorWordRight),
   'Editor.cut': wrapCommand(Cut.cut),
+  'Editor.decrementSelection': wrapCommand(ChangeSelectedValue.decrementSelection),
   'Editor.deleteAll': wrapCommand(DeleteAll.deleteAll),
   'Editor.deleteAllLeft': wrapCommand(DeleteAllLeft.deleteAllLeft),
   'Editor.deleteAllRight': wrapCommand(DeleteAllRight.deleteAllRight),
@@ -316,6 +318,7 @@ export const commandMap = {
   'Editor.handleUriChange': wrapCommand(handleUriChange),
   'Editor.handleWheel': wrapCommand(HandleWheel.handleWheel),
   'Editor.hotReload': hotReload,
+  'Editor.incrementSelection': wrapCommand(ChangeSelectedValue.incrementSelection),
   'Editor.indendLess': wrapCommand(IndentLess.indentLess),
   'Editor.indentMore': wrapCommand(IndentMore.indentMore),
   'Editor.insertLineBreak': wrapCommand(InsertLineBreak.insertLineBreak),

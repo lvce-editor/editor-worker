@@ -118,6 +118,22 @@ test('Ctrl/Cmd+Alt+Down adds a cursor below', () => {
   })
 })
 
+test('Ctrl/Cmd+Alt+I increments the selected value', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.incrementSelection',
+    key: KeyModifier.CtrlCmd | KeyModifier.Alt | KeyCode.KeyI,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Ctrl/Cmd+Alt+D decrements the selected value', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.decrementSelection',
+    key: KeyModifier.CtrlCmd | KeyModifier.Alt | KeyCode.KeyD,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
 test('Ctrl/Cmd+Shift+Up moves lines up', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.moveLineUp',

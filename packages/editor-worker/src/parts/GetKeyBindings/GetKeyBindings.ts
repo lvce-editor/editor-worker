@@ -163,6 +163,16 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.incrementSelection',
+      key: KeyModifier.CtrlCmd | KeyModifier.Alt | KeyCode.KeyI,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.decrementSelection',
+      key: KeyModifier.CtrlCmd | KeyModifier.Alt | KeyCode.KeyD,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.deleteWordPartLeft',
       key: KeyModifier.Alt | KeyCode.Backspace,
       when: WhenExpression.FocusEditorText,
