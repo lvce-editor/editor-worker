@@ -1,8 +1,8 @@
 import * as ApplyTabCompletion from '../ApplyTabCompletion/ApplyTabCompletion.ts'
-import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as EditorIndentMore from '../EditorCommand/EditorCommandIndentMore.ts'
 import * as EditorType from '../EditorCommand/EditorCommandType.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
+import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as TabCompletion from '../TabCompletion/TabCompletion.ts'
 
 const insertTab = (editor: any) => {
