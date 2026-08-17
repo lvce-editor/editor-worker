@@ -1,18 +1,20 @@
-import { expect, jest, test } from '@jest/globals'
-import { MockRpc } from '@lvce-editor/rpc'
-import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
+import { beforeEach, expect, jest, test } from '@jest/globals'
+import { ErrorWorker, ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 
-const mockRpc = MockRpc.create({
-  commandMap: {},
-  invoke: async (method: string) => {
-    return undefined
-  },
-})
-ExtensionHost.set(mockRpc)
-RendererWorker.set(mockRpc)
+const mockEditorType = {
+  type: jest.fn(async (editor: any, text: string) => ({
+    ...editor,
+    insertedText: text,
+  })),
+}
+
+jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandType.ts', () => mockEditorType)
 
 const HandleTab = await import('../src/parts/HandleTab/HandleTab.ts')
-const TabCompletion = await import('../src/parts/TabCompletion/TabCompletion.ts')
+
+beforeEach(() => {
+  mockEditorType.type.mockClear()
+})
 
 test('handleTab - indent selection', async () => {
   const editor = {
@@ -33,9 +35,10 @@ test('handleTab - indent selection', async () => {
   })
 })
 
-test.skip('handleTab - no result', async () => {
-  // Skipped: Cannot spy on ES module exports (read-only properties)
-  const getTabCompletionSpy = jest.spyOn(TabCompletion, 'getTabCompletion').mockResolvedValue(undefined)
+test('handleTab - no result inserts a tab', async () => {
+  using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': () => ({ found: false }),
+  })
   const editor = {
     decorations: [],
     invalidStartIndex: 0,
@@ -48,9 +51,60 @@ test.skip('handleTab - no result', async () => {
     undoStack: [],
   }
   const newEditor = await HandleTab.handleTab(editor)
-  // TODO two spaces should be inserted
-  expect(newEditor).toBe(editor)
-  getTabCompletionSpy.mockRestore()
+  expect(newEditor).toEqual({
+    ...editor,
+    insertedText: '  ',
+  })
+  expect(mockEditorType.type).toHaveBeenCalledWith(editor, '  ')
+  expect(extensionManagementWorkerRpc.invocations).toEqual([
+    [
+      'Extensions.executeLanguageProvider',
+      'tab completion',
+      'provideTabCompletion',
+      {
+        documentId: undefined,
+        languageId: undefined,
+        text: 'a',
+        uri: undefined,
+      },
+      0,
+    ],
+  ])
+})
+
+test('handleTab - provider error logs the error and inserts a tab', async () => {
+  const error = new Error('HTML extension failed')
+  const prettyError = {
+    codeFrame: undefined,
+    message: error.message,
+    stack: error.stack,
+  }
+  using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': async () => {
+      throw error
+    },
+  })
+  using errorWorkerRpc = ErrorWorker.registerMockRpc({
+    'Errors.prepare': async () => prettyError,
+    'Errors.print': async () => undefined,
+  })
+  const editor = {
+    lines: ['a'],
+    selections: new Uint32Array([0, 0, 0, 0]),
+  }
+
+  const newEditor = await HandleTab.handleTab(editor)
+
+  expect(newEditor).toEqual({
+    ...editor,
+    insertedText: '  ',
+  })
+  expect(mockEditorType.type).toHaveBeenCalledWith(editor, '  ')
+  expect(extensionManagementWorkerRpc.invocations).toHaveLength(1)
+  expect(errorWorkerRpc.invocations).toEqual([
+    ['Errors.prepare', error],
+    ['Errors.print', prettyError, 'Failed to execute tab completion provider: '],
+  ])
 })
 
 test.skip('handleTab - apply result', async () => {
