@@ -15,7 +15,7 @@ export const test: Test = async ({ Command, expect, Extension, FileSystem, Locat
   const editorRow = Locator('.EditorRow', { hasText: 'visible before diagnostics' })
   await expect(editorRow).toBeVisible()
 
-  await Command.execute('ExtensionHost.executeCommand', 'pendingDiagnostics.resolve')
+  await Command.executeExtensionCommand('pendingDiagnostics.resolve')
 
   const diagnostic = Locator('.Diagnostic')
   await expect(diagnostic).toBeVisible()
