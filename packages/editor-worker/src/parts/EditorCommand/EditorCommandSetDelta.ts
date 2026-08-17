@@ -4,15 +4,9 @@ import * as Clamp from '../Clamp/Clamp.ts'
 // @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
 
-// @ts-ignore
-export const setDeltaY = (editor, deltaY) => {
-  return Editor.setDeltaY(editor, deltaY)
-}
+export const setDeltaY = Editor.setDeltaY
 
-// @ts-ignore
-export const setDeltaYFixedValue = (editor, deltaY) => {
-  return Editor.setDeltaYFixedValue(editor, deltaY)
-}
+export const setDeltaYFixedValue = Editor.setDeltaYFixedValue
 
 // @ts-ignore
 export const scrollByLines = (editor, lineCount) => {
