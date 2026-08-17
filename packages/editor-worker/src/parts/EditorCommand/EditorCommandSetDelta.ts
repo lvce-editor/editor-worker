@@ -4,9 +4,7 @@ import * as Clamp from '../Clamp/Clamp.ts'
 // @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
 
-export const setDeltaY = Editor.setDeltaY
-
-export const setDeltaYFixedValue = Editor.setDeltaYFixedValue
+export { setDeltaY, setDeltaYFixedValue } from '../Editor/Editor.ts'
 
 // @ts-ignore
 export const scrollByLines = (editor, lineCount) => {
@@ -22,11 +20,11 @@ export const setDelta = (editor, deltaMode, eventDeltaX, eventDeltaY) => {
   // @ts-ignore
   const { deltaX } = editor
   if (eventDeltaX === 0) {
-    return setDeltaY(editor, eventDeltaY)
+    return Editor.setDeltaY(editor, eventDeltaY)
   }
   const newDeltaX = Clamp.clamp(deltaX + eventDeltaX, 0, Infinity)
   return {
-    ...setDeltaY(editor, eventDeltaY),
+    ...Editor.setDeltaY(editor, eventDeltaY),
     deltaX: newDeltaX,
   }
 }
