@@ -1,0 +1,23 @@
+{
+  "browser": "dist/main.js",
+  "isolated": true,
+  "diagnosticProviders": [
+    {
+      "id": "pending-diagnostics",
+      "languageId": "pending-diagnostics"
+    }
+  ],
+  "commands": [
+    {
+      "id": "pendingDiagnostics.resolve",
+      "label": "Resolve Pending Diagnostics"
+    }
+  ],
+  "activation": ["onDiagnostic:pending-diagnostics"],
+  "languages": [
+    {
+      "id": "pending-diagnostics",
+      "extensions": [".pending-diagnostics"]
+    }
+  ]
+}
