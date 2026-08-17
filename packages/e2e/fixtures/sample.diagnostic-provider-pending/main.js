@@ -1,7 +1,4 @@
-import { activate as activateExtensionApi, registerCommand, registerDiagnosticProvider } from '@lvce-editor/api'
-
-const { promise, resolve } = Promise.withResolvers()
-let diagnosticsRequested = false
+import { activate as activateExtensionApi, exists, registerDiagnosticProvider } from '@lvce-editor/api'
 
 const diagnostic = {
   columnIndex: 0,
@@ -15,18 +12,13 @@ const diagnostic = {
 const diagnosticProvider = {
   id: 'pending-diagnostics',
   languageId: 'pending-diagnostics',
-  provideDiagnostics() {
-    diagnosticsRequested = true
-    return promise
+  async provideDiagnostics(textDocument) {
+    while (!(await exists(`${textDocument.uri}.resolve`))) {
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    }
+    return [diagnostic]
   },
 }
 
 await activateExtensionApi()
 registerDiagnosticProvider(diagnosticProvider)
-registerCommand({
-  id: 'pendingDiagnostics.resolve',
-  execute() {
-    resolve([diagnostic])
-    return diagnosticsRequested
-  },
-})
