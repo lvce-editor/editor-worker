@@ -15,6 +15,21 @@ test('includes Delete Line', () => {
   })
 })
 
+test('includes selected value commands', () => {
+  expect(getQuickPickMenuEntries()).toEqual(
+    expect.arrayContaining([
+      {
+        id: 'Editor.incrementSelection',
+        label: 'Editor: Increment Selection',
+      },
+      {
+        id: 'Editor.decrementSelection',
+        label: 'Editor: Decrement Selection',
+      },
+    ]),
+  )
+})
+
 test('includes folding commands', () => {
   expect(getQuickPickMenuEntries()).toEqual(
     expect.arrayContaining([

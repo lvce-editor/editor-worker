@@ -28,6 +28,14 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       label: EditorStrings.deleteLine(),
     },
     {
+      id: 'Editor.incrementSelection',
+      label: EditorStrings.editorIncrementSelection(),
+    },
+    {
+      id: 'Editor.decrementSelection',
+      label: EditorStrings.editorDecrementSelection(),
+    },
+    {
       id: 'Editor.format',
       label: EditorStrings.formatDocument(),
     },
