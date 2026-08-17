@@ -54,6 +54,7 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
     }
     const newEditor = await addDiagnostics(latest.newState, diagnostics)
     EditorState.set(editor.id, latest.oldState, newEditor)
+    await RendererWorker.invoke('Viewlet.requestRender', editor.id)
     await notifyDiagnosticsChange(newEditor.uri)
     return newEditor
   } catch (error) {

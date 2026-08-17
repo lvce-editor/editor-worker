@@ -1,6 +1,7 @@
 import { activate as activateExtensionApi, registerCommand, registerDiagnosticProvider } from '@lvce-editor/api'
 
 const { promise, resolve } = Promise.withResolvers()
+let diagnosticsRequested = false
 
 const diagnostic = {
   columnIndex: 0,
@@ -15,6 +16,7 @@ const diagnosticProvider = {
   id: 'pending-diagnostics',
   languageId: 'pending-diagnostics',
   provideDiagnostics() {
+    diagnosticsRequested = true
     return promise
   },
 }
@@ -25,5 +27,6 @@ registerCommand({
   id: 'pendingDiagnostics.resolve',
   execute() {
     resolve([diagnostic])
+    return diagnosticsRequested
   },
 })
