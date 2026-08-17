@@ -83,6 +83,10 @@ test('editorIndent', () => {
   expect(EditorStrings.editorIndent()).toBe('Editor: Indent')
 })
 
+test('editorIncrementSelection', () => {
+  expect(EditorStrings.editorIncrementSelection()).toBe('Editor: Increment Selection')
+})
+
 test('editorUnindent', () => {
   expect(EditorStrings.editorUnindent()).toBe('Editor: Unindent')
 })
@@ -93,6 +97,10 @@ test('editorSortLinesAscending', () => {
 
 test('editorToggleComment', () => {
   expect(EditorStrings.editorToggleComment()).toBe('Editor: Toggle Comment')
+})
+
+test('editorDecrementSelection', () => {
+  expect(EditorStrings.editorDecrementSelection()).toBe('Editor: Decrement Selection')
 })
 
 test('editorSelectUp', () => {

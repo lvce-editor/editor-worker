@@ -181,6 +181,10 @@ export const editorIndent = () => {
   return I18nString.i18nString(UiStrings.EditorIndent)
 }
 
+export const editorIncrementSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorIncrementSelection)
+}
+
 export const editorUnindent = () => {
   return I18nString.i18nString(UiStrings.EditorUnindent)
 }
@@ -191,6 +195,10 @@ export const editorSortLinesAscending = () => {
 
 export const editorToggleComment = () => {
   return I18nString.i18nString(UiStrings.EditorToggleComment)
+}
+
+export const editorDecrementSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorDecrementSelection)
 }
 
 export const editorSelectUp = () => {
