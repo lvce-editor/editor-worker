@@ -11,6 +11,7 @@ const mockEditorType = {
 jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandType.ts', () => mockEditorType)
 
 const HandleTab = await import('../src/parts/HandleTab/HandleTab.ts')
+const TabCompletion = await import('../src/parts/TabCompletion/TabCompletion.ts')
 
 beforeEach(() => {
   mockEditorType.type.mockClear()
