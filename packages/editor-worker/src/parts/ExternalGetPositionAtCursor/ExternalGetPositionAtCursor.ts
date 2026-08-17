@@ -58,6 +58,11 @@ export const getLines2 = (editorUid: number): readonly string[] => {
   return lines
 }
 
+export const getVisibleLineRange = (editorUid: number): readonly number[] => {
+  const { maxLineY, minLineY } = GetEditor.getEditor(editorUid)
+  return [minLineY, maxLineY]
+}
+
 export const getSelections2 = (editorUid: number): Uint32Array => {
   const editor = GetEditor.getEditor(editorUid)
   const { selections } = editor
