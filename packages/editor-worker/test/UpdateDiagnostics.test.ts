@@ -22,8 +22,8 @@ test('updateDiagnosticsAll refreshes every open editor', async () => {
     ],
   })
   using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => undefined,
     'Layout.handleDiagnosticsChange': async () => undefined,
-    'Viewlet.requestRender': async () => undefined,
   })
   const firstEditor = {
     diagnosticsEnabled: true,
@@ -77,9 +77,9 @@ test('updateDiagnosticsAll refreshes every open editor', async () => {
     },
   ])
   expect(rendererWorkerRpc.invocations).toEqual([
-    ['Viewlet.requestRender', 1],
+    ['Editor.renderPending', 1],
     ['Layout.handleDiagnosticsChange', 'file:///first.js'],
-    ['Viewlet.requestRender', 2],
+    ['Editor.renderPending', 2],
     ['Layout.handleDiagnosticsChange', 'file:///second.ts'],
   ])
 })
@@ -171,8 +171,8 @@ test('updateDiagnostics requests a render and notifies the renderer after storin
     'Extensions.executeDiagnosticProvider': async () => [],
   })
   using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => undefined,
     'Layout.handleDiagnosticsChange': async () => undefined,
-    'Viewlet.requestRender': async () => undefined,
   })
   const editor = {
     diagnosticsEnabled: true,
@@ -187,7 +187,7 @@ test('updateDiagnostics requests a render and notifies the renderer after storin
 
   expect(extensionManagementWorkerRpc.invocations).toHaveLength(1)
   expect(rendererWorkerRpc.invocations).toEqual([
-    ['Viewlet.requestRender', 1],
+    ['Editor.renderPending', 1],
     ['Layout.handleDiagnosticsChange', 'file:///test.ts'],
   ])
 })
