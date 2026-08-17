@@ -17,6 +17,7 @@ const extensionNames = [
   'sample.diagnostic-provider',
   'sample.diagnostic-provider-empty',
   'sample.diagnostic-provider-error',
+  'sample.diagnostic-provider-pending',
   'sample.diagnostic-provider-update-on-type',
   'write-file-error',
 ] as const

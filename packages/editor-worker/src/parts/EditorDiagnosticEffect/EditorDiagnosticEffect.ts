@@ -6,5 +6,6 @@ export const editorDiagnosticEffect = {
   apply(editor: any) {
     return UpdateDiagnostics.updateDiagnostics(editor)
   },
-  isActive: (oldEditor: EditorState, newEditor: EditorState) => newEditor.diagnosticsEnabled && oldEditor.lines !== newEditor.lines,
+  isActive: (oldEditor: EditorState, newEditor: EditorState) =>
+    !oldEditor.initial && newEditor.diagnosticsEnabled && oldEditor.lines !== newEditor.lines,
 }
