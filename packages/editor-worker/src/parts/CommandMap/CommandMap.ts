@@ -149,6 +149,7 @@ import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
 import { getCommandIds, wrapGetter } from '../EditorStates/EditorStates.ts'
+import * as ExecuteViewletCommand from '../ExecuteViewletCommand/ExecuteViewletCommand.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
@@ -187,6 +188,10 @@ import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import { wrapCommand } from '../WrapCommands/WrapCommands.ts'
+
+const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
+  return ExecuteViewletCommand.executeViewletCommand(commandMap, uid, commandId, ...args)
+}
 
 export const commandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
@@ -252,6 +257,7 @@ export const commandMap = {
   'Editor.deleteWordRight': wrapCommand(DeleteWordRight.deleteWordRight),
   'Editor.diff2': diff2,
   'Editor.dispose': DisposeEditor.disposeEditor,
+  'Editor.executeViewletCommand': executeViewletCommand,
   'Editor.executeWidgetCommand': wrapCommand(ExecuteWidgetCommand.executeWidgetCommand),
   'Editor.findAllReferences': wrapCommand(FindAllReferences.findAllReferences),
   'Editor.fold': wrapCommand(fold),
