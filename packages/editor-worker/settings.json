@@ -745,14 +745,6 @@
   },
   {
     "category": "text-editor",
-    "description": "Controls whether the minimap is shown",
-    "heading": "Minimap Enabled",
-    "id": "editor.minimapEnabled",
-    "type": 3,
-    "value": "true"
-  },
-  {
-    "category": "text-editor",
     "description": "A multiplier to be used on the deltaX and deltaY of mouse wheel scroll events",
     "heading": "Mouse Wheel Scroll Sensitivity",
     "id": "editor.mouseWheelScrollSensitivity",
