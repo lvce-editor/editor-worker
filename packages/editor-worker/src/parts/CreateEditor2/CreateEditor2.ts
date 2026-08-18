@@ -34,6 +34,7 @@ export const createEditor2 = (
     diagnosticsEnabled: false,
     differences: [],
     embeds: [],
+    endOfLineDecorations: [],
     finalDeltaY: 0,
     finalY: 0,
     focus: 0,

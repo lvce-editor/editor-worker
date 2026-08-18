@@ -8,8 +8,17 @@ export const getEditorRowsVirtualDom = (
   differences: readonly number[],
   lineNumbers = true,
   highlightedLine = -1,
+  visibleLineIndices: readonly number[] = [],
+  endOfLineDecorations: readonly { readonly rowIndex: number; readonly text: string }[] = [],
 ): readonly VirtualDomNode[] => {
-  const rowsDom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, lineNumbers, highlightedLine)
+  const rowsDom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(
+    textInfos,
+    differences,
+    lineNumbers,
+    highlightedLine,
+    visibleLineIndices,
+    endOfLineDecorations,
+  )
   return [
     {
       childCount: textInfos.length,
