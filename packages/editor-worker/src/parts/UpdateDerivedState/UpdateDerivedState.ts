@@ -2,6 +2,7 @@ import type { EditorState } from '../State/State.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import * as GetMinimapLines from '../GetMinimapLines/GetMinimapLines.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
@@ -65,6 +66,10 @@ const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorStat
   )
 }
 
+const shouldUpdateMinimapData = (oldState: EditorState, newState: EditorState): boolean => {
+  return newState.minimapEnabled && (!oldState.minimapEnabled || oldState.lines !== newState.lines || oldState.tokenizerId !== newState.tokenizerId)
+}
+
 export const updateDerivedState = async (oldState: EditorState, newState: EditorState): Promise<EditorState> => {
   const nextState = oldState.lines !== newState.lines && 'foldingRanges' in newState ? EditorFolding.updateLayout(newState, []) : newState
   let finalState = nextState
@@ -75,6 +80,22 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
       ...nextState,
       differences,
       textInfos,
+    }
+  }
+
+  if (!nextState.minimapEnabled && oldState.minimapEnabled) {
+    finalState = {
+      ...finalState,
+      minimapLines: [],
+      minimapRevision: finalState.minimapRevision + 1,
+    }
+  } else if (shouldUpdateMinimapData(oldState, nextState)) {
+    const syncIncremental = SyncIncremental.getEnabled()
+    const minimapLines = await GetMinimapLines.getMinimapLines(finalState, syncIncremental)
+    finalState = {
+      ...finalState,
+      minimapLines,
+      minimapRevision: finalState.minimapRevision + 1,
     }
   }
 

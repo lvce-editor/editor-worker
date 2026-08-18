@@ -6,7 +6,7 @@ import * as Resize from '../Resize/Resize.ts'
 
 export const handleSettingsChanged = async (state: EditorState): Promise<EditorState> => {
   const editorPreferences = await getEditorPreferences()
-  const { diagnosticsEnabled, fontFamily, fontSize, fontWeight, letterSpacing, rowHeight } = editorPreferences
+  const { diagnosticsEnabled, fontFamily, fontSize, fontWeight, letterSpacing, minimapEnabled, rowHeight } = editorPreferences
   const [charWidth, completionsOnTypeRaw] = await Promise.all([
     MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing),
     Preferences.get('editor.completionsOnType'),
@@ -20,6 +20,7 @@ export const handleSettingsChanged = async (state: EditorState): Promise<EditorS
     diagnostics: diagnosticsEnabled ? state.diagnostics : [],
     isMonospaceFont,
     itemHeight: rowHeight,
+    minimapRevision: (state.minimapRevision || 0) + (minimapEnabled ? 1 : 0),
     visualDecorations: diagnosticsEnabled ? state.visualDecorations : [],
   }
   return Resize.resize(editorWithUpdatedSettings, {}, charWidth)

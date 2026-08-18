@@ -58,11 +58,15 @@ export interface EditorState {
   readonly loadError?: string
   readonly longestLineWidth: number
   readonly maxLineY: number
+  readonly minimapEnabled: boolean
+  readonly minimapLines: readonly (readonly (number | string)[])[]
+  readonly minimapRevision: number
   readonly minimumSliderSize: number
   readonly minLineY: number
   readonly modified: boolean
   readonly numberOfLines: number
   readonly numberOfVisibleLines: number
+  readonly outerWidth: number
   readonly platform: number
   readonly primarySelectionIndex: number
   readonly redoStack: readonly any[]

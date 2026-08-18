@@ -221,6 +221,31 @@ test('getEditorVirtualDom - line numbers disabled', () => {
   expect(dom.some((node) => node.className === 'Gutter')).toBe(false)
 })
 
+test('getEditorVirtualDom - minimap enabled', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    differences: [],
+    lineNumbers: false,
+    minimapEnabled: true,
+    minimapLines: [
+      [4, 'Token Keyword'],
+      [3, 'Token String'],
+    ],
+    minLineY: 1,
+    textInfos: [],
+    uid: 42,
+  })
+
+  expect(dom[0]).toEqual(expect.objectContaining({ childCount: 2 }))
+  expect(dom).toContainEqual({
+    ariaHidden: 'true',
+    childCount: 0,
+    className: 'EditorMinimap',
+    'data-line-count': 2,
+    'data-visible-start': 1,
+    type: VirtualDomElements.Div,
+  })
+})
+
 test('getEditorVirtualDom - load error', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     differences: [],

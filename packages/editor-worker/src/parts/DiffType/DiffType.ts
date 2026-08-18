@@ -5,3 +5,4 @@ export const RenderCss = 11
 export const RenderIncremental = 12
 export const RenderWidgets = 13
 export const RenderAdditionalFocusContext = 14
+export const RenderMinimap = 15
