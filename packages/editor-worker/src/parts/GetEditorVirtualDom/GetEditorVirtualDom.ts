@@ -27,6 +27,7 @@ interface EditorVirtualDomOptions {
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
   readonly differences: readonly number[]
+  readonly endOfLineDecorations?: readonly { readonly rowIndex: number; readonly text: string }[]
   readonly finalDeltaY?: number
   readonly gutterInfos?: readonly any[]
   readonly height?: number
@@ -59,8 +60,8 @@ const getMinimapVirtualDom = (
       ariaHidden: AriaBoolean.True,
       childCount: 0,
       className: 'EditorMinimap',
-      'data-line-count': minimapLines.length,
-      'data-visible-start': minLineY,
+      'data-lineCount': minimapLines.length,
+      'data-visibleStart': minLineY,
       type: VirtualDomElements.Div,
     },
   ]
@@ -71,6 +72,7 @@ export const getEditorVirtualDom = ({
   cursorInfos = [],
   diagnostics = [],
   differences,
+  endOfLineDecorations = [],
   gutterInfos = [],
   highlightedLine = -1,
   lineNumbers = true,
@@ -118,11 +120,13 @@ export const getEditorVirtualDom = ({
       cursorInfos,
       diagnostics,
       differences,
+      endOfLineDecorations,
       highlightedLine,
       lineNumbers,
       scrollBarDiagnostics,
       selectionInfos,
       textInfos,
+      visibleLineIndices: visibleLineIndices || [],
     }),
     ...minimapDom,
   ]

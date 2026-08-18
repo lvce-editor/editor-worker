@@ -44,3 +44,24 @@ test('isEqual - returns false when selection infos change', () => {
 
   expect(DiffItems.isEqual(oldState as any, newState as any)).toBe(false)
 })
+
+test('isEqual - returns false when end of line decorations change', () => {
+  const oldState = {
+    cursorInfos: [],
+    diagnostics: [],
+    differences: [],
+    endOfLineDecorations: [],
+    highlightedLine: -1,
+    initial: false,
+    lineNumbers: true,
+    selectionInfos: [],
+    textInfos: [],
+  }
+
+  const newState = {
+    ...oldState,
+    endOfLineDecorations: [{ rowIndex: 0, text: 'Test User • Initial commit' }],
+  }
+
+  expect(DiffItems.isEqual(oldState as any, newState as any)).toBe(false)
+})

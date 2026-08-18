@@ -19,11 +19,20 @@ export const getEditorLayersVirtualDom = (
   highlightedLine = -1,
   cursorInfos: readonly any[] = [],
   diagnostics: readonly any[] = [],
+  visibleLineIndices: readonly number[] = [],
+  endOfLineDecorations: readonly { readonly rowIndex: number; readonly text: string }[] = [],
 ): readonly VirtualDomNode[] => {
   return [
     editorLayersNode,
     ...GetEditorSelectionsVirtualDom.getEditorSelectionsVirtualDom(selectionInfos),
-    ...GetEditorRowsLayerVirtualDom.getEditorRowsVirtualDom(textInfos, differences, lineNumbers, highlightedLine),
+    ...GetEditorRowsLayerVirtualDom.getEditorRowsVirtualDom(
+      textInfos,
+      differences,
+      lineNumbers,
+      highlightedLine,
+      visibleLineIndices,
+      endOfLineDecorations,
+    ),
     ...GetEditorCursorsVirtualDom.getEditorCursorsVirtualDom(cursorInfos),
     ...GetEditorDiagnosticsVirtualDom.getEditorDiagnosticsVirtualDom(diagnostics),
   ]
