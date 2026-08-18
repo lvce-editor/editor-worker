@@ -21,11 +21,11 @@ const renderLines = {
     if (incrementalEdits !== emptyIncrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
     }
-    const { differences, textInfos } = newState
+    const { differences, endOfLineDecorations, textInfos } = newState
     newState.differences = differences
     const { highlightedLine, visibleLineIndices } = newState
     const relativeLine = visibleLineIndices.indexOf(highlightedLine)
-    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
+    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine, visibleLineIndices, endOfLineDecorations)
     return [/* method */ 'setText', dom]
   },
   isEqual: (oldState: EditorState, newState: EditorState) =>
@@ -35,6 +35,7 @@ const renderLines = {
     oldState.minLineY === newState.minLineY &&
     oldState.decorations === newState.decorations &&
     oldState.embeds === newState.embeds &&
+    oldState.endOfLineDecorations === newState.endOfLineDecorations &&
     oldState.deltaX === newState.deltaX &&
     oldState.width === newState.width &&
     oldState.highlightedLine === newState.highlightedLine &&

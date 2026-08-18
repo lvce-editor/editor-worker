@@ -1,5 +1,6 @@
 import * as Assert from '../Assert/Assert.ts'
 import * as GetClickHandler from '../GetClickHandler/GetClickHandler.ts'
+import { getEditorLineDecorations } from '../GetEditorLineDecorations/GetEditorLineDecorations.ts'
 
 export const handleClickAtPosition = async (editor: any, modifier: any, rowIndex: number, columnIndex: number) => {
   Assert.object(editor)
@@ -8,5 +9,9 @@ export const handleClickAtPosition = async (editor: any, modifier: any, rowIndex
   Assert.number(columnIndex)
   const fn = GetClickHandler.getClickHandler(modifier)
   const newEditor = await fn(editor, { columnIndex, rowIndex })
-  return newEditor
+  const endOfLineDecorations = await getEditorLineDecorations(newEditor, rowIndex)
+  return {
+    ...newEditor,
+    endOfLineDecorations,
+  }
 }

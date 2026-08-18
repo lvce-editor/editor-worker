@@ -11,6 +11,7 @@ export const emptyEditor = {
   diagnostics: [],
   differences: [],
   embeds: [],
+  endOfLineDecorations: [],
   focused: false,
   foldingRanges: [],
   hasListener: false,

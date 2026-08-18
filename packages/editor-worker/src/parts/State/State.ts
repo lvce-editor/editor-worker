@@ -1,3 +1,5 @@
+import type { EditorLineDecoration } from '../EditorLineDecoration/EditorLineDecoration.ts'
+
 export interface EditorState {
   readonly additionalFocus: number
   readonly assetDir: string
@@ -21,6 +23,7 @@ export interface EditorState {
   // TODO should be immutable
   differences: any[]
   readonly embeds: any
+  readonly endOfLineDecorations: readonly EditorLineDecoration[]
   readonly finalDeltaY: number
   readonly finalY: number
   readonly focus: number

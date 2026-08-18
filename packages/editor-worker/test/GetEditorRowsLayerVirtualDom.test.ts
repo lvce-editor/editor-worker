@@ -47,3 +47,32 @@ test('getEditorRowsVirtualDom', () => {
     text('b'),
   ])
 })
+
+test('getEditorRowsVirtualDom renders decorations at the end of their visible line', () => {
+  const dom = GetEditorRowsLayerVirtualDom.getEditorRowsVirtualDom(
+    [
+      ['first', 'Token A'],
+      ['second', 'Token B'],
+    ],
+    [0, 0],
+    true,
+    -1,
+    [4, 5],
+    [{ rowIndex: 5, text: 'Test User • Initial commit' }],
+  )
+
+  expect(dom.slice(-4)).toEqual([
+    {
+      childCount: 1,
+      className: 'Token B',
+      type: VirtualDomElements.Span,
+    },
+    text('second'),
+    {
+      childCount: 1,
+      className: 'EditorLineDecoration',
+      type: VirtualDomElements.Span,
+    },
+    text('Test User • Initial commit'),
+  ])
+})
