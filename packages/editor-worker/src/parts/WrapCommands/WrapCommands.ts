@@ -5,6 +5,7 @@ import * as EditorCommandSave from '../EditorCommand/EditorCommandSave.ts'
 import { editorDiagnosticEffect } from '../EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
+import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
@@ -99,6 +100,7 @@ export const wrapCommand =
         }
         Editors.set(uid, state, finalEditor)
       }
+      await notifyEditorStatusChange(state, finalEditor)
       if (
         !initial &&
         uri === finalEditor.uri &&
