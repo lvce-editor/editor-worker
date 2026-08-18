@@ -1,5 +1,5 @@
-import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 import { expect, test } from '@jest/globals'
+import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 import { getEditorLineDecorations } from '../src/parts/GetEditorLineDecorations/GetEditorLineDecorations.ts'
 
 test('gets line decorations from extensions for the clicked row', async () => {

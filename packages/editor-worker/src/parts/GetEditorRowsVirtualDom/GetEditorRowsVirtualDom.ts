@@ -5,6 +5,12 @@ import * as Px from '../Px/Px.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
+const editorLineDecorationNode: VirtualDomNode = {
+  childCount: 1,
+  className: ClassNames.EditorLineDecoration,
+  type: VirtualDomElements.Span,
+}
+
 export const getEditorRowsVirtualDom = (
   textInfos: any,
   differences: any,
@@ -42,14 +48,7 @@ export const getEditorRowsVirtualDom = (
       )
     }
     for (const decoration of rowDecorations) {
-      dom.push(
-        {
-          childCount: 1,
-          className: ClassNames.EditorLineDecoration,
-          type: VirtualDomElements.Span,
-        },
-        text(decoration.text),
-      )
+      dom.push(editorLineDecorationNode, text(decoration.text))
     }
   }
   return dom
