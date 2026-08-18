@@ -1,4 +1,5 @@
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
+import * as EditorMinimapConstants from '../EditorMinimapConstants/EditorMinimapConstants.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 interface Dimensions {
@@ -14,8 +15,10 @@ interface ResizeState {
   readonly height: number
   readonly itemHeight: number
   readonly lines: readonly string[]
+  readonly minimapEnabled?: boolean
   readonly minimumSliderSize: number
   readonly minLineY: number
+  readonly outerWidth?: number
   readonly rowHeight: number
   readonly width: number
   readonly x: number
@@ -25,7 +28,8 @@ interface ResizeState {
 export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, columnWidth: number = state.columnWidth): T => {
   const x = dimensions.x ?? state.x
   const y = dimensions.y ?? state.y
-  const width = dimensions.width ?? state.width
+  const outerWidth = dimensions.width ?? state.outerWidth ?? state.width
+  const width = Math.max(outerWidth - (state.minimapEnabled ? EditorMinimapConstants.width : 0), 0)
   const height = dimensions.height ?? state.height
   const numberOfVisibleLines = Math.floor(height / state.itemHeight)
   if (!('foldingRanges' in state)) {
@@ -47,6 +51,7 @@ export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, 
       maxLineY,
       minLineY,
       numberOfVisibleLines,
+      ...('outerWidth' in state && { outerWidth }),
       scrollBarHeight,
       width,
       x,
@@ -58,6 +63,7 @@ export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, 
     columnWidth,
     height,
     numberOfVisibleLines,
+    ...('outerWidth' in state && { outerWidth }),
     width,
     x,
     y,

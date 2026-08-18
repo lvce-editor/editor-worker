@@ -23,7 +23,11 @@ export const emptyEditor = {
   lines: [],
   longestLineWidth: 0,
   maxLineY: 0,
+  minimapEnabled: false,
+  minimapLines: [],
+  minimapRevision: 0,
   minLineY: 0,
+  outerWidth: 0,
   redoStack: [],
   scrollBarHeight: 0,
   selectionAnchorPosition: {

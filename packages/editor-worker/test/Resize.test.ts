@@ -82,6 +82,27 @@ test('resize clamps scroll position when height increases', () => {
   })
 })
 
+test('resize reserves minimap width while preserving the outer width', () => {
+  const state = {
+    columnWidth: 9,
+    deltaY: 0,
+    height: 100,
+    itemHeight: 20,
+    lines: ['a'],
+    minimapEnabled: true,
+    minimumSliderSize: 20,
+    minLineY: 0,
+    outerWidth: 800,
+    rowHeight: 20,
+    width: 800,
+    x: 0,
+    y: 0,
+  }
+
+  expect(Resize.resize(state, {})).toEqual(expect.objectContaining({ outerWidth: 800, width: 680 }))
+  expect(Resize.resize(state, { width: 900 })).toEqual(expect.objectContaining({ outerWidth: 900, width: 780 }))
+})
+
 test('resize is available as an editor command', () => {
   expect(commandMap['Editor.resize']).toBeDefined()
 })

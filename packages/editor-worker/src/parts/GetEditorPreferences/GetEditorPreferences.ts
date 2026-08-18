@@ -16,6 +16,7 @@ export const getEditorPreferences = async () => {
     tabSize,
     letterSpacing,
     completionTriggerCharacters,
+    minimapEnabled,
   ] = await Promise.all([
     EditorPreferences.diagnosticsEnabled(),
     EditorPreferences.getFontFamily(),
@@ -31,6 +32,7 @@ export const getEditorPreferences = async () => {
     EditorPreferences.getTabSize(),
     EditorPreferences.getLetterSpacing(),
     EditorPreferences.getCompletionTriggerCharacters(),
+    EditorPreferences.getMinimapEnabled(),
   ])
   return {
     completionTriggerCharacters,
@@ -45,6 +47,7 @@ export const getEditorPreferences = async () => {
     isQuickSuggestionsEnabled,
     letterSpacing,
     lineNumbers,
+    minimapEnabled,
     rowHeight,
     tabSize,
   }

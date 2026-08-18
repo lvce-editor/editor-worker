@@ -64,6 +64,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     isQuickSuggestionsEnabled,
     letterSpacing,
     lineNumbers,
+    minimapEnabled,
     rowHeight,
     tabSize,
   } = await getEditorPreferences()
@@ -94,6 +95,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     letterSpacing,
     lineNumbers,
     loadError: '',
+    minimapEnabled,
     rowHeight,
     tabSize,
     tokenizerId: newTokenizerId,

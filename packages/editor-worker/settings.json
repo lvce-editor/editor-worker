@@ -57,9 +57,9 @@
     "category": "text-editor",
     "description": "Controls whether the minimap is shown",
     "heading": "Minimap",
-    "id": "editor.minimap",
+    "id": "editor.minimap.enabled",
     "type": 3,
-    "value": "true"
+    "value": false
   },
   {
     "category": "text-editor",
