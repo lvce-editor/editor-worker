@@ -20,6 +20,7 @@ interface EditorContentVirtualDomOptions {
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
   readonly differences: readonly number[]
+  readonly endOfLineDecorations?: readonly { readonly rowIndex: number; readonly text: string }[]
   readonly finalDeltaY?: number
   readonly height?: number
   readonly highlightedLine?: number
@@ -28,17 +29,20 @@ interface EditorContentVirtualDomOptions {
   readonly scrollBarHeight?: number
   readonly selectionInfos?: readonly any[]
   readonly textInfos: readonly any[]
+  readonly visibleLineIndices?: readonly number[]
 }
 
 export const getEditorContentVirtualDom = ({
   cursorInfos = [],
   diagnostics = [],
   differences,
+  endOfLineDecorations = [],
   highlightedLine = -1,
   lineNumbers = true,
   scrollBarDiagnostics = [],
   selectionInfos = [],
   textInfos,
+  visibleLineIndices = [],
 }: EditorContentVirtualDomOptions): readonly VirtualDomNode[] => {
   return [
     editorContentNode,
@@ -51,6 +55,8 @@ export const getEditorContentVirtualDom = ({
       highlightedLine,
       cursorInfos,
       diagnostics,
+      visibleLineIndices,
+      endOfLineDecorations,
     ),
     ...GetEditorScrollBarDiagnosticsVirtualDom.getEditorScrollBarDiagnosticsVirtualDom(scrollBarDiagnostics),
     ...GetScrollBarVirtualDom.getScrollBarVirtualDom(),
