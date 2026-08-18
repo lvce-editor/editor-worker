@@ -1,0 +1,15 @@
+{
+  "name": "@lvce-editor/editor-status-bar-e2e",
+  "version": "0.0.0-dev",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "e2e:headless": "test-with-playwright --only-extension=. --test-path=. --server-path=./server/server.js --headless --reuse-page",
+    "type-check": "tsc"
+  },
+  "devDependencies": {
+    "@lvce-editor/server-status-bar-e2e": "npm:@lvce-editor/server@0.104.9",
+    "@lvce-editor/test-with-playwright": "^22.8.0"
+  }
+}

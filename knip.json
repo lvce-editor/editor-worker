@@ -13,6 +13,10 @@
       "project": ["src/**/*.ts", "fixtures/**/*.js"],
       "ignoreFiles": ["fixtures/editor.syntax-highlighting-nested-extension/src/*.js"]
     },
+    "packages/e2e-status-bar": {
+      "entry": ["src/**/*.ts", "server/server.js"],
+      "project": ["src/**/*.ts", "server/**/*.js"]
+    },
     "packages/editor-worker": {
       "entry": ["src/editorWorkerMain.ts", "test/**/*.test.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"],
