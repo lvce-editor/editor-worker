@@ -59,8 +59,8 @@ const getMinimapVirtualDom = (
       ariaHidden: AriaBoolean.True,
       childCount: 0,
       className: 'EditorMinimap',
-      'data-line-count': minimapLines.length,
-      'data-visible-start': minLineY,
+      'data-lineCount': minimapLines.length,
+      'data-visibleStart': minLineY,
       type: VirtualDomElements.Div,
     },
   ]

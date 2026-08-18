@@ -240,8 +240,8 @@ test('getEditorVirtualDom - minimap enabled', () => {
     ariaHidden: 'true',
     childCount: 0,
     className: 'EditorMinimap',
-    'data-line-count': 2,
-    'data-visible-start': 1,
+    'data-lineCount': 2,
+    'data-visibleStart': 1,
     type: VirtualDomElements.Div,
   })
 })
