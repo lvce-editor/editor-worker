@@ -2,6 +2,7 @@ import { ViewletCommand } from '@lvce-editor/constants'
 import type { EditorState } from '../State/State.ts'
 import * as DiffAdditionalFocus from '../DiffAdditionalFocus/DiffAdditionalFocus.ts'
 import * as DiffCss from '../DiffCss/DiffCss.ts'
+import * as DiffFocus from '../DiffFocus/DiffFocus.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
@@ -57,7 +58,7 @@ const renderCss = {
 
 const renderFocus = {
   apply: (oldState: EditorState, newState: EditorState) => [/* method */ 'setFocused', newState.focused],
-  isEqual: (oldState: EditorState, newState: EditorState) => oldState.focused === newState.focused,
+  isEqual: DiffFocus.isEqual,
 }
 
 const renderFocusContext = {
