@@ -12,8 +12,8 @@
   "license": "MIT",
   "dependencies": {
     "@lvce-editor/rename-worker": "^1.36.0",
-    "@lvce-editor/server": "0.95.10",
-    "@lvce-editor/static-server": "0.95.10"
+    "@lvce-editor/server": "0.103.19",
+    "@lvce-editor/static-server": "0.103.19"
   },
   "devDependencies": {
     "@types/node": "^25.9.3"
