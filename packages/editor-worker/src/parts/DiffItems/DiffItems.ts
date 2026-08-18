@@ -5,6 +5,7 @@ export const isEqual = (oldState: EditorState, newState: EditorState): boolean =
     oldState.breakPoints === newState.breakPoints &&
     oldState.cursorInfos === newState.cursorInfos &&
     oldState.diagnostics === newState.diagnostics &&
+    oldState.endOfLineDecorations === newState.endOfLineDecorations &&
     oldState.highlightedLine === newState.highlightedLine &&
     oldState.lineNumbers === newState.lineNumbers &&
     oldState.loadError === newState.loadError &&

@@ -178,3 +178,23 @@ test('renderIncremental renders measured diagnostic decorations', () => {
     type: 6,
   })
 })
+
+test('renderIncremental renders end of line decorations', () => {
+  const initialState = createState(0, [])
+  initialState.initial = true
+  const renderedState = {
+    ...createState(0, [['const value = 1', 'Token Identifier']]),
+    endOfLineDecorations: [{ rowIndex: 0, text: 'Test User • Initial commit' }],
+  }
+
+  const command = RenderIncremental.renderIncremental(initialState, renderedState)
+
+  expect(command[2]).toContainEqual({
+    nodes: expect.arrayContaining([
+      expect.objectContaining({
+        className: 'EditorLineDecoration',
+      }),
+    ]),
+    type: 6,
+  })
+})
