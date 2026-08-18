@@ -74,6 +74,7 @@ await writeJson(join(dist, 'package.json'), packageJson)
 
 await cp(join(root, 'README.md'), join(dist, 'README.md'))
 await cp(join(root, 'LICENSE'), join(dist, 'LICENSE'))
+await cp(join(root, 'packages', 'editor-worker', 'settings.json'), join(dist, 'dist', 'settings.json'))
 
 await mkdir(join(dist, 'dist', 'api'), {
   recursive: true,
