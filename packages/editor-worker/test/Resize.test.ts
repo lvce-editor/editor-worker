@@ -103,6 +103,27 @@ test('resize reserves minimap width while preserving the outer width', () => {
   expect(Resize.resize(state, { width: 900 })).toEqual(expect.objectContaining({ outerWidth: 900, width: 780 }))
 })
 
+test('resize reserves breadcrumb height while preserving the outer height', () => {
+  const state = {
+    breadcrumbsEnabled: true,
+    columnWidth: 9,
+    deltaY: 0,
+    height: 100,
+    itemHeight: 20,
+    lines: ['a', 'b', 'c', 'd', 'e'],
+    minimumSliderSize: 20,
+    minLineY: 0,
+    outerHeight: 100,
+    rowHeight: 20,
+    width: 800,
+    x: 0,
+    y: 0,
+  }
+
+  expect(Resize.resize(state, {})).toEqual(expect.objectContaining({ height: 78, numberOfVisibleLines: 3, outerHeight: 100 }))
+  expect(Resize.resize(state, { height: 122 })).toEqual(expect.objectContaining({ height: 100, numberOfVisibleLines: 5, outerHeight: 122 }))
+})
+
 test('resize is available as an editor command', () => {
   expect(commandMap['Editor.resize']).toBeDefined()
 })

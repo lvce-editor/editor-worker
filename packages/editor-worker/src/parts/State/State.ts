@@ -1,8 +1,10 @@
+import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
 import type { EditorLineDecoration } from '../EditorLineDecoration/EditorLineDecoration.ts'
 
 export interface EditorState {
   readonly additionalFocus: number
   readonly assetDir: string
+  readonly breadcrumbsEnabled?: boolean
   readonly breakPoints: readonly number[]
   readonly canCoalesceTyping?: boolean
   readonly charWidth: number
@@ -22,6 +24,7 @@ export interface EditorState {
   readonly diagnosticsEnabled: boolean
   // TODO should be immutable
   differences: any[]
+  readonly documentSymbols?: readonly DocumentSymbol[]
   readonly embeds: any
   readonly endOfLineDecorations: readonly EditorLineDecoration[]
   readonly finalDeltaY: number
@@ -67,6 +70,7 @@ export interface EditorState {
   readonly modified: boolean
   readonly numberOfLines: number
   readonly numberOfVisibleLines: number
+  readonly outerHeight?: number
   readonly outerWidth: number
   readonly platform: number
   readonly primarySelectionIndex: number
@@ -94,6 +98,7 @@ export interface EditorState {
   readonly widgetRevision: number
   readonly widgets: readonly any[]
   readonly width: number
+  readonly workspaceUri?: string
   readonly x: number
   readonly y: number
 }

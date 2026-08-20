@@ -10,6 +10,7 @@ interface Dimensions {
 }
 
 interface ResizeState {
+  readonly breadcrumbsEnabled?: boolean
   readonly columnWidth: number
   readonly deltaY: number
   readonly height: number
@@ -18,6 +19,7 @@ interface ResizeState {
   readonly minimapEnabled?: boolean
   readonly minimumSliderSize: number
   readonly minLineY: number
+  readonly outerHeight?: number
   readonly outerWidth?: number
   readonly rowHeight: number
   readonly width: number
@@ -29,8 +31,9 @@ export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, 
   const x = dimensions.x ?? state.x
   const y = dimensions.y ?? state.y
   const outerWidth = dimensions.width ?? state.outerWidth ?? state.width
+  const outerHeight = dimensions.height ?? state.outerHeight ?? state.height
   const width = Math.max(outerWidth - (state.minimapEnabled ? EditorMinimapConstants.width : 0), 0)
-  const height = dimensions.height ?? state.height
+  const height = Math.max(outerHeight - (state.breadcrumbsEnabled ? 22 : 0), 0)
   const numberOfVisibleLines = Math.floor(height / state.itemHeight)
   if (!('foldingRanges' in state)) {
     const total = state.lines.length
@@ -52,6 +55,7 @@ export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, 
       minLineY,
       numberOfVisibleLines,
       ...('outerWidth' in state && { outerWidth }),
+      ...('outerHeight' in state && { outerHeight }),
       scrollBarHeight,
       width,
       x,
@@ -64,6 +68,7 @@ export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, 
     height,
     numberOfVisibleLines,
     ...('outerWidth' in state && { outerWidth }),
+    ...('outerHeight' in state && { outerHeight }),
     width,
     x,
     y,

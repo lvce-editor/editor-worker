@@ -201,6 +201,25 @@ test('getEditorVirtualDom - folded line numbers', () => {
   })
 })
 
+test('getEditorVirtualDom - breadcrumbs enabled', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    breadcrumbsEnabled: true,
+    differences: [],
+    documentSymbols: [],
+    lineNumbers: false,
+    lines: ['const value = 1'],
+    selections: new Uint32Array([0, 0, 0, 0]),
+    textInfos: [],
+    uid: 42,
+    uri: 'file:///workspace/src/file.ts',
+    workspaceUri: 'file:///workspace',
+  })
+
+  expect(dom[0]).toEqual(expect.objectContaining({ childCount: 2, className: 'Viewlet Editor' }))
+  expect(dom[1]).toEqual(expect.objectContaining({ ariaLabel: 'Breadcrumbs', className: 'EditorBreadcrumbs' }))
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'EditorBreadcrumb EditorBreadcrumbFile' }))
+})
+
 test('getEditorVirtualDom - line numbers disabled', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     differences: [],

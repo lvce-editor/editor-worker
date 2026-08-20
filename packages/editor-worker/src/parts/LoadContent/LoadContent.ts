@@ -4,6 +4,7 @@ import type { EditorState } from '../State/State.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
@@ -15,6 +16,14 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
+
+const getWorkspaceUri = async (): Promise<string> => {
+  try {
+    return await RendererWorker.invoke('Workspace.getPath')
+  } catch {
+    return ''
+  }
+}
 
 const getTokenizePath = (languages: readonly any[], languageId: string): string => {
   for (const language of languages) {
@@ -52,6 +61,7 @@ const getSavedHistory = (
 export const loadContent = async (state: EditorState, savedState: unknown) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
+    breadcrumbsEnabled,
     completionTriggerCharacters,
     diagnosticsEnabled,
     fontFamily,
@@ -80,6 +90,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   TokenizerMap.set(newTokenizerId, tokenizer)
   const newEditor0: EditorState = {
     ...state,
+    breadcrumbsEnabled,
     charWidth,
     completionTriggerCharacters,
     diagnosticsEnabled,
@@ -140,10 +151,21 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     decorations: linkDecorations,
   }
 
-  const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(newEditor3WithLinks, syncIncremental)
-  const newEditor4 = {
+  let documentSymbols = state.documentSymbols || []
+  let workspaceUri = state.workspaceUri || ''
+  if (breadcrumbsEnabled) {
+    ;[documentSymbols, workspaceUri] = await Promise.all([getDocumentSymbols(newEditor3WithLinks), getWorkspaceUri()])
+  }
+  const newEditor3WithBreadcrumbs = {
     ...newEditor3WithLinks,
+    documentSymbols,
+    workspaceUri,
+  }
+
+  const syncIncremental = SyncIncremental.getEnabled()
+  const { differences, textInfos } = await EditorText.getVisible(newEditor3WithBreadcrumbs, syncIncremental)
+  const newEditor4 = {
+    ...newEditor3WithBreadcrumbs,
     differences,
     focus: WhenExpression.FocusEditorText,
     focused: true,

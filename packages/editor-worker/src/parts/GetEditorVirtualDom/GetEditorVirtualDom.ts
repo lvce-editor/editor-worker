@@ -1,7 +1,9 @@
+import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as AriaBoolean from '../AriaBoolean/AriaBoolean.ts'
 import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
+import * as GetEditorBreadcrumbsVirtualDom from '../GetEditorBreadcrumbsVirtualDom/GetEditorBreadcrumbsVirtualDom.ts'
 import * as GetEditorContentVirtualDom from '../GetEditorContentVirtualDom/GetEditorContentVirtualDom.ts'
 import * as GetEditorGutterLayerVirtualDom from '../GetEditorGutterLayerVirtualDom/GetEditorGutterLayerVirtualDom.ts'
 import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
@@ -22,11 +24,13 @@ const textEditorErrorMessageNode: VirtualDomNode = {
 }
 
 interface EditorVirtualDomOptions {
+  readonly breadcrumbsEnabled?: boolean
   readonly breakPoints?: readonly number[]
   readonly cursorInfos?: readonly any[]
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
   readonly differences: readonly number[]
+  readonly documentSymbols?: readonly DocumentSymbol[]
   readonly endOfLineDecorations?: readonly { readonly rowIndex: number; readonly text: string }[]
   readonly finalDeltaY?: number
   readonly gutterInfos?: readonly any[]
@@ -34,18 +38,22 @@ interface EditorVirtualDomOptions {
   readonly highlightedLine?: number
   readonly lightBulbRowIndex?: number
   readonly lineNumbers?: boolean
+  readonly lines?: readonly string[]
   readonly loadError?: string
   readonly maxLineY?: number
   readonly minimapEnabled?: boolean
   readonly minimapLines?: readonly (readonly (number | string)[])[]
   readonly minLineY?: number
+  readonly primarySelectionIndex?: number
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
   readonly selectionInfos?: readonly any[]
   readonly selections?: any
   readonly textInfos: readonly any[]
   readonly uid: number
+  readonly uri?: string
   readonly visibleLineIndices?: readonly number[]
+  readonly workspaceUri?: string
 }
 
 const getMinimapVirtualDom = (
@@ -69,25 +77,32 @@ const getMinimapVirtualDom = (
 }
 
 export const getEditorVirtualDom = ({
+  breadcrumbsEnabled = false,
   breakPoints = [],
   cursorInfos = [],
   diagnostics = [],
   differences,
+  documentSymbols = [],
   endOfLineDecorations = [],
   gutterInfos = [],
   highlightedLine = -1,
   lightBulbRowIndex = -1,
   lineNumbers = true,
+  lines = [],
   loadError = '',
   maxLineY = 0,
   minimapEnabled = false,
   minimapLines = [],
   minLineY = 0,
+  primarySelectionIndex = 0,
   scrollBarDiagnostics = [],
   selectionInfos = [],
+  selections = new Uint32Array(),
   textInfos,
   uid,
+  uri = '',
   visibleLineIndices,
+  workspaceUri = '',
 }: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
   if (loadError) {
     return [
@@ -110,15 +125,27 @@ export const getEditorVirtualDom = ({
   const showGutter = lineNumbers || breakPoints.length > 0 || lightBulbRowIndex >= 0
   const gutterDom = showGutter ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos) : []
   const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY)
+  const breadcrumbsDom = breadcrumbsEnabled
+    ? GetEditorBreadcrumbsVirtualDom.getEditorBreadcrumbsVirtualDom({
+        breadcrumbsEnabled,
+        documentSymbols,
+        lines,
+        primarySelectionIndex,
+        selections,
+        uri,
+        workspaceUri,
+      })
+    : []
   return [
     {
-      childCount: (showGutter ? 2 : 1) + (minimapEnabled ? 1 : 0),
+      childCount: (showGutter ? 2 : 1) + (minimapEnabled ? 1 : 0) + (breadcrumbsEnabled ? 1 : 0),
       className: MergeClassNames.mergeClassNames('Viewlet', 'Editor'),
       'data-uid': uid,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
       role: AriaRoles.Code,
       type: VirtualDomElements.Div,
     },
+    ...breadcrumbsDom,
     ...gutterDom,
     ...GetEditorContentVirtualDom.getEditorContentVirtualDom({
       cursorInfos,
