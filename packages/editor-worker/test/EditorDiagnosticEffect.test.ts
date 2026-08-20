@@ -16,11 +16,11 @@ test('is inactive when the lines reference is unchanged', () => {
   expect(editorDiagnosticEffect.isActive(oldEditor as any, newEditor as any)).toBe(false)
 })
 
-test('is inactive while the initial editor content is loading', () => {
+test('is active after the initial editor content loads', () => {
   const oldEditor = { initial: true, lines: [] }
   const newEditor = { diagnosticsEnabled: true, initial: false, lines: ['text'] }
 
-  expect(editorDiagnosticEffect.isActive(oldEditor as any, newEditor as any)).toBe(false)
+  expect(editorDiagnosticEffect.isActive(oldEditor as any, newEditor as any)).toBe(true)
 })
 
 test('is active when the lines reference changes', () => {
