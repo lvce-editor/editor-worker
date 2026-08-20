@@ -12,6 +12,9 @@ const containsPosition = (diagnostic: any, rowIndex: number, columnIndex: number
   if (rowIndex < startRowIndex || rowIndex > endRowIndex) {
     return false
   }
+  if (startRowIndex === endRowIndex && startColumnIndex === endColumnIndex) {
+    return rowIndex === startRowIndex && columnIndex === startColumnIndex
+  }
   if (rowIndex === startRowIndex && columnIndex < startColumnIndex) {
     return false
   }

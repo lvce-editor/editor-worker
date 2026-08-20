@@ -123,6 +123,25 @@ test('returns no hover info outside the diagnostic range when no language hover 
   expect(result).toBeUndefined()
 })
 
+test('returns diagnostic hover info for an empty diagnostic range', async () => {
+  getHover.mockResolvedValue(undefined)
+  const emptyDiagnostic = {
+    ...diagnostic,
+    columnIndex: 20,
+    endColumnIndex: 20,
+  }
+  const emptyDiagnosticEditor = {
+    ...editor,
+    diagnostics: [emptyDiagnostic],
+  }
+  Editors.set(editor.uid, emptyDiagnosticEditor as any, emptyDiagnosticEditor as any)
+
+  await expect(GetHoverInfo.getEditorHoverInfo(editor.uid, { columnIndex: 20, rowIndex: 0 })).resolves.toEqual(
+    expect.objectContaining({ matchingDiagnostics: [emptyDiagnostic] }),
+  )
+  await expect(GetHoverInfo.getEditorHoverInfo(editor.uid, { columnIndex: 19, rowIndex: 0 })).resolves.toBeUndefined()
+})
+
 test('matches a diagnostic on each covered row but excludes its end position', async () => {
   getHover.mockResolvedValue(undefined)
   const multilineDiagnostic = {

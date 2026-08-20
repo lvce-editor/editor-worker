@@ -56,4 +56,26 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
 
   // assert
   await expect(hover).toBeHidden()
+
+  // arrange
+  await Command.execute('Editor.setDiagnostics', [
+    {
+      code: 'missing-token',
+      columnIndex: 8,
+      endColumnIndex: 8,
+      endRowIndex: 0,
+      message: 'Missing token',
+      rowIndex: 0,
+      source: 'diagnostic-test',
+      type: 'error',
+      uri,
+    },
+  ])
+
+  // act
+  await Command.execute('Editor.showHover')
+
+  // assert
+  await expect(hover).toBeVisible()
+  await expect(hover).toContainText('Missing token')
 }
