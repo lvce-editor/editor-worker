@@ -2,6 +2,7 @@ import type { EditorState } from '../State/State.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 
 export const emptyEditor = {
+  breadcrumbsEnabled: false,
   breakPoints: [],
   cursorInfos: [],
   debugEnabled: false,
@@ -10,6 +11,7 @@ export const emptyEditor = {
   deltaY: 0,
   diagnostics: [],
   differences: [],
+  documentSymbols: [],
   embeds: [],
   endOfLineDecorations: [],
   focused: false,
@@ -28,6 +30,7 @@ export const emptyEditor = {
   minimapLines: [],
   minimapRevision: 0,
   minLineY: 0,
+  outerHeight: 0,
   outerWidth: 0,
   redoStack: [],
   scrollBarHeight: 0,
@@ -47,6 +50,7 @@ export const emptyEditor = {
   uri: '',
   visibleLineIndices: [],
   width: 0,
+  workspaceUri: '',
   x: 0,
   y: 0,
 } satisfies Partial<EditorState> as unknown as EditorState

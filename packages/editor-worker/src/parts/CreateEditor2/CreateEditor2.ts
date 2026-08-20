@@ -18,6 +18,7 @@ export const createEditor2 = (
   const editor: EditorState = {
     additionalFocus: 0,
     assetDir,
+    breadcrumbsEnabled: false,
     breakPoints: [],
     charWidth: 0,
     columnWidth: 0,
@@ -33,6 +34,7 @@ export const createEditor2 = (
     diagnostics: [],
     diagnosticsEnabled: false,
     differences: [],
+    documentSymbols: [],
     embeds: [],
     endOfLineDecorations: [],
     finalDeltaY: 0,
@@ -77,6 +79,7 @@ export const createEditor2 = (
     modified: false,
     numberOfLines: 0,
     numberOfVisibleLines: 0,
+    outerHeight: height,
     outerWidth: width,
     platform,
     primarySelectionIndex: 0,
@@ -107,6 +110,7 @@ export const createEditor2 = (
     widgetRevision: 0,
     widgets: [],
     width,
+    workspaceUri: '',
     x,
     y,
   }

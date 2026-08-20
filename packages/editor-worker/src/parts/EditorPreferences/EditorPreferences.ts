@@ -15,6 +15,7 @@ const kAutoClosingBrackets = 'editor.autoclosingBrackets'
 const kFontWeight = 'editor.fontWeight'
 const kHover = 'editor.hover'
 const kMinimapEnabled = 'editor.minimap.enabled'
+const kBreadcrumbsEnabled = 'breadcrumbs.enabled'
 
 export const isAutoClosingBracketsEnabled = async () => {
   return Boolean(await Preferences.get(kAutoClosingBrackets))
@@ -85,4 +86,8 @@ export const getFontWeight = async () => {
 
 export const getMinimapEnabled = async () => {
   return (await Preferences.get(kMinimapEnabled)) ?? false
+}
+
+export const getBreadcrumbsEnabled = async () => {
+  return (await Preferences.get(kBreadcrumbsEnabled)) ?? false
 }
