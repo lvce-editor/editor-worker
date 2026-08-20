@@ -175,6 +175,23 @@ test('Ctrl/Cmd+U restores the last cursor operation', () => {
   })
 })
 
+test('F8 and Shift+F8 navigate diagnostics while the editor is focused', () => {
+  expect(GetKeyBindings.getKeyBindings()).toEqual(
+    expect.arrayContaining([
+      {
+        command: 'Editor.nextDiagnostic',
+        key: KeyCode.F8,
+        when: WhenExpression.FocusEditorText,
+      },
+      {
+        command: 'Editor.previousDiagnostic',
+        key: KeyModifier.Shift | KeyCode.F8,
+        when: WhenExpression.FocusEditorText,
+      },
+    ]),
+  )
+})
+
 test('Ctrl/Cmd+Shift+K deletes the active line', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.deleteLine',
