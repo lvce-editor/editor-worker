@@ -70,6 +70,7 @@ export interface EditorState {
   readonly outerWidth: number
   readonly platform: number
   readonly primarySelectionIndex: number
+  readonly problemNavigationDiagnostic?: any
   readonly redoStack: readonly any[]
   readonly rowHeight: number
   readonly savedSelections: readonly any[]

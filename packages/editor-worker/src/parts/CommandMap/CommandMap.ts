@@ -93,6 +93,7 @@ import * as MoveRectangleSelection from '../EditorCommand/EditorCommandMoveRecta
 import * as MoveRectangleSelectionPx from '../EditorCommand/EditorCommandMoveRectangleSelectionPx.ts'
 import * as EditorMoveSelection from '../EditorCommand/EditorCommandMoveSelection.ts'
 import * as EditorMoveSelectionPx from '../EditorCommand/EditorCommandMoveSelectionPx.ts'
+import * as EditorCommandNavigateDiagnostic from '../EditorCommand/EditorCommandNavigateDiagnostic.ts'
 import * as EditorCommandOpenCodeGenerator from '../EditorCommand/EditorCommandOpenCodeGenerator.ts'
 import * as EditorOpenCompletion from '../EditorCommand/EditorCommandOpenCompletion.ts'
 import * as OpenFind2 from '../EditorCommand/EditorCommandOpenFind2.ts'
@@ -336,6 +337,7 @@ export const commandMap = {
   'Editor.moveRectangleSelectionPx': wrapCommand(MoveRectangleSelectionPx.moveRectangleSelectionPx),
   'Editor.moveSelection': wrapCommand(EditorMoveSelection.editorMoveSelection),
   'Editor.moveSelectionPx': wrapCommand(EditorMoveSelectionPx.moveSelectionPx),
+  'Editor.nextDiagnostic': wrapCommand(EditorCommandNavigateDiagnostic.nextDiagnostic),
   'Editor.offsetAt': TextDocument.offsetAt,
   'Editor.openCodeGenerator': wrapCommand(EditorCommandOpenCodeGenerator.openCodeGenerator),
   'Editor.openColorPicker': wrapCommand(EditorOpenColorPicker.openColorPicker),
@@ -346,6 +348,7 @@ export const commandMap = {
   'Editor.organizeImports': wrapCommand(OrganizeImports.organizeImports),
   'Editor.paste': wrapCommand(EditorPaste.paste),
   'Editor.pasteText': wrapCommand(PasteText.pasteText),
+  'Editor.previousDiagnostic': wrapCommand(EditorCommandNavigateDiagnostic.previousDiagnostic),
   'Editor.redo': wrapCommand(EditorRedo.redo),
   'Editor.render': RenderEditor.renderEditor,
   'Editor.render2': render2,

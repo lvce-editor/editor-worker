@@ -32,6 +32,16 @@ const getFindWidgetFocusKeyBindings = () => {
 export const getKeyBindings = () => {
   return [
     {
+      command: 'Editor.nextDiagnostic',
+      key: KeyCode.F8,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.previousDiagnostic',
+      key: KeyModifier.Shift | KeyCode.F8,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.closeColorPicker',
       key: KeyCode.Escape,
       when: WhenExpression.FocusColorPicker,
