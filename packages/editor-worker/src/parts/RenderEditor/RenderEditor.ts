@@ -82,16 +82,17 @@ const renderDecorations = {
 
 const renderGutterInfo = {
   apply(oldState: EditorState, newState: EditorState) {
-    const { breakPoints, lineNumbers, maxLineY, minLineY, visibleLineIndices } = newState
-    if (!lineNumbers && breakPoints.length === 0) {
+    const { breakPoints, lightBulbRowIndex, lineNumbers, maxLineY, minLineY, visibleLineIndices } = newState
+    if (!lineNumbers && breakPoints.length === 0 && lightBulbRowIndex === -1) {
       return ['renderGutter', []]
     }
-    const gutterInfos = getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices)
+    const gutterInfos = getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices, lightBulbRowIndex)
     const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos)
     return ['renderGutter', dom]
   },
   isEqual: (oldState: EditorState, newState: EditorState) =>
     oldState.breakPoints === newState.breakPoints &&
+    oldState.lightBulbRowIndex === newState.lightBulbRowIndex &&
     oldState.foldingRanges === newState.foldingRanges &&
     oldState.lineNumbers === newState.lineNumbers &&
     oldState.minLineY === newState.minLineY &&

@@ -4,12 +4,21 @@ export const getGutterInfos = (
   breakPoints: readonly number[],
   showLineNumbers = true,
   lineIndices?: readonly number[],
+  lightBulbRowIndex = -1,
 ): readonly any[] => {
   const gutterInfos = []
   const rows = lineIndices || Array.from({ length: maxLineY - minLineY }, (_, index) => minLineY + index)
   for (const rowIndex of rows) {
     const lineNumber = rowIndex + 1
-    gutterInfos.push(breakPoints.includes(rowIndex) ? { isBreakpoint: true, lineNumber } : showLineNumbers ? lineNumber : '')
+    const isBreakpoint = breakPoints.includes(rowIndex)
+    const isLightBulb = rowIndex === lightBulbRowIndex
+    if (isLightBulb) {
+      gutterInfos.push({ isBreakpoint, isLightBulb: true, lineNumber })
+    } else if (isBreakpoint) {
+      gutterInfos.push({ isBreakpoint: true, lineNumber })
+    } else {
+      gutterInfos.push(showLineNumbers ? lineNumber : '')
+    }
   }
   return gutterInfos
 }

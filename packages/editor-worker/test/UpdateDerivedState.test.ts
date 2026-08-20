@@ -1,4 +1,5 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
+import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 
 const getVisibleTextMock: any = jest.fn()
 const getVisibleSelectionsMock: any = jest.fn()
@@ -196,4 +197,55 @@ test('updateDerivedState repositions diagnostics after scrolling', async () => {
   const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
 
   expect(result.visualDecorations).toEqual([{ height: 20, type: 'warning', width: 8, x: 0, y: 0 }])
+})
+
+test('updateDerivedState shows a lightbulb when the cursor moves onto a fixable diagnostic', async () => {
+  using _rpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeCodeActionProviders'() {
+      return [{ kind: 'quickfix', name: "Fix 'semi' problem" }]
+    },
+  })
+  const diagnostic = {
+    code: 'semi',
+    columnIndex: 10,
+    endColumnIndex: 10,
+    endRowIndex: 0,
+    message: 'Missing semicolon',
+    rowIndex: 0,
+    source: 'eslint',
+    type: 'error',
+    uri: 'file:///test.ts',
+  }
+  const oldState: any = {
+    cursorWidth: 2,
+    diagnostics: [diagnostic],
+    differences: [],
+    focused: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    languageId: 'typescript',
+    letterSpacing: 0,
+    lightBulbRowIndex: -1,
+    lines: ['const x=1'],
+    maxLineY: 1,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [['const x=1']],
+    uid: 1,
+    uri: 'file:///test.ts',
+    width: 100,
+  }
+  const newState = {
+    ...oldState,
+    selections: new Uint32Array([0, 10, 0, 10]),
+  }
+  getVisibleSelectionsMock.mockResolvedValue({ cursorInfos: [], selectionInfos: [] })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(result.lightBulbRowIndex).toBe(0)
 })

@@ -26,3 +26,30 @@ test('renders a breakpoint marker', () => {
     },
   ])
 })
+
+test('renders an accessible clickable lightbulb', () => {
+  expect(
+    GetEditorGutterVirtualDom.getEditorGutterVirtualDom([
+      {
+        isBreakpoint: false,
+        isLightBulb: true,
+        lineNumber: 3,
+      },
+    ]),
+  ).toEqual([
+    {
+      ariaLabel: 'Show Code Actions on line 3',
+      childCount: 1,
+      className: 'LineNumber LineNumberLightBulb MaskIconLightBulb',
+      onClick: 35,
+      role: 'button',
+      title: 'Show Code Actions on line 3',
+      type: VirtualDomElements.Span,
+    },
+    {
+      childCount: 0,
+      text: '',
+      type: VirtualDomElements.Text,
+    },
+  ])
+})
