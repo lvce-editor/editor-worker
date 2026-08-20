@@ -28,7 +28,7 @@ test('renders breadcrumb items separated by chevron icons', () => {
     type: 40,
   })
   expect(dom.filter((node) => node.className?.includes('EditorBreadcrumbSeparator'))).toHaveLength(2)
-  expect(dom).toContainEqual(expect.objectContaining({ className: 'EditorBreadcrumb EditorBreadcrumbSymbol', 'data-symbol-kind': 5 }))
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'EditorBreadcrumb EditorBreadcrumbSymbol', 'data-symbolKind': 5 }))
 })
 
 test('renders an empty breadcrumb row for an empty uri', () => {

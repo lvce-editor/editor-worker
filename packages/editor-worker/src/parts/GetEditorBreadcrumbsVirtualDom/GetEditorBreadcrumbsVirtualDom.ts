@@ -28,7 +28,7 @@ export const getEditorBreadcrumbsVirtualDom = (state: EditorBreadcrumbState): re
           breadcrumb.kind === 'symbol' ? 'EditorBreadcrumbSymbol' : 'EditorBreadcrumbFile',
         ),
         'data-kind': breadcrumb.kind,
-        ...(breadcrumb.symbolKind !== undefined && { 'data-symbol-kind': breadcrumb.symbolKind }),
+        ...(breadcrumb.symbolKind !== undefined && { 'data-symbolKind': breadcrumb.symbolKind }),
         type: VirtualDomElements.Span,
       },
       text(breadcrumb.label),
