@@ -63,6 +63,7 @@ export const createEditor2 = (
     itemHeight: 20,
     languageId: '',
     letterSpacing: 0,
+    lightBulbRowIndex: -1,
     lineCache: [],
     lineNumbers: false,
     lines: [],

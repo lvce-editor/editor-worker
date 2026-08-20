@@ -52,6 +52,7 @@ export interface EditorState {
   readonly itemHeight: number
   readonly languageId: string
   readonly letterSpacing: number
+  readonly lightBulbRowIndex: number
   readonly lineCache: readonly any[]
   readonly lineNumbers: boolean
   readonly lines: readonly string[]

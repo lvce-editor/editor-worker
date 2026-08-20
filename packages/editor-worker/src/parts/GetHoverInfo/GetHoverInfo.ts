@@ -1,4 +1,5 @@
 import * as Assert from '../Assert/Assert.ts'
+import { diagnosticContainsPosition } from '../DiagnosticContainsPosition/DiagnosticContainsPosition.ts'
 import * as GetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as EditorPosition from '../EditorCommand/EditorCommandPosition.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
@@ -7,27 +8,10 @@ import * as MeasureTextHeight from '../MeasureTextHeight/MeasureTextHeight.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as TokenizeCodeBlock from '../TokenizeCodeBlock/TokenizeCodeBlock.ts'
 
-const containsPosition = (diagnostic: any, rowIndex: number, columnIndex: number): boolean => {
-  const { columnIndex: startColumnIndex, endColumnIndex, endRowIndex, rowIndex: startRowIndex } = diagnostic
-  if (rowIndex < startRowIndex || rowIndex > endRowIndex) {
-    return false
-  }
-  if (startRowIndex === endRowIndex && startColumnIndex === endColumnIndex) {
-    return rowIndex === startRowIndex && columnIndex === startColumnIndex
-  }
-  if (rowIndex === startRowIndex && columnIndex < startColumnIndex) {
-    return false
-  }
-  if (rowIndex === endRowIndex && columnIndex >= endColumnIndex) {
-    return false
-  }
-  return true
-}
-
 const getMatchingDiagnostics = (diagnostics: any, rowIndex: number, columnIndex: number) => {
   const matching: any[] = []
   for (const diagnostic of diagnostics) {
-    if (containsPosition(diagnostic, rowIndex, columnIndex)) {
+    if (diagnosticContainsPosition(diagnostic, rowIndex, columnIndex)) {
       matching.push(diagnostic)
     }
   }

@@ -2,6 +2,7 @@ import type { EditorState } from '../State/State.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import * as GetLightBulbRowIndex from '../GetLightBulbRowIndex/GetLightBulbRowIndex.ts'
 import * as GetMinimapLines from '../GetMinimapLines/GetMinimapLines.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
@@ -45,6 +46,12 @@ const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState)
     oldState.width !== newState.width
   )
 }
+
+const shouldUpdateLightBulb = (oldState: EditorState, newState: EditorState): boolean =>
+  oldState.diagnostics !== newState.diagnostics ||
+  oldState.languageId !== newState.languageId ||
+  oldState.selections !== newState.selections ||
+  oldState.uri !== newState.uri
 
 const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorState): boolean => {
   if (oldState.textInfos !== newState.textInfos || oldState.differences !== newState.differences) {
@@ -104,6 +111,18 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
     finalState = {
       ...finalState,
       visualDecorations,
+    }
+  }
+
+  if (oldState.lines !== nextState.lines) {
+    finalState = {
+      ...finalState,
+      lightBulbRowIndex: -1,
+    }
+  } else if (shouldUpdateLightBulb(oldState, nextState)) {
+    finalState = {
+      ...finalState,
+      lightBulbRowIndex: await GetLightBulbRowIndex.getLightBulbRowIndex(finalState),
     }
   }
 

@@ -21,3 +21,15 @@ test('hides line numbers while preserving breakpoint markers', () => {
     },
   ])
 })
+
+test('marks the lightbulb row and preserves breakpoint state', () => {
+  expect(getGutterInfos(1, 4, [2], true, undefined, 2)).toEqual([
+    2,
+    {
+      isBreakpoint: true,
+      isLightBulb: true,
+      lineNumber: 3,
+    },
+    4,
+  ])
+})

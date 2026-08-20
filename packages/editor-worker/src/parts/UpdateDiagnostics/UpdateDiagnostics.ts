@@ -22,6 +22,7 @@ export const addDiagnostics = async (editor: any, diagnostics: readonly any[]): 
     ...editor,
     decorations,
     diagnostics,
+    lightBulbRowIndex: -1,
     visualDecorations,
   }
 }
