@@ -175,6 +175,23 @@ test('Ctrl/Cmd+U restores the last cursor operation', () => {
   })
 })
 
+test('Alt+Shift+Left and Alt+Shift+Right shrink and grow smart selection', () => {
+  expect(GetKeyBindings.getKeyBindings()).toEqual(
+    expect.arrayContaining([
+      {
+        command: 'Editor.selectionShrink',
+        key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.LeftArrow,
+        when: WhenExpression.FocusEditor,
+      },
+      {
+        command: 'Editor.selectionGrow',
+        key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.RightArrow,
+        when: WhenExpression.FocusEditor,
+      },
+    ]),
+  )
+})
+
 test('F8 and Shift+F8 navigate diagnostics while the editor is focused', () => {
   expect(GetKeyBindings.getKeyBindings()).toEqual(
     expect.arrayContaining([

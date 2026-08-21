@@ -114,6 +114,7 @@ import * as SelectCharacterRight from '../EditorCommand/EditorCommandSelectChara
 import * as SelectDown from '../EditorCommand/EditorCommandSelectDown.ts'
 import * as EditorSelectInsideString from '../EditorCommand/EditorCommandSelectInsideString.ts'
 import * as SelectionGrow from '../EditorCommand/EditorCommandSelectionGrow.ts'
+import * as SelectionShrink from '../EditorCommand/EditorCommandSelectionShrink.ts'
 import * as SelectLine from '../EditorCommand/EditorCommandSelectLine.ts'
 import * as SelectNextOccurrence from '../EditorCommand/EditorCommandSelectNextOccurrence.ts'
 import * as SelectPreviousOccurrence from '../EditorCommand/EditorCommandSelectPreviousOccurrence.ts'
@@ -260,6 +261,7 @@ export const commandMap = {
   'Editor.dispose': DisposeEditor.disposeEditor,
   'Editor.executeViewletCommand': executeViewletCommand,
   'Editor.executeWidgetCommand': wrapCommand(ExecuteWidgetCommand.executeWidgetCommand),
+  'Editor.expandSelection': wrapCommand(SelectionGrow.selectionGrow),
   'Editor.findAllReferences': wrapCommand(FindAllReferences.findAllReferences),
   'Editor.fold': wrapCommand(fold),
   'Editor.format': wrapCommand(EditorFormat.format),
@@ -368,6 +370,7 @@ export const commandMap = {
   'Editor.selectDown': wrapCommand(SelectDown.selectDown),
   'Editor.selectInsideString': wrapCommand(EditorSelectInsideString.selectInsideString),
   'Editor.selectionGrow': wrapCommand(SelectionGrow.selectionGrow),
+  'Editor.selectionShrink': wrapCommand(SelectionShrink.selectionShrink),
   'Editor.selectLine': wrapCommand(SelectLine.selectLine),
   'Editor.selectNextOccurrence': wrapCommand(SelectNextOccurrence.selectNextOccurrence),
   'Editor.selectPreviousOccurrence': wrapCommand(SelectPreviousOccurrence.selectPreviousOccurrence),
@@ -390,6 +393,7 @@ export const commandMap = {
   'Editor.showSourceActions': wrapCommand(EditorCommandShowSourceActions3.showSourceActions),
   'Editor.showSourceActions2': wrapCommand(EditorCommandShowSourceActions3.showSourceActions),
   'Editor.showSourceActions3': wrapCommand(EditorCommandShowSourceActions3.showSourceActions),
+  'Editor.shrinkSelection': wrapCommand(SelectionShrink.selectionShrink),
   'Editor.sortLinesAscending': wrapCommand(SortLinesAscending.sortLinesAscending),
   'Editor.tabCompletion': wrapCommand(EditorTabCompletion.tabCompletion),
   'Editor.terminate': terminate,

@@ -508,6 +508,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditor,
     },
     {
+      command: 'Editor.selectionShrink',
+      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.LeftArrow,
+      when: WhenExpression.FocusEditor,
+    },
+    {
       command: 'Editor.showSignatureHelp',
       key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.Space,
       when: WhenExpression.FocusEditorText,
