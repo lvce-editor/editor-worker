@@ -1,5 +1,5 @@
-import type { BracketPosition } from '../BracketMatching/BracketMatching.ts'
 import type { BracketMatchInfo } from '../BracketMatchInfo/BracketMatchInfo.ts'
+import type { BracketPosition } from '../BracketMatching/BracketMatching.ts'
 import type { EditorState } from '../State/State.ts'
 import * as BracketMatching from '../BracketMatching/BracketMatching.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'

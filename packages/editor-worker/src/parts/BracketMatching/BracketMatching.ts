@@ -34,9 +34,6 @@ const getCandidate = (
   columnIndex: number,
 ): { character: string; position: BracketPosition } | undefined => {
   const line = lines[rowIndex]
-  if (line === undefined) {
-    return undefined
-  }
   const characterAtCursor = line[columnIndex]
   if (characterAtCursor && (isOpeningBracket(characterAtCursor) || isClosingBracket(characterAtCursor))) {
     return {
@@ -54,27 +51,27 @@ const getCandidate = (
   return undefined
 }
 
+const getCharacter = (lines: readonly string[], position: BracketPosition): string => lines[position.rowIndex][position.columnIndex]
+
 const findForward = (lines: readonly string[], source: BracketPosition): BracketPosition | undefined => {
-  const stack: string[] = [lines[source.rowIndex][source.columnIndex]]
-  for (let rowIndex = source.rowIndex; rowIndex < lines.length; rowIndex++) {
+  const { columnIndex: sourceColumnIndex, rowIndex: sourceRowIndex } = source
+  const stack: string[] = [getCharacter(lines, source)]
+  for (let rowIndex = sourceRowIndex; rowIndex < lines.length; rowIndex++) {
     const line = lines[rowIndex]
-    const startColumnIndex = rowIndex === source.rowIndex ? source.columnIndex + 1 : 0
+    const startColumnIndex = rowIndex === sourceRowIndex ? sourceColumnIndex + 1 : 0
     for (let columnIndex = startColumnIndex; columnIndex < line.length; columnIndex++) {
       const character = line[columnIndex]
       if (isOpeningBracket(character)) {
         stack.push(character)
-        continue
-      }
-      if (!isClosingBracket(character)) {
-        continue
-      }
-      const expectedOpeningBracket = openingBrackets[character]
-      if (stack.at(-1) !== expectedOpeningBracket) {
-        return undefined
-      }
-      stack.pop()
-      if (stack.length === 0) {
-        return { columnIndex, rowIndex }
+      } else if (isClosingBracket(character)) {
+        const expectedOpeningBracket = openingBrackets[character]
+        if (stack.at(-1) !== expectedOpeningBracket) {
+          return undefined
+        }
+        stack.pop()
+        if (stack.length === 0) {
+          return { columnIndex, rowIndex }
+        }
       }
     }
   }
@@ -82,26 +79,27 @@ const findForward = (lines: readonly string[], source: BracketPosition): Bracket
 }
 
 const findBackward = (lines: readonly string[], source: BracketPosition): BracketPosition | undefined => {
-  const stack: string[] = [lines[source.rowIndex][source.columnIndex]]
-  for (let rowIndex = source.rowIndex; rowIndex >= 0; rowIndex--) {
+  const { columnIndex: sourceColumnIndex, rowIndex: sourceRowIndex } = source
+  const stack: string[] = [getCharacter(lines, source)]
+  for (let rowIndex = sourceRowIndex; rowIndex >= 0; rowIndex--) {
     const line = lines[rowIndex]
-    const startColumnIndex = rowIndex === source.rowIndex ? source.columnIndex - 1 : line.length - 1
+    let startColumnIndex = line.length - 1
+    if (rowIndex === sourceRowIndex) {
+      startColumnIndex = sourceColumnIndex - 1
+    }
     for (let columnIndex = startColumnIndex; columnIndex >= 0; columnIndex--) {
       const character = line[columnIndex]
       if (isClosingBracket(character)) {
         stack.push(character)
-        continue
-      }
-      if (!isOpeningBracket(character)) {
-        continue
-      }
-      const expectedClosingBracket = closingBrackets[character]
-      if (stack.at(-1) !== expectedClosingBracket) {
-        return undefined
-      }
-      stack.pop()
-      if (stack.length === 0) {
-        return { columnIndex, rowIndex }
+      } else if (isOpeningBracket(character)) {
+        const expectedClosingBracket = closingBrackets[character]
+        if (stack.at(-1) !== expectedClosingBracket) {
+          return undefined
+        }
+        stack.pop()
+        if (stack.length === 0) {
+          return { columnIndex, rowIndex }
+        }
       }
     }
   }
@@ -136,22 +134,19 @@ export const findEnclosingBrackets = (lines: readonly string[], rowIndex: number
       const position = { columnIndex: currentColumnIndex, rowIndex: currentRowIndex }
       if (isOpeningBracket(character)) {
         stack.push({ character, position })
-        continue
-      }
-      if (!isClosingBracket(character)) {
-        continue
-      }
-      const openingBracket = stack.at(-1)
-      if (!openingBracket || openingBracket.character !== openingBrackets[character]) {
-        stack.length = 0
-        continue
-      }
-      stack.pop()
-      if (!enclosingPair && isBefore(openingBracket.position, cursor) && isBefore(cursor, position)) {
-        enclosingPair = {
-          match: position,
-          source: openingBracket.position,
-          sourceIsBeforeCursor: false,
+      } else if (isClosingBracket(character)) {
+        const openingBracket = stack.at(-1)
+        if (!openingBracket || openingBracket.character !== openingBrackets[character]) {
+          stack.length = 0
+        } else {
+          stack.pop()
+          if (!enclosingPair && isBefore(openingBracket.position, cursor) && isBefore(cursor, position)) {
+            enclosingPair = {
+              match: position,
+              source: openingBracket.position,
+              sourceIsBeforeCursor: false,
+            }
+          }
         }
       }
     }
