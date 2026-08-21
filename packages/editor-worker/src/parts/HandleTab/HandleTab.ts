@@ -3,11 +3,11 @@ import * as EditorIndentMore from '../EditorCommand/EditorCommandIndentMore.ts'
 import * as EditorType from '../EditorCommand/EditorCommandType.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
+import { getIndentString } from '../GetIndentString/GetIndentString.ts'
 import * as TabCompletion from '../TabCompletion/TabCompletion.ts'
 
 const insertTab = (editor: any) => {
-  // TODO have setting what should be inserted on tab
-  return EditorType.type(editor, '  ')
+  return EditorType.type(editor, getIndentString(editor))
 }
 
 export const handleTab = async (editor: any) => {

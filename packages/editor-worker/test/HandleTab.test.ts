@@ -73,6 +73,34 @@ test('handleTab - no result inserts a tab', async () => {
   ])
 })
 
+test('handleTab - no result inserts a tab character when configured', async () => {
+  using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': () => ({ found: false }),
+  })
+  const editor = {
+    decorations: [],
+    insertSpaces: false,
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['a'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    primarySelectionIndex: 0,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    undoStack: [],
+  }
+
+  const newEditor = await HandleTab.handleTab(editor)
+
+  expect(newEditor).toEqual({
+    ...editor,
+    insertedText: '\t',
+  })
+  expect(mockEditorType.type).toHaveBeenCalledWith(editor, '\t')
+  expect(extensionManagementWorkerRpc.invocations).toHaveLength(1)
+})
+
 test('handleTab - provider error logs the error and inserts a tab', async () => {
   const error = new Error('HTML extension failed')
   const prettyError = {
