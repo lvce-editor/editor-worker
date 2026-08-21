@@ -134,18 +134,18 @@ test('Ctrl/Cmd+Alt+D decrements the selected value', () => {
   })
 })
 
-test('Ctrl/Cmd+Shift+Up moves lines up', () => {
+test('Alt+Up moves lines up', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.moveLineUp',
-    key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.UpArrow,
+    key: KeyModifier.Alt | KeyCode.UpArrow,
     when: WhenExpression.FocusEditorText,
   })
 })
 
-test('Ctrl/Cmd+Shift+Down moves lines down', () => {
+test('Alt+Down moves lines down', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.moveLineDown',
-    key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.DownArrow,
+    key: KeyModifier.Alt | KeyCode.DownArrow,
     when: WhenExpression.FocusEditorText,
   })
 })
