@@ -21,6 +21,7 @@ test('getEditorVirtualDom', () => {
     finalDeltaY: 80,
     gutterInfos: [1],
     height: 40,
+    scrollBarDiagnostics: [{ height: 3, top: 6, type: 'error' }],
     scrollBarHeight: 24,
     selectionInfos: [1, 2, 3, 4],
     textInfos: [['#', 'Token Comment']],
@@ -150,8 +151,15 @@ test('getEditorVirtualDom', () => {
       width: 12,
     },
     {
+      childCount: 1,
+      className: 'ScrollBarDiagnostics',
+      type: VirtualDomElements.Div,
+    },
+    {
       childCount: 0,
-      className: 'EditorScrollBarDiagnostics',
+      className: 'ScrollBarDiagnostic ScrollBarDiagnosticError',
+      height: 3,
+      top: 6,
       type: VirtualDomElements.Div,
     },
     {
