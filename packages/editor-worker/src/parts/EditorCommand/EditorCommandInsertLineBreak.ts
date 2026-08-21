@@ -1,6 +1,7 @@
 import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
+import { getIndentString } from '../GetIndentString/GetIndentString.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as Languages from '../Languages/Languages.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
@@ -23,7 +24,7 @@ const shouldIncreaseIndent = (before: any, increaseIndentRegex: any) => {
   return increaseIndentRegex.test(before)
 }
 
-const getChanges = (lines: string[], selections: any, languageConfiguration: any) => {
+const getChanges = (lines: string[], selections: any, languageConfiguration: any, indentUnit: string) => {
   const changes: any[] = []
   const selectionChanges: any[] = []
   const increaseIndentRegex = getIncreaseIndentRegex(languageConfiguration)
@@ -50,11 +51,11 @@ const getChanges = (lines: string[], selections: any, languageConfiguration: any
         changes.push({
           deleted: TextDocument.getSelectionText({ lines }, range),
           end: end,
-          inserted: ['', indent + '  ', indent],
+          inserted: ['', indent + indentUnit, indent],
           origin: EditOrigin.InsertLineBreak,
           start: start,
         })
-        selectionChanges.push(selectionStartRow + 1, indent.length + 2, selectionStartRow + 1, indent.length + 2)
+        selectionChanges.push(selectionStartRow + 1, indent.length + indentUnit.length, selectionStartRow + 1, indent.length + indentUnit.length)
       } else {
         changes.push({
           deleted: TextDocument.getSelectionText({ lines }, range),
@@ -82,6 +83,6 @@ const getChanges = (lines: string[], selections: any, languageConfiguration: any
 export const insertLineBreak = async (editor: any) => {
   const { lines, selections } = editor
   const languageConfiguration = await Languages.getLanguageConfiguration(editor)
-  const { changes, selectionChanges } = getChanges(lines, selections, languageConfiguration)
+  const { changes, selectionChanges } = getChanges(lines, selections, languageConfiguration, getIndentString(editor))
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes, selectionChanges)
 }

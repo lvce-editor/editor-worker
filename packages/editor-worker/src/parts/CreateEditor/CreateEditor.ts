@@ -8,10 +8,12 @@ import * as EditorText from '../EditorText/EditorText.ts'
 import { emptyEditor } from '../EmptyEditor/EmptyEditor.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
+import { getEndOfLine } from '../GetEndOfLine/GetEndOfLine.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
+import { normalizeLineEndings } from '../NormalizeLineEndings/NormalizeLineEndings.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
@@ -72,6 +74,7 @@ export const createEditor = async ({
     diagnostics: [],
     diagnosticsEnabled,
     differences: [],
+    endOfLine: getEndOfLine(content),
     endOfLineDecorations: [],
     finalDeltaY: 0,
     finalY: 0,
@@ -88,6 +91,7 @@ export const createEditor = async ({
     height,
     id,
     incrementalEdits: emptyIncrementalEdits,
+    insertSpaces: true,
     invalidStartIndex: 0,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
@@ -143,7 +147,7 @@ export const createEditor = async ({
 
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds(editor, x, y, width, height, 9)
-  const newEditor2 = Editor.setText(newEditor1, content)
+  const newEditor2 = Editor.setText(newEditor1, normalizeLineEndings(content))
   let newEditor3
 
   if (lineToReveal && columnToReveal) {

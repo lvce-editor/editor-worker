@@ -4,6 +4,8 @@ import * as Editor from '../Editor/Editor.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import { getEndOfLine } from '../GetEndOfLine/GetEndOfLine.ts'
+import { normalizeLineEndings } from '../NormalizeLineEndings/NormalizeLineEndings.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 
@@ -62,12 +64,14 @@ export const createStandaloneEditor = async ({
     charWidth,
     columnWidth: charWidth,
     completionsOnType: false,
+    endOfLine: getEndOfLine(content),
     focus: WhenExpression.FocusEditorText,
     focused: true,
     fontFamily,
     fontSize,
     fontWeight,
     initial: false,
+    insertSpaces: true,
     isMonospaceFont: true,
     itemHeight: rowHeight,
     languageId,
@@ -79,7 +83,7 @@ export const createStandaloneEditor = async ({
     tokenizerId,
   }
   const boundedEditor = Editor.setBounds(configuredEditor, x, y, width, height, charWidth)
-  const editorWithText = Editor.setText(boundedEditor, content)
+  const editorWithText = Editor.setText(boundedEditor, normalizeLineEndings(content))
   const { differences, textInfos } = await EditorText.getVisible(editorWithText, true)
   const editorWithVisibleText = {
     ...editorWithText,

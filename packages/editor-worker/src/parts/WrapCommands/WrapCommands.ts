@@ -69,7 +69,7 @@ export const wrapCommand =
     try {
       const oldInstance = Editors.get(uid)
       const state = oldInstance.newState
-      const { cursorUndoStack, initial, isSelecting, lines, modified, redoStack, selections, undoStack, uri } = state
+      const { cursorUndoStack, endOfLine, initial, insertSpaces, isSelecting, lines, modified, redoStack, selections, undoStack, uri } = state
       const commandResult = await fn(state, ...args)
       let newEditor = !preservesTypingCoalescing && commandResult.canCoalesceTyping ? { ...commandResult, canCoalesceTyping: false } : commandResult
       if (lines !== newEditor.lines && newEditor.cursorUndoStack?.length) {
@@ -104,7 +104,9 @@ export const wrapCommand =
       if (
         !initial &&
         uri === finalEditor.uri &&
-        (lines !== finalEditor.lines ||
+        (endOfLine !== finalEditor.endOfLine ||
+          insertSpaces !== finalEditor.insertSpaces ||
+          lines !== finalEditor.lines ||
           modified !== finalEditor.modified ||
           redoStack !== finalEditor.redoStack ||
           undoStack !== finalEditor.undoStack)
@@ -120,7 +122,9 @@ export const wrapCommand =
             ...editor,
             decorations: finalEditor.decorations,
             diagnostics: finalEditor.diagnostics,
+            endOfLine: finalEditor.endOfLine,
             incrementalEdits: emptyIncrementalEdits,
+            insertSpaces: finalEditor.insertSpaces,
             invalidStartIndex: Math.min(editor.invalidStartIndex, finalEditor.invalidStartIndex),
             lines: finalEditor.lines,
             modified: finalEditor.modified,

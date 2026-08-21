@@ -8,6 +8,8 @@ export const getEditorStatus = (editor: EditorState): EditorStatus => {
   return {
     column: columnIndex + 1,
     encoding: 'utf8',
+    endOfLine: editor.endOfLine,
+    insertSpaces: editor.insertSpaces,
     languageId: editor.languageId,
     line: rowIndex + 1,
     tabSize: editor.tabSize,

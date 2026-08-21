@@ -7,7 +7,9 @@ import * as NotifyListeners from '../NotifyListeners/NotifyListeners.ts'
 const equals = (oldStatus: EditorStatus, newStatus: EditorStatus): boolean => {
   return (
     oldStatus.column === newStatus.column &&
+    oldStatus.endOfLine === newStatus.endOfLine &&
     oldStatus.encoding === newStatus.encoding &&
+    oldStatus.insertSpaces === newStatus.insertSpaces &&
     oldStatus.languageId === newStatus.languageId &&
     oldStatus.line === newStatus.line &&
     oldStatus.tabSize === newStatus.tabSize

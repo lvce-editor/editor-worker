@@ -6,6 +6,7 @@ const kFontFamily = 'editor.fontFamily'
 const kLetterSpacing = 'editor.letterSpacing'
 const kLinks = 'editor.links'
 const kTabSize = 'editor.tabSize'
+const kInsertSpaces = 'editor.insertSpaces'
 const kLineNumbers = 'editor.lineNumbers'
 const kFormatOnSave = 'editor.formatOnSave'
 const kDiagnostics = 'editor.diagnostics'
@@ -58,6 +59,10 @@ export const getLetterSpacing = async () => {
 
 export const getTabSize = async () => {
   return (await Preferences.get(kTabSize)) || 2
+}
+
+export const getInsertSpaces = async () => {
+  return (await Preferences.get(kInsertSpaces)) ?? true
 }
 
 export const getLinks = async () => {
