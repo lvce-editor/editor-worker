@@ -5,6 +5,10 @@ test('goToDefinition', () => {
   expect(EditorStrings.goToDefinition()).toBe('Go to Definition')
 })
 
+test('goToBracket', () => {
+  expect(EditorStrings.goToBracket()).toBe('Go to Bracket')
+})
+
 test('noDefinitionFound', () => {
   expect(EditorStrings.noDefinitionFound()).toBe('No definition found')
 })
@@ -77,6 +81,10 @@ test('editorGoToTypeDefinition', () => {
 
 test('editorSelectInsideString', () => {
   expect(EditorStrings.editorSelectInsideString()).toBe('Editor: Select Inside String')
+})
+
+test('selectToBracket', () => {
+  expect(EditorStrings.selectToBracket()).toBe('Select to Bracket')
 })
 
 test('editorIndent', () => {

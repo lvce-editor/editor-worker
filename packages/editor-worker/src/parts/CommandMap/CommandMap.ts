@@ -57,6 +57,7 @@ import * as FindAllReferences from '../EditorCommand/EditorCommandFindAllReferen
 import { fold } from '../EditorCommand/EditorCommandFold.ts'
 import * as EditorFormat from '../EditorCommand/EditorCommandFormat.ts'
 import * as GetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
+import * as EditorGoToBracket from '../EditorCommand/EditorCommandGoToBracket.ts'
 import * as EditorGoToDefinition from '../EditorCommand/EditorCommandGoToDefinition.ts'
 import * as EditorGoToTypeDefinition from '../EditorCommand/EditorCommandGoToTypeDefinition.ts'
 import { handleClickAtPosition } from '../EditorCommand/EditorCommandHandleClickAtPosition.ts'
@@ -118,6 +119,7 @@ import * as SelectionShrink from '../EditorCommand/EditorCommandSelectionShrink.
 import * as SelectLine from '../EditorCommand/EditorCommandSelectLine.ts'
 import * as SelectNextOccurrence from '../EditorCommand/EditorCommandSelectNextOccurrence.ts'
 import * as SelectPreviousOccurrence from '../EditorCommand/EditorCommandSelectPreviousOccurrence.ts'
+import * as SelectToBracket from '../EditorCommand/EditorCommandSelectToBracket.ts'
 import * as SelectUp from '../EditorCommand/EditorCommandSelectUp.ts'
 import * as SelectWord from '../EditorCommand/EditorCommandSelectWord.ts'
 import * as SelectWordLeft from '../EditorCommand/EditorCommandSelectWordLeft.ts'
@@ -289,6 +291,7 @@ export const commandMap = {
   'Editor.getWordAtOffset2': ExternalGetPositionAtCursor.getWordAtOffset2,
   'Editor.getWordBefore': GetWordAt.getWordBefore,
   'Editor.getWordBefore2': ExternalGetPositionAtCursor.getWordBefore2,
+  'Editor.goToBracket': wrapCommand(EditorGoToBracket.goToBracket),
   'Editor.goToDefinition': wrapCommand(EditorGoToDefinition.goToDefinition),
   'Editor.goToTypeDefinition': wrapCommand(EditorGoToTypeDefinition.goToTypeDefinition),
   'Editor.handleBeforeInput': wrapCommand(HandleBeforeInput.handleBeforeInput, true),
@@ -374,6 +377,7 @@ export const commandMap = {
   'Editor.selectLine': wrapCommand(SelectLine.selectLine),
   'Editor.selectNextOccurrence': wrapCommand(SelectNextOccurrence.selectNextOccurrence),
   'Editor.selectPreviousOccurrence': wrapCommand(SelectPreviousOccurrence.selectPreviousOccurrence),
+  'Editor.selectToBracket': wrapCommand(SelectToBracket.selectToBracket),
   'Editor.selectUp': wrapCommand(SelectUp.selectUp),
   'Editor.selectWord': wrapCommand(SelectWord.selectWord),
   'Editor.selectWordLeft': wrapCommand(SelectWordLeft.selectWordLeft),

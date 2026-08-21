@@ -5,6 +5,7 @@ import * as DiffCss from '../DiffCss/DiffCss.ts'
 import * as DiffFocus from '../DiffFocus/DiffFocus.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
+import * as GetBracketMatchesVirtualDom from '../GetBracketMatchesVirtualDom/GetBracketMatchesVirtualDom.ts'
 import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
 import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
@@ -74,10 +75,13 @@ const renderAdditionalFocusContext = {
 
 const renderDecorations = {
   apply(oldState: EditorState, newState: EditorState) {
-    const dom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(newState.visualDecorations || [])
+    const diagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(newState.visualDecorations || [])
+    const bracketMatchesDom = GetBracketMatchesVirtualDom.getBracketMatchesVirtualDom(newState.bracketMatchInfos || [])
+    const dom = [...diagnosticsDom, ...bracketMatchesDom]
     return ['setDecorationsDom', dom]
   },
-  isEqual: (oldState: EditorState, newState: EditorState) => oldState.visualDecorations === newState.visualDecorations,
+  isEqual: (oldState: EditorState, newState: EditorState) =>
+    oldState.visualDecorations === newState.visualDecorations && oldState.bracketMatchInfos === newState.bracketMatchInfos,
 }
 
 const renderGutterInfo = {

@@ -5,6 +5,10 @@ export const goToDefinition = () => {
   return I18nString.i18nString(UiStrings.GoToDefinition)
 }
 
+export const goToBracket = () => {
+  return I18nString.i18nString(UiStrings.GoToBracket)
+}
+
 export const noDefinitionFound = () => {
   return I18nString.i18nString(UiStrings.NoDefinitionFound)
 }
@@ -123,6 +127,10 @@ export const separator = () => {
 
 export const selectAll = () => {
   return I18nString.i18nString(UiStrings.SelectAll)
+}
+
+export const selectToBracket = () => {
+  return I18nString.i18nString(UiStrings.SelectToBracket)
 }
 
 export const copyLineUp = () => {

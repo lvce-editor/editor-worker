@@ -238,6 +238,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.goToBracket',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.Backslash,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.closeFind',
       key: KeyCode.Escape,
       when: WhenExpression.FocusFindWidget,

@@ -1,9 +1,11 @@
+import type { BracketMatchInfo } from '../BracketMatchInfo/BracketMatchInfo.ts'
 import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
 import type { EditorLineDecoration } from '../EditorLineDecoration/EditorLineDecoration.ts'
 
 export interface EditorState {
   readonly additionalFocus: number
   readonly assetDir: string
+  readonly bracketMatchInfos: readonly BracketMatchInfo[]
   readonly breadcrumbsEnabled?: boolean
   readonly breakPoints: readonly number[]
   readonly canCoalesceTyping?: boolean

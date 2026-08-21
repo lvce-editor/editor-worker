@@ -45,6 +45,21 @@ test('includes folding commands', () => {
   )
 })
 
+test('includes bracket navigation commands', () => {
+  expect(getQuickPickMenuEntries()).toEqual(
+    expect.arrayContaining([
+      {
+        id: 'Editor.goToBracket',
+        label: 'Go to Bracket',
+      },
+      {
+        id: 'Editor.selectToBracket',
+        label: 'Select to Bracket',
+      },
+    ]),
+  )
+})
+
 test('includes undo commands', () => {
   expect(getQuickPickMenuEntries()).toEqual(
     expect.arrayContaining([

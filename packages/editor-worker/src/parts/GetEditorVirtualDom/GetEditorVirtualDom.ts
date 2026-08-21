@@ -24,6 +24,7 @@ const textEditorErrorMessageNode: VirtualDomNode = {
 }
 
 interface EditorVirtualDomOptions {
+  readonly bracketMatchInfos?: readonly any[]
   readonly breadcrumbsEnabled?: boolean
   readonly breakPoints?: readonly number[]
   readonly cursorInfos?: readonly any[]
@@ -77,6 +78,7 @@ const getMinimapVirtualDom = (
 }
 
 export const getEditorVirtualDom = ({
+  bracketMatchInfos = [],
   breadcrumbsEnabled = false,
   breakPoints = [],
   cursorInfos = [],
@@ -148,6 +150,7 @@ export const getEditorVirtualDom = ({
     ...breadcrumbsDom,
     ...gutterDom,
     ...GetEditorContentVirtualDom.getEditorContentVirtualDom({
+      bracketMatchInfos,
       cursorInfos,
       diagnostics,
       differences,

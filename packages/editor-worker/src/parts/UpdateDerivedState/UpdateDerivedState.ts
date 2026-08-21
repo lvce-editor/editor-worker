@@ -4,6 +4,7 @@ import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import * as GetLightBulbRowIndex from '../GetLightBulbRowIndex/GetLightBulbRowIndex.ts'
 import * as GetMinimapLines from '../GetMinimapLines/GetMinimapLines.ts'
+import * as GetVisibleBracketMatches from '../GetVisibleBracketMatches/GetVisibleBracketMatches.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
@@ -41,6 +42,30 @@ const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState)
     oldState.isMonospaceFont !== newState.isMonospaceFont ||
     oldState.letterSpacing !== newState.letterSpacing ||
     oldState.lines !== newState.lines ||
+    oldState.rowHeight !== newState.rowHeight ||
+    oldState.tabSize !== newState.tabSize ||
+    oldState.width !== newState.width
+  )
+}
+
+const shouldUpdateBracketMatchData = (oldState: EditorState, newState: EditorState): boolean => {
+  if (!('bracketMatchInfos' in newState)) {
+    return false
+  }
+  return (
+    oldState.selections !== newState.selections ||
+    oldState.lines !== newState.lines ||
+    oldState.minLineY !== newState.minLineY ||
+    oldState.maxLineY !== newState.maxLineY ||
+    oldState.visibleLineIndices !== newState.visibleLineIndices ||
+    oldState.foldingRanges !== newState.foldingRanges ||
+    oldState.differences !== newState.differences ||
+    oldState.charWidth !== newState.charWidth ||
+    oldState.fontFamily !== newState.fontFamily ||
+    oldState.fontSize !== newState.fontSize ||
+    oldState.fontWeight !== newState.fontWeight ||
+    oldState.isMonospaceFont !== newState.isMonospaceFont ||
+    oldState.letterSpacing !== newState.letterSpacing ||
     oldState.rowHeight !== newState.rowHeight ||
     oldState.tabSize !== newState.tabSize ||
     oldState.width !== newState.width
@@ -103,6 +128,13 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
       ...finalState,
       minimapLines,
       minimapRevision: finalState.minimapRevision + 1,
+    }
+  }
+
+  if (shouldUpdateBracketMatchData(oldState, finalState)) {
+    finalState = {
+      ...finalState,
+      bracketMatchInfos: await GetVisibleBracketMatches.getVisibleBracketMatches(finalState),
     }
   }
 

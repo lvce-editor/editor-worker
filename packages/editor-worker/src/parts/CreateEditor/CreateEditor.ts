@@ -57,6 +57,7 @@ export const createEditor = async ({
   const computedlanguageId = getLanguageId(uri, languages)
   const editor = {
     assetDir,
+    bracketMatchInfos: [],
     breakPoints: [],
     charWidth,
     columnWidth: 0,

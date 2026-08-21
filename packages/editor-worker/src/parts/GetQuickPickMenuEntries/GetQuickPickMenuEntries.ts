@@ -60,12 +60,20 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       label: EditorStrings.editorGoToDefinition(),
     },
     {
+      id: 'Editor.goToBracket',
+      label: EditorStrings.goToBracket(),
+    },
+    {
       id: 'Editor.goToTypeDefinition',
       label: EditorStrings.editorGoToTypeDefinition(),
     },
     {
       id: 'Editor.selectInsideString',
       label: EditorStrings.editorSelectInsideString(),
+    },
+    {
+      id: 'Editor.selectToBracket',
+      label: EditorStrings.selectToBracket(),
     },
     {
       aliases: ['Indent More', 'DeIndent'],

@@ -21,6 +21,7 @@ export const getEditorLayersVirtualDom = (
   diagnostics: readonly any[] = [],
   visibleLineIndices: readonly number[] = [],
   endOfLineDecorations: readonly { readonly rowIndex: number; readonly text: string }[] = [],
+  bracketMatchInfos: readonly any[] = [],
 ): readonly VirtualDomNode[] => {
   return [
     editorLayersNode,
@@ -34,6 +35,6 @@ export const getEditorLayersVirtualDom = (
       endOfLineDecorations,
     ),
     ...GetEditorCursorsVirtualDom.getEditorCursorsVirtualDom(cursorInfos),
-    ...GetEditorDiagnosticsVirtualDom.getEditorDiagnosticsVirtualDom(diagnostics),
+    ...GetEditorDiagnosticsVirtualDom.getEditorDiagnosticsVirtualDom(diagnostics, bracketMatchInfos),
   ]
 }

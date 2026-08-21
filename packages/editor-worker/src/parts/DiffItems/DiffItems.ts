@@ -4,6 +4,7 @@ export const isEqual = (oldState: EditorState, newState: EditorState): boolean =
   return (
     oldState.breadcrumbsEnabled === newState.breadcrumbsEnabled &&
     oldState.breakPoints === newState.breakPoints &&
+    oldState.bracketMatchInfos === newState.bracketMatchInfos &&
     oldState.cursorInfos === newState.cursorInfos &&
     oldState.diagnostics === newState.diagnostics &&
     oldState.documentSymbols === newState.documentSymbols &&
