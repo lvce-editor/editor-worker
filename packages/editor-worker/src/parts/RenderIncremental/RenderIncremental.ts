@@ -2,10 +2,11 @@ import { ViewletCommand } from '@lvce-editor/constants'
 import { type VirtualDomNode, diffTree } from '@lvce-editor/virtual-dom-worker'
 import type { EditorState } from '../State/State.ts'
 import { getEditorVirtualDom } from '../GetEditorVirtualDom/GetEditorVirtualDom.ts'
+import { getScrollBarDiagnostics } from '../GetScrollBarDiagnostics/GetScrollBarDiagnostics.ts'
 import * as RenderedDoms from '../RenderedDoms/RenderedDoms.ts'
 
 const getDom = (state: EditorState): readonly VirtualDomNode[] => {
-  const { initial, textInfos, visualDecorations = [] } = state
+  const { diagnostics = [], initial, textInfos, visualDecorations = [] } = state
   if (initial && textInfos.length === 0) {
     return []
   }
@@ -13,6 +14,7 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
   return getEditorVirtualDom({
     ...state,
     diagnostics: visualDecorations,
+    scrollBarDiagnostics: getScrollBarDiagnostics(state, diagnostics),
   })
 }
 
