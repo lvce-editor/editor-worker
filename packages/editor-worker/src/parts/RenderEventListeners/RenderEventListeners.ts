@@ -66,6 +66,7 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
         EventExpression.ClientX,
         EventExpression.ClientY,
         'event.detail',
+        'event.currentTarget.offsetLeft',
       ],
       trackPointerEvents: [DomEventListenerFunctions.HandlePointerMove, DomEventListenerFunctions.HandlePointerUp],
     },

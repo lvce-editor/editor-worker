@@ -40,6 +40,31 @@ test('at - accounts for editor x and deltaX', async () => {
   })
 })
 
+test('at - accounts for gutter width', async () => {
+  const editor = {
+    charWidth: 10,
+    deltaX: 0,
+    deltaY: 0,
+    differences: [0],
+    fontFamily: 'test',
+    fontSize: 16,
+    fontWeight: 400,
+    gutterWidth: 30,
+    isMonospaceFont: true,
+    letterSpacing: 0,
+    lines: ['abcdef'],
+    rowHeight: 20,
+    tabSize: 2,
+    x: 100,
+    y: 50,
+  }
+  const position = await EditorCommandPosition.at(editor, 131, 55)
+  expect(position).toEqual({
+    columnIndex: 0,
+    rowIndex: 0,
+  })
+})
+
 test('at - maps a visual row after a folded range to its document row', async () => {
   const editor = {
     charWidth: 10,

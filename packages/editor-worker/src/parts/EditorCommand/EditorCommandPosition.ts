@@ -15,6 +15,7 @@ export const at = async (editor: any, eventX: number, eventY: number) => {
     fontFamily,
     fontSize,
     fontWeight,
+    gutterWidth = 0,
     isMonospaceFont,
     letterSpacing,
     lines,
@@ -31,7 +32,7 @@ export const at = async (editor: any, eventX: number, eventY: number) => {
     }
   }
   const rowIndex = EditorFolding.getDocumentRowForVisualRow(visualRowIndex, foldingRanges)
-  const relativeX = eventX - x + deltaX
+  const relativeX = eventX - x - gutterWidth + deltaX
   const clampedRowIndex = Clamp.clamp(rowIndex, 0, lines.length - 1)
   const line = lines[clampedRowIndex]
   const columnIndex = await GetAccurateColumnIndex.getAccurateColumnIndex(

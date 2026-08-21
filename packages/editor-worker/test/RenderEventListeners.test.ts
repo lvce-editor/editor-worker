@@ -18,6 +18,23 @@ test('renderEventListeners - handles Alt key release', () => {
   })
 })
 
+test('renderEventListeners - captures the editor gutter width on pointer down', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandlePointerDown,
+    params: [
+      'handlePointerDown',
+      'event.button',
+      'event.altKey',
+      'event.ctrlKey',
+      EventExpression.ClientX,
+      EventExpression.ClientY,
+      'event.detail',
+      'event.currentTarget.offsetLeft',
+    ],
+    trackPointerEvents: [DomEventListenerFunctions.HandlePointerMove, DomEventListenerFunctions.HandlePointerUp],
+  })
+})
+
 test.skip('renderEventListeners', () => {
   const eventListeners = RenderEventListeners.renderEventListeners()
   expect(eventListeners).toEqual([
