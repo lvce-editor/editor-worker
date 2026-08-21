@@ -8,6 +8,14 @@ export const handlePointerDown = async (
   x: number,
   y: number,
   detail: number,
+  gutterWidth: number = state.gutterWidth ?? 0,
 ): Promise<EditorState> => {
-  return state
+  const currentGutterWidth = state.gutterWidth ?? 0
+  if (currentGutterWidth === gutterWidth) {
+    return state
+  }
+  return {
+    ...state,
+    gutterWidth,
+  }
 }
