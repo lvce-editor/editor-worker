@@ -37,6 +37,13 @@ test('renderCss', () => {
   user-select: none;
 }
 .Editor[data-uid="1"] .R{background-color:#add6ff40}
+.Editor[data-uid="1"] .BracketMatch {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid var(--EditorBracketMatchBorder, rgba(128, 128, 128, 0.8));
+  background: var(--EditorBracketMatchBackground, rgba(128, 128, 128, 0.25));
+  pointer-events: none;
+}
 .Editor[data-uid="1"] .ScrollBarThumbVertical {
   height: var(--ScrollBarHeight);
   translate: 0px var(--ScrollBarTop);

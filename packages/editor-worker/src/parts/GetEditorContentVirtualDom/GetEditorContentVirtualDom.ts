@@ -16,6 +16,7 @@ const editorContentNode: VirtualDomNode = {
 }
 
 interface EditorContentVirtualDomOptions {
+  readonly bracketMatchInfos?: readonly any[]
   readonly cursorInfos?: readonly any[]
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
@@ -33,6 +34,7 @@ interface EditorContentVirtualDomOptions {
 }
 
 export const getEditorContentVirtualDom = ({
+  bracketMatchInfos = [],
   cursorInfos = [],
   diagnostics = [],
   differences,
@@ -57,6 +59,7 @@ export const getEditorContentVirtualDom = ({
       diagnostics,
       visibleLineIndices,
       endOfLineDecorations,
+      bracketMatchInfos,
     ),
     ...GetEditorScrollBarDiagnosticsVirtualDom.getEditorScrollBarDiagnosticsVirtualDom(scrollBarDiagnostics),
     ...GetScrollBarVirtualDom.getScrollBarVirtualDom(),

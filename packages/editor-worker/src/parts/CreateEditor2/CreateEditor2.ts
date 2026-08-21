@@ -18,6 +18,7 @@ export const createEditor2 = (
   const editor: EditorState = {
     additionalFocus: 0,
     assetDir,
+    bracketMatchInfos: [],
     breadcrumbsEnabled: false,
     breakPoints: [],
     charWidth: 0,

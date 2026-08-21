@@ -25,6 +25,13 @@ ${editorSelector} .EditorLineDecoration {
   user-select: none;
 }
 ${editorSelector} .R{background-color:#add6ff40}
+${editorSelector} .BracketMatch {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid var(--EditorBracketMatchBorder, rgba(128, 128, 128, 0.8));
+  background: var(--EditorBracketMatchBackground, rgba(128, 128, 128, 0.25));
+  pointer-events: none;
+}
 ${editorSelector} .ScrollBarThumbVertical {
   height: var(--ScrollBarHeight);
   translate: 0px var(--ScrollBarTop);

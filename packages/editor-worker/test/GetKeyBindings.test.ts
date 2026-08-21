@@ -315,6 +315,14 @@ test('Ctrl/Cmd+Shift+brackets fold and unfold', () => {
   )
 })
 
+test('Ctrl/Cmd+Shift+Backslash goes to the matching bracket', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.goToBracket',
+    key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.Backslash,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
 test('Escape closes focused editor completions', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.closeCompletion',
