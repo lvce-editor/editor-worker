@@ -41,6 +41,7 @@ test('findMatchingBracket prefers the bracket at the cursor', () => {
 
 test.each([
   ['plain text', ['value'], 0, 2],
+  ['a cursor beyond the document', ['value'], 1, 0],
   ['unmatched opening bracket', ['(value'], 0, 0],
   ['unmatched closing bracket', ['value)'], 0, 5],
   ['incorrect nesting', ['([)]'], 0, 0],

@@ -33,7 +33,10 @@ const getCandidate = (
   rowIndex: number,
   columnIndex: number,
 ): { character: string; position: BracketPosition } | undefined => {
-  const line = lines[rowIndex]
+  const line = lines.at(rowIndex)
+  if (line === undefined) {
+    return undefined
+  }
   const characterAtCursor = line[columnIndex]
   if (characterAtCursor && (isOpeningBracket(characterAtCursor) || isClosingBracket(characterAtCursor))) {
     return {
