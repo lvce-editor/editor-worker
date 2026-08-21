@@ -10,6 +10,8 @@ export const test: Test = async ({ expect, FileSystem, Locator, Main, Workspace 
 
   await Main.openUri(uri)
 
-  await expect(Locator('.Editor .ScrollBarDiagnostics')).toHaveCount(1)
-  await expect(Locator('.Editor .ScrollBarDiagnostic')).toHaveCount(0)
+  const diagnosticTrack = Locator('.Editor .ScrollBarDiagnostics')
+  const diagnosticMarkers = Locator('.Editor .ScrollBarDiagnostic')
+  await expect(diagnosticTrack).toHaveCount(1)
+  await expect(diagnosticMarkers).toHaveCount(0)
 }

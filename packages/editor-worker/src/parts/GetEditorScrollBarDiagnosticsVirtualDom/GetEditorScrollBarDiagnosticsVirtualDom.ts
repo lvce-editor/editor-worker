@@ -1,8 +1,8 @@
+import type { ScrollBarDiagnostic } from '../ScrollbarDiagnostic/ScrollBarDiagnostic.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as DiagnosticType from '../DiagnosticType/DiagnosticType.ts'
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
-import type { ScrollBarDiagnostic } from '../ScrollbarDiagnostic/ScrollBarDiagnostic.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 const getClassName = (type: string): string => {

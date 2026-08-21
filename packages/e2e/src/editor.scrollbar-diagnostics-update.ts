@@ -19,13 +19,14 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, W
     type: 'error',
     uri,
   })
+  const diagnosticMarkers = Locator('.Editor .ScrollBarDiagnostic')
 
   await Command.execute('Editor.setDiagnostics', [createDiagnostic(0), createDiagnostic(1), createDiagnostic(2)])
-  await expect(Locator('.Editor .ScrollBarDiagnostic')).toHaveCount(3)
+  await expect(diagnosticMarkers).toHaveCount(3)
 
   await Command.execute('Editor.setDiagnostics', [createDiagnostic(1)])
-  await expect(Locator('.Editor .ScrollBarDiagnostic')).toHaveCount(1)
+  await expect(diagnosticMarkers).toHaveCount(1)
 
   await Command.execute('Editor.setDiagnostics', [])
-  await expect(Locator('.Editor .ScrollBarDiagnostic')).toHaveCount(0)
+  await expect(diagnosticMarkers).toHaveCount(0)
 }

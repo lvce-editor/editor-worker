@@ -34,6 +34,8 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, W
     },
   ])
 
-  await expect(Locator('.EditorRow')).toHaveCount(2)
-  await expect(Locator('.Editor .ScrollBarDiagnostic')).toHaveCount(2)
+  const editorRows = Locator('.EditorRow')
+  const diagnosticMarkers = Locator('.Editor .ScrollBarDiagnostic')
+  await expect(editorRows).toHaveCount(2)
+  await expect(diagnosticMarkers).toHaveCount(2)
 }
