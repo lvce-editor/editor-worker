@@ -384,12 +384,12 @@ export const getKeyBindings = () => {
     },
     {
       command: 'Editor.moveLineDown',
-      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.DownArrow,
+      key: KeyModifier.Alt | KeyCode.DownArrow,
       when: WhenExpression.FocusEditorText,
     },
     {
       command: 'Editor.moveLineUp',
-      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.UpArrow,
+      key: KeyModifier.Alt | KeyCode.UpArrow,
       when: WhenExpression.FocusEditorText,
     },
     {
