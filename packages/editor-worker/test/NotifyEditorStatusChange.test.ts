@@ -9,8 +9,10 @@ const NotifyListeners = await import('../src/parts/NotifyListeners/NotifyListene
 
 const createEditor = (overrides: Record<string, unknown> = {}) =>
   ({
+    endOfLine: 'lf',
     focused: true,
     initial: false,
+    insertSpaces: true,
     languageId: 'plaintext',
     primarySelectionIndex: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
@@ -27,6 +29,8 @@ test('notifies editor status listeners when the cursor changes', async () => {
   expect(NotifyListeners.notifyListeners).toHaveBeenCalledWith(2, 'StatusBar.handleEditorStatusChanged', {
     column: 6,
     encoding: 'utf8',
+    endOfLine: 'lf',
+    insertSpaces: true,
     languageId: 'plaintext',
     line: 3,
     tabSize: 4,

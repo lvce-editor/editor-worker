@@ -14,6 +14,7 @@ export const emptyEditor = {
   differences: [],
   documentSymbols: [],
   embeds: [],
+  endOfLine: 'lf',
   endOfLineDecorations: [],
   focused: false,
   foldingRanges: [],
@@ -21,6 +22,7 @@ export const emptyEditor = {
   height: 0,
   highlightedLine: -1,
   incrementalEdits: emptyIncrementalEdits,
+  insertSpaces: true,
   isSelecting: false,
   languageId: '', // TODO use numeric language id?
   lineCache: [],

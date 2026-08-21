@@ -126,6 +126,8 @@ import * as SelectWordLeft from '../EditorCommand/EditorCommandSelectWordLeft.ts
 import * as SelectWordRight from '../EditorCommand/EditorCommandSelectWordRight.ts'
 import * as SetDecorations from '../EditorCommand/EditorCommandSetDecorations.ts'
 import * as SetDelta from '../EditorCommand/EditorCommandSetDelta.ts'
+import * as SetEndOfLine from '../EditorCommand/EditorCommandSetEndOfLine.ts'
+import * as SetIndentation from '../EditorCommand/EditorCommandSetIndentation.ts'
 import * as SetLanguageId from '../EditorCommand/EditorCommandSetLanguageId.ts'
 import * as SetSelections from '../EditorCommand/EditorCommandSetSelections.ts'
 import * as SetText from '../EditorCommand/EditorCommandSetText.ts'
@@ -387,6 +389,8 @@ export const commandMap = {
   'Editor.setDelta': wrapCommand(SetDelta.setDelta),
   'Editor.setDeltaY': wrapCommand(SetDelta.setDeltaY),
   'Editor.setDiagnostics': wrapCommand(UpdateDiagnostics.addDiagnostics),
+  'Editor.setEndOfLine': wrapCommand(SetEndOfLine.setEndOfLine),
+  'Editor.setIndentation': wrapCommand(SetIndentation.setIndentation),
   'Editor.setLanguageId': wrapCommand(SetLanguageId.setLanguageId),
   'Editor.setSelections': wrapCommand(SetSelections.setSelections),
   'Editor.setSelections2': ExternalGetPositionAtCursor.setSelections2,

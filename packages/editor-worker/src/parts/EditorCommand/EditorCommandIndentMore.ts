@@ -1,7 +1,8 @@
 import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
+import { getIndentString } from '../GetIndentString/GetIndentString.ts'
 
-const getChanges = (selections: any) => {
+const getChanges = (selections: any, indent: string) => {
   const rowsToIndent: any[] = []
   for (let i = 0; i < selections.length; i += 4) {
     const selectionStartRow = selections[i]
@@ -16,7 +17,7 @@ const getChanges = (selections: any) => {
       columnIndex: 0,
       rowIndex: rowToIndent,
     },
-    inserted: ['  '],
+    inserted: [indent],
     origin: EditOrigin.IndentMore,
     start: {
       columnIndex: 0,
@@ -28,6 +29,6 @@ const getChanges = (selections: any) => {
 
 export const indentMore = (editor: any) => {
   const { selections } = editor
-  const changes = getChanges(selections)
+  const changes = getChanges(selections, getIndentString(editor))
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes)
 }

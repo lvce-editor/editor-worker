@@ -1,5 +1,6 @@
 import { PlatformType } from '@lvce-editor/constants'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
+import { applyLineEndings } from '../NormalizeLineEndings/NormalizeLineEndings.ts'
 import * as TabModifiedStatusChange from '../TabModifiedStatusChange/TabModifiedStatusChange.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { VError } from '../VError/VError.ts'
@@ -13,7 +14,7 @@ export const save = async (editor: any): Promise<any> => {
   try {
     const { platform, uri } = editor
     const newEditor = await getNewEditor(editor)
-    const content = TextDocument.getText(newEditor)
+    const content = applyLineEndings(TextDocument.getText(newEditor), newEditor.endOfLine)
     if (isUntitledFile(uri)) {
       const pickedFilePath = await saveUntitledFile(uri, content, platform)
       if (pickedFilePath) {

@@ -6,10 +6,12 @@ import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
+import { getEndOfLine } from '../GetEndOfLine/GetEndOfLine.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
+import { normalizeLineEndings } from '../NormalizeLineEndings/NormalizeLineEndings.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
@@ -68,6 +70,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     fontSize,
     fontWeight,
     hoverEnabled,
+    insertSpaces,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
@@ -98,6 +101,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     fontSize,
     fontWeight,
     hoverEnabled,
+    insertSpaces,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
@@ -120,9 +124,12 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     }
   }
   let content = existingEditor ? TextDocument.getText(existingEditor) : ''
+  let endOfLine = existingEditor?.endOfLine || 'lf'
   try {
     if (!existingEditor) {
       content = await RendererWorker.readFile(uri)
+      endOfLine = getEndOfLine(content)
+      content = normalizeLineEndings(content)
     }
   } catch (error) {
     const newEditor1 = Editor.setBounds(newEditor0, x, y, width, height, 9)
@@ -140,7 +147,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const savedHistory = existingEditor ? undefined : getSavedHistory(savedState, content)
 
   // TODO avoid creating intermediate editors here
-  const newEditor1 = Editor.setBounds(newEditor0, x, y, width, height, 9)
+  const newEditor1 = Editor.setBounds({ ...newEditor0, endOfLine }, x, y, width, height, 9)
   const newEditor2 = Editor.setText(newEditor1, content)
   let newEditor3 = newEditor2
 

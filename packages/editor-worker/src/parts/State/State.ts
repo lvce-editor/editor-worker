@@ -1,6 +1,7 @@
 import type { BracketMatchInfo } from '../BracketMatchInfo/BracketMatchInfo.ts'
 import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
 import type { EditorLineDecoration } from '../EditorLineDecoration/EditorLineDecoration.ts'
+import type { EndOfLine } from '../EndOfLine/EndOfLine.ts'
 
 export interface EditorState {
   readonly additionalFocus: number
@@ -28,6 +29,7 @@ export interface EditorState {
   differences: any[]
   readonly documentSymbols?: readonly DocumentSymbol[]
   readonly embeds: any
+  readonly endOfLine: EndOfLine
   readonly endOfLineDecorations: readonly EditorLineDecoration[]
   readonly finalDeltaY: number
   readonly finalY: number
@@ -48,6 +50,7 @@ export interface EditorState {
   readonly id: number
   readonly incrementalEdits: readonly any[]
   readonly initial: boolean
+  readonly insertSpaces: boolean
   readonly invalidStartIndex: number
   readonly isAutoClosingBracketsEnabled: boolean
   readonly isAutoClosingQuotesEnabled: boolean

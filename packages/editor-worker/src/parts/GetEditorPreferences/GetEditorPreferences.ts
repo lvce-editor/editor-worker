@@ -18,6 +18,7 @@ export const getEditorPreferences = async () => {
     completionTriggerCharacters,
     minimapEnabled,
     breadcrumbsEnabled,
+    insertSpaces,
   ] = await Promise.all([
     EditorPreferences.diagnosticsEnabled(),
     EditorPreferences.getFontFamily(),
@@ -35,6 +36,7 @@ export const getEditorPreferences = async () => {
     EditorPreferences.getCompletionTriggerCharacters(),
     EditorPreferences.getMinimapEnabled(),
     EditorPreferences.getBreadcrumbsEnabled(),
+    EditorPreferences.getInsertSpaces(),
   ])
   return {
     breadcrumbsEnabled,
@@ -44,6 +46,7 @@ export const getEditorPreferences = async () => {
     fontSize,
     fontWeight,
     hoverEnabled,
+    insertSpaces,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
