@@ -65,3 +65,24 @@ test('isEqual - returns false when end of line decorations change', () => {
 
   expect(DiffItems.isEqual(oldState as any, newState as any)).toBe(false)
 })
+
+test('isEqual - returns false when gutter decorations change', () => {
+  const oldState = {
+    cursorInfos: [],
+    diagnostics: [],
+    differences: [],
+    gutterDecorations: [],
+    highlightedLine: -1,
+    initial: false,
+    lineNumbers: true,
+    selectionInfos: [],
+    textInfos: [],
+  }
+
+  const newState = {
+    ...oldState,
+    gutterDecorations: [{ rowIndex: 0, type: 'added' }],
+  }
+
+  expect(DiffItems.isEqual(oldState as any, newState as any)).toBe(false)
+})

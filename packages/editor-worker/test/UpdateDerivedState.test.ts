@@ -249,3 +249,40 @@ test('updateDerivedState shows a lightbulb when the cursor moves onto a fixable 
 
   expect(result.lightBulbRowIndex).toBe(0)
 })
+
+test('updateDerivedState refreshes gutter decorations after document text changes', async () => {
+  using _rpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeProvidersByEvent': () => [[{ rowIndex: 0, type: 'modified' }]],
+  })
+  const oldState: any = {
+    cursorWidth: 2,
+    differences: [],
+    focused: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    gutterDecorations: [],
+    isMonospaceFont: true,
+    languageId: 'plaintext',
+    letterSpacing: 0,
+    lines: ['before'],
+    maxLineY: 1,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [['before']],
+    uri: 'file:///workspace/file.txt',
+    width: 100,
+  }
+  const newState: any = {
+    ...oldState,
+    lines: ['after'],
+  }
+  getVisibleTextMock.mockResolvedValue({ differences: [], textInfos: [['after']] })
+  getVisibleSelectionsMock.mockResolvedValue({ cursorInfos: [], selectionInfos: [] })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(result.gutterDecorations).toEqual([{ rowIndex: 0, type: 'modified' }])
+})

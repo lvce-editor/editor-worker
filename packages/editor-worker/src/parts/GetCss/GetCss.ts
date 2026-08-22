@@ -24,6 +24,28 @@ ${editorSelector} .EditorLineDecoration {
   margin-left: 2em;
   user-select: none;
 }
+${editorSelector} .LineNumber {
+  position: relative;
+}
+${editorSelector} .EditorGutterDecoration {
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 3px;
+}
+${editorSelector} .EditorGutterDecorationAdded {
+  background: var(--EditorGutterAddedBackground, #2ea043);
+}
+${editorSelector} .EditorGutterDecorationModified {
+  background: var(--EditorGutterModifiedBackground, #0078d4);
+}
+${editorSelector} .EditorGutterDecorationDeleted {
+  background: var(--EditorGutterDeletedBackground, #f85149);
+  height: 3px;
+  top: calc(50% - 1px);
+}
 ${editorSelector} .R{background-color:#add6ff40}
 ${editorSelector} .BracketMatch {
   position: absolute;

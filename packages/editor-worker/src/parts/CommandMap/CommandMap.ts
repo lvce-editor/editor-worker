@@ -178,6 +178,7 @@ import * as Initialize from '../Initialize/Initialize.ts'
 import { loadContent } from '../LoadContent/LoadContent.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
+import * as RefreshGutterDecorations from '../RefreshGutterDecorations/RefreshGutterDecorations.ts'
 import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
 import { render2 } from '../Render2/Render2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
@@ -357,6 +358,8 @@ export const commandMap = {
   'Editor.pasteText': wrapCommand(PasteText.pasteText),
   'Editor.previousDiagnostic': wrapCommand(EditorCommandNavigateDiagnostic.previousDiagnostic),
   'Editor.redo': wrapCommand(EditorRedo.redo),
+  'Editor.refreshGutterDecorations': wrapCommand(RefreshGutterDecorations.refreshGutterDecorations),
+  'Editor.refreshGutterDecorationsAll': RefreshGutterDecorations.refreshGutterDecorationsAll,
   'Editor.render': RenderEditor.renderEditor,
   'Editor.render2': render2,
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,

@@ -4,6 +4,7 @@ import type { EditorState } from '../src/parts/State/State.ts'
 const getEditorPreferences = jest.fn<() => Promise<any>>()
 const measureCharacterWidth = jest.fn<(fontWeight: number, fontSize: number, fontFamily: string, letterSpacing: number) => Promise<number>>()
 const getPreference = jest.fn<(key: string) => Promise<any>>()
+const getEditorGutterDecorations = jest.fn<(editor: EditorState) => Promise<readonly any[]>>()
 
 jest.unstable_mockModule('../src/parts/GetEditorPreferences/GetEditorPreferences.ts', () => ({
   getEditorPreferences,
@@ -15,6 +16,10 @@ jest.unstable_mockModule('../src/parts/MeasureCharacterWidth/MeasureCharacterWid
 
 jest.unstable_mockModule('../src/parts/Preferences/Preferences.ts', () => ({
   get: getPreference,
+}))
+
+jest.unstable_mockModule('../src/parts/GetEditorGutterDecorations/GetEditorGutterDecorations.ts', () => ({
+  getEditorGutterDecorations,
 }))
 
 const { handleSettingsChanged } = await import('../src/parts/HandleSettingsChanged/HandleSettingsChanged.ts')
@@ -38,6 +43,7 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
   })
   measureCharacterWidth.mockResolvedValue(10)
   getPreference.mockResolvedValue(true)
+  getEditorGutterDecorations.mockResolvedValue([{ rowIndex: 1, type: 'modified' }])
   const state = {
     columnWidth: 9,
     deltaY: 40,
@@ -66,6 +72,7 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
       fontFamily: 'Fira Code',
       fontSize: 16,
       fontWeight: 500,
+      gutterDecorations: [{ rowIndex: 1, type: 'modified' }],
       hoverEnabled: true,
       isMonospaceFont: true,
       itemHeight: 24,
@@ -78,4 +85,5 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
       visualDecorations: [],
     }),
   )
+  expect(getEditorGutterDecorations).toHaveBeenCalledWith(expect.objectContaining({ fontFamily: 'Fira Code', rowHeight: 24 }))
 })
