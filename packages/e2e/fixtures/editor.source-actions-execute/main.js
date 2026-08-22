@@ -3,7 +3,11 @@ import { activate as activateExtensionApi, registerCodeActionsProvider } from '@
 const organizeImports = {
   kind: 'source.organizeImports', // TODO use numeric code action type
   name: 'Organize Imports',
-  async execute(textDocument) {
+}
+
+Object.defineProperty(organizeImports, 'execute', {
+  enumerable: false,
+  async value(textDocument) {
     return [
       {
         startOffset: 0,
@@ -12,7 +16,7 @@ const organizeImports = {
       },
     ]
   },
-}
+})
 
 const codeActionProvider = {
   id: 'xyz-code-actions',
