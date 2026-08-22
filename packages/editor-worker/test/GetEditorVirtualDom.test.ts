@@ -265,6 +265,23 @@ test('getEditorVirtualDom - line numbers disabled', () => {
   expect(dom.some((node) => node.className === 'Gutter')).toBe(false)
 })
 
+test('getEditorVirtualDom - gutter decorations remain visible when line numbers are disabled', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    differences: [],
+    gutterDecorations: [{ rowIndex: 0, type: 'added' }],
+    lineNumbers: false,
+    maxLineY: 1,
+    minLineY: 0,
+    textInfos: [],
+    uid: 42,
+    visibleLineIndices: [0],
+  })
+
+  expect(dom[0]).toEqual(expect.objectContaining({ childCount: 2 }))
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'Gutter' }))
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'EditorGutterDecoration EditorGutterDecorationAdded' }))
+})
+
 test('getEditorVirtualDom - minimap enabled', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     differences: [],

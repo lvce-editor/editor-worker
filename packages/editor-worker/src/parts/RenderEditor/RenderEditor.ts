@@ -87,17 +87,28 @@ const renderDecorations = {
 
 const renderGutterInfo = {
   apply(oldState: EditorState, newState: EditorState) {
-    const { breakPoints, lightBulbRowIndex, lineNumbers, maxLineY, minLineY, primarySelectionIndex, selections, visibleLineIndices } = newState
-    if (!lineNumbers && breakPoints.length === 0 && lightBulbRowIndex === -1) {
+    const {
+      breakPoints,
+      gutterDecorations,
+      lightBulbRowIndex,
+      lineNumbers,
+      maxLineY,
+      minLineY,
+      primarySelectionIndex,
+      selections,
+      visibleLineIndices,
+    } = newState
+    if (!lineNumbers && breakPoints.length === 0 && lightBulbRowIndex === -1 && gutterDecorations.length === 0) {
       return ['renderGutter', []]
     }
-    const gutterInfos = getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices, lightBulbRowIndex)
+    const gutterInfos = getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices, lightBulbRowIndex, gutterDecorations)
     const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
     const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos, primaryCursorRowIndex + 1)
     return ['renderGutter', dom]
   },
   isEqual: (oldState: EditorState, newState: EditorState) =>
     oldState.breakPoints === newState.breakPoints &&
+    oldState.gutterDecorations === newState.gutterDecorations &&
     oldState.lightBulbRowIndex === newState.lightBulbRowIndex &&
     oldState.foldingRanges === newState.foldingRanges &&
     oldState.lineNumbers === newState.lineNumbers &&

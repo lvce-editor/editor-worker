@@ -2,6 +2,7 @@ import type { EditorState } from '../State/State.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import { getEditorGutterDecorations } from '../GetEditorGutterDecorations/GetEditorGutterDecorations.ts'
 import * as GetLightBulbRowIndex from '../GetLightBulbRowIndex/GetLightBulbRowIndex.ts'
 import * as GetMinimapLines from '../GetMinimapLines/GetMinimapLines.ts'
 import * as GetVisibleBracketMatches from '../GetVisibleBracketMatches/GetVisibleBracketMatches.ts'
@@ -155,6 +156,13 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
     finalState = {
       ...finalState,
       lightBulbRowIndex: await GetLightBulbRowIndex.getLightBulbRowIndex(finalState),
+    }
+  }
+
+  if (oldState.lines !== nextState.lines || oldState.uri !== nextState.uri) {
+    finalState = {
+      ...finalState,
+      gutterDecorations: await getEditorGutterDecorations(finalState),
     }
   }
 

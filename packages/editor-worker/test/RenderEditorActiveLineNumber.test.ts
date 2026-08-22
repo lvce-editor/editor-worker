@@ -5,6 +5,7 @@ import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomE
 
 const breakPoints: readonly number[] = []
 const cursorInfos: readonly any[] = []
+const gutterDecorations: readonly any[] = []
 const selectionInfos: readonly any[] = []
 const visibleLineIndices = [0, 1]
 const widgets: readonly any[] = []
@@ -15,6 +16,7 @@ const createState = (uid: number, selections: Uint32Array) => ({
   cursorInfos,
   focus: 12,
   focused: true,
+  gutterDecorations,
   lightBulbRowIndex: -1,
   lineNumbers: true,
   maxLineY: 2,
@@ -75,6 +77,32 @@ test('renderEditor does not rerender the gutter for horizontal cursor movement',
 
   try {
     await expect(RenderEditor.renderEditor(uid)).resolves.toEqual([])
+  } finally {
+    EditorStates.dispose(uid)
+  }
+})
+
+test('renderEditor rerenders the gutter when gutter decorations change', async () => {
+  const uid = 910_005
+  const oldState = createState(uid, new Uint32Array([0, 0, 0, 0]))
+  const newState = {
+    ...oldState,
+    gutterDecorations: [{ rowIndex: 1, type: 'modified' as const }],
+  }
+  EditorStates.set(uid, oldState as any, newState as any)
+
+  try {
+    const commands = await RenderEditor.renderEditor(uid)
+    expect(commands).toHaveLength(1)
+    expect(commands[0]).toEqual([
+      'renderGutter',
+      expect.arrayContaining([
+        expect.objectContaining({
+          className: 'EditorGutterDecoration EditorGutterDecorationModified',
+          title: 'Modified line 2',
+        }),
+      ]),
+    ])
   } finally {
     EditorStates.dispose(uid)
   }

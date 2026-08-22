@@ -78,3 +78,66 @@ test('renders an accessible clickable lightbulb', () => {
     },
   ])
 })
+
+test('renders accessible added and modified gutter decorations', () => {
+  expect(
+    GetEditorGutterVirtualDom.getEditorGutterVirtualDom([
+      {
+        gutterDecorations: [
+          { rowIndex: 1, type: 'added' },
+          { rowIndex: 1, type: 'modified' },
+        ],
+        lineNumber: 2,
+        showLineNumber: true,
+      },
+    ]),
+  ).toEqual([
+    {
+      childCount: 3,
+      className: 'LineNumber',
+      type: VirtualDomElements.Span,
+    },
+    {
+      ariaLabel: 'Added line 2',
+      childCount: 0,
+      className: 'EditorGutterDecoration EditorGutterDecorationAdded',
+      title: 'Added line 2',
+      type: VirtualDomElements.Span,
+    },
+    {
+      ariaLabel: 'Modified line 2',
+      childCount: 0,
+      className: 'EditorGutterDecoration EditorGutterDecorationModified',
+      title: 'Modified line 2',
+      type: VirtualDomElements.Span,
+    },
+    {
+      childCount: 0,
+      text: 2,
+      type: VirtualDomElements.Text,
+    },
+  ])
+})
+
+test('renders a gutter decoration without a line number', () => {
+  const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom([
+    {
+      gutterDecorations: [{ rowIndex: 0, type: 'deleted' }],
+      lineNumber: 1,
+      showLineNumber: false,
+    },
+  ])
+
+  expect(dom).toContainEqual({
+    ariaLabel: 'Deleted line 1',
+    childCount: 0,
+    className: 'EditorGutterDecoration EditorGutterDecorationDeleted',
+    title: 'Deleted line 1',
+    type: VirtualDomElements.Span,
+  })
+  expect(dom).toContainEqual({
+    childCount: 0,
+    text: '',
+    type: VirtualDomElements.Text,
+  })
+})
