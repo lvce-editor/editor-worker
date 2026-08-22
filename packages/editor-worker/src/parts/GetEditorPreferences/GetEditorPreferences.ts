@@ -19,6 +19,7 @@ export const getEditorPreferences = async () => {
     minimapEnabled,
     breadcrumbsEnabled,
     insertSpaces,
+    dragAndDropEnabled,
   ] = await Promise.all([
     EditorPreferences.diagnosticsEnabled(),
     EditorPreferences.getFontFamily(),
@@ -37,11 +38,13 @@ export const getEditorPreferences = async () => {
     EditorPreferences.getMinimapEnabled(),
     EditorPreferences.getBreadcrumbsEnabled(),
     EditorPreferences.getInsertSpaces(),
+    EditorPreferences.getDragAndDropEnabled(),
   ])
   return {
     breadcrumbsEnabled,
     completionTriggerCharacters,
     diagnosticsEnabled,
+    dragAndDropEnabled,
     fontFamily,
     fontSize,
     fontWeight,

@@ -17,6 +17,11 @@ const kFontWeight = 'editor.fontWeight'
 const kHover = 'editor.hover'
 const kMinimapEnabled = 'editor.minimap.enabled'
 const kBreadcrumbsEnabled = 'breadcrumbs.enabled'
+const kDragAndDropEnabled = 'editor.dragAndDrop'
+
+export const getDragAndDropEnabled = async () => {
+  return (await Preferences.get(kDragAndDropEnabled)) ?? true
+}
 
 export const isAutoClosingBracketsEnabled = async () => {
   return Boolean(await Preferences.get(kAutoClosingBrackets))

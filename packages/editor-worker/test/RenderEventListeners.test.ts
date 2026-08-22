@@ -35,6 +35,22 @@ test('renderEventListeners - captures the editor gutter width on pointer down', 
   })
 })
 
+test('renderEventListeners - forwards Shift for text dragging', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleMouseDown,
+    params: [
+      'handleMouseDown',
+      'event.button',
+      'event.altKey',
+      'event.ctrlKey',
+      EventExpression.ClientX,
+      EventExpression.ClientY,
+      'event.detail',
+      'event.shiftKey',
+    ],
+  })
+})
+
 test.skip('renderEventListeners', () => {
   const eventListeners = RenderEventListeners.renderEventListeners()
   expect(eventListeners).toEqual([
