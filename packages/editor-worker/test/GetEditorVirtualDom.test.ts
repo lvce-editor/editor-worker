@@ -209,6 +209,23 @@ test('getEditorVirtualDom - folded line numbers', () => {
   })
 })
 
+test('getEditorVirtualDom - highlights the primary cursor line number', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    differences: [],
+    gutterInfos: [1, 2, 3],
+    primarySelectionIndex: 4,
+    selections: new Uint32Array([0, 0, 0, 0, 1, 0, 1, 0]),
+    textInfos: [],
+    uid: 42,
+  })
+
+  expect(dom).toContainEqual({
+    childCount: 1,
+    className: 'LineNumber LineNumberActive',
+    type: VirtualDomElements.Span,
+  })
+})
+
 test('getEditorVirtualDom - breadcrumbs enabled', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     breadcrumbsEnabled: true,

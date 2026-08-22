@@ -7,6 +7,7 @@ import * as GetEditorBreadcrumbsVirtualDom from '../GetEditorBreadcrumbsVirtualD
 import * as GetEditorContentVirtualDom from '../GetEditorContentVirtualDom/GetEditorContentVirtualDom.ts'
 import * as GetEditorGutterLayerVirtualDom from '../GetEditorGutterLayerVirtualDom/GetEditorGutterLayerVirtualDom.ts'
 import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
+import { getPrimaryCursorRowIndex } from '../GetPrimaryCursorRowIndex/GetPrimaryCursorRowIndex.ts'
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
@@ -125,7 +126,8 @@ export const getEditorVirtualDom = ({
       ? getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices, lightBulbRowIndex)
       : gutterInfos
   const showGutter = lineNumbers || breakPoints.length > 0 || lightBulbRowIndex >= 0
-  const gutterDom = showGutter ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos) : []
+  const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
+  const gutterDom = showGutter ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, primaryCursorRowIndex + 1) : []
   const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY)
   const breadcrumbsDom = breadcrumbsEnabled
     ? GetEditorBreadcrumbsVirtualDom.getEditorBreadcrumbsVirtualDom({

@@ -2,6 +2,31 @@ import { expect, test } from '@jest/globals'
 import * as GetEditorGutterVirtualDom from '../src/parts/GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
 import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomElements.ts'
 
+test('renders the primary cursor line number as active', () => {
+  expect(GetEditorGutterVirtualDom.getEditorGutterVirtualDom([1, 2], 2)).toEqual([
+    {
+      childCount: 1,
+      className: 'LineNumber',
+      type: VirtualDomElements.Span,
+    },
+    {
+      childCount: 0,
+      text: 1,
+      type: VirtualDomElements.Text,
+    },
+    {
+      childCount: 1,
+      className: 'LineNumber LineNumberActive',
+      type: VirtualDomElements.Span,
+    },
+    {
+      childCount: 0,
+      text: 2,
+      type: VirtualDomElements.Text,
+    },
+  ])
+})
+
 test('renders a breakpoint marker', () => {
   expect(
     GetEditorGutterVirtualDom.getEditorGutterVirtualDom([

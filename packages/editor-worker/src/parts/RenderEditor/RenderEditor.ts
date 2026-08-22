@@ -11,6 +11,7 @@ import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagno
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
 import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
 import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
+import { getPrimaryCursorRowIndex } from '../GetPrimaryCursorRowIndex/GetPrimaryCursorRowIndex.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
 import * as RenderAdditionalFocusContext from '../RenderAdditionalFocusContext/RenderAdditionalFocusContext.ts'
 import { renderCss as renderCssCommand } from '../RenderCss/RenderCss.ts'
@@ -86,12 +87,13 @@ const renderDecorations = {
 
 const renderGutterInfo = {
   apply(oldState: EditorState, newState: EditorState) {
-    const { breakPoints, lightBulbRowIndex, lineNumbers, maxLineY, minLineY, visibleLineIndices } = newState
+    const { breakPoints, lightBulbRowIndex, lineNumbers, maxLineY, minLineY, primarySelectionIndex, selections, visibleLineIndices } = newState
     if (!lineNumbers && breakPoints.length === 0 && lightBulbRowIndex === -1) {
       return ['renderGutter', []]
     }
     const gutterInfos = getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices, lightBulbRowIndex)
-    const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos)
+    const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
+    const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos, primaryCursorRowIndex + 1)
     return ['renderGutter', dom]
   },
   isEqual: (oldState: EditorState, newState: EditorState) =>
@@ -100,7 +102,9 @@ const renderGutterInfo = {
     oldState.foldingRanges === newState.foldingRanges &&
     oldState.lineNumbers === newState.lineNumbers &&
     oldState.minLineY === newState.minLineY &&
-    oldState.maxLineY === newState.maxLineY,
+    oldState.maxLineY === newState.maxLineY &&
+    getPrimaryCursorRowIndex(oldState.selections, oldState.primarySelectionIndex) ===
+      getPrimaryCursorRowIndex(newState.selections, newState.primarySelectionIndex),
 }
 
 const renderWidgets = {
