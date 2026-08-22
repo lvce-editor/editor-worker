@@ -1,4 +1,5 @@
 import { cp, readdir, readFile, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
@@ -13,7 +14,9 @@ export const getRemoteUrl = (path) => {
 
 const editorWorkerPath = join(root, '.tmp', 'dist', 'dist', 'editorWorkerMain.js')
 
-const staticServerPackagePath = fileURLToPath(import.meta.resolve('@lvce-editor/static-server/package.json'))
+const serverPackagePath = fileURLToPath(import.meta.resolve('@lvce-editor/server/package.json'))
+const requireFromServer = createRequire(serverPackagePath)
+const staticServerPackagePath = requireFromServer.resolve('@lvce-editor/static-server/package.json')
 const staticPath = join(dirname(staticServerPackagePath), 'static')
 const indexHtmlPath = join(staticPath, 'index.html')
 
@@ -22,6 +25,7 @@ const remoteUrl = getRemoteUrl(editorWorkerPath)
 const config = {
   'develop.editorWorkerPath': remoteUrl,
   'developer.editorWorkerPath': remoteUrl,
+  editorWorkerUrl: remoteUrl,
 }
 const stringifiedConfig = JSON.stringify(config, null, 2)
 
