@@ -9,6 +9,7 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, S
   await FileSystem.writeFile(filePath, 'line 1\nline 2')
   await Workspace.setPath(tmpDir)
   await Main.openUri(filePath)
+  await Command.execute('Editor.handleSettingsChanged')
 
   const editorContent = Locator('.EditorContent')
   const gutter = Locator('.Gutter')

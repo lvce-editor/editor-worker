@@ -1,7 +1,8 @@
 import { expect, test } from '@jest/globals'
+import { DragAndDropWorker } from '@lvce-editor/rpc-registry'
 import * as EditorCommandHandlePointerCaptureLost from '../src/parts/EditorCommand/EditorCommandHandlePointerCaptureLost.ts'
 
-test('handlePointerCaptureLost - clears selection auto move state', () => {
+test('handlePointerCaptureLost - clears selection auto move state', async () => {
   const editor = {
     hasListener: true,
     isSelecting: true,
@@ -10,12 +11,34 @@ test('handlePointerCaptureLost - clears selection auto move state', () => {
       rowIndex: 3,
     },
   }
-  expect(EditorCommandHandlePointerCaptureLost.handlePointerCaptureLost(editor)).toEqual({
+  await expect(EditorCommandHandlePointerCaptureLost.handlePointerCaptureLost(editor)).resolves.toEqual({
     hasListener: false,
     isSelecting: false,
     selectionAutoMovePosition: {
       columnIndex: 0,
       rowIndex: 0,
     },
+    textDragDropPosition: {
+      columnIndex: 0,
+      rowIndex: 0,
+    },
+    textDragId: 0,
   })
+})
+
+test('handlePointerCaptureLost - discards an active text drag session', async () => {
+  using mockRpc = DragAndDropWorker.registerMockRpc({
+    'DragAndDrop.discardTextDrag'() {},
+  })
+  const editor = {
+    hasListener: true,
+    isSelecting: false,
+    selectionAutoMovePosition: { columnIndex: 0, rowIndex: 0 },
+    textDragId: 12,
+  }
+
+  const result = await EditorCommandHandlePointerCaptureLost.handlePointerCaptureLost(editor)
+
+  expect(result.textDragId).toBe(0)
+  expect(mockRpc.invocations).toEqual([['DragAndDrop.discardTextDrag', 12]])
 })

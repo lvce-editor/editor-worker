@@ -29,6 +29,7 @@ export interface EditorState {
   // TODO should be immutable
   differences: any[]
   readonly documentSymbols?: readonly DocumentSymbol[]
+  readonly dragAndDropEnabled: boolean
   readonly embeds: any
   readonly endOfLine: EndOfLine
   readonly endOfLineDecorations: readonly EditorLineDecoration[]
@@ -94,6 +95,8 @@ export interface EditorState {
   readonly selectionInfos: readonly any[]
   readonly selections: Uint32Array
   readonly tabSize: number
+  readonly textDragDropPosition: { readonly rowIndex: number; readonly columnIndex: number }
+  readonly textDragId: number
   readonly textInfos: readonly any[]
   readonly tokenizerId: any
   readonly uid: number
