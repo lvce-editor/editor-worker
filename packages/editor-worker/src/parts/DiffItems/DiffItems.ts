@@ -9,6 +9,7 @@ export const isEqual = (oldState: EditorState, newState: EditorState): boolean =
     oldState.diagnostics === newState.diagnostics &&
     oldState.documentSymbols === newState.documentSymbols &&
     oldState.endOfLineDecorations === newState.endOfLineDecorations &&
+    oldState.gutterDecorations === newState.gutterDecorations &&
     oldState.highlightedLine === newState.highlightedLine &&
     oldState.lineNumbers === newState.lineNumbers &&
     oldState.loadError === newState.loadError &&

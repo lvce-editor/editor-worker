@@ -1,5 +1,6 @@
 import type { BracketMatchInfo } from '../BracketMatchInfo/BracketMatchInfo.ts'
 import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
+import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGutterDecoration.ts'
 import type { EditorLineDecoration } from '../EditorLineDecoration/EditorLineDecoration.ts'
 import type { EndOfLine } from '../EndOfLine/EndOfLine.ts'
 
@@ -40,6 +41,7 @@ export interface EditorState {
   readonly fontFamily: string
   readonly fontSize: number
   readonly fontWeight: number
+  readonly gutterDecorations: readonly EditorGutterDecoration[]
   readonly gutterWidth: number
   readonly handleOffset: number
   readonly handleOffsetX: number

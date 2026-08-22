@@ -84,6 +84,7 @@ export const createEditor = async ({
     fontFamily,
     fontSize,
     fontWeight,
+    gutterDecorations: [],
     gutterWidth: 0,
     handleOffset: 0,
     handleOffsetX: 0,

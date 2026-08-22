@@ -36,6 +36,28 @@ test('renderCss', () => {
   margin-left: 2em;
   user-select: none;
 }
+.Editor[data-uid="1"] .LineNumber {
+  position: relative;
+}
+.Editor[data-uid="1"] .EditorGutterDecoration {
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 3px;
+}
+.Editor[data-uid="1"] .EditorGutterDecorationAdded {
+  background: var(--EditorGutterAddedBackground, #2ea043);
+}
+.Editor[data-uid="1"] .EditorGutterDecorationModified {
+  background: var(--EditorGutterModifiedBackground, #0078d4);
+}
+.Editor[data-uid="1"] .EditorGutterDecorationDeleted {
+  background: var(--EditorGutterDeletedBackground, #f85149);
+  height: 3px;
+  top: calc(50% - 1px);
+}
 .Editor[data-uid="1"] .R{background-color:#add6ff40}
 .Editor[data-uid="1"] .BracketMatch {
   position: absolute;

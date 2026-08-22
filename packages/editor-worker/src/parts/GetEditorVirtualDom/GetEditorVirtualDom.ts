@@ -1,4 +1,5 @@
 import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
+import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGutterDecoration.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as AriaBoolean from '../AriaBoolean/AriaBoolean.ts'
 import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
@@ -35,6 +36,7 @@ interface EditorVirtualDomOptions {
   readonly documentSymbols?: readonly DocumentSymbol[]
   readonly endOfLineDecorations?: readonly { readonly rowIndex: number; readonly text: string }[]
   readonly finalDeltaY?: number
+  readonly gutterDecorations?: readonly EditorGutterDecoration[]
   readonly gutterInfos?: readonly any[]
   readonly height?: number
   readonly highlightedLine?: number
@@ -87,6 +89,7 @@ export const getEditorVirtualDom = ({
   differences,
   documentSymbols = [],
   endOfLineDecorations = [],
+  gutterDecorations = [],
   gutterInfos = [],
   highlightedLine = -1,
   lightBulbRowIndex = -1,
@@ -122,10 +125,10 @@ export const getEditorVirtualDom = ({
     ]
   }
   const visibleGutterInfos =
-    breakPoints.length > 0 || visibleLineIndices
-      ? getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices, lightBulbRowIndex)
+    breakPoints.length > 0 || gutterDecorations.length > 0 || visibleLineIndices
+      ? getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices, lightBulbRowIndex, gutterDecorations)
       : gutterInfos
-  const showGutter = lineNumbers || breakPoints.length > 0 || lightBulbRowIndex >= 0
+  const showGutter = lineNumbers || breakPoints.length > 0 || lightBulbRowIndex >= 0 || gutterDecorations.length > 0
   const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
   const gutterDom = showGutter ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, primaryCursorRowIndex + 1) : []
   const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY)

@@ -18,6 +18,7 @@ export const emptyEditor = {
   endOfLineDecorations: [],
   focused: false,
   foldingRanges: [],
+  gutterDecorations: [],
   hasListener: false,
   height: 0,
   highlightedLine: -1,

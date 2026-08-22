@@ -48,6 +48,7 @@ export const createEditor2 = (
     fontFamily: '',
     fontSize: 0,
     fontWeight: 0,
+    gutterDecorations: [],
     gutterWidth: 0,
     handleOffset: 0,
     handleOffsetX: 0,

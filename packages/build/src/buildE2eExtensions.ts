@@ -10,6 +10,7 @@ const extensionNames = [
   'editor.completion-one-result',
   'editor.completion-open-on-type',
   'editor.completion-scroll',
+  'editor.gutter-decoration-provider',
   'editor.hover-show',
   'editor.rename-provider',
   'editor.source-actions-execute',
