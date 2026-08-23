@@ -14,6 +14,8 @@ const HAS_SCHEME_PATTERN = /^(?:https?|ftp|ftps|file):\/\//
 // Regex to check if URL starts with www.
 const HAS_WWW_PATTERN = /^www\./
 
+const TEMPLATE_EXPRESSION_START = '${'
+
 const TRAILING_SENTENCE_PUNCTUATION = '.,;:!?'
 
 const OPENING_DELIMITER_MAP: Record<string, string> = {
@@ -67,8 +69,8 @@ export const detectLinks = (text: string): Link[] => {
 
   for (const match of matches) {
     const url = trimTrailingPunctuation(match[0])
-    // Only consider as link if it has a scheme or starts with www.
-    if (HAS_SCHEME_PATTERN.test(url) || HAS_WWW_PATTERN.test(url)) {
+    // Only consider static links with a scheme or www prefix.
+    if (!url.includes(TEMPLATE_EXPRESSION_START) && (HAS_SCHEME_PATTERN.test(url) || HAS_WWW_PATTERN.test(url))) {
       links.push({
         length: url.length,
         start: match.index ?? 0,
