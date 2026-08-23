@@ -30,9 +30,8 @@ export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator
 
   await Editor.setCursor(0, 0)
   for (let i = 0; i < 26; i++) {
-    await KeyBoard.press('ArrowDown')
+    await Editor.cursorDown()
   }
-  await new Promise((resolve) => setTimeout(resolve, 200))
 
   await Editor.shouldHaveSelections(new Uint32Array([26, 0, 26, 0]))
   await expect(cursor).toBeVisible()
