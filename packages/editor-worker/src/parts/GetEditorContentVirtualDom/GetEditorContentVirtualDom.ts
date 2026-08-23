@@ -23,6 +23,7 @@ interface EditorContentVirtualDomOptions {
   readonly differences: readonly number[]
   readonly endOfLineDecorations?: readonly { readonly rowIndex: number; readonly text: string }[]
   readonly finalDeltaY?: number
+  readonly focused?: boolean
   readonly height?: number
   readonly highlightedLine?: number
   readonly lineNumbers?: boolean
@@ -39,6 +40,7 @@ export const getEditorContentVirtualDom = ({
   diagnostics = [],
   differences,
   endOfLineDecorations = [],
+  focused = true,
   highlightedLine = -1,
   lineNumbers = true,
   scrollBarDiagnostics = [],
@@ -60,6 +62,7 @@ export const getEditorContentVirtualDom = ({
       visibleLineIndices,
       endOfLineDecorations,
       bracketMatchInfos,
+      focused,
     ),
     ...GetEditorScrollBarDiagnosticsVirtualDom.getEditorScrollBarDiagnosticsVirtualDom(scrollBarDiagnostics),
     ...GetScrollBarVirtualDom.getScrollBarVirtualDom(),

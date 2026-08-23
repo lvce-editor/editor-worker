@@ -36,6 +36,7 @@ interface EditorVirtualDomOptions {
   readonly documentSymbols?: readonly DocumentSymbol[]
   readonly endOfLineDecorations?: readonly { readonly rowIndex: number; readonly text: string }[]
   readonly finalDeltaY?: number
+  readonly focused?: boolean
   readonly gutterDecorations?: readonly EditorGutterDecoration[]
   readonly gutterInfos?: readonly any[]
   readonly height?: number
@@ -89,6 +90,7 @@ export const getEditorVirtualDom = ({
   differences,
   documentSymbols = [],
   endOfLineDecorations = [],
+  focused = true,
   gutterDecorations = [],
   gutterInfos = [],
   highlightedLine = -1,
@@ -160,6 +162,7 @@ export const getEditorVirtualDom = ({
       diagnostics,
       differences,
       endOfLineDecorations,
+      focused,
       highlightedLine,
       lineNumbers,
       scrollBarDiagnostics,

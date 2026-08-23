@@ -30,3 +30,18 @@ test('getEditorSelectionsVirtualDom', () => {
     },
   ])
 })
+
+test('getEditorSelectionsVirtualDom - unfocused', () => {
+  const dom = GetEditorSelectionsVirtualDom.getEditorSelectionsVirtualDom([1, 2, 3, 4], false)
+  expect(dom.slice(1)).toEqual([
+    {
+      childCount: 0,
+      className: 'EditorSelection SelectionUnfocused',
+      height: 4,
+      left: 1,
+      top: 2,
+      type: VirtualDomElements.Div,
+      width: 3,
+    },
+  ])
+})

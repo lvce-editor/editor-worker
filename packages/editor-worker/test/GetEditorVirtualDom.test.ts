@@ -4,6 +4,27 @@ import * as GetEditorVirtualDom from '../src/parts/GetEditorVirtualDom/GetEditor
 import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../src/parts/VirtualDomHelpers/VirtualDomHelpers.ts'
 
+test('getEditorVirtualDom marks selections as unfocused', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    differences: [],
+    focused: false,
+    lineNumbers: false,
+    selectionInfos: [1, 2, 3, 4],
+    textInfos: [],
+    uid: 42,
+  })
+
+  expect(dom).toContainEqual({
+    childCount: 0,
+    className: 'EditorSelection SelectionUnfocused',
+    height: 4,
+    left: 1,
+    top: 2,
+    type: VirtualDomElements.Div,
+    width: 3,
+  })
+})
+
 test('getEditorVirtualDom', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     cursorInfos: ['144.962px 180px'],
