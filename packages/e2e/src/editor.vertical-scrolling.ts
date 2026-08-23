@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-vertical-scrolling'
 
-export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   const content = Array.from({ length: 100 }, (_, index) => `line ${index + 1}`).join('\n')
   await FileSystem.writeFile(`${tmpDir}/file.txt`, content)
@@ -21,12 +21,8 @@ export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator
   await expect(line31).toBeVisible()
 
   await Editor.setCursor(0, 0)
-  await KeyBoard.press('PageDown')
-
-  const cursor = Locator('.EditorCursor')
-  const line26 = Locator('.EditorRow', { hasText: 'line 26' })
-  await expect(cursor).toBeVisible()
-  await expect(line26).toBeVisible()
+  await Command.execute('Editor.cursorPageDown')
+  await Editor.shouldHaveSelections(new Uint32Array([32, 0, 32, 0]))
 
   await Editor.setCursor(0, 0)
   for (let i = 0; i < 26; i++) {
@@ -34,5 +30,6 @@ export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator
   }
 
   await Editor.shouldHaveSelections(new Uint32Array([26, 0, 26, 0]))
+  const cursor = Locator('.EditorCursor')
   await expect(cursor).toBeVisible()
 }
