@@ -22,10 +22,11 @@ export const getEditorLayersVirtualDom = (
   visibleLineIndices: readonly number[] = [],
   endOfLineDecorations: readonly { readonly rowIndex: number; readonly text: string }[] = [],
   bracketMatchInfos: readonly any[] = [],
+  focused = true,
 ): readonly VirtualDomNode[] => {
   return [
     editorLayersNode,
-    ...GetEditorSelectionsVirtualDom.getEditorSelectionsVirtualDom(selectionInfos),
+    ...GetEditorSelectionsVirtualDom.getEditorSelectionsVirtualDom(selectionInfos, focused),
     ...GetEditorRowsLayerVirtualDom.getEditorRowsVirtualDom(
       textInfos,
       differences,

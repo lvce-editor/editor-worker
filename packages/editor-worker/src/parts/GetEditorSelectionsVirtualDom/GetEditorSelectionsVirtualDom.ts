@@ -2,8 +2,8 @@ import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
-export const getEditorSelectionsVirtualDom = (selectionInfos: readonly any[]): readonly VirtualDomNode[] => {
-  const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos)
+export const getEditorSelectionsVirtualDom = (selectionInfos: readonly any[], focused = true): readonly VirtualDomNode[] => {
+  const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos, focused)
   return [
     {
       childCount: selectionInfos.length / 4,
