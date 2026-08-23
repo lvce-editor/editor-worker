@@ -44,14 +44,13 @@ test('does not detect plain domain without www or scheme', () => {
   expect(links).toEqual([])
 })
 
-test.each([
-  'return `file:///${encodeFilePath(normalizedPath)}`',
-  'return `file://${encodeFilePath(path)}`',
-  'const url = `https://${host}/path`',
-])('does not detect links in dynamic JavaScript template strings', (text) => {
-  const links = LinkDetection.detectLinks(text)
-  expect(links).toEqual([])
-})
+test.each(['return `file:///${encodeFilePath(normalizedPath)}`', 'return `file://${encodeFilePath(path)}`', 'const url = `https://${host}/path`'])(
+  'does not detect links in dynamic JavaScript template strings',
+  (text) => {
+    const links = LinkDetection.detectLinks(text)
+    expect(links).toEqual([])
+  },
+)
 
 test('detects ftps URL', () => {
   const links = LinkDetection.detectLinks('Secure: ftps://secure.example.com/file')
