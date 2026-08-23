@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.selection-unfocused'
 
-export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Command, Editor, expect, Explorer, FileSystem, Locator, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   const filePath = `${tmpDir}/selection-unfocused.txt`
   await FileSystem.writeFile(filePath, 'selected text')
@@ -13,9 +13,15 @@ export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locat
   const selection = Locator('.EditorSelection')
   await expect(selection).toHaveClass('EditorSelection')
 
-  await Editor.openFind()
+  await Command.execute('Explorer.focus')
+  await Explorer.focusIndex(0)
+  await Command.execute('Editor.handleBlur')
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
-  await expect(selection).toHaveClass('EditorSelection SelectionUnfocused')
-  await FindWidget.close()
-  await expect(selection).toHaveClass('EditorSelection')
+  const explorerItems = Locator('.Explorer .ListItems')
+  await expect(explorerItems).toBeFocused()
+  await expect(selection).toHaveAttribute('class', 'EditorSelection SelectionUnfocused')
+  await Command.execute('Editor.handleFocus')
+  await new Promise((resolve) => setTimeout(resolve, 100))
+  await expect(selection).toHaveAttribute('class', 'EditorSelection')
 }
