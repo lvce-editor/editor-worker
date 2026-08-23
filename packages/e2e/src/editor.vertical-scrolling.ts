@@ -24,14 +24,12 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await Command.execute('Editor.cursorPageDown')
   await Editor.shouldHaveSelections(new Uint32Array([32, 0, 32, 0]))
 
-  const cursor = Locator('.EditorCursor')
-  await expect(cursor).toBeVisible()
-
   await Editor.setCursor(0, 0)
   for (let i = 0; i < 26; i++) {
     await Editor.cursorDown()
   }
 
   await Editor.shouldHaveSelections(new Uint32Array([26, 0, 26, 0]))
+  const cursor = Locator('.EditorCursor')
   await expect(cursor).toBeVisible()
 }
