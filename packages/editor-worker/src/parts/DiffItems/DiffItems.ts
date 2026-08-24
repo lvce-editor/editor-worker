@@ -11,6 +11,7 @@ export const isEqual = (oldState: EditorState, newState: EditorState): boolean =
     oldState.endOfLineDecorations === newState.endOfLineDecorations &&
     oldState.focused === newState.focused &&
     oldState.gutterDecorations === newState.gutterDecorations &&
+    oldState.highlightActiveLineNumber === newState.highlightActiveLineNumber &&
     oldState.highlightedLine === newState.highlightedLine &&
     oldState.lineNumbers === newState.lineNumbers &&
     oldState.loadError === newState.loadError &&

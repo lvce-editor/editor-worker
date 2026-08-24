@@ -119,6 +119,7 @@ beforeEach(() => {
     fontFamily: 'monospace',
     fontSize: 14,
     fontWeight: 400,
+    highlightActiveLineNumber: false,
     hoverEnabled: true,
     isAutoClosingBracketsEnabled: false,
     isAutoClosingQuotesEnabled: false,
@@ -159,6 +160,7 @@ test('loadContent returns loaded text without requesting diagnostics', async () 
     fontFamily: 'monospace',
     fontSize: 14,
     fontWeight: 400,
+    highlightActiveLineNumber: false,
     hoverEnabled: true,
     isAutoClosingBracketsEnabled: false,
     isAutoClosingQuotesEnabled: false,
@@ -174,6 +176,7 @@ test('loadContent returns loaded text without requesting diagnostics', async () 
   const result = await LoadContent.loadContent(createState(), undefined)
 
   expect(result.lines).toEqual(['test'])
+  expect(result.highlightActiveLineNumber).toBe(false)
   expect(result.hoverEnabled).toBe(true)
   expect(extensionHostInvoke).not.toHaveBeenCalled()
   expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()

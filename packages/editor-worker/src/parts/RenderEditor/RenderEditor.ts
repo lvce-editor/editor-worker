@@ -91,6 +91,7 @@ const renderGutterInfo = {
     const {
       breakPoints,
       gutterDecorations,
+      highlightActiveLineNumber,
       lightBulbRowIndex,
       lineNumbers,
       maxLineY,
@@ -104,7 +105,8 @@ const renderGutterInfo = {
     }
     const gutterInfos = getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices, lightBulbRowIndex, gutterDecorations)
     const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
-    const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos, primaryCursorRowIndex + 1)
+    const activeLineNumber = highlightActiveLineNumber ? primaryCursorRowIndex + 1 : -1
+    const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos, activeLineNumber)
     return ['renderGutter', dom]
   },
   isEqual: (oldState: EditorState, newState: EditorState) =>
@@ -112,11 +114,13 @@ const renderGutterInfo = {
     oldState.gutterDecorations === newState.gutterDecorations &&
     oldState.lightBulbRowIndex === newState.lightBulbRowIndex &&
     oldState.foldingRanges === newState.foldingRanges &&
+    oldState.highlightActiveLineNumber === newState.highlightActiveLineNumber &&
     oldState.lineNumbers === newState.lineNumbers &&
     oldState.minLineY === newState.minLineY &&
     oldState.maxLineY === newState.maxLineY &&
-    getPrimaryCursorRowIndex(oldState.selections, oldState.primarySelectionIndex) ===
-      getPrimaryCursorRowIndex(newState.selections, newState.primarySelectionIndex),
+    (!newState.highlightActiveLineNumber ||
+      getPrimaryCursorRowIndex(oldState.selections, oldState.primarySelectionIndex) ===
+        getPrimaryCursorRowIndex(newState.selections, newState.primarySelectionIndex)),
 }
 
 const renderWidgets = {

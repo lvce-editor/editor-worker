@@ -17,6 +17,7 @@ const createState = (uid: number, selections: Uint32Array) => ({
   focus: 12,
   focused: true,
   gutterDecorations,
+  highlightActiveLineNumber: true,
   lightBulbRowIndex: -1,
   lineNumbers: true,
   maxLineY: 2,
@@ -73,6 +74,43 @@ test('renderEditor does not rerender the gutter for horizontal cursor movement',
   const uid = 910_004
   const oldState = createState(uid, new Uint32Array([0, 0, 0, 0]))
   const newState = createState(uid, new Uint32Array([0, 1, 0, 1]))
+  EditorStates.set(uid, oldState as any, newState as any)
+
+  try {
+    await expect(RenderEditor.renderEditor(uid)).resolves.toEqual([])
+  } finally {
+    EditorStates.dispose(uid)
+  }
+})
+
+test('renderEditor removes the active line number highlight when disabled', async () => {
+  const uid = 910_006
+  const oldState = createState(uid, new Uint32Array([1, 0, 1, 0]))
+  const newState = {
+    ...oldState,
+    highlightActiveLineNumber: false,
+  }
+  EditorStates.set(uid, oldState as any, newState as any)
+
+  try {
+    const commands = await RenderEditor.renderEditor(uid)
+    expect(commands).toHaveLength(1)
+    expect(commands[0]).toEqual(['renderGutter', expect.not.arrayContaining([expect.objectContaining({ className: 'LineNumber LineNumberActive' })])])
+  } finally {
+    EditorStates.dispose(uid)
+  }
+})
+
+test('renderEditor does not rerender the gutter for vertical cursor movement when highlighting is disabled', async () => {
+  const uid = 910_007
+  const oldState = {
+    ...createState(uid, new Uint32Array([0, 0, 0, 0])),
+    highlightActiveLineNumber: false,
+  }
+  const newState = {
+    ...oldState,
+    selections: new Uint32Array([1, 0, 1, 0]),
+  }
   EditorStates.set(uid, oldState as any, newState as any)
 
   try {

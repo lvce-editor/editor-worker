@@ -55,6 +55,7 @@ export const createEditor2 = (
     handleOffsetX: 0,
     hasListener: false,
     height,
+    highlightActiveLineNumber: true,
     highlightedLine: -1,
     hoverEnabled: false,
     id,

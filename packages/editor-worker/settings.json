@@ -55,6 +55,14 @@
   },
   {
     "category": "text-editor",
+    "description": "Controls whether the primary cursor line number is highlighted",
+    "heading": "Highlight Active Line Number",
+    "id": "editor.highlightActiveLineNumber",
+    "type": 3,
+    "value": true
+  },
+  {
+    "category": "text-editor",
     "description": "Controls whether the minimap is shown",
     "heading": "Minimap",
     "id": "editor.minimap.enabled",
