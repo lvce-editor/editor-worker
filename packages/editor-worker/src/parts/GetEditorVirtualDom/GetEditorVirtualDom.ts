@@ -40,6 +40,7 @@ interface EditorVirtualDomOptions {
   readonly gutterDecorations?: readonly EditorGutterDecoration[]
   readonly gutterInfos?: readonly any[]
   readonly height?: number
+  readonly highlightActiveLineNumber?: boolean
   readonly highlightedLine?: number
   readonly lightBulbRowIndex?: number
   readonly lineNumbers?: boolean
@@ -93,6 +94,7 @@ export const getEditorVirtualDom = ({
   focused = true,
   gutterDecorations = [],
   gutterInfos = [],
+  highlightActiveLineNumber = true,
   highlightedLine = -1,
   lightBulbRowIndex = -1,
   lineNumbers = true,
@@ -132,7 +134,8 @@ export const getEditorVirtualDom = ({
       : gutterInfos
   const showGutter = lineNumbers || breakPoints.length > 0 || lightBulbRowIndex >= 0 || gutterDecorations.length > 0
   const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
-  const gutterDom = showGutter ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, primaryCursorRowIndex + 1) : []
+  const activeLineNumber = highlightActiveLineNumber ? primaryCursorRowIndex + 1 : -1
+  const gutterDom = showGutter ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, activeLineNumber) : []
   const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY)
   const breadcrumbsDom = breadcrumbsEnabled
     ? GetEditorBreadcrumbsVirtualDom.getEditorBreadcrumbsVirtualDom({

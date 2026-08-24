@@ -247,6 +247,19 @@ test('getEditorVirtualDom - highlights the primary cursor line number', () => {
   })
 })
 
+test('getEditorVirtualDom - does not highlight the primary cursor line number when disabled', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    differences: [],
+    gutterInfos: [1, 2, 3],
+    highlightActiveLineNumber: false,
+    selections: new Uint32Array([1, 0, 1, 0]),
+    textInfos: [],
+    uid: 42,
+  })
+
+  expect(dom).not.toContainEqual(expect.objectContaining({ className: 'LineNumber LineNumberActive' }))
+})
+
 test('getEditorVirtualDom - breadcrumbs enabled', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     breadcrumbsEnabled: true,

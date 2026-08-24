@@ -48,6 +48,7 @@ export interface EditorState {
   readonly handleOffsetX: number
   readonly hasListener: boolean
   readonly height: number
+  readonly highlightActiveLineNumber: boolean
   readonly highlightedLine: number
   readonly hoverEnabled: boolean
   readonly id: number

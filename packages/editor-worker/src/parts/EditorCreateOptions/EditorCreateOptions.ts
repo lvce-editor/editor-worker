@@ -9,6 +9,7 @@ export interface EditorCreateOptions {
   readonly fontWeight: number
   readonly formatOnSave: boolean
   readonly height: number
+  readonly highlightActiveLineNumber?: boolean
   readonly hoverEnabled: boolean
   readonly id: number
   readonly isAutoClosingBracketsEnabled: boolean

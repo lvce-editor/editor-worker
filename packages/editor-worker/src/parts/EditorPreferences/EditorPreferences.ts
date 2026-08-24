@@ -8,6 +8,7 @@ const kLinks = 'editor.links'
 const kTabSize = 'editor.tabSize'
 const kInsertSpaces = 'editor.insertSpaces'
 const kLineNumbers = 'editor.lineNumbers'
+const kHighlightActiveLineNumber = 'editor.highlightActiveLineNumber'
 const kFormatOnSave = 'editor.formatOnSave'
 const kDiagnostics = 'editor.diagnostics'
 const kQuickSuggestions = 'editor.quickSuggestions'
@@ -76,6 +77,10 @@ export const getLinks = async () => {
 
 export const getLineNumbers = async () => {
   return (await Preferences.get(kLineNumbers)) ?? false
+}
+
+export const getHighlightActiveLineNumber = async () => {
+  return (await Preferences.get(kHighlightActiveLineNumber)) ?? true
 }
 
 export const getCompletionTriggerCharacters = async () => {
