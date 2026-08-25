@@ -17,6 +17,7 @@ const kAutoClosingBrackets = 'editor.autoclosingBrackets'
 const kFontWeight = 'editor.fontWeight'
 const kHover = 'editor.hover'
 const kMinimapEnabled = 'editor.minimap.enabled'
+const kMergeConflictActions = 'editor.mergeConflictActions'
 const kBreadcrumbsEnabled = 'breadcrumbs.enabled'
 const kDragAndDropEnabled = 'editor.dragAndDrop'
 
@@ -101,6 +102,10 @@ export const getFontWeight = async () => {
 
 export const getMinimapEnabled = async () => {
   return (await Preferences.get(kMinimapEnabled)) ?? false
+}
+
+export const getMergeConflictActionsEnabled = async () => {
+  return (await Preferences.get(kMergeConflictActions)) ?? false
 }
 
 export const getBreadcrumbsEnabled = async () => {

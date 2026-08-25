@@ -10,6 +10,18 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
       preventDefault: true,
     },
     {
+      name: DomEventListenerFunctions.HandleMergeConflictActionClick,
+      params: ['acceptMergeConflict', 'event.target.dataset.action', 'event.target.dataset.rowIndex'],
+      preventDefault: true,
+      stopPropagation: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleMergeConflictActionsMouseDown,
+      params: ['handleMergeConflictActionsMouseDown'],
+      preventDefault: true,
+      stopPropagation: true,
+    },
+    {
       name: DomEventListenerFunctions.HandleFocus,
       params: ['handleFocus'],
     },

@@ -12,6 +12,10 @@ export const getGutterInfos = (
   const gutterInfos = []
   const rows = lineIndices || Array.from({ length: maxLineY - minLineY }, (_, index) => minLineY + index)
   for (const rowIndex of rows) {
+    if (rowIndex < 0) {
+      gutterInfos.push({ isMergeConflictActions: true, lineNumber: 0, showLineNumber: false })
+      continue
+    }
     const lineNumber = rowIndex + 1
     const isBreakpoint = breakPoints.includes(rowIndex)
     const isLightBulb = rowIndex === lightBulbRowIndex

@@ -55,6 +55,14 @@
   },
   {
     "category": "text-editor",
+    "description": "Controls whether actions for accepting merge conflict changes are shown in the editor",
+    "heading": "Merge Conflict Actions",
+    "id": "editor.mergeConflictActions",
+    "type": 3,
+    "value": false
+  },
+  {
+    "category": "text-editor",
     "description": "Controls whether the primary cursor line number is highlighted",
     "heading": "Highlight Active Line Number",
     "id": "editor.highlightActiveLineNumber",

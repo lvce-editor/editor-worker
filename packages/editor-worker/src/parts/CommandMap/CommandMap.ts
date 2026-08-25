@@ -7,6 +7,7 @@ import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import { createStandaloneEditor } from '../CreateStandaloneEditor/CreateStandaloneEditor.ts'
 import { diff2 } from '../Diff2/Diff2.ts'
 import * as DisposeEditor from '../DisposeEditor/DisposeEditor.ts'
+import * as EditorCommandAcceptMergeConflict from '../EditorCommand/EditorCommandAcceptMergeConflict.ts'
 import * as AddCursorAbove from '../EditorCommand/EditorCommandAddCursorAbove.ts'
 import * as AddCursorBelow from '../EditorCommand/EditorCommandAddCursorBelow.ts'
 import * as EditorCommandApplyDocumentEdits from '../EditorCommand/EditorCommandApplyDocumentEdits.ts'
@@ -204,6 +205,7 @@ export const commandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
   'CodeGenerator.accept': CodeGeneratorAccept.codeGeneratorAccept,
   'ColorPicker.loadContent': ColorPicker.loadContent,
+  'Editor.acceptMergeConflict': wrapCommand(EditorCommandAcceptMergeConflict.acceptMergeConflict),
   'Editor.addCursorAbove': wrapCommand(AddCursorAbove.addCursorAbove),
   'Editor.addCursorBelow': wrapCommand(AddCursorBelow.addCursorBelow),
   'Editor.applyDocumentEdits': wrapCommand(EditorCommandApplyDocumentEdits.applyDocumentEdits),
@@ -307,6 +309,7 @@ export const commandMap = {
   'Editor.handleDoubleClick': wrapCommand(HandleDoubleClick.handleDoubleClick),
   'Editor.handleFocus': wrapCommand(HandleFocus.handleFocus),
   'Editor.handleKeyUp': wrapCommand(HandleKeyUp.handleKeyUp, true),
+  'Editor.handleMergeConflictActionsMouseDown': wrapCommand(EditorCommandAcceptMergeConflict.handleMergeConflictActionsMouseDown),
   'Editor.handleMouseDown': wrapCommand(HandleMouseDown.handleMouseDown),
   'Editor.handleMouseMove': wrapCommand(HandleMouseMove.handleMouseMove),
   'Editor.handleMouseMoveWithAltKey': wrapCommand(EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey),

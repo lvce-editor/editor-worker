@@ -16,6 +16,7 @@ export const isEqual = (oldState: EditorState, newState: EditorState): boolean =
     oldState.lineNumbers === newState.lineNumbers &&
     oldState.loadError === newState.loadError &&
     oldState.textInfos === newState.textInfos &&
+    oldState.visibleViewLineIndices === newState.visibleViewLineIndices &&
     oldState.differences === newState.differences &&
     oldState.initial === newState.initial &&
     oldState.selectionInfos === newState.selectionInfos &&

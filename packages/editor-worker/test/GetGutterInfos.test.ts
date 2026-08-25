@@ -64,3 +64,7 @@ test('preserves gutter decorations when line numbers are hidden', () => {
     },
   ])
 })
+
+test('adds an unnumbered gutter row for merge conflict actions', () => {
+  expect(getGutterInfos(0, 2, [], true, [0, -2, 1])).toEqual([1, { isMergeConflictActions: true, lineNumber: 0, showLineNumber: false }, 2])
+})
