@@ -3,6 +3,7 @@ import type { BracketPosition } from '../BracketMatching/BracketMatching.ts'
 import type { EditorState } from '../State/State.ts'
 import * as BracketMatching from '../BracketMatching/BracketMatching.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
+import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import * as GetX from '../GetX/GetX.ts'
 
 const getPositionKey = (position: BracketPosition): string => `${position.rowIndex}:${position.columnIndex}`
@@ -30,9 +31,11 @@ const getInfo = async (
     tabSize,
     width,
   } = editor
-  const visualRow = EditorFolding.getVisualRowForDocumentRow(position.rowIndex, foldingRanges)
+  const visualRow = editor.viewLineIndices
+    ? EditorViewRows.getVisualRowForDocumentRow(position.rowIndex, editor.viewLineIndices)
+    : EditorFolding.getVisualRowForDocumentRow(position.rowIndex, foldingRanges)
   const relativeRow = visualRow - startVisualRow
-  const difference = differences[relativeRow] ?? 0
+  const difference = differences[visibleLineIndices.indexOf(position.rowIndex)] ?? 0
   const line = lines[position.rowIndex]
   const x = await GetX.getX(
     line,
@@ -71,9 +74,13 @@ const getInfo = async (
 }
 
 export const getVisibleBracketMatches = async (editor: EditorState): Promise<readonly BracketMatchInfo[]> => {
-  const { deltaY, foldingRanges, itemHeight, lines, maxLineY, minLineY, selections, visibleLineIndices } = editor
+  const { deltaY, foldingRanges, itemHeight, lines, maxLineY, minLineY, selections, viewLineIndices, visibleLineIndices } = editor
   const actualVisibleLineIndices = visibleLineIndices || Array.from({ length: maxLineY - minLineY }, (_, index) => minLineY + index)
-  const startVisualRow = itemHeight ? Math.floor(deltaY / itemHeight) : EditorFolding.getVisualRowForDocumentRow(minLineY, foldingRanges)
+  const startVisualRow = itemHeight
+    ? Math.floor(deltaY / itemHeight)
+    : viewLineIndices
+      ? EditorViewRows.getVisualRowForDocumentRow(minLineY, viewLineIndices)
+      : EditorFolding.getVisualRowForDocumentRow(minLineY, foldingRanges)
   const positions = new Map<string, BracketPosition>()
   for (let i = 0; i < selections.length; i += 4) {
     const startRowIndex = selections[i]

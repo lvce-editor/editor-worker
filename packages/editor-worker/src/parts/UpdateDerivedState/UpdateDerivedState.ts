@@ -2,6 +2,7 @@ import type { EditorState } from '../State/State.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import { getEditorGutterDecorations } from '../GetEditorGutterDecorations/GetEditorGutterDecorations.ts'
 import * as GetLightBulbRowIndex from '../GetLightBulbRowIndex/GetLightBulbRowIndex.ts'
 import * as GetMinimapLines from '../GetMinimapLines/GetMinimapLines.ts'
@@ -33,6 +34,7 @@ const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState)
     oldState.focused !== newState.focused ||
     oldState.minLineY !== newState.minLineY ||
     oldState.maxLineY !== newState.maxLineY ||
+    oldState.visibleViewLineIndices !== newState.visibleViewLineIndices ||
     oldState.foldingRanges !== newState.foldingRanges ||
     oldState.differences !== newState.differences ||
     oldState.charWidth !== newState.charWidth ||
@@ -59,6 +61,7 @@ const shouldUpdateBracketMatchData = (oldState: EditorState, newState: EditorSta
     oldState.minLineY !== newState.minLineY ||
     oldState.maxLineY !== newState.maxLineY ||
     oldState.visibleLineIndices !== newState.visibleLineIndices ||
+    oldState.visibleViewLineIndices !== newState.visibleViewLineIndices ||
     oldState.foldingRanges !== newState.foldingRanges ||
     oldState.differences !== newState.differences ||
     oldState.charWidth !== newState.charWidth ||
@@ -89,6 +92,8 @@ const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorStat
     oldState.tokenizerId !== newState.tokenizerId ||
     oldState.minLineY !== newState.minLineY ||
     oldState.maxLineY !== newState.maxLineY ||
+    oldState.visibleLineIndices !== newState.visibleLineIndices ||
+    oldState.visibleViewLineIndices !== newState.visibleViewLineIndices ||
     oldState.decorations !== newState.decorations ||
     oldState.embeds !== newState.embeds ||
     oldState.deltaX !== newState.deltaX ||
@@ -103,8 +108,21 @@ const shouldUpdateMinimapData = (oldState: EditorState, newState: EditorState): 
   return newState.minimapEnabled && (!oldState.minimapEnabled || oldState.lines !== newState.lines || oldState.tokenizerId !== newState.tokenizerId)
 }
 
+const mergeConflictsEqual = (oldState: EditorState, newState: EditorState): boolean => {
+  const oldConflicts = oldState.mergeConflicts || []
+  const newConflicts = newState.mergeConflicts || []
+  if (oldConflicts.length !== newConflicts.length) {
+    return false
+  }
+  return oldConflicts.every((conflict, index) => {
+    const other = newConflicts[index]
+    return conflict.startRowIndex === other.startRowIndex && conflict.endRowIndex === other.endRowIndex
+  })
+}
+
 export const updateDerivedState = async (oldState: EditorState, newState: EditorState): Promise<EditorState> => {
-  const nextState = oldState.lines !== newState.lines && 'foldingRanges' in newState ? EditorFolding.updateLayout(newState, []) : newState
+  const layoutState = oldState.lines !== newState.lines && 'foldingRanges' in newState ? EditorFolding.updateLayout(newState, []) : newState
+  const nextState = mergeConflictsEqual(oldState, layoutState) ? layoutState : { ...layoutState, incrementalEdits: emptyIncrementalEdits }
   let finalState = nextState
   if (shouldUpdateVisibleTextData(oldState, nextState)) {
     const syncIncremental = SyncIncremental.getEnabled()

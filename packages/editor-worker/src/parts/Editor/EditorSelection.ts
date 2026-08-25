@@ -2,6 +2,7 @@ import * as Assert from '../Assert/Assert.ts'
 import * as Clamp from '../Clamp/Clamp.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
+import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 const getSelectionFromChange = (change: any) => {
@@ -50,7 +51,9 @@ export const setSelections = (editor: any, selections: any) => {
           )
     const previousActiveRowIndex = editor.selections[primarySelectionIndex + 2] ?? activeRowIndex
     const rowIndex = EditorFolding.getUnhiddenRow(activeRowIndex, previousActiveRowIndex, editor.lines.length, foldingRanges)
-    const visualRow = EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges)
+    const visualRow = editor.viewLineIndices
+      ? EditorViewRows.getVisualRowForDocumentRow(rowIndex, editor.viewLineIndices)
+      : EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges)
     const startVisualRow = Math.floor(editor.deltaY / editor.itemHeight)
     const endVisualRow = startVisualRow + editor.numberOfVisibleLines
     if (visualRow >= startVisualRow && visualRow < endVisualRow) {

@@ -3,6 +3,7 @@ import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
 import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGutterDecoration.ts'
 import type { EditorLineDecoration } from '../EditorLineDecoration/EditorLineDecoration.ts'
 import type { EndOfLine } from '../EndOfLine/EndOfLine.ts'
+import type { MergeConflict } from '../MergeConflict/MergeConflict.ts'
 
 export interface EditorState {
   readonly additionalFocus: number
@@ -72,6 +73,8 @@ export interface EditorState {
   readonly loadError?: string
   readonly longestLineWidth: number
   readonly maxLineY: number
+  readonly mergeConflictActionsEnabled: boolean
+  readonly mergeConflicts: readonly MergeConflict[]
   readonly minimapEnabled: boolean
   readonly minimapLines: readonly (readonly (number | string)[])[]
   readonly minimapRevision: number
@@ -105,7 +108,9 @@ export interface EditorState {
   readonly uri: string
   readonly useFunctionalRendering?: boolean
   readonly validLines: readonly number[]
+  readonly viewLineIndices: readonly number[]
   readonly visibleLineIndices: readonly number[]
+  readonly visibleViewLineIndices: readonly number[]
   readonly visualDecorations?: any // Visual decorations (objects) for diagnostic squiggly underlines
   readonly widgetRevision: number
   readonly widgets: readonly any[]

@@ -25,14 +25,22 @@ const renderLines = {
     }
     const { differences, endOfLineDecorations, textInfos } = newState
     newState.differences = differences
-    const { highlightedLine, visibleLineIndices } = newState
-    const relativeLine = visibleLineIndices.indexOf(highlightedLine)
-    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine, visibleLineIndices, endOfLineDecorations)
+    const { highlightedLine, visibleLineIndices, visibleViewLineIndices } = newState
+    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(
+      textInfos,
+      differences,
+      true,
+      highlightedLine,
+      visibleLineIndices,
+      endOfLineDecorations,
+      visibleViewLineIndices,
+    )
     return [/* method */ 'setText', dom]
   },
   isEqual: (oldState: EditorState, newState: EditorState) =>
     oldState.lines === newState.lines &&
     oldState.foldingRanges === newState.foldingRanges &&
+    oldState.visibleViewLineIndices === newState.visibleViewLineIndices &&
     oldState.tokenizerId === newState.tokenizerId &&
     oldState.minLineY === newState.minLineY &&
     oldState.decorations === newState.decorations &&
@@ -99,11 +107,13 @@ const renderGutterInfo = {
       primarySelectionIndex,
       selections,
       visibleLineIndices,
+      visibleViewLineIndices = [],
     } = newState
     if (!lineNumbers && breakPoints.length === 0 && lightBulbRowIndex === -1 && gutterDecorations.length === 0) {
       return ['renderGutter', []]
     }
-    const gutterInfos = getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices, lightBulbRowIndex, gutterDecorations)
+    const gutterLineIndices = visibleViewLineIndices.length > 0 ? visibleViewLineIndices : visibleLineIndices
+    const gutterInfos = getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, gutterLineIndices, lightBulbRowIndex, gutterDecorations)
     const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
     const activeLineNumber = highlightActiveLineNumber ? primaryCursorRowIndex + 1 : -1
     const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos, activeLineNumber)
@@ -118,6 +128,7 @@ const renderGutterInfo = {
     oldState.lineNumbers === newState.lineNumbers &&
     oldState.minLineY === newState.minLineY &&
     oldState.maxLineY === newState.maxLineY &&
+    oldState.visibleViewLineIndices === newState.visibleViewLineIndices &&
     (!newState.highlightActiveLineNumber ||
       getPrimaryCursorRowIndex(oldState.selections, oldState.primarySelectionIndex) ===
         getPrimaryCursorRowIndex(newState.selections, newState.primarySelectionIndex)),

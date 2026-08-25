@@ -1,4 +1,5 @@
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
+import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as GetX from '../GetX/GetX.ts'
 import * as Px from '../Px/Px.ts'
@@ -149,28 +150,35 @@ export const getVisible = async (editor: any) => {
     rowHeight,
     selections,
     tabSize,
+    viewLineIndices,
     visibleLineIndices,
+    visibleViewLineIndices,
     width,
   } = editor
 
   const averageCharWidth = charWidth
   const halfCursorWidth = cursorWidth / 2
   const actualVisibleLineIndices = visibleLineIndices || Array.from({ length: maxLineY - minLineY }, (_, index) => minLineY + index)
-  const startVisualRow = itemHeight ? Math.floor(deltaY / itemHeight) : EditorFolding.getVisualRowForDocumentRow(minLineY, foldingRanges)
-  const endVisualRow = startVisualRow + actualVisibleLineIndices.length
-  const getRelativeRow = (rowIndex: number) => EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges) - startVisualRow
+  const getVisualRow = (rowIndex: number): number =>
+    viewLineIndices
+      ? EditorViewRows.getVisualRowForDocumentRow(rowIndex, viewLineIndices)
+      : EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges)
+  const startVisualRow = itemHeight ? Math.floor(deltaY / itemHeight) : getVisualRow(minLineY)
+  const endVisualRow = startVisualRow + (visibleViewLineIndices?.length || actualVisibleLineIndices.length)
+  const getRelativeRow = (rowIndex: number) => getVisualRow(rowIndex) - startVisualRow
+  const getDifference = (rowIndex: number): number => differences[actualVisibleLineIndices.indexOf(rowIndex)]
   for (let i = 0; i < selections.length; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn, reversed] = GetSelectionPairs.getSelectionPairs(
       selections,
       i,
     )
-    const selectionStartVisualRow = EditorFolding.getVisualRowForDocumentRow(selectionStartRow, foldingRanges)
-    const selectionEndVisualRow = EditorFolding.getVisualRowForDocumentRow(selectionEndRow, foldingRanges)
+    const selectionStartVisualRow = getVisualRow(selectionStartRow)
+    const selectionEndVisualRow = getVisualRow(selectionEndRow)
     if (selectionEndVisualRow < startVisualRow || selectionStartVisualRow >= endVisualRow) {
       continue
     }
     const relativeEndLineRow = getRelativeRow(selectionEndRow)
-    const endLineDifference = differences[relativeEndLineRow]
+    const endLineDifference = getDifference(selectionEndRow)
     const endLine = lines[selectionEndRow]
     const endLineEndX = await GetX.getX(
       endLine,
@@ -193,7 +201,7 @@ export const getVisible = async (editor: any) => {
     }
     const startLineYRelative = getRelativeRow(selectionStartRow)
     const startLineY = startLineYRelative * rowHeight
-    const startLineDifference = differences[startLineYRelative]
+    const startLineDifference = getDifference(selectionStartRow)
     if (selectionStartRow === selectionEndRow) {
       const startX = await GetX.getX(
         endLine,
@@ -259,7 +267,7 @@ export const getVisible = async (editor: any) => {
         const currentLine = lines[rowIndex]
         const relativeLine = getRelativeRow(rowIndex)
         const currentLineY = relativeLine * rowHeight
-        const difference = differences[relativeLine]
+        const difference = getDifference(rowIndex)
         const selectionWidth = await GetX.getX(
           currentLine,
           currentLine.length,

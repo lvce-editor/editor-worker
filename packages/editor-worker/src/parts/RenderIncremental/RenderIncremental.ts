@@ -18,8 +18,21 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
   })
 }
 
+const mergeConflictsEqual = (oldState: EditorState, newState: EditorState): boolean => {
+  const oldConflicts = oldState.mergeConflicts || []
+  const newConflicts = newState.mergeConflicts || []
+  return (
+    oldConflicts.length === newConflicts.length &&
+    oldConflicts.every((conflict, index) => {
+      const other = newConflicts[index]
+      return conflict.startRowIndex === other.startRowIndex && conflict.endRowIndex === other.endRowIndex
+    })
+  )
+}
+
 export const renderIncremental = (oldState: EditorState, newState: EditorState): any => {
-  const oldDom: readonly VirtualDomNode[] = oldState.initial ? getDom(oldState) : RenderedDoms.get(newState.uid) || getDom(oldState)
+  const oldDom: readonly VirtualDomNode[] =
+    oldState.initial || !mergeConflictsEqual(oldState, newState) ? getDom(oldState) : RenderedDoms.get(newState.uid) || getDom(oldState)
   const newDom: readonly VirtualDomNode[] = getDom(newState)
   const patches = diffTree(oldDom, newDom)
   if (patches.length === 0) {

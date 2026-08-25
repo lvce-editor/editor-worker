@@ -1,5 +1,6 @@
 import * as Clamp from '../Clamp/Clamp.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
+import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 
 const preferredHeight = 200
 const preferredWidth = 300
@@ -13,6 +14,7 @@ export const getColorPickerBounds = (editor: any) => {
     height: editorHeight,
     rowHeight,
     selections,
+    viewLineIndices,
     width: editorWidth,
     x: editorX,
     y: editorY,
@@ -24,7 +26,9 @@ export const getColorPickerBounds = (editor: any) => {
   const editorRight = editorX + editorWidth
   const editorBottom = editorY + editorHeight
   const cursorX = editorX + columnIndex * columnWidth - deltaX
-  const visualRowIndex = EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges)
+  const visualRowIndex = viewLineIndices
+    ? EditorViewRows.getVisualRowForDocumentRow(rowIndex, viewLineIndices)
+    : EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges)
   const lineTop = editorY + visualRowIndex * rowHeight - deltaY
   const lineBottom = lineTop + rowHeight
   const yAbove = lineTop - height

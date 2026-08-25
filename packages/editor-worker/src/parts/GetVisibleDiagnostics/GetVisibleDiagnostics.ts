@@ -1,11 +1,26 @@
 import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
+import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import * as GetDiagnosticType from '../GetDiagnosticType/GetDiagnosticType.ts'
 import * as GetX from '../GetX/GetX.ts'
-import * as GetY from '../GetY/GetY.ts'
 
 export const getVisibleDiagnostics = async (editor: any, diagnostics: readonly Diagnostic[]): Promise<readonly any[]> => {
   const visibleDiagnostics = []
-  const { charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, lines, minLineY, rowHeight, tabSize, width } = editor
+  const {
+    charWidth,
+    deltaY,
+    fontFamily,
+    fontSize,
+    fontWeight,
+    isMonospaceFont,
+    itemHeight,
+    letterSpacing,
+    lines,
+    rowHeight,
+    tabSize,
+    viewLineIndices,
+    width,
+  } = editor
+  const startVisualRow = itemHeight ? Math.floor(deltaY / itemHeight) : editor.minLineY || 0
   for (const diagnostic of diagnostics) {
     const { columnIndex, endColumnIndex, rowIndex } = diagnostic
     const columnDelta = Math.max(1, endColumnIndex - columnIndex)
@@ -26,7 +41,8 @@ export const getVisibleDiagnostics = async (editor: any, diagnostics: readonly D
       charWidth,
       endLineDifference,
     )
-    const y = GetY.getY(rowIndex, minLineY, rowHeight)
+    const visualRow = viewLineIndices ? EditorViewRows.getVisualRowForDocumentRow(rowIndex, viewLineIndices) : rowIndex
+    const y = (visualRow - startVisualRow) * rowHeight
     visibleDiagnostics.push({
       height: rowHeight,
       type: GetDiagnosticType.getDiagnosticType(diagnostic),

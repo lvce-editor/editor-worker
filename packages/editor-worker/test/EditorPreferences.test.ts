@@ -24,3 +24,16 @@ test('active line number highlighting can be disabled', async () => {
 
   await expect(EditorPreferences.getHighlightActiveLineNumber()).resolves.toBe(false)
 })
+
+test('merge conflict actions are disabled by default', async () => {
+  getPreference.mockResolvedValue(undefined)
+
+  await expect(EditorPreferences.getMergeConflictActionsEnabled()).resolves.toBe(false)
+  expect(getPreference).toHaveBeenCalledWith('editor.mergeConflictActions')
+})
+
+test('merge conflict actions can be enabled', async () => {
+  getPreference.mockResolvedValue(true)
+
+  await expect(EditorPreferences.getMergeConflictActionsEnabled()).resolves.toBe(true)
+})

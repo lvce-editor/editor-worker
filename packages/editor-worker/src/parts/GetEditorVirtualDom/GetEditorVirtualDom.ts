@@ -59,6 +59,7 @@ interface EditorVirtualDomOptions {
   readonly uid: number
   readonly uri?: string
   readonly visibleLineIndices?: readonly number[]
+  readonly visibleViewLineIndices?: readonly number[]
   readonly workspaceUri?: string
 }
 
@@ -112,6 +113,7 @@ export const getEditorVirtualDom = ({
   uid,
   uri = '',
   visibleLineIndices,
+  visibleViewLineIndices = [],
   workspaceUri = '',
 }: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
   if (loadError) {
@@ -128,9 +130,10 @@ export const getEditorVirtualDom = ({
       text(loadError),
     ]
   }
+  const gutterLineIndices = visibleViewLineIndices.length > 0 ? visibleViewLineIndices : visibleLineIndices
   const visibleGutterInfos =
     breakPoints.length > 0 || gutterDecorations.length > 0 || visibleLineIndices
-      ? getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, visibleLineIndices, lightBulbRowIndex, gutterDecorations)
+      ? getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, gutterLineIndices, lightBulbRowIndex, gutterDecorations)
       : gutterInfos
   const showGutter = lineNumbers || breakPoints.length > 0 || lightBulbRowIndex >= 0 || gutterDecorations.length > 0
   const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
@@ -172,6 +175,7 @@ export const getEditorVirtualDom = ({
       selectionInfos,
       textInfos,
       visibleLineIndices: visibleLineIndices || [],
+      visibleViewLineIndices,
     }),
     ...minimapDom,
   ]

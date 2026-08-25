@@ -10,6 +10,7 @@ export const getEditorRowsVirtualDom = (
   highlightedLine = -1,
   visibleLineIndices: readonly number[] = [],
   endOfLineDecorations: readonly { readonly rowIndex: number; readonly text: string }[] = [],
+  visibleViewLineIndices: readonly number[] = [],
 ): readonly VirtualDomNode[] => {
   const rowsDom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(
     textInfos,
@@ -18,10 +19,11 @@ export const getEditorRowsVirtualDom = (
     highlightedLine,
     visibleLineIndices,
     endOfLineDecorations,
+    visibleViewLineIndices,
   )
   return [
     {
-      childCount: textInfos.length,
+      childCount: visibleViewLineIndices.length || textInfos.length,
       className: 'EditorRows',
       onMouseDown: DomEventListenerFunctions.HandleMouseDown,
       onPointerDown: DomEventListenerFunctions.HandlePointerDown,

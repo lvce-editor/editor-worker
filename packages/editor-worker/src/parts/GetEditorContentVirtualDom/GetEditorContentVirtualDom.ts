@@ -32,6 +32,7 @@ interface EditorContentVirtualDomOptions {
   readonly selectionInfos?: readonly any[]
   readonly textInfos: readonly any[]
   readonly visibleLineIndices?: readonly number[]
+  readonly visibleViewLineIndices?: readonly number[]
 }
 
 export const getEditorContentVirtualDom = ({
@@ -47,6 +48,7 @@ export const getEditorContentVirtualDom = ({
   selectionInfos = [],
   textInfos,
   visibleLineIndices = [],
+  visibleViewLineIndices = [],
 }: EditorContentVirtualDomOptions): readonly VirtualDomNode[] => {
   return [
     editorContentNode,
@@ -63,6 +65,7 @@ export const getEditorContentVirtualDom = ({
       endOfLineDecorations,
       bracketMatchInfos,
       focused,
+      visibleViewLineIndices,
     ),
     ...GetEditorScrollBarDiagnosticsVirtualDom.getEditorScrollBarDiagnosticsVirtualDom(scrollBarDiagnostics),
     ...GetScrollBarVirtualDom.getScrollBarVirtualDom(),

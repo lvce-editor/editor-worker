@@ -18,6 +18,34 @@ ${editorSelector} .EditorRow {
   height: var(--EditorRowHeight);
   line-height: var(--EditorRowHeight);
 }
+${editorSelector} .MergeConflictActions,
+${editorSelector} .MergeConflictActionsGutter {
+  box-sizing: border-box;
+  height: var(--EditorRowHeight);
+  line-height: var(--EditorRowHeight);
+}
+${editorSelector} .MergeConflictActions {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  padding-left: 4px;
+  user-select: none;
+}
+${editorSelector} .MergeConflictAction {
+  appearance: none;
+  background: none;
+  border: 0;
+  color: var(--TextLinkForeground, #3794ff);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+${editorSelector} .MergeConflictAction:hover,
+${editorSelector} .MergeConflictAction:focus-visible {
+  color: var(--TextLinkActiveForeground, #4daafc);
+  outline: none;
+  text-decoration: underline;
+}
 ${editorSelector} .EditorLineDecoration {
   color: var(--EditorInlineBlameForeground, rgba(255, 255, 255, 0.5));
   font-style: italic;

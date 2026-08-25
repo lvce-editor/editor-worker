@@ -8,12 +8,15 @@ import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 const getGutterInfoVirtualDom = (gutterInfo: any, activeLineNumber: number) => {
   const isBreakpoint = typeof gutterInfo === 'object' && gutterInfo.isBreakpoint
   const isLightBulb = typeof gutterInfo === 'object' && gutterInfo.isLightBulb
+  const isMergeConflictActions = typeof gutterInfo === 'object' && gutterInfo.isMergeConflictActions
   const lineNumber = typeof gutterInfo === 'object' ? gutterInfo.lineNumber : gutterInfo
   const gutterDecorations: readonly EditorGutterDecoration[] = typeof gutterInfo === 'object' ? gutterInfo.gutterDecorations || [] : []
   const showLineNumber = typeof gutterInfo !== 'object' || gutterInfo.showLineNumber !== false
   const label = isLightBulb ? `Show Code Actions on line ${lineNumber}` : `Breakpoint on line ${lineNumber}`
   let className = lineNumber === activeLineNumber ? 'LineNumber LineNumberActive' : 'LineNumber'
-  if (isLightBulb) {
+  if (isMergeConflictActions) {
+    className += ' MergeConflictActionsGutter'
+  } else if (isLightBulb) {
     className += ' LineNumberLightBulb MaskIconLightBulb'
   } else if (isBreakpoint) {
     className += ' LineNumberBreakpoint'
@@ -37,7 +40,7 @@ const getGutterInfoVirtualDom = (gutterInfo: any, activeLineNumber: number) => {
       title: `${decoration.type[0].toUpperCase()}${decoration.type.slice(1)} line ${lineNumber}`,
       type: VirtualDomElements.Span,
     })),
-    text(isLightBulb ? '' : isBreakpoint ? '●' : showLineNumber ? lineNumber : ''),
+    text(isMergeConflictActions || isLightBulb ? '' : isBreakpoint ? '●' : showLineNumber ? lineNumber : ''),
   ]
 }
 
