@@ -19,6 +19,48 @@
   },
   {
     "category": "text-editor",
+    "description": "Format a file when it is saved",
+    "heading": "Format On Save",
+    "id": "editor.formatOnSave",
+    "type": 3,
+    "value": false
+  },
+  {
+    "category": "text-editor",
+    "description": "Show completions automatically while typing",
+    "heading": "Completions On Type",
+    "id": "editor.completionsOnType",
+    "type": 3,
+    "value": false
+  },
+  {
+    "category": "text-editor",
+    "description": "Show diagnostics in the editor",
+    "heading": "Diagnostics",
+    "id": "editor.diagnostics",
+    "type": 3,
+    "value": true
+  },
+  {
+    "category": "text-editor",
+    "description": "The font weight of the editor",
+    "heading": "Font Weight",
+    "id": "editor.fontWeight",
+    "type": 5,
+    "value": 400,
+    "minimum": 100,
+    "maximum": 900
+  },
+  {
+    "category": "text-editor",
+    "description": "Show breadcrumbs above the editor",
+    "heading": "Breadcrumbs",
+    "id": "breadcrumbs.enabled",
+    "type": 3,
+    "value": false
+  },
+  {
+    "category": "text-editor",
     "description": "Controls how lines should wrap",
     "heading": "Word Wrap",
     "id": "editor.wordWrap",
