@@ -37,3 +37,10 @@ test('merge conflict actions can be enabled', async () => {
 
   await expect(EditorPreferences.getMergeConflictActionsEnabled()).resolves.toBe(true)
 })
+
+test('reads the documented auto-closing brackets setting', async () => {
+  getPreference.mockResolvedValue(true)
+
+  await expect(EditorPreferences.isAutoClosingBracketsEnabled()).resolves.toBe(true)
+  expect(getPreference).toHaveBeenCalledWith('editor.autoClosingBrackets')
+})
