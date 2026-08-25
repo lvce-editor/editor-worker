@@ -20,7 +20,7 @@ export const handleBlur = async (editor: EditorState): Promise<EditorState> => {
     return newEditor
   }
   const autoSave = await Preferences.get('files.autoSave')
-  if (autoSave === 'off') {
+  if (autoSave !== 'onFocusChange') {
     return newEditor
   }
   return EditorCommandSave.save(newEditor)
