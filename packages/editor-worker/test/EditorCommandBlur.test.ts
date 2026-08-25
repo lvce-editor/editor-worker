@@ -91,8 +91,23 @@ test('handleBlur does not save when auto save is off', async () => {
   expect(saveMock).not.toHaveBeenCalled()
 })
 
-test('handleBlur saves when auto save is enabled', async () => {
+test('handleBlur does not save when auto save is after delay', async () => {
   getPreferenceMock.mockResolvedValue('afterDelay')
+  const editor = createEditor()
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toEqual({
+    ...editor,
+    focused: false,
+    widgetRevision: 1,
+  })
+  expect(getPreferenceMock).toHaveBeenCalledWith('files.autoSave')
+  expect(saveMock).not.toHaveBeenCalled()
+})
+
+test('handleBlur saves when auto save is on focus change', async () => {
+  getPreferenceMock.mockResolvedValue('onFocusChange')
   const editor = createEditor()
   const savedEditor = createEditor({
     focused: false,
