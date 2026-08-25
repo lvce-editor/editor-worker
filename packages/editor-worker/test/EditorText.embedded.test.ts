@@ -28,16 +28,16 @@ test('getVisible - renders partial embedded tokens with surrounding tokens', asy
   TokenizerState.set('css-inline-test', {
     hasArrayReturn: true,
     initialLineState: { state: 1 },
-    TokenMap: {
-      1: 'CssSelector',
-      2: 'CssPropertyName',
-      3: 'CssPropertyValue',
-    },
     tokenizeLine() {
       return {
         state: 1,
         tokens: [1, 4, 2, 5, 3, 5],
       }
+    },
+    TokenMap: {
+      1: 'CssSelector',
+      2: 'CssPropertyName',
+      3: 'CssPropertyValue',
     },
   })
   const editor = {
