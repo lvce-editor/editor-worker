@@ -272,6 +272,43 @@ const getDifference = (start: any, averageCharWidth: any, deltaX: any) => {
   return difference
 }
 
+const appendTokenRange = (
+  resultTokens: number[],
+  resultTokenMap: Record<number, string>,
+  tokens: readonly number[],
+  tokenMap: Record<number, string>,
+  rangeStart: number,
+  rangeEnd: number,
+) => {
+  let tokenStart = 0
+  for (let i = 0; i < tokens.length; i += 2) {
+    const tokenType = tokens[i]
+    const tokenEnd = tokenStart + tokens[i + 1]
+    const start = Math.max(tokenStart, rangeStart)
+    const end = Math.min(tokenEnd, rangeEnd)
+    if (start < end) {
+      const resultTokenType = resultTokens.length / 2
+      resultTokens.push(resultTokenType, end - start)
+      resultTokenMap[resultTokenType] = tokenMap[tokenType] || 'Unknown'
+    }
+    tokenStart = tokenEnd
+  }
+}
+
+const mergeEmbeddedTokens = (line: string, tokenResults: any, embeddedResult: any, tokenMap: Record<number, string>) => {
+  const embeddedStart = Math.max(0, Math.min(line.length, tokenResults.embeddedLanguageStart))
+  const embeddedEnd = Math.max(embeddedStart, Math.min(line.length, tokenResults.embeddedLanguageEnd))
+  const tokens: number[] = []
+  const mergedTokenMap: Record<number, string> = Object.create(null)
+  appendTokenRange(tokens, mergedTokenMap, tokenResults.tokens, tokenMap, 0, embeddedStart)
+  appendTokenRange(tokens, mergedTokenMap, embeddedResult.result.tokens, embeddedResult.TokenMap, 0, embeddedEnd - embeddedStart)
+  appendTokenRange(tokens, mergedTokenMap, tokenResults.tokens, tokenMap, embeddedEnd, line.length)
+  return {
+    tokenMap: mergedTokenMap,
+    tokens,
+  }
+}
+
 const getLineInfoDefault = (
   line: any,
   tokenResults: any,
@@ -402,6 +439,24 @@ const getLineInfo = (
         tokenResults,
         line,
         decorations,
+        lineOffset,
+        normalize,
+        tabSize,
+        width,
+        deltaX,
+        averageCharWidth,
+        minOffset,
+        maxOffset,
+      )
+    }
+    if (embeddedResult?.result?.tokens) {
+      const merged = mergeEmbeddedTokens(line, tokenResults, embeddedResult, TokenMap)
+      return getLineInfoDefault(
+        line,
+        merged,
+        embeddedResults,
+        decorations,
+        merged.tokenMap,
         lineOffset,
         normalize,
         tabSize,

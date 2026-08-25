@@ -11,7 +11,10 @@
     "packages/e2e": {
       "entry": ["src/**/*.ts", "fixtures/**/main.js"],
       "project": ["src/**/*.ts", "fixtures/**/*.js"],
-      "ignoreFiles": ["fixtures/editor.syntax-highlighting-nested-extension/src/*.js"]
+      "ignoreFiles": [
+        "fixtures/editor.syntax-highlighting-html-style-inline/src/*.js",
+        "fixtures/editor.syntax-highlighting-nested-extension/src/*.js"
+      ]
     },
     "packages/e2e-status-bar": {
       "entry": ["src/**/*.ts", "server/server.js"],
