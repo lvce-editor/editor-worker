@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "@lvce-editor/rename-worker": "^1.36.0",
-    "@lvce-editor/server": "0.109.8"
+    "@lvce-editor/server": "0.108.1"
   },
   "devDependencies": {
     "@types/node": "^25.9.3"
