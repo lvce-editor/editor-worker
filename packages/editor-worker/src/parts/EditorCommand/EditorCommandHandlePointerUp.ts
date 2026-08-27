@@ -8,8 +8,8 @@ export const handlePointerUp = async (editor: any) => {
     hasListener: false,
     isSelecting: false,
     selectionAutoMovePosition: {
-      columnIndex: 0,
-      rowIndex: 0,
+      x: 0,
+      y: 0,
     },
     textDragDropPosition: {
       columnIndex: 0,

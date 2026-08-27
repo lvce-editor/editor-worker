@@ -102,8 +102,8 @@ export const createEditor2 = (
       rowIndex: 0,
     },
     selectionAutoMovePosition: {
-      columnIndex: 0,
-      rowIndex: 0,
+      x: 0,
+      y: 0,
     },
     selectionInfos: [],
     selections: new Uint32Array(),

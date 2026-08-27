@@ -95,7 +95,7 @@ export interface EditorState {
   readonly scrollBarWidth: number
   readonly scrollBarY?: number
   readonly selectionAnchorPosition: { readonly rowIndex: number; readonly columnIndex: number }
-  readonly selectionAutoMovePosition: { readonly rowIndex: number; readonly columnIndex: number }
+  readonly selectionAutoMovePosition: { readonly x: number; readonly y: number }
   readonly selectionInfos: readonly any[]
   readonly selections: Uint32Array
   readonly tabSize: number

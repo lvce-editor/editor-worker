@@ -6,18 +6,12 @@ test('handlePointerCaptureLost - clears selection auto move state', async () => 
   const editor = {
     hasListener: true,
     isSelecting: true,
-    selectionAutoMovePosition: {
-      columnIndex: 2,
-      rowIndex: 3,
-    },
+    selectionAutoMovePosition: { x: 2, y: 3 },
   }
   await expect(EditorCommandHandlePointerCaptureLost.handlePointerCaptureLost(editor)).resolves.toEqual({
     hasListener: false,
     isSelecting: false,
-    selectionAutoMovePosition: {
-      columnIndex: 0,
-      rowIndex: 0,
-    },
+    selectionAutoMovePosition: { x: 0, y: 0 },
     textDragDropPosition: {
       columnIndex: 0,
       rowIndex: 0,
@@ -33,7 +27,7 @@ test('handlePointerCaptureLost - discards an active text drag session', async ()
   const editor = {
     hasListener: true,
     isSelecting: false,
-    selectionAutoMovePosition: { columnIndex: 0, rowIndex: 0 },
+    selectionAutoMovePosition: { x: 0, y: 0 },
     textDragId: 12,
   }
 

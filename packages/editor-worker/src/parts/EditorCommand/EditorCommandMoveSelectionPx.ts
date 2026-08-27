@@ -1,85 +1,64 @@
 import * as Assert from '../Assert/Assert.ts'
+import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as RequestAnimationFrame from '../RequestAnimationFrame/RequestAnimationFrame.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 import * as EditorMoveSelection from './EditorCommandMoveSelection.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
 
-// @ts-ignore
-const getNewEditor = (editor, position) => {
-  const { maxLineY, minLineY, rowHeight } = editor
-  const diff = maxLineY - minLineY
-  if (position.rowIndex < minLineY) {
-    const newMinLineY = position.rowIndex
-    const newMaxLineY = position.rowIndex + diff
-    const newDeltaY = position.rowIndex * rowHeight
-    const anchor = editor.selectionAnchorPosition
-    const newSelections = new Uint32Array([position.rowIndex - 1, position.columnIndex, anchor.rowIndex, anchor.columnIndex])
-    return {
-      ...editor,
-      deltaY: newDeltaY,
-      maxLineY: newMaxLineY,
-      minLineY: newMinLineY,
-      selections: newSelections,
-    }
+export const advanceSelectionAutoScroll = async (editor: any) => {
+  const { x, y } = editor.selectionAutoMovePosition
+  const bottom = editor.y + editor.height
+  if (y >= editor.y && y <= bottom) {
+    return { ...editor, hasListener: false }
   }
-  if (position.rowIndex > maxLineY) {
-    const diff = maxLineY - minLineY
-    const newMinLineY = position.rowIndex - diff
-    const newMaxLineY = position.rowIndex
-    const newDeltaY = newMinLineY * rowHeight
-    const anchor = editor.selectionAnchorPosition
-    const newSelections = new Uint32Array([anchor.rowIndex, anchor.columnIndex, position.rowIndex + 1, position.columnIndex])
-    return {
-      ...editor,
-      deltaY: newDeltaY,
-      maxLineY: newMaxLineY,
-      minLineY: newMinLineY,
-      selections: newSelections,
-    }
+  const deltaY = (y - (y < editor.y ? editor.y : bottom)) * 0.1
+  const scrolledEditor = await EditorScrolling.setDeltaY(editor, editor.deltaY + deltaY)
+  if (scrolledEditor === editor) {
+    return { ...editor, hasListener: false }
   }
-  return editor
+  const selectionY = Math.max(editor.y, Math.min(y, bottom - 1))
+  const position = await EditorPosition.at(scrolledEditor, x, selectionY)
+  return EditorMoveSelection.editorMoveSelection(scrolledEditor, position, false)
 }
 
-const continueScrollingAndMovingSelection = async (editorUid: number) => {
-  const editorState = EditorStates.get(editorUid)
-  const editor = editorState?.newState
-  if (!editor || !editor.hasListener || !editor.isSelecting) {
+const continueScrollingAndMovingSelection = async (editorUid: number): Promise<void> => {
+  const editor = EditorStates.get(editorUid)?.newState
+  if (!editor?.isSelecting || !editor.hasListener) {
     return
   }
-  const position = editor.selectionAutoMovePosition
-  if (position.rowIndex === 0) {
+  const nextEditor = await advanceSelectionAutoScroll(editor)
+  const derivedEditor = await UpdateDerivedState.updateDerivedState(editor, nextEditor)
+  const currentEditor = EditorStates.get(editorUid)?.newState
+  if (currentEditor !== editor) {
+    if (currentEditor?.isSelecting && currentEditor.hasListener) {
+      RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editorUid))
+    }
     return
   }
-  const newEditor = getNewEditor(editor, position)
-  if (editor === newEditor) {
-    return
+  EditorStates.set(editor.uid, editor, derivedEditor)
+  if (derivedEditor.hasListener) {
+    RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editorUid))
   }
-  // @ts-ignore
-  const delta = position.rowIndex < editor.minLineY ? -1 : 1
-  const nextEditor = {
-    ...newEditor,
-    selectionAutoMovePosition: { columnIndex: position.columnIndex, rowIndex: position.rowIndex + delta },
-  }
-  const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, nextEditor)
-  EditorStates.set(editor.uid, editor, newEditorWithDerivedState)
-  RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editorUid))
 }
 
-// @ts-ignore
-export const moveSelectionPx = async (editor, x, y) => {
+export const moveSelectionPx = async (editor: any, x: number, y: number) => {
   Assert.object(editor)
   Assert.number(x)
   Assert.number(y)
-  const position = await EditorPosition.at(editor, x, y)
+  const bottom = editor.y + editor.height
+  const selectionY = Math.max(editor.y, Math.min(y, bottom - 1))
+  const position = await EditorPosition.at(editor, x, selectionY)
   const newEditor = EditorMoveSelection.editorMoveSelection(editor, position)
-  if (!editor.hasListener && (position.rowIndex < editor.minLineY || position.rowIndex > editor.maxLineY)) {
-    RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editor.uid))
-    return {
-      ...newEditor,
-      hasListener: true,
-      selectionAutoMovePosition: position,
-    }
+  if (y >= editor.y && y <= bottom) {
+    return { ...newEditor, hasListener: false }
   }
-  return newEditor
+  if (!editor.hasListener) {
+    RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editor.uid))
+  }
+  return {
+    ...newEditor,
+    hasListener: true,
+    selectionAutoMovePosition: { x, y },
+  }
 }
