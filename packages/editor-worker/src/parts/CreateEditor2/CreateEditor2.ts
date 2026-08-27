@@ -53,7 +53,6 @@ export const createEditor2 = (
     gutterWidth: 0,
     handleOffset: 0,
     handleOffsetX: 0,
-    hasListener: false,
     height,
     highlightActiveLineNumber: true,
     highlightedLine: -1,
@@ -69,6 +68,7 @@ export const createEditor2 = (
     isMonospaceFont: false,
     isQuickSuggestionsEnabled: false,
     isSelecting: false,
+    isSelectionAutoScrolling: false,
     itemHeight: 20,
     languageId: '',
     letterSpacing: 0,
@@ -101,9 +101,9 @@ export const createEditor2 = (
       columnIndex: 0,
       rowIndex: 0,
     },
-    selectionAutoMovePosition: {
-      columnIndex: 0,
-      rowIndex: 0,
+    selectionAutoScrollPointer: {
+      x: 0,
+      y: 0,
     },
     selectionInfos: [],
     selections: new Uint32Array(),

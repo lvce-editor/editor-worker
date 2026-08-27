@@ -4,20 +4,14 @@ import * as EditorCommandHandlePointerCaptureLost from '../src/parts/EditorComma
 
 test('handlePointerCaptureLost - clears selection auto move state', async () => {
   const editor = {
-    hasListener: true,
     isSelecting: true,
-    selectionAutoMovePosition: {
-      columnIndex: 2,
-      rowIndex: 3,
-    },
+    isSelectionAutoScrolling: true,
+    selectionAutoScrollPointer: { x: 2, y: 3 },
   }
   await expect(EditorCommandHandlePointerCaptureLost.handlePointerCaptureLost(editor)).resolves.toEqual({
-    hasListener: false,
     isSelecting: false,
-    selectionAutoMovePosition: {
-      columnIndex: 0,
-      rowIndex: 0,
-    },
+    isSelectionAutoScrolling: false,
+    selectionAutoScrollPointer: { x: 0, y: 0 },
     textDragDropPosition: {
       columnIndex: 0,
       rowIndex: 0,
@@ -31,9 +25,9 @@ test('handlePointerCaptureLost - discards an active text drag session', async ()
     'DragAndDrop.discardTextDrag'() {},
   })
   const editor = {
-    hasListener: true,
     isSelecting: false,
-    selectionAutoMovePosition: { columnIndex: 0, rowIndex: 0 },
+    isSelectionAutoScrolling: true,
+    selectionAutoScrollPointer: { x: 0, y: 0 },
     textDragId: 12,
   }
 

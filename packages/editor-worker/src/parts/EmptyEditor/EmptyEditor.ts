@@ -20,12 +20,12 @@ export const emptyEditor = {
   focused: false,
   foldingRanges: [],
   gutterDecorations: [],
-  hasListener: false,
   height: 0,
   highlightedLine: -1,
   incrementalEdits: emptyIncrementalEdits,
   insertSpaces: true,
   isSelecting: false,
+  isSelectionAutoScrolling: false,
   languageId: '', // TODO use numeric language id?
   lineCache: [],
   lines: [],
@@ -45,9 +45,9 @@ export const emptyEditor = {
     columnIndex: 0,
     rowIndex: 0,
   },
-  selectionAutoMovePosition: {
-    columnIndex: 0,
-    rowIndex: 0,
+  selectionAutoScrollPointer: {
+    x: 0,
+    y: 0,
   },
   selectionInfos: [],
   selections: new Uint32Array(),
