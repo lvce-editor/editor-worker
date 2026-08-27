@@ -5,9 +5,9 @@ import { moveTextDrag } from '../MoveTextDrag/MoveTextDrag.ts'
 export const handlePointerUp = async (editor: any) => {
   const resetEditor = {
     ...editor,
+    hasListener: false,
     isSelecting: false,
-    isSelectionAutoScrolling: false,
-    selectionAutoScrollPointer: {
+    selectionAutoMovePosition: {
       x: 0,
       y: 0,
     },

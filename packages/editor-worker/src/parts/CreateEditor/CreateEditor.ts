@@ -90,6 +90,7 @@ export const createEditor = async ({
     gutterWidth: 0,
     handleOffset: 0,
     handleOffsetX: 0,
+    hasListener: false,
     height,
     highlightActiveLineNumber,
     id,
@@ -102,7 +103,6 @@ export const createEditor = async ({
     isMonospaceFont,
     isQuickSuggestionsEnabled,
     isSelecting: false,
-    isSelectionAutoScrolling: false,
     itemHeight: 20,
     languageId: computedlanguageId,
     letterSpacing,
@@ -129,7 +129,7 @@ export const createEditor = async ({
       columnIndex: 0,
       rowIndex: 0,
     },
-    selectionAutoScrollPointer: {
+    selectionAutoMovePosition: {
       x: 0,
       y: 0,
     },

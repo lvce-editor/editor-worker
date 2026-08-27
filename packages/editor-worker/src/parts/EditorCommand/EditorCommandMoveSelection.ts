@@ -50,19 +50,9 @@ const getNewSelections = (anchor, position) => {
 }
 
 // @ts-ignore
-export const editorMoveSelection = (editor, position) => {
+export const editorMoveSelection = (editor, position, scroll = true) => {
   const anchor = editor.selectionAnchorPosition
   const newSelections = getNewSelections(anchor, position)
   // TODO if selection equals previous selection -> do nothing
-  return Editor.scheduleSelections(editor, newSelections)
-}
-
-// @ts-ignore
-export const editorMoveSelectionWithoutScrolling = (editor, position) => {
-  const anchor = editor.selectionAnchorPosition
-  const selections = getNewSelections(anchor, position)
-  return {
-    ...editor,
-    selections,
-  }
+  return scroll ? Editor.scheduleSelections(editor, newSelections) : { ...editor, selections: newSelections }
 }

@@ -21,14 +21,14 @@ afterEach(() => {
 
 const createEditor = (overrides: Record<string, any> = {}) => ({
   deltaY: 0,
+  hasListener: false,
   height: 40,
   isSelecting: true,
-  isSelectionAutoScrolling: false,
   selectionAnchorPosition: {
     columnIndex: 0,
     rowIndex: 0,
   },
-  selectionAutoScrollPointer: {
+  selectionAutoMovePosition: {
     x: 0,
     y: 0,
   },
@@ -36,28 +36,6 @@ const createEditor = (overrides: Record<string, any> = {}) => ({
   uid: 1,
   y: 10,
   ...overrides,
-})
-
-test('getSelectionAutoScrollDeltaY - returns zero inside the editor', () => {
-  const editor = createEditor()
-
-  expect(EditorCommandMoveSelectionPx.getSelectionAutoScrollDeltaY(editor, 10)).toBe(0)
-  expect(EditorCommandMoveSelectionPx.getSelectionAutoScrollDeltaY(editor, 30)).toBe(0)
-  expect(EditorCommandMoveSelectionPx.getSelectionAutoScrollDeltaY(editor, 50)).toBe(0)
-})
-
-test('getSelectionAutoScrollDeltaY - increases with distance below the editor', () => {
-  const editor = createEditor()
-
-  expect(EditorCommandMoveSelectionPx.getSelectionAutoScrollDeltaY(editor, 51)).toBeCloseTo(0.1)
-  expect(EditorCommandMoveSelectionPx.getSelectionAutoScrollDeltaY(editor, 100)).toBe(5)
-})
-
-test('getSelectionAutoScrollDeltaY - increases with distance above the editor', () => {
-  const editor = createEditor()
-
-  expect(EditorCommandMoveSelectionPx.getSelectionAutoScrollDeltaY(editor, 9)).toBeCloseTo(-0.1)
-  expect(EditorCommandMoveSelectionPx.getSelectionAutoScrollDeltaY(editor, -40)).toBe(-5)
 })
 
 test('moveSelectionPx - starts auto scrolling below the editor', async () => {
@@ -72,8 +50,8 @@ test('moveSelectionPx - starts auto scrolling below the editor', async () => {
 
   expect(requestAnimationFrame).toHaveBeenCalledTimes(1)
   expect(result).toMatchObject({
-    isSelectionAutoScrolling: true,
-    selectionAutoScrollPointer: {
+    hasListener: true,
+    selectionAutoMovePosition: {
       x: 20,
       y: 60,
     },
@@ -87,36 +65,35 @@ test('moveSelectionPx - updates pointer distance without starting a second loop'
     configurable: true,
     value: requestAnimationFrame,
   })
-  const editor = createEditor({ isSelectionAutoScrolling: true })
+  const editor = createEditor({ hasListener: true })
 
   const result = await EditorCommandMoveSelectionPx.moveSelectionPx(editor, 30, 80)
 
   expect(requestAnimationFrame).not.toHaveBeenCalled()
-  expect(result.selectionAutoScrollPointer).toEqual({ x: 30, y: 80 })
+  expect(result.selectionAutoMovePosition).toEqual({ x: 30, y: 80 })
 })
 
 test('moveSelectionPx - stops auto scrolling when the pointer re-enters', async () => {
   const editor = createEditor({
-    isSelectionAutoScrolling: true,
-    selectionAutoScrollPointer: { x: 20, y: 60 },
+    hasListener: true,
+    selectionAutoMovePosition: { x: 20, y: 60 },
   })
 
   const result = await EditorCommandMoveSelectionPx.moveSelectionPx(editor, 20, 40)
 
   expect(result).toMatchObject({
-    isSelectionAutoScrolling: false,
-    selectionAutoScrollPointer: { x: 0, y: 0 },
+    hasListener: false,
   })
 })
 
 test('advanceSelectionAutoScroll - scrolls farther per frame for a more distant pointer', async () => {
   const nearbyEditor = createEditor({
-    isSelectionAutoScrolling: true,
-    selectionAutoScrollPointer: { x: 20, y: 51 },
+    hasListener: true,
+    selectionAutoMovePosition: { x: 20, y: 51 },
   })
   const distantEditor = createEditor({
-    isSelectionAutoScrolling: true,
-    selectionAutoScrollPointer: { x: 20, y: 100 },
+    hasListener: true,
+    selectionAutoMovePosition: { x: 20, y: 100 },
   })
 
   await EditorCommandMoveSelectionPx.advanceSelectionAutoScroll(nearbyEditor)
@@ -128,17 +105,29 @@ test('advanceSelectionAutoScroll - scrolls farther per frame for a more distant 
   expect(at).toHaveBeenNthCalledWith(2, expect.objectContaining({ deltaY: 5 }), 20, 49)
 })
 
+test('advanceSelectionAutoScroll - scrolls upward above the editor', async () => {
+  const editor = createEditor({
+    deltaY: 20,
+    hasListener: true,
+    selectionAutoMovePosition: { x: 20, y: 0 },
+  })
+
+  await EditorCommandMoveSelectionPx.advanceSelectionAutoScroll(editor)
+
+  expect(setDeltaY).toHaveBeenCalledWith(editor, 19)
+  expect(at).toHaveBeenCalledWith(expect.objectContaining({ deltaY: 19 }), 20, 10)
+})
+
 test('advanceSelectionAutoScroll - stops at the scroll boundary', async () => {
   const editor = createEditor({
-    isSelectionAutoScrolling: true,
-    selectionAutoScrollPointer: { x: 20, y: 100 },
+    hasListener: true,
+    selectionAutoMovePosition: { x: 20, y: 100 },
   })
   setDeltaY.mockResolvedValueOnce(editor)
 
   const result = await EditorCommandMoveSelectionPx.advanceSelectionAutoScroll(editor)
 
   expect(result).toMatchObject({
-    isSelectionAutoScrolling: false,
-    selectionAutoScrollPointer: { x: 0, y: 0 },
+    hasListener: false,
   })
 })

@@ -6,99 +6,59 @@ import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts
 import * as EditorMoveSelection from './EditorCommandMoveSelection.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
 
-const AutoScrollSpeed = 0.1
-
-export const getSelectionAutoScrollDeltaY = (editor: any, pointerY: number): number => {
-  const top = editor.y
-  if (pointerY < top) {
-    return (pointerY - top) * AutoScrollSpeed
-  }
-  const bottom = top + editor.height
-  if (pointerY > bottom) {
-    return (pointerY - bottom) * AutoScrollSpeed
-  }
-  return 0
-}
-
-const getSelectionPointerY = (editor: any, pointerY: number): number => {
-  const bottom = editor.height > 0 ? editor.y + editor.height - 1 : editor.y
-  return Math.max(editor.y, Math.min(pointerY, bottom))
-}
-
-const stopSelectionAutoScroll = (editor: any) => {
-  return {
-    ...editor,
-    isSelectionAutoScrolling: false,
-    selectionAutoScrollPointer: {
-      x: 0,
-      y: 0,
-    },
-  }
-}
-
 export const advanceSelectionAutoScroll = async (editor: any) => {
-  const { x, y } = editor.selectionAutoScrollPointer
-  const deltaY = getSelectionAutoScrollDeltaY(editor, y)
-  if (deltaY === 0) {
-    return stopSelectionAutoScroll(editor)
+  const { x, y } = editor.selectionAutoMovePosition
+  const bottom = editor.y + editor.height
+  if (y >= editor.y && y <= bottom) {
+    return { ...editor, hasListener: false }
   }
+  const deltaY = (y - (y < editor.y ? editor.y : bottom)) * 0.1
   const scrolledEditor = await EditorScrolling.setDeltaY(editor, editor.deltaY + deltaY)
   if (scrolledEditor === editor) {
-    return stopSelectionAutoScroll(editor)
+    return { ...editor, hasListener: false }
   }
-  const selectionY = getSelectionPointerY(scrolledEditor, y)
+  const selectionY = Math.max(editor.y, Math.min(y, bottom - 1))
   const position = await EditorPosition.at(scrolledEditor, x, selectionY)
-  return EditorMoveSelection.editorMoveSelectionWithoutScrolling(scrolledEditor, position)
-}
-
-const scheduleNextFrame = (editorUid: number): void => {
-  RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editorUid))
-}
-
-const scheduleNextFrameIfNeeded = (editorUid: number, editor: any): void => {
-  if (editor?.isSelecting && editor.isSelectionAutoScrolling) {
-    scheduleNextFrame(editorUid)
-  }
+  return EditorMoveSelection.editorMoveSelection(scrolledEditor, position, false)
 }
 
 const continueScrollingAndMovingSelection = async (editorUid: number): Promise<void> => {
   const editor = EditorStates.get(editorUid)?.newState
-  if (!editor?.isSelecting || !editor.isSelectionAutoScrolling) {
+  if (!editor?.isSelecting || !editor.hasListener) {
     return
   }
   const nextEditor = await advanceSelectionAutoScroll(editor)
+  const derivedEditor = await UpdateDerivedState.updateDerivedState(editor, nextEditor)
   const currentEditor = EditorStates.get(editorUid)?.newState
   if (currentEditor !== editor) {
-    scheduleNextFrameIfNeeded(editorUid, currentEditor)
-    return
-  }
-  const derivedEditor = await UpdateDerivedState.updateDerivedState(editor, nextEditor)
-  const latestEditor = EditorStates.get(editorUid)?.newState
-  if (latestEditor !== editor) {
-    scheduleNextFrameIfNeeded(editorUid, latestEditor)
+    if (currentEditor?.isSelecting && currentEditor.hasListener) {
+      RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editorUid))
+    }
     return
   }
   EditorStates.set(editor.uid, editor, derivedEditor)
-  scheduleNextFrameIfNeeded(editorUid, derivedEditor)
+  if (derivedEditor.hasListener) {
+    RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editorUid))
+  }
 }
 
 export const moveSelectionPx = async (editor: any, x: number, y: number) => {
   Assert.object(editor)
   Assert.number(x)
   Assert.number(y)
-  const selectionY = getSelectionPointerY(editor, y)
+  const bottom = editor.y + editor.height
+  const selectionY = Math.max(editor.y, Math.min(y, bottom - 1))
   const position = await EditorPosition.at(editor, x, selectionY)
   const newEditor = EditorMoveSelection.editorMoveSelection(editor, position)
-  const deltaY = getSelectionAutoScrollDeltaY(editor, y)
-  if (deltaY === 0) {
-    return stopSelectionAutoScroll(newEditor)
+  if (y >= editor.y && y <= bottom) {
+    return { ...newEditor, hasListener: false }
   }
-  if (!editor.isSelectionAutoScrolling) {
-    scheduleNextFrame(editor.uid)
+  if (!editor.hasListener) {
+    RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editor.uid))
   }
   return {
     ...newEditor,
-    isSelectionAutoScrolling: true,
-    selectionAutoScrollPointer: { x, y },
+    hasListener: true,
+    selectionAutoMovePosition: { x, y },
   }
 }

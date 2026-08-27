@@ -11,9 +11,9 @@ export const handlePointerCaptureLost = async (editor) => {
   }
   return {
     ...editor,
+    hasListener: false,
     isSelecting: false,
-    isSelectionAutoScrolling: false,
-    selectionAutoScrollPointer: {
+    selectionAutoMovePosition: {
       x: 0,
       y: 0,
     },

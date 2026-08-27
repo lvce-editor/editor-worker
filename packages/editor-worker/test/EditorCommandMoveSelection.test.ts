@@ -30,7 +30,7 @@ test('editorMoveSelection - uses editor selection anchor position', () => {
   expect(resultB.selections).toEqual(new Uint32Array([1, 2, 1, 5]))
 })
 
-test('editorMoveSelectionWithoutScrolling - updates the selection without revealing it', () => {
+test('editorMoveSelection - can update the selection without revealing it', () => {
   const editor = {
     deltaY: 10,
     selectionAnchorPosition: {
@@ -40,10 +40,14 @@ test('editorMoveSelectionWithoutScrolling - updates the selection without reveal
     selections: new Uint32Array([0, 0, 0, 0]),
   }
 
-  const result = EditorCommandMoveSelection.editorMoveSelectionWithoutScrolling(editor, {
-    columnIndex: 4,
-    rowIndex: 3,
-  })
+  const result = EditorCommandMoveSelection.editorMoveSelection(
+    editor,
+    {
+      columnIndex: 4,
+      rowIndex: 3,
+    },
+    false,
+  )
 
   expect(result.deltaY).toBe(10)
   expect(result.selections).toEqual(new Uint32Array([0, 1, 3, 4]))

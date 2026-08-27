@@ -4,17 +4,17 @@ import * as EditorCommandHandlePointerUp from '../src/parts/EditorCommand/Editor
 
 test('handlePointerUp - clears selection auto move state', async () => {
   const editor = {
+    hasListener: true,
     isSelecting: true,
-    isSelectionAutoScrolling: true,
-    selectionAutoScrollPointer: { x: 2, y: 3 },
+    selectionAutoMovePosition: { x: 2, y: 3 },
   }
 
   const result = await EditorCommandHandlePointerUp.handlePointerUp(editor)
 
   expect(result).toEqual({
+    hasListener: false,
     isSelecting: false,
-    isSelectionAutoScrolling: false,
-    selectionAutoScrollPointer: { x: 0, y: 0 },
+    selectionAutoMovePosition: { x: 0, y: 0 },
     textDragDropPosition: {
       columnIndex: 0,
       rowIndex: 0,
@@ -35,10 +35,10 @@ test('handlePointerUp - consumes a text drag session on a no-op drop', async () 
     },
   })
   const editor = {
+    hasListener: true,
     isSelecting: false,
-    isSelectionAutoScrolling: true,
     lines: ['hello world'],
-    selectionAutoScrollPointer: { x: 0, y: 0 },
+    selectionAutoMovePosition: { x: 0, y: 0 },
     textDragDropPosition: { columnIndex: 2, rowIndex: 0 },
     textDragId: 9,
     uri: 'file:///workspace/file.txt',
@@ -55,9 +55,9 @@ test('handlePointerUp - resets pointer state when the text drag session is missi
     'DragAndDrop.takeTextDrag'() {},
   })
   const editor = {
+    hasListener: true,
     isSelecting: false,
-    isSelectionAutoScrolling: true,
-    selectionAutoScrollPointer: { x: 3, y: 2 },
+    selectionAutoMovePosition: { x: 3, y: 2 },
     textDragDropPosition: { columnIndex: 8, rowIndex: 0 },
     textDragId: 4,
   }
@@ -65,7 +65,7 @@ test('handlePointerUp - resets pointer state when the text drag session is missi
   const result = await EditorCommandHandlePointerUp.handlePointerUp(editor)
 
   expect(result).toMatchObject({
-    isSelectionAutoScrolling: false,
+    hasListener: false,
     textDragDropPosition: { columnIndex: 0, rowIndex: 0 },
     textDragId: 0,
   })
