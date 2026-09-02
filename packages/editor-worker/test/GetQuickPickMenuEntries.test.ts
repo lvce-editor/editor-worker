@@ -78,3 +78,10 @@ test('includes undo commands', () => {
     ]),
   )
 })
+
+test('includes Toggle Minimap', () => {
+  expect(getQuickPickMenuEntries()).toContainEqual({
+    id: 'Editor.toggleMinimap',
+    label: 'View: Toggle Minimap',
+  })
+})
