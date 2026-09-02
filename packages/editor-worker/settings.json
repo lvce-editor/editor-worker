@@ -4,7 +4,7 @@
     "description": "The font size of the editor",
     "heading": "Font Size",
     "id": "editor.fontSize",
-    "type": 5,
+    "type": "number",
     "value": 15,
     "minimum": 10,
     "maximum": 100
@@ -14,7 +14,7 @@
     "description": "The font family of the editor",
     "heading": "Font Family",
     "id": "editor.fontFamily",
-    "type": 2,
+    "type": "string",
     "value": "Fira Code"
   },
   {
@@ -22,7 +22,7 @@
     "description": "Format a file when it is saved",
     "heading": "Format On Save",
     "id": "editor.formatOnSave",
-    "type": 3,
+    "type": "boolean",
     "value": false
   },
   {
@@ -30,7 +30,7 @@
     "description": "Show completions automatically while typing",
     "heading": "Completions On Type",
     "id": "editor.completionsOnType",
-    "type": 3,
+    "type": "boolean",
     "value": false
   },
   {
@@ -38,7 +38,7 @@
     "description": "Show diagnostics in the editor",
     "heading": "Diagnostics",
     "id": "editor.diagnostics",
-    "type": 3,
+    "type": "boolean",
     "value": true
   },
   {
@@ -46,7 +46,7 @@
     "description": "The font weight of the editor",
     "heading": "Font Weight",
     "id": "editor.fontWeight",
-    "type": 5,
+    "type": "number",
     "value": 400,
     "minimum": 100,
     "maximum": 900
@@ -56,7 +56,7 @@
     "description": "Show breadcrumbs above the editor",
     "heading": "Breadcrumbs",
     "id": "breadcrumbs.enabled",
-    "type": 3,
+    "type": "boolean",
     "value": false
   },
   {
@@ -74,7 +74,7 @@
         "label": "off"
       }
     ],
-    "type": 1,
+    "type": "enum",
     "value": "off"
   },
   {
@@ -92,7 +92,7 @@
         "label": "off"
       }
     ],
-    "type": 1,
+    "type": "enum",
     "value": "on"
   },
   {
@@ -100,7 +100,7 @@
     "description": "Controls whether actions for accepting merge conflict changes are shown in the editor",
     "heading": "Merge Conflict Actions",
     "id": "editor.mergeConflictActions",
-    "type": 3,
+    "type": "boolean",
     "value": false
   },
   {
@@ -108,7 +108,7 @@
     "description": "Controls whether the primary cursor line number is highlighted",
     "heading": "Highlight Active Line Number",
     "id": "editor.highlightActiveLineNumber",
-    "type": 3,
+    "type": "boolean",
     "value": true
   },
   {
@@ -116,7 +116,7 @@
     "description": "Controls whether the minimap is shown",
     "heading": "Minimap",
     "id": "editor.minimap.enabled",
-    "type": 3,
+    "type": "boolean",
     "value": false
   },
   {
@@ -124,7 +124,7 @@
     "description": "Controls whether the editor will scroll beyond the last line",
     "heading": "Scroll Beyond Last Line",
     "id": "editor.scrollBeyondLastLine",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -132,7 +132,7 @@
     "description": "Controls whether the editor will scroll smoothly",
     "heading": "Smooth Scrolling",
     "id": "editor.smoothScrolling",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -140,7 +140,7 @@
     "description": "Controls how the cursor should blink",
     "heading": "Cursor Blinking",
     "id": "editor.cursorBlinking",
-    "type": 2,
+    "type": "string",
     "value": "blink"
   },
   {
@@ -148,7 +148,7 @@
     "description": "Controls the cursor style",
     "heading": "Cursor Style",
     "id": "editor.cursorStyle",
-    "type": 2,
+    "type": "string",
     "value": "line"
   },
   {
@@ -156,7 +156,7 @@
     "description": "Controls the width of the cursor",
     "heading": "Cursor Width",
     "id": "editor.cursorWidth",
-    "type": 5,
+    "type": "number",
     "value": "0"
   },
   {
@@ -164,7 +164,7 @@
     "description": "The number of spaces a tab is equal to",
     "heading": "Tab Size",
     "id": "editor.tabSize",
-    "type": 5,
+    "type": "number",
     "value": 4,
     "minimum": 1,
     "maximum": 8
@@ -174,7 +174,7 @@
     "description": "Insert spaces when pressing Tab",
     "heading": "Insert Spaces",
     "id": "editor.insertSpaces",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -182,7 +182,7 @@
     "description": "Controls whether the editor will automatically adjust the indentation",
     "heading": "Detect Indentation",
     "id": "editor.detectIndentation",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -190,7 +190,7 @@
     "description": "Remove trailing auto inserted whitespace",
     "heading": "Trim Auto Whitespace",
     "id": "editor.trimAutoWhitespace",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -198,7 +198,7 @@
     "description": "Special handling for large files to disable certain features",
     "heading": "Large File Optimizations",
     "id": "editor.largeFileOptimizations",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -206,7 +206,7 @@
     "description": "Controls how the editor should render whitespace characters",
     "heading": "Render Whitespace",
     "id": "editor.renderWhitespace",
-    "type": 2,
+    "type": "string",
     "value": "selection"
   },
   {
@@ -214,7 +214,7 @@
     "description": "Controls whether the editor should render control characters",
     "heading": "Render Control Characters",
     "id": "editor.renderControlCharacters",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -222,7 +222,7 @@
     "description": "Controls how the editor should render the current line highlight",
     "heading": "Render Line Highlight",
     "id": "editor.renderLineHighlight",
-    "type": 2,
+    "type": "string",
     "value": "line"
   },
   {
@@ -230,7 +230,7 @@
     "description": "Controls whether the editor shows CodeLens",
     "heading": "Code Lens",
     "id": "editor.codeLens",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -238,7 +238,7 @@
     "description": "Controls whether the editor has code folding enabled",
     "heading": "Folding",
     "id": "editor.folding",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -246,7 +246,7 @@
     "description": "Controls when the folding controls on the gutter are automatically hidden",
     "heading": "Show Folding Controls",
     "id": "editor.showFoldingControls",
-    "type": 2,
+    "type": "string",
     "value": "mouseover"
   },
   {
@@ -254,7 +254,7 @@
     "description": "Controls whether clicking on the empty content after a folded line will unfold the line",
     "heading": "Unfold On Click After End",
     "id": "editor.unfoldOnClickAfterEnd",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -262,7 +262,7 @@
     "description": "Controls whether the editor should detect links and make them clickable",
     "heading": "Links",
     "id": "editor.links",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -270,7 +270,7 @@
     "description": "Controls whether the editor should render the inline color decorators and color picker",
     "heading": "Color Decorators",
     "id": "editor.colorDecorators",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -278,7 +278,7 @@
     "description": "Controls whether the editor should show the lightbulb code action",
     "heading": "Lightbulb",
     "id": "editor.lightbulb",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -286,7 +286,7 @@
     "description": "Code actions to be run on save",
     "heading": "Code Actions On Save",
     "id": "editor.codeActionsOnSave",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -294,7 +294,7 @@
     "description": "Format a file on paste",
     "heading": "Format On Paste",
     "id": "editor.formatOnPaste",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -302,7 +302,7 @@
     "description": "Format a file on type",
     "heading": "Format On Type",
     "id": "editor.formatOnType",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -310,7 +310,7 @@
     "description": "Controls if suggestions should be accepted on commit characters",
     "heading": "Accept Suggestion On Commit Character",
     "id": "editor.acceptSuggestionOnCommitCharacter",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -318,7 +318,7 @@
     "description": "Controls if suggestions should be accepted on Enter",
     "heading": "Accept Suggestion On Enter",
     "id": "editor.acceptSuggestionOnEnter",
-    "type": 2,
+    "type": "string",
     "value": "on"
   },
   {
@@ -326,7 +326,7 @@
     "description": "Enables tab completions",
     "heading": "Tab Completion",
     "id": "editor.tabCompletion",
-    "type": 2,
+    "type": "string",
     "value": "on"
   },
   {
@@ -334,7 +334,7 @@
     "description": "Controls whether completions should be computed based on words in the document",
     "heading": "Word Based Suggestions",
     "id": "editor.wordBasedSuggestions",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -342,7 +342,7 @@
     "description": "Controls whether suggestions should automatically show up when typing trigger characters",
     "heading": "Suggest On Trigger Characters",
     "id": "editor.suggestOnTriggerCharacters",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -350,7 +350,7 @@
     "description": "Controls whether suggestions should automatically show up while typing",
     "heading": "Quick Suggestions",
     "id": "editor.quickSuggestions",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -358,7 +358,7 @@
     "description": "Controls whether the editor should show parameter hints",
     "heading": "Parameter Hints",
     "id": "editor.parameterHints",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -366,7 +366,7 @@
     "description": "Controls whether the editor should automatically close brackets after opening them",
     "heading": "Auto Closing Brackets",
     "id": "editor.autoClosingBrackets",
-    "type": 2,
+    "type": "string",
     "value": "always"
   },
   {
@@ -374,7 +374,7 @@
     "description": "Controls whether the editor should automatically close quotes after opening them",
     "heading": "Auto Closing Quotes",
     "id": "editor.autoClosingQuotes",
-    "type": 2,
+    "type": "string",
     "value": "always"
   },
   {
@@ -382,7 +382,7 @@
     "description": "Controls whether the editor should type over closing quotes or brackets",
     "heading": "Auto Closing Overtype",
     "id": "editor.autoClosingOvertype",
-    "type": 2,
+    "type": "string",
     "value": "auto"
   },
   {
@@ -390,7 +390,7 @@
     "description": "Controls whether the editor should remove adjacent closing quotes or brackets when deleting",
     "heading": "Auto Closing Delete",
     "id": "editor.autoClosingDelete",
-    "type": 2,
+    "type": "string",
     "value": "auto"
   },
   {
@@ -398,7 +398,7 @@
     "description": "Controls whether the editor should automatically surround selections",
     "heading": "Auto Surround",
     "id": "editor.autoSurround",
-    "type": 2,
+    "type": "string",
     "value": "quotes"
   },
   {
@@ -406,7 +406,7 @@
     "description": "Controls whether the editor should enable bracket pair colorization",
     "heading": "Bracket Pair Colorization",
     "id": "editor.bracketPairColorization",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -414,7 +414,7 @@
     "description": "Controls whether the editor should render bracket pair guides",
     "heading": "Guides",
     "id": "editor.guides",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -422,7 +422,7 @@
     "description": "Controls whether the editor allows moving selections via drag and drop",
     "heading": "Drag And Drop",
     "id": "editor.dragAndDrop",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -430,7 +430,7 @@
     "description": "Controls whether syntax highlighting should be copied when copying text",
     "heading": "Copy With Syntax Highlighting",
     "id": "editor.copyWithSyntaxHighlighting",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -438,7 +438,7 @@
     "description": "The modifier to be used to add multiple cursors with the mouse",
     "heading": "Multi Cursor Modifier",
     "id": "editor.multiCursorModifier",
-    "type": 2,
+    "type": "string",
     "value": "alt"
   },
   {
@@ -446,7 +446,7 @@
     "description": "Controls how the editor should handle multiple cursors when pasting",
     "heading": "Multi Cursor Paste",
     "id": "editor.multiCursorPaste",
-    "type": 2,
+    "type": "string",
     "value": "full"
   },
   {
@@ -454,7 +454,7 @@
     "description": "Controls whether the editor should highlight similar matches to the selection",
     "heading": "Occurrences Highlight",
     "id": "editor.occurrencesHighlight",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -462,7 +462,7 @@
     "description": "Controls whether the editor should highlight similar matches to the selection",
     "heading": "Selection Highlight",
     "id": "editor.selectionHighlight",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -470,7 +470,7 @@
     "description": "Controls whether the editor should enable semantic highlighting",
     "heading": "Semantic Highlighting",
     "id": "editor.semanticHighlighting",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -478,7 +478,7 @@
     "description": "Overrides editor syntax highlighting colors",
     "heading": "Token Color Customizations",
     "id": "editor.tokenColorCustomizations",
-    "type": 2,
+    "type": "string",
     "value": "{}"
   },
   {
@@ -486,7 +486,7 @@
     "description": "Overrides workbench colors",
     "heading": "Workbench Color Customizations",
     "id": "editor.workbenchColorCustomizations",
-    "type": 2,
+    "type": "string",
     "value": "{}"
   },
   {
@@ -494,7 +494,7 @@
     "description": "Overrides editor colors",
     "heading": "Editor Color Customizations",
     "id": "editorColorCustomizations",
-    "type": 2,
+    "type": "string",
     "value": "{}"
   },
   {
@@ -502,7 +502,7 @@
     "description": "Controls whether the diff editor shows the diff side by side or inline",
     "heading": "Diff Editor",
     "id": "editor.diffEditor",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -510,7 +510,7 @@
     "description": "Controls whether the diff editor shows the diff side by side or inline",
     "heading": "Diff Word Wrap",
     "id": "editor.diffWordWrap",
-    "type": 2,
+    "type": "string",
     "value": "inherit"
   },
   {
@@ -518,7 +518,7 @@
     "description": "Controls whether the diff editor shows code lens",
     "heading": "Diff Code Lens",
     "id": "editor.diffCodeLens",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -526,7 +526,7 @@
     "description": "Controls whether the diff editor shows the diff side by side or inline",
     "heading": "Diff Render Side By Side",
     "id": "editor.diffRenderSideBySide",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -534,7 +534,7 @@
     "description": "Controls whether the diff editor ignores changes in whitespace",
     "heading": "Diff Ignore Trim Whitespace",
     "id": "editor.diffIgnoreTrimWhitespace",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -542,7 +542,7 @@
     "description": "Controls whether the diff editor shows indicators",
     "heading": "Diff Render Indicators",
     "id": "editor.diffRenderIndicators",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -550,7 +550,7 @@
     "description": "Controls whether the diff editor shows the overview ruler",
     "heading": "Diff Render Overview Ruler",
     "id": "editor.diffRenderOverviewRuler",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -558,7 +558,7 @@
     "description": "Controls whether the diff editor shows the revert icon in the margin",
     "heading": "Diff Render Margin Revert Icon",
     "id": "editor.diffRenderMarginRevertIcon",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -566,7 +566,7 @@
     "description": "Controls whether the editor is in insert mode",
     "heading": "Insert Mode",
     "id": "editor.insertMode",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -574,7 +574,7 @@
     "description": "Controls whether the editor is in overwrite mode",
     "heading": "Overwrite Mode",
     "id": "editor.overwriteMode",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -582,7 +582,7 @@
     "description": "Controls whether the editor is read only",
     "heading": "Read Only",
     "id": "editor.readOnly",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -590,7 +590,7 @@
     "description": "Controls whether the editor should run in a mode where it is optimized for screen readers",
     "heading": "Accessibility Support",
     "id": "editor.accessibilitySupport",
-    "type": 2,
+    "type": "string",
     "value": "auto"
   },
   {
@@ -598,7 +598,7 @@
     "description": "Controls whether the editor should automatically adjust the indentation",
     "heading": "Auto Indent",
     "id": "editor.autoIndent",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -606,7 +606,7 @@
     "description": "Controls whether the editor should highlight matching brackets",
     "heading": "Bracket Matching",
     "id": "editor.bracketMatching",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -614,7 +614,7 @@
     "description": "Controls whether the editor should use centered layout",
     "heading": "Centered Layout",
     "id": "editor.centeredLayout",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -622,7 +622,7 @@
     "description": "Controls whether the editor should support column selection",
     "heading": "Column Selection",
     "id": "editor.columnSelection",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -630,7 +630,7 @@
     "description": "Controls whether the editor should show the context menu",
     "heading": "Context Menu",
     "id": "editor.contextmenu",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -638,7 +638,7 @@
     "description": "Controls whether the cursor should be animated",
     "heading": "Cursor Smooth Caret Animation",
     "id": "editor.cursorSmoothCaretAnimation",
-    "type": 2,
+    "type": "string",
     "value": "off"
   },
   {
@@ -646,7 +646,7 @@
     "description": "Controls the number of extra characters beyond which the editor will scroll horizontally",
     "heading": "Cursor Surrounding Lines",
     "id": "editor.cursorSurroundingLines",
-    "type": 5,
+    "type": "number",
     "value": "3"
   },
   {
@@ -654,7 +654,7 @@
     "description": "Controls when the cursor should be hidden",
     "heading": "Cursor Surrounding Lines Style",
     "id": "editor.cursorSurroundingLinesStyle",
-    "type": 2,
+    "type": "string",
     "value": "all"
   },
   {
@@ -662,7 +662,7 @@
     "description": "Controls whether the editor should disable optimizations for monospace fonts",
     "heading": "Disable Monospace Optimizations",
     "id": "editor.disableMonospaceOptimizations",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -670,7 +670,7 @@
     "description": "Controls whether copying without a selection copies the current line",
     "heading": "Empty Selection Clipboard",
     "id": "editor.emptySelectionClipboard",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -678,7 +678,7 @@
     "description": "An extra class name to add to the editor",
     "heading": "Extra Editor Class Name",
     "id": "editor.extraEditorClassName",
-    "type": 2,
+    "type": "string",
     "value": ""
   },
   {
@@ -686,7 +686,7 @@
     "description": "Scrolling speed multiplier when pressing Alt",
     "heading": "Fast Scroll Sensitivity",
     "id": "editor.fastScrollSensitivity",
-    "type": 5,
+    "type": "number",
     "value": "5"
   },
   {
@@ -694,7 +694,7 @@
     "description": "Controls whether the editor should add extra space on the bottom",
     "heading": "Find",
     "id": "editor.find",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -702,7 +702,7 @@
     "description": "Controls whether the editor should scroll beyond the last line",
     "heading": "Fixed Overflow Widgets",
     "id": "editor.fixedOverflowWidgets",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -710,7 +710,7 @@
     "description": "Controls the folding strategy",
     "heading": "Folding Strategy",
     "id": "editor.foldingStrategy",
-    "type": 2,
+    "type": "string",
     "value": "auto"
   },
   {
@@ -718,7 +718,7 @@
     "description": "Enables/Disables font ligatures",
     "heading": "Font Ligatures",
     "id": "editor.fontLigatures",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -726,7 +726,7 @@
     "description": "Controls whether the editor should render the vertical glyph margin",
     "heading": "Glyph Margin",
     "id": "editor.glyphMargin",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -734,7 +734,7 @@
     "description": "Controls the behavior the 'Go to Definition'-mouse gesture",
     "heading": "Go To Location",
     "id": "editor.gotoLocation",
-    "type": 2,
+    "type": "string",
     "value": "mouse"
   },
   {
@@ -742,7 +742,7 @@
     "description": "Controls whether the cursor should be hidden in the overview ruler",
     "heading": "Hide Cursor In Overview Ruler",
     "id": "editor.hideCursorInOverviewRuler",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -750,7 +750,7 @@
     "description": "Controls whether the editor should show hover",
     "heading": "Hover",
     "id": "editor.hover",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -758,7 +758,7 @@
     "description": "Controls whether the editor should be in a diff editor",
     "heading": "In Diff Editor",
     "id": "editor.inDiffEditor",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -766,7 +766,7 @@
     "description": "The letter spacing",
     "heading": "Letter Spacing",
     "id": "editor.letterSpacing",
-    "type": 5,
+    "type": "number",
     "value": "0"
   },
   {
@@ -774,7 +774,7 @@
     "description": "Controls whether the editor should show the lightbulb code action",
     "heading": "Lightbulb Enabled",
     "id": "editor.lightbulbEnabled",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -782,7 +782,7 @@
     "description": "The width reserved for line decorations (in px)",
     "heading": "Line Decorations Width",
     "id": "editor.lineDecorationsWidth",
-    "type": 5,
+    "type": "number",
     "value": "10"
   },
   {
@@ -790,7 +790,7 @@
     "description": "The line height",
     "heading": "Line Height",
     "id": "editor.lineHeight",
-    "type": 5,
+    "type": "number",
     "value": "0"
   },
   {
@@ -798,7 +798,7 @@
     "description": "Controls whether the editor should highlight matching brackets",
     "heading": "Match Brackets",
     "id": "editor.matchBrackets",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -806,7 +806,7 @@
     "description": "A multiplier to be used on the deltaX and deltaY of mouse wheel scroll events",
     "heading": "Mouse Wheel Scroll Sensitivity",
     "id": "editor.mouseWheelScrollSensitivity",
-    "type": 5,
+    "type": "number",
     "value": "1"
   },
   {
@@ -814,7 +814,7 @@
     "description": "Zoom the font of the editor when using mouse wheel and holding Ctrl",
     "heading": "Mouse Wheel Zoom",
     "id": "editor.mouseWheelZoom",
-    "type": 3,
+    "type": "boolean",
     "value": "false"
   },
   {
@@ -822,7 +822,7 @@
     "description": "Merge overlapping selections",
     "heading": "Multi Cursor Merge Overlapping",
     "id": "editor.multiCursorMergeOverlapping",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -830,7 +830,7 @@
     "description": "Controls whether a border should be drawn around the overview ruler",
     "heading": "Overview Ruler Border",
     "id": "editor.overviewRulerBorder",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -838,7 +838,7 @@
     "description": "Controls the number of decorations that can show in the overview ruler",
     "heading": "Overview Ruler Lanes",
     "id": "editor.overviewRulerLanes",
-    "type": 5,
+    "type": "number",
     "value": "3"
   },
   {
@@ -846,7 +846,7 @@
     "description": "Controls if the peek widget should be focused by default",
     "heading": "Peek Widget Default Focus",
     "id": "editor.peekWidgetDefaultFocus",
-    "type": 2,
+    "type": "string",
     "value": "editor"
   },
   {
@@ -854,7 +854,7 @@
     "description": "Controls the delay in milliseconds after which quick suggestions will show up",
     "heading": "Quick Suggestions Delay",
     "id": "editor.quickSuggestionsDelay",
-    "type": 5,
+    "type": "number",
     "value": "10"
   },
   {
@@ -862,7 +862,7 @@
     "description": "Controls whether the editor should render the final newline as a space",
     "heading": "Render Final Newline",
     "id": "editor.renderFinalNewline",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -870,7 +870,7 @@
     "description": "Controls whether the editor should render validation decorations",
     "heading": "Render Validation Decorations",
     "id": "editor.renderValidationDecorations",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -878,7 +878,7 @@
     "description": "When revealing the cursor, a virtual padding (px) is added to the cursor, turning on a block cursor",
     "heading": "Reveal Horizontal Right Padding",
     "id": "editor.revealHorizontalRightPadding",
-    "type": 5,
+    "type": "number",
     "value": "30"
   },
   {
@@ -886,7 +886,7 @@
     "description": "Controls whether selections should have rounded corners",
     "heading": "Rounded Selection",
     "id": "editor.roundedSelection",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -894,7 +894,7 @@
     "description": "Render vertical rulers at a certain number of monospace characters",
     "heading": "Rulers",
     "id": "editor.rulers",
-    "type": 2,
+    "type": "string",
     "value": "[]"
   },
   {
@@ -902,7 +902,7 @@
     "description": "Controls how many characters the editor will scroll horizontally",
     "heading": "Scroll Beyond Last Column",
     "id": "editor.scrollBeyondLastColumn",
-    "type": 5,
+    "type": "number",
     "value": "5"
   },
   {
@@ -910,7 +910,7 @@
     "description": "Controls the visibility and behavior of the scrollbars",
     "heading": "Scrollbar",
     "id": "editor.scrollbar",
-    "type": 2,
+    "type": "string",
     "value": "auto"
   },
   {
@@ -918,7 +918,7 @@
     "description": "Scroll only along the predominant axis when scrolling both vertically and horizontally at the same time",
     "heading": "Scroll Predominant Axis",
     "id": "editor.scrollPredominantAxis",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -926,7 +926,7 @@
     "description": "Controls whether the editor should use the CLIPBOARD selection",
     "heading": "Selection Clipboard",
     "id": "editor.selectionClipboard",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -934,7 +934,7 @@
     "description": "Editor background color",
     "heading": "Editor background",
     "id": "editor.background",
-    "type": 6,
+    "type": "color",
     "value": "#567567"
   },
   {
@@ -942,7 +942,7 @@
     "description": "Controls fading out of unused code",
     "heading": "Show Unused",
     "id": "editor.showUnused",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -950,7 +950,7 @@
     "description": "Controls whether snippets are shown with other suggestions and how they are sorted",
     "heading": "Snippet Suggestions",
     "id": "editor.snippetSuggestions",
-    "type": 2,
+    "type": "string",
     "value": "bottom"
   },
   {
@@ -958,7 +958,7 @@
     "description": "Controls whether suggestions should automatically show up while typing",
     "heading": "Suggest",
     "id": "editor.suggest",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -966,7 +966,7 @@
     "description": "Font size for the suggest widget",
     "heading": "Suggest Font Size",
     "id": "editor.suggestFontSize",
-    "type": 5,
+    "type": "number",
     "value": "0"
   },
   {
@@ -974,7 +974,7 @@
     "description": "Line height for the suggest widget",
     "heading": "Suggest Line Height",
     "id": "editor.suggestLineHeight",
-    "type": 5,
+    "type": "number",
     "value": "0"
   },
   {
@@ -982,7 +982,7 @@
     "description": "Controls how suggestions are selected when showing the suggest widget",
     "heading": "Suggest Selection",
     "id": "editor.suggestSelection",
-    "type": 2,
+    "type": "string",
     "value": "recentlyUsed"
   },
   {
@@ -990,7 +990,7 @@
     "description": "Inserting and deleting whitespace follows tab stops",
     "heading": "Use Tab Stops",
     "id": "editor.useTabStops",
-    "type": 3,
+    "type": "boolean",
     "value": "true"
   },
   {
@@ -998,7 +998,7 @@
     "description": "Characters that will be used as word separators when doing word related navigations or operations",
     "heading": "Word Separators",
     "id": "editor.wordSeparators",
-    "type": 2,
+    "type": "string",
     "value": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?"
   },
   {
@@ -1006,7 +1006,7 @@
     "description": "Controls the indentation of wrapped lines",
     "heading": "Wrapping Indent",
     "id": "editor.wrappingIndent",
-    "type": 2,
+    "type": "string",
     "value": "same"
   }
 ]
