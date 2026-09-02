@@ -12,17 +12,18 @@ export const test: Test = async ({ expect, FileSystem, Locator, Main, QuickPick,
   await Main.openUri(uri)
 
   const minimap = Locator('.EditorMinimap')
+  const minimapCanvas = Locator('.EditorMinimapCanvas')
   await expect(minimap).toHaveCount(0)
 
   await QuickPick.open()
   await QuickPick.selectItem('View: Toggle Minimap')
 
   await expect(minimap).toHaveAttribute('data-line-count', '100')
-  await expect(Locator('.EditorMinimapCanvas')).toHaveCount(1)
+  await expect(minimapCanvas).toHaveCount(1)
 
   await QuickPick.open()
   await QuickPick.selectItem('View: Toggle Minimap')
 
   await expect(minimap).toHaveCount(0)
-  await expect(Locator('.EditorMinimapCanvas')).toHaveCount(0)
+  await expect(minimapCanvas).toHaveCount(0)
 }
