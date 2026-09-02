@@ -192,6 +192,7 @@ import {
 } from '../SendMessagePortToExtensionManagementWorker/SendMessagePortToExtensionManagementWorker.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
@@ -415,6 +416,7 @@ export const commandMap = {
   'Editor.toggleBreakpoint': wrapCommand(toggleBreakpoint),
   'Editor.toggleComment': wrapCommand(EditorToggleComment.toggleComment),
   'Editor.toggleLineComment': wrapCommand(EditorToggleLineComment.editorToggleLineComment),
+  'Editor.toggleMinimap': ToggleMinimap.toggleMinimap,
   'Editor.type': wrapCommand(EditorType.type, true),
   'Editor.typeWithAutoClosing': wrapCommand(EditorTypeWithAutoClosing.typeWithAutoClosing, true),
   'Editor.undo': wrapCommand(EditorUndo.undo),
