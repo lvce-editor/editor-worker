@@ -33,7 +33,7 @@ test('handleBlur does not try to save a readonly file', async () => {
     uid: 1,
     uri: 'app://startup-performance',
     widgets: [],
-  } as EditorState
+  } as unknown as EditorState
 
   const result = await EditorCommandBlur.handleBlur(editor)
 
