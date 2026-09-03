@@ -5,6 +5,7 @@ import * as TabModifiedStatusChange from '../TabModifiedStatusChange/TabModified
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { VError } from '../VError/VError.ts'
 import { getNewEditor } from './EditorCommandSave/getNewEditor.ts'
+import { isReadonlyFile } from './EditorCommandSave/isReadonlyFile.ts'
 import { isUntitledFile } from './EditorCommandSave/isUntitledFile.ts'
 import { saveNormalFile } from './EditorCommandSave/saveNormalFile.ts'
 import { saveUntitledFile } from './EditorCommandSave/saveUntitledFile.ts'
@@ -13,6 +14,9 @@ import { showSaveErrorDialog } from './EditorCommandSave/showSaveErrorDialog.ts'
 export const save = async (editor: any): Promise<any> => {
   try {
     const { platform, uri } = editor
+    if (!isUntitledFile(uri) && (await isReadonlyFile(uri))) {
+      return editor
+    }
     const newEditor = await getNewEditor(editor)
     const content = applyLineEndings(TextDocument.getText(newEditor), newEditor.endOfLine)
     if (isUntitledFile(uri)) {
