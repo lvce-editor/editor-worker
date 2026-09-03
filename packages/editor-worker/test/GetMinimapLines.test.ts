@@ -11,12 +11,10 @@ jest.unstable_mockModule('../src/parts/LoadTokenizers/LoadTokenizers.ts', () => 
   loadTokenizers,
 }))
 
-jest.unstable_mockModule('../src/parts/TokenizerMap/TokenizerMap.ts', () => ({
+jest.unstable_mockModule('../src/parts/TokenMaps/TokenMaps.ts', () => ({
   get: () => ({
-    TokenMap: {
-      1: 'Keyword',
-      2: 'Whitespace',
-    },
+    1: 'Keyword',
+    2: 'Whitespace',
   }),
 }))
 
@@ -29,8 +27,8 @@ test('requests syntax highlighting for the full document', async () => {
     tokens: [{ tokens: [1, 5, 2, 1, 1, 4] }, { tokens: [1, 6] }, { tokens: [2, 2, 1, 5] }],
   })
   const editor = {
+    languageId: 'javascript',
     lines: ['const test', 'return', '  value'],
-    tokenizerId: 7,
   }
 
   await expect(GetMinimapLines.getMinimapLines(editor, true)).resolves.toEqual([
@@ -55,8 +53,8 @@ test('uses full-line embedded syntax highlighting', async () => {
     tokens: [{ embeddedResultIndex: 0, tokens: [1, 5] }],
   })
   const editor = {
+    languageId: 'html',
     lines: ['value'],
-    tokenizerId: 7,
   }
 
   await expect(GetMinimapLines.getMinimapLines(editor, true)).resolves.toEqual([[5, 'Token String']])
