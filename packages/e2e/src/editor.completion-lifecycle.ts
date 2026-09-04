@@ -24,6 +24,10 @@ export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locato
 
   await Main.selectTab(0, 0)
 
+  await expect(completions).toBeHidden()
+
+  await Editor.openCompletion()
+
   await expect(completions).toBeVisible()
 
   await Main.closeAllEditors()

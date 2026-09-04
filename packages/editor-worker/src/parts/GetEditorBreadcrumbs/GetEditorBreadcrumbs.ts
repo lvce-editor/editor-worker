@@ -18,11 +18,7 @@ export interface EditorBreadcrumbState {
 }
 
 const getPathname = (uri: string): string => {
-  try {
-    return decodeURIComponent(new URL(uri).pathname)
-  } catch {
-    return decodeURIComponent(uri)
-  }
+  return decodeURIComponent(URL.canParse(uri) ? new URL(uri).pathname : uri)
 }
 
 const getFileBreadcrumbs = (uri: string, workspaceUri: string): readonly EditorBreadcrumb[] => {

@@ -21,7 +21,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await acceptCurrent.click()
   await Command.execute('Editor.handleMergeConflictActionsMouseDown')
   await expect(actions).toHaveCount(1)
-  const acceptIncoming = Locator('.MergeConflictAction', { hasText: 'Accept Incoming Change' })
+  const acceptIncoming = Locator('.MergeConflictAction', { hasText: 'Accept Incoming Change' }).first()
   // eslint-disable-next-line e2e/no-direct-click -- This test verifies the rendered button wiring.
   await acceptIncoming.click()
   await Command.execute('Editor.handleMergeConflictActionsMouseDown')

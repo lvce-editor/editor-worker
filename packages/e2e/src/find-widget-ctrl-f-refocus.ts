@@ -7,6 +7,7 @@ export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, KeyBo
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'target target target\ntarget target target')
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
+  await new Promise((resolve) => setTimeout(resolve, 100))
   await Editor.openFind()
   await FindWidget.setValue('target')
 
