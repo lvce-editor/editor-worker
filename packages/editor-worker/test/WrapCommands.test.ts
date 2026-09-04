@@ -91,7 +91,34 @@ test('serializes concurrent commands for the same editor', async () => {
   expect((EditorStates.get(1).newState as any).text).toBe('abc')
 })
 
-test('applies diagnostics after a command changes the editor text', async () => {
+test('ignores a command for a disposed editor', async () => {
+  EditorStates.dispose(1)
+  const command = WrapCommands.wrapCommand((state: any) => state)
+
+  await expect(command(1)).resolves.toBeUndefined()
+})
+
+test('ignores a queued command when the editor is disposed', async () => {
+  const firstCommandStarted = Promise.withResolvers<void>()
+  const finishFirstCommand = Promise.withResolvers<void>()
+  const command = WrapCommands.wrapCommand(async (state: any) => {
+    firstCommandStarted.resolve()
+    await finishFirstCommand.promise
+    return state
+  })
+  const queuedCommand = WrapCommands.wrapCommand((state: any) => state)
+
+  const first = command(1)
+  await firstCommandStarted.promise
+  const second = queuedCommand(1)
+  EditorStates.dispose(1)
+  finishFirstCommand.resolve()
+
+  await expect(first).resolves.toBeDefined()
+  await expect(second).resolves.toBeUndefined()
+})
+
+test('requests diagnostics without blocking commands after the editor text changes', async () => {
   const oldState = {
     diagnosticsEnabled: true,
     lines: [''],
@@ -106,15 +133,17 @@ test('applies diagnostics after a command changes the editor text', async () => 
   }
   EditorStates.set(1, oldState as any, oldState as any)
   editorDiagnosticEffectIsActiveMock.mockReturnValue(true)
-  editorDiagnosticEffectApplyMock.mockResolvedValue(stateWithDiagnostics)
+  const diagnosticsResult = Promise.withResolvers<typeof stateWithDiagnostics>()
+  editorDiagnosticEffectApplyMock.mockReturnValue(diagnosticsResult.promise)
   const command = WrapCommands.wrapCommand(() => newState)
 
   const result = await command(1)
 
   expect(editorDiagnosticEffectIsActiveMock).toHaveBeenCalledWith(oldState, newState)
   expect(editorDiagnosticEffectApplyMock).toHaveBeenCalledWith(newState)
-  expect(result).toBe(stateWithDiagnostics)
-  expect(EditorStates.get(1).newState).toBe(stateWithDiagnostics)
+  expect(result).toBe(newState)
+  expect(EditorStates.get(1).newState).toBe(newState)
+  diagnosticsResult.resolve(stateWithDiagnostics)
 })
 
 test('serializes commands for editors showing the same uri', async () => {

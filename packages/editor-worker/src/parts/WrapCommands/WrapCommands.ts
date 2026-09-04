@@ -59,6 +59,9 @@ export const wrapCommand =
   (fn: any, preservesTypingCoalescing = false) =>
   async (uid: number, ...args: any[]) => {
     const initialInstance = Editors.get(uid)
+    if (!initialInstance) {
+      return undefined
+    }
     const queueKey = initialInstance?.newState.uri || uid
     const previous = queues[queueKey]
     const { promise: next, resolve } = Promise.withResolvers<void>()
@@ -68,6 +71,9 @@ export const wrapCommand =
     }
     try {
       const oldInstance = Editors.get(uid)
+      if (!oldInstance) {
+        return undefined
+      }
       const state = oldInstance.newState
       const { cursorUndoStack, endOfLine, initial, insertSpaces, isSelecting, lines, modified, redoStack, selections, undoStack, uri } = state
       const commandResult = await fn(state, ...args)
@@ -92,14 +98,10 @@ export const wrapCommand =
       }
       const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
       Editors.set(uid, state, newEditorWithDerivedState)
-      let finalEditor = newEditorWithDerivedState
       if (editorDiagnosticEffect.isActive(state, newEditorWithDerivedState)) {
-        finalEditor = await editorDiagnosticEffect.apply(newEditorWithDerivedState)
-        if (!Editors.get(uid)) {
-          return finalEditor
-        }
-        Editors.set(uid, state, finalEditor)
+        void editorDiagnosticEffect.apply(newEditorWithDerivedState)
       }
+      const finalEditor = newEditorWithDerivedState
       await notifyEditorStatusChange(state, finalEditor)
       if (
         !initial &&

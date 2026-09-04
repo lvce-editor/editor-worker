@@ -7,7 +7,13 @@
       "languageId": "pending-diagnostics"
     }
   ],
-  "activation": ["onDiagnostic:pending-diagnostics"],
+  "activation": ["onDiagnostic:pending-diagnostics", "onCommand:pendingDiagnostics.resolve"],
+  "commands": [
+    {
+      "id": "pendingDiagnostics.resolve",
+      "label": "Resolve Pending Diagnostics"
+    }
+  ],
   "languages": [
     {
       "id": "pending-diagnostics",
