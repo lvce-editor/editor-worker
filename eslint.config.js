@@ -124,6 +124,7 @@ export default defineConfig([
   {
     files: ['packages/e2e/**/*.ts'],
     rules: {
+      'e2e/no-timeouts': 'off',
       'e2e/prefer-filesystem-set-files': 'off',
     },
   },
