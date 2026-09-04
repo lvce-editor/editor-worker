@@ -424,7 +424,7 @@ export const commandMap = {
   'Editor.unIndent': wrapCommand(Unindent.editorUnindent),
   'Editor.updateColorPickerValue': wrapCommand(EditorOpenColorPicker.updateColorPickerValue),
   'Editor.updateDebugInfo': UpdateDebugInfo.updateDebugInfo,
-  'Editor.updateDiagnostics': wrapCommand(UpdateDiagnostics.updateDiagnostics),
+  'Editor.updateDiagnostics': wrapCommand(UpdateDiagnostics.requestDiagnostics),
   'Editor.updateDiagnosticsAll': UpdateDiagnostics.updateDiagnosticsAll,
   'EditorCompletion.close': EditorCompletionWidget.close,
   'EditorCompletion.closeDetails': EditorCompletionWidget.closeDetails,

@@ -92,14 +92,10 @@ export const wrapCommand =
       }
       const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
       Editors.set(uid, state, newEditorWithDerivedState)
-      let finalEditor = newEditorWithDerivedState
       if (editorDiagnosticEffect.isActive(state, newEditorWithDerivedState)) {
-        finalEditor = await editorDiagnosticEffect.apply(newEditorWithDerivedState)
-        if (!Editors.get(uid)) {
-          return finalEditor
-        }
-        Editors.set(uid, state, finalEditor)
+        void editorDiagnosticEffect.apply(newEditorWithDerivedState)
       }
+      const finalEditor = newEditorWithDerivedState
       await notifyEditorStatusChange(state, finalEditor)
       if (
         !initial &&

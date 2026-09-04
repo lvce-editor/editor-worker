@@ -2,10 +2,25 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'sample.diagnostic-provider-pending'
 
-export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main, Settings, Workspace }) => {
+const expectUnblocked = async (operation: Promise<void>, name: string): Promise<void> => {
+  const waitForOperation = async (): Promise<true> => {
+    await operation
+    return true
+  }
+  const completed = await Promise.race([waitForOperation(), new Promise<false>((resolve) => setTimeout(resolve, 1000, false))])
+  if (!completed) {
+    throw new Error(`${name} was blocked by pending extension diagnostics`)
+  }
+}
+
+export const test: Test = async ({ Command, Editor, expect, Extension, FileSystem, Locator, Main, Settings, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   const uri = `${tmpDir}/test.pending-diagnostics`
-  await FileSystem.writeFile(uri, 'visible before diagnostics')
+  await FileSystem.writeFile(
+    uri,
+    `visible before diagnostics
+second line`,
+  )
   await Workspace.setPath(tmpDir)
   await Extension.addWebExtension(import.meta.resolve(`../fixtures/${name}`))
   await Settings.update({ 'editor.diagnostics': true })
@@ -18,7 +33,13 @@ export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locato
   const diagnostic = Locator('.Diagnostic')
   await expect(diagnostic).toBeHidden()
 
-  await FileSystem.writeFile(`${uri}.resolve`, '')
+  await expectUnblocked(Editor.cursorDown(), 'Cursor movement')
+  await Editor.shouldHaveSelections(new Uint32Array([1, 0, 1, 0]))
+
+  await expectUnblocked(Editor.type('x'), 'Editing')
+  await Editor.shouldHaveText('visible before diagnostics\nxsecond line')
+
+  await Command.executeExtensionCommand('pendingDiagnostics.resolve')
 
   const expectedDiagnostics = [
     {

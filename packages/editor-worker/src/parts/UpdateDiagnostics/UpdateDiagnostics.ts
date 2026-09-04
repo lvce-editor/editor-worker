@@ -50,16 +50,22 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
   try {
     const diagnostics = await getDiagnostics(editor)
     const latest = EditorState.get(editor.id)
-    if (!latest) {
+    if (!latest || !latest.newState.diagnosticsEnabled || latest.newState.lines !== editor.lines || latest.newState.uri !== editor.uri) {
       return editor
     }
     const newEditor = await addDiagnostics(latest.newState, diagnostics)
     EditorState.set(editor.id, latest.oldState, newEditor)
+    await RendererWorker.invoke('Editor.renderPending', newEditor.id)
     await notifyDiagnosticsChange(newEditor.uri)
     return newEditor
   } catch (error) {
     return handleError(error, editor)
   }
+}
+
+export const requestDiagnostics = (editor: any): any => {
+  void updateDiagnostics(editor)
+  return editor
 }
 
 export const updateDiagnosticsAll = async (): Promise<void> => {
