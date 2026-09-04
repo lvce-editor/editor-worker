@@ -122,10 +122,12 @@ test('requests diagnostics without blocking commands after the editor text chang
   const oldState = {
     diagnosticsEnabled: true,
     lines: [''],
+    uri: 'file:///one.txt',
   }
   const newState = {
     diagnosticsEnabled: true,
     lines: ['x'],
+    uri: 'file:///one.txt',
   }
   const stateWithDiagnostics = {
     ...newState,
@@ -378,6 +380,30 @@ test('schedules auto save when undo changes a modified document', async () => {
   await command(1)
 
   expect(autoSaveScheduleMock).toHaveBeenCalledWith(1, expect.any(Function))
+})
+
+test('does not schedule auto save for an untitled file', async () => {
+  const state = {
+    initial: false,
+    lines: [''],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'untitled:///1',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['edited'],
+    modified: true,
+  }))
+
+  await command(1)
+
+  expect(autoSaveScheduleMock).not.toHaveBeenCalled()
+  expect(saveMock).not.toHaveBeenCalled()
+  expect(EditorStates.get(1).newState).toMatchObject({ lines: ['edited'], modified: true })
 })
 
 test('scheduled auto save uses the latest modified editor state', async () => {
