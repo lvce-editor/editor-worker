@@ -72,7 +72,7 @@ export const x = (editor: any, rowIndex: number, columnIndex: number) => {
 }
 
 export const y = (editor: any, rowIndex: number) => {
-  const { rowHeight, y } = editor
-  const offsetY = (rowIndex + 1) * rowHeight + y
+  const { deltaY = 0, rowHeight, y } = editor
+  const offsetY = (rowIndex + 1) * rowHeight + y - deltaY
   return offsetY
 }

@@ -89,3 +89,15 @@ test('at - maps a visual row after a folded range to its document row', async ()
     rowIndex: 4,
   })
 })
+
+test('y - accounts for vertical scroll offset', () => {
+  const editor = {
+    deltaY: 800,
+    rowHeight: 20,
+    y: 60,
+  }
+
+  const position = EditorCommandPosition.y(editor, 44)
+
+  expect(position).toBe(160)
+})
