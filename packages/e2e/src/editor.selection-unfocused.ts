@@ -8,6 +8,7 @@ export const test: Test = async ({ Command, Editor, expect, Explorer, FileSystem
   await FileSystem.writeFile(filePath, 'selected text')
   await Workspace.setPath(tmpDir)
   await Main.openUri(filePath)
+  await new Promise((resolve) => setTimeout(resolve, 500))
   await Editor.setSelections(new Uint32Array([0, 0, 0, 8]))
 
   const selection = Locator('.EditorSelection')
