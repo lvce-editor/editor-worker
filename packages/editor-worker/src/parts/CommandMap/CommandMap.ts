@@ -430,6 +430,7 @@ export const commandMap = {
   'EditorCompletion.closeDetails': EditorCompletionWidget.closeDetails,
   'EditorCompletion.focusFirst': EditorCompletionWidget.focusFirst,
   'EditorCompletion.focusIndex': EditorCompletionWidget.focusIndex,
+  'EditorCompletion.focusLast': EditorCompletionWidget.focusLast,
   'EditorCompletion.focusNext': EditorCompletionWidget.focusNext,
   'EditorCompletion.focusPrevious': EditorCompletionWidget.focusPrevious,
   'EditorCompletion.handleEditorBlur': EditorCompletionWidget.handleEditorBlur,
