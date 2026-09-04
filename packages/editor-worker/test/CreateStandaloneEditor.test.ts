@@ -38,3 +38,11 @@ test('creates a functional standalone editor without workbench services', async 
   const commands = render2(id, diff2(id))
   expect(commands.some((command) => command[0] === 'Viewlet.setPatches')).toBe(true)
 })
+
+test('diffing a disposed editor is a no-op', () => {
+  expect(diff2(902)).toEqual([])
+})
+
+test('rendering a disposed editor is a no-op', () => {
+  expect(render2(903, [])).toEqual([])
+})
