@@ -1,6 +1,6 @@
 import { afterEach, expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { ExtensionManagementWorker, registerMockRpc, remove, RendererWorker, RpcId } from '@lvce-editor/rpc-registry'
+import { ExtensionManagementWorker, registerMockRpc, remove, RendererWorker, RpcId, TextMeasurementWorker } from '@lvce-editor/rpc-registry'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { updateDiagnostics, updateDiagnosticsAll } from '../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts'
 
@@ -200,26 +200,109 @@ test('updateDiagnostics ignores stale results after the editor text changes', as
   expect(EditorStates.get(1)?.newState).toBe(edited)
 })
 
-test('updateDiagnostics notifies the renderer after storing diagnostics', async () => {
+test('updateDiagnostics preserves scrolling and skips rendering for unchanged empty diagnostics', async () => {
+  const diagnosticsRequested = Promise.withResolvers<void>()
+  const diagnosticsResult = Promise.withResolvers<readonly any[]>()
   using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': async () => [],
+    'Extensions.executeDiagnosticProvider': async () => {
+      diagnosticsRequested.resolve()
+      return diagnosticsResult.promise
+    },
   })
   using rendererWorkerRpc = RendererWorker.registerMockRpc({
     'Editor.renderPending': async () => undefined,
     'Layout.handleDiagnosticsChange': async () => undefined,
   })
   const editor = {
+    deltaY: 0,
     diagnosticsEnabled: true,
     id: 1,
     languageId: 'typescript',
     lines: ['const value = 1'],
     uri: 'file:///test.ts',
   }
+  const scrolledEditor = {
+    ...editor,
+    deltaY: 100,
+  }
   EditorStates.set(1, editor as any, editor as any)
 
-  await updateDiagnostics(editor)
+  const pendingUpdate = updateDiagnostics(editor)
+  await diagnosticsRequested.promise
+  EditorStates.set(1, editor as any, scrolledEditor as any)
+  diagnosticsResult.resolve([])
+  await pendingUpdate
 
   expect(extensionManagementWorkerRpc.invocations).toHaveLength(1)
+  expect(EditorStates.get(1)?.newState.deltaY).toBe(100)
+  expect(rendererWorkerRpc.invocations).toEqual([])
+})
+
+test('updateDiagnostics preserves scrolling while diagnostic decorations are calculated', async () => {
+  const measurementRequested = Promise.withResolvers<void>()
+  const measurementResult = Promise.withResolvers<number>()
+  using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeDiagnosticProvider': async () => [
+      {
+        code: 1,
+        columnIndex: 1,
+        endColumnIndex: 2,
+        endRowIndex: 0,
+        message: 'problem',
+        rowIndex: 0,
+        source: 'test',
+        type: 'error',
+        uri: 'file:///test.ts',
+      },
+    ],
+  })
+  using textMeasurementWorkerRpc = TextMeasurementWorker.registerMockRpc({
+    'TextMeasurement.measureTextWidth': async () => {
+      measurementRequested.resolve()
+      return measurementResult.promise
+    },
+  })
+  using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => undefined,
+    'Layout.handleDiagnosticsChange': async () => undefined,
+  })
+  const editor = {
+    charWidth: 8,
+    decorations: [],
+    deltaY: 0,
+    diagnostics: [],
+    diagnosticsEnabled: true,
+    fontFamily: 'sans-serif',
+    fontSize: 14,
+    fontWeight: 400,
+    id: 1,
+    isMonospaceFont: false,
+    itemHeight: 20,
+    languageId: 'typescript',
+    letterSpacing: 0,
+    lines: ['const value = 1'],
+    minLineY: 0,
+    rowHeight: 20,
+    tabSize: 2,
+    uri: 'file:///test.ts',
+    viewLineIndices: [],
+    width: 800,
+  }
+  const scrolledEditor = {
+    ...editor,
+    deltaY: 100,
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  const pendingUpdate = updateDiagnostics(editor)
+  await measurementRequested.promise
+  EditorStates.set(1, editor as any, scrolledEditor as any)
+  measurementResult.resolve(8)
+  await pendingUpdate
+
+  expect(extensionManagementWorkerRpc.invocations).toHaveLength(1)
+  expect(textMeasurementWorkerRpc.invocations).toHaveLength(2)
+  expect(EditorStates.get(1)?.newState.deltaY).toBe(100)
   expect(rendererWorkerRpc.invocations).toEqual([
     ['Editor.renderPending', 1],
     ['Layout.handleDiagnosticsChange', 'file:///test.ts'],
