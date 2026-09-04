@@ -2,7 +2,6 @@ import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
 import * as EditorCommandSave from '../EditorCommand/EditorCommandSave.ts'
-import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
 import { editorDiagnosticEffect } from '../EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
@@ -10,6 +9,7 @@ import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEdit
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
+const queues: Record<string, Promise<void> | undefined> = {}
 const cursorUndoLimit = 100
 
 const selectionsEqual = (left: Uint32Array, right: Uint32Array): boolean => {
@@ -63,7 +63,13 @@ export const wrapCommand =
       return undefined
     }
     const queueKey = initialInstance?.newState.uri || uid
-    return EditorCommandQueue.run(queueKey, async () => {
+    const previous = queues[queueKey]
+    const { promise: next, resolve } = Promise.withResolvers<void>()
+    queues[queueKey] = next
+    if (previous) {
+      await previous
+    }
+    try {
       const oldInstance = Editors.get(uid)
       if (!oldInstance) {
         return undefined
@@ -137,5 +143,10 @@ export const wrapCommand =
         AutoSave.dispose(uid)
       }
       return finalEditor
-    })
+    } finally {
+      resolve()
+      if (queues[queueKey] === next) {
+        delete queues[queueKey]
+      }
+    }
   }
