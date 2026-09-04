@@ -30,5 +30,10 @@
     "knip": "^6.33.0",
     "prettier": "^3.9.6",
     "typescript": "^6.0.3"
+  },
+  "overrides": {
+    "@lvce-editor/test-with-playwright@22.28.0": {
+      "@lvce-editor/test-worker": "17.17.2"
+    }
   }
 }

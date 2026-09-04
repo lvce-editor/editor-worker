@@ -11,6 +11,6 @@
   },
   "devDependencies": {
     "@lvce-editor/api": "^9.28.3",
-    "@lvce-editor/test-with-playwright": "^22.29.0"
+    "@lvce-editor/test-with-playwright": "22.28.0"
   }
 }

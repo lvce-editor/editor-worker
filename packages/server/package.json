@@ -11,6 +11,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@lvce-editor/drag-and-drop-worker": "0.11.0",
     "@lvce-editor/rename-worker": "^1.40.0",
     "@lvce-editor/server": "0.112.27"
   },

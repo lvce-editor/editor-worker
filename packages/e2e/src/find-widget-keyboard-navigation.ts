@@ -13,6 +13,7 @@ content 3`,
   )
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
+  await new Promise((resolve) => setTimeout(resolve, 100))
   await Editor.setSelections(new Uint32Array([0, 0, 0, 7]))
   await Editor.openFind()
 

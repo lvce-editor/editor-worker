@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.selection-unfocused'
 
-export const test: Test = async ({ Command, Editor, expect, Explorer, FileSystem, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Command, Editor, expect, Explorer, FileSystem, Layout, Locator, Main, SideBar, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   const filePath = `${tmpDir}/selection-unfocused.txt`
   await FileSystem.writeFile(filePath, 'selected text')
@@ -13,6 +13,8 @@ export const test: Test = async ({ Command, Editor, expect, Explorer, FileSystem
   const selection = Locator('.EditorSelection')
   await expect(selection).toHaveClass('EditorSelection')
 
+  await Layout.showSideBar()
+  await SideBar.open('Explorer')
   await Command.execute('Explorer.focus')
   await Explorer.focusIndex(0)
   await Command.execute('Editor.handleBlur')
