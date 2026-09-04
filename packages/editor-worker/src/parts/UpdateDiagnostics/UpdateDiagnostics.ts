@@ -1,3 +1,4 @@
+import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
 import * as EditorState from '../EditorStates/EditorStates.ts'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
@@ -49,12 +50,23 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
   }
   try {
     const diagnostics = await getDiagnostics(editor)
-    const latest = EditorState.get(editor.id)
-    if (!latest || !latest.newState.diagnosticsEnabled || latest.newState.lines !== editor.lines || latest.newState.uri !== editor.uri) {
+    const newEditor = await EditorCommandQueue.run(editor.uri || editor.id, async () => {
+      const latest = EditorState.get(editor.id)
+      if (!latest || !latest.newState.diagnosticsEnabled || latest.newState.lines !== editor.lines || latest.newState.uri !== editor.uri) {
+        return editor
+      }
+      const currentEditor = latest.newState
+      const editorWithDiagnostics = await addDiagnostics(currentEditor, diagnostics)
+      const latestAfterUpdate = EditorState.get(editor.id)
+      if (!latestAfterUpdate || latestAfterUpdate.newState !== currentEditor) {
+        return editor
+      }
+      EditorState.set(editor.id, latest.oldState, editorWithDiagnostics)
+      return editorWithDiagnostics
+    })
+    if (newEditor === editor) {
       return editor
     }
-    const newEditor = await addDiagnostics(latest.newState, diagnostics)
-    EditorState.set(editor.id, latest.oldState, newEditor)
     await RendererWorker.invoke('Editor.renderPending', newEditor.id)
     await notifyDiagnosticsChange(newEditor.uri)
     return newEditor
