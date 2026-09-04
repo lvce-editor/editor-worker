@@ -229,6 +229,10 @@ export const editorCloseColorPicker = () => {
   return I18nString.i18nString(UiStrings.EditorCloseColorPicker)
 }
 
+export const viewToggleMinimap = () => {
+  return I18nString.i18nString(UiStrings.ViewToggleMinimap)
+}
+
 export const editorCopyLineDown = () => {
   return I18nString.i18nString(UiStrings.EditorCopyLineDown)
 }

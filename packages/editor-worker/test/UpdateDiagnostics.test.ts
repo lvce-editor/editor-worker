@@ -22,6 +22,7 @@ test('updateDiagnosticsAll refreshes every open editor', async () => {
     ],
   })
   using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => undefined,
     'Layout.handleDiagnosticsChange': async () => undefined,
   })
   const firstEditor = {
@@ -76,7 +77,9 @@ test('updateDiagnosticsAll refreshes every open editor', async () => {
     },
   ])
   expect(rendererWorkerRpc.invocations).toEqual([
+    ['Editor.renderPending', 1],
     ['Layout.handleDiagnosticsChange', 'file:///first.js'],
+    ['Editor.renderPending', 2],
     ['Layout.handleDiagnosticsChange', 'file:///second.ts'],
   ])
 })
@@ -163,11 +166,46 @@ test('updateDiagnostics ignores results after the editor is closed', async () =>
   expect(EditorStates.get(1)).toBeUndefined()
 })
 
+test('updateDiagnostics ignores stale results after the editor text changes', async () => {
+  const diagnosticsRequested = Promise.withResolvers<void>()
+  const diagnosticsResult = Promise.withResolvers<readonly any[]>()
+  ExtensionManagementWorker.set(
+    MockRpc.create({
+      commandMap: {},
+      invoke: async () => {
+        diagnosticsRequested.resolve()
+        return diagnosticsResult.promise
+      },
+    }),
+  )
+  const editor = {
+    diagnosticsEnabled: true,
+    id: 1,
+    languageId: 'typescript',
+    lines: ['const value = 1'],
+    uri: '/test.ts',
+  }
+  const edited = {
+    ...editor,
+    lines: ['const value = 2'],
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  const pendingUpdate = updateDiagnostics(editor)
+  await diagnosticsRequested.promise
+  EditorStates.set(1, editor as any, edited as any)
+  diagnosticsResult.resolve([{ columnIndex: 0, endColumnIndex: 1, rowIndex: 0, type: 'error' }])
+
+  await expect(pendingUpdate).resolves.toBe(editor)
+  expect(EditorStates.get(1)?.newState).toBe(edited)
+})
+
 test('updateDiagnostics notifies the renderer after storing diagnostics', async () => {
   using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
     'Extensions.executeDiagnosticProvider': async () => [],
   })
   using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => undefined,
     'Layout.handleDiagnosticsChange': async () => undefined,
   })
   const editor = {
@@ -182,5 +220,8 @@ test('updateDiagnostics notifies the renderer after storing diagnostics', async 
   await updateDiagnostics(editor)
 
   expect(extensionManagementWorkerRpc.invocations).toHaveLength(1)
-  expect(rendererWorkerRpc.invocations).toEqual([['Layout.handleDiagnosticsChange', 'file:///test.ts']])
+  expect(rendererWorkerRpc.invocations).toEqual([
+    ['Editor.renderPending', 1],
+    ['Layout.handleDiagnosticsChange', 'file:///test.ts'],
+  ])
 })

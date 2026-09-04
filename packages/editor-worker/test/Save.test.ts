@@ -10,6 +10,7 @@ afterEach(() => {
 test('save - shows a concise electron message box when permission is denied', async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {})
   using mockRpc = RendererWorker.registerMockRpc({
+    'FileSystem.isReadonly': async () => false,
     'FileSystem.writeFile': async () => {
       throw new Error('EACCES: permission denied')
     },
@@ -27,7 +28,10 @@ test('save - shows a concise electron message box when permission is denied', as
   const result = await EditorCommandSave.save(editor)
 
   expect(result).toBe(editor)
-  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/read-only.txt', 'hello world', 'utf8', false]])
+  expect(mockRpc.invocations).toEqual([
+    ['FileSystem.isReadonly', 'file:///tmp/read-only.txt'],
+    ['FileSystem.writeFile', 'file:///tmp/read-only.txt', 'hello world', 'utf8', false],
+  ])
   expect(mockDialogRpc.invocations).toEqual([
     [
       'ElectronDialog.showMessageBox',
@@ -45,6 +49,7 @@ test('save - shows a concise electron message box when permission is denied', as
 test('save - shows error details for other electron save errors', async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {})
   using mockRpc = RendererWorker.registerMockRpc({
+    'FileSystem.isReadonly': async () => false,
     'FileSystem.writeFile': async () => {
       throw new Error('Disk is full')
     },
@@ -62,7 +67,10 @@ test('save - shows error details for other electron save errors', async () => {
   const result = await EditorCommandSave.save(editor)
 
   expect(result).toBe(editor)
-  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/example.txt', 'hello world', 'utf8', false]])
+  expect(mockRpc.invocations).toEqual([
+    ['FileSystem.isReadonly', 'file:///tmp/example.txt'],
+    ['FileSystem.writeFile', 'file:///tmp/example.txt', 'hello world', 'utf8', false],
+  ])
   expect(mockDialogRpc.invocations).toEqual([
     [
       'ElectronDialog.showMessageBox',
@@ -81,6 +89,7 @@ test('save - shows error details for other electron save errors', async () => {
 test('save - does not show electron message box when saving file fails outside electron', async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {})
   using mockRpc = RendererWorker.registerMockRpc({
+    'FileSystem.isReadonly': async () => false,
     'FileSystem.writeFile': async () => {
       throw new Error('EACCES: permission denied')
     },
@@ -95,11 +104,15 @@ test('save - does not show electron message box when saving file fails outside e
   const result = await EditorCommandSave.save(editor)
 
   expect(result).toBe(editor)
-  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/read-only.txt', 'hello world', 'utf8', false]])
+  expect(mockRpc.invocations).toEqual([
+    ['FileSystem.isReadonly', 'file:///tmp/read-only.txt'],
+    ['FileSystem.writeFile', 'file:///tmp/read-only.txt', 'hello world', 'utf8', false],
+  ])
 })
 
 test('save - clears the modified status after saving', async () => {
   using mockRpc = RendererWorker.registerMockRpc({
+    'FileSystem.isReadonly': async () => false,
     'FileSystem.writeFile': async () => {},
     'Main.handleModifiedStatusChange': async () => {},
   })
@@ -117,6 +130,7 @@ test('save - clears the modified status after saving', async () => {
     modified: false,
   })
   expect(mockRpc.invocations).toEqual([
+    ['FileSystem.isReadonly', 'file:///tmp/example.txt'],
     ['FileSystem.writeFile', 'file:///tmp/example.txt', 'hello world', 'utf8', false],
     ['Main.handleModifiedStatusChange', 'file:///tmp/example.txt', false],
   ])
