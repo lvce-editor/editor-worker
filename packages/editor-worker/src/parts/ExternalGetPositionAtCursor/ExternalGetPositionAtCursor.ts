@@ -107,9 +107,9 @@ export const closeFind2 = async (editorUid: number) => {
   await closeWidget2(editorUid, WidgetId.Find, 'FindWidget', 0)
 }
 
-export const applyEdits2 = async (editorUid: number, edits: readonly any[]): Promise<void> => {
+export const applyEdits2 = async (editorUid: number, edits: readonly any[], selectionChanges?: Uint32Array): Promise<void> => {
   const editor = GetEditor.getEditor(editorUid)
-  const newEditor = await ApplyEdit.applyEdit(editor, edits)
+  const newEditor = await ApplyEdit.applyEdit(editor, edits, selectionChanges)
   const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
   Editors.set(editorUid, editor, newEditorWithDerivedState)
 }
