@@ -3,6 +3,7 @@ import * as CloseWidgetsMaybe from '../CloseWidgetsMaybe/CloseWidgetsMaybe.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 import * as EditorCommandSave from './EditorCommandSave.ts'
+import { isUntitledFile } from './EditorCommandSave/isUntitledFile.ts'
 
 export const handleBlur = async (editor: EditorState): Promise<EditorState> => {
   if (!editor.focused) {
@@ -16,7 +17,7 @@ export const handleBlur = async (editor: EditorState): Promise<EditorState> => {
     widgetRevision,
     widgets: CloseWidgetsMaybe.closeWidgetsMaybe(editor.widgets || []),
   }
-  if (!editor.modified) {
+  if (!editor.modified || isUntitledFile(editor.uri)) {
     return newEditor
   }
   const autoSave = await Preferences.get('files.autoSave')

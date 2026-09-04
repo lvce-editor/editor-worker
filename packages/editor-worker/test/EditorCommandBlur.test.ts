@@ -27,6 +27,7 @@ const createEditor = (overrides: Partial<EditorState> = {}): EditorState => {
     additionalFocus: 0,
     focused: true,
     modified: true,
+    uri: 'file:///test.txt',
     widgets: [],
     ...overrides,
   } as EditorState
@@ -103,6 +104,21 @@ test('handleBlur does not save when auto save is after delay', async () => {
     widgetRevision: 1,
   })
   expect(getPreferenceMock).toHaveBeenCalledWith('files.autoSave')
+  expect(saveMock).not.toHaveBeenCalled()
+})
+
+test('handleBlur does not save an untitled file when auto save is on focus change', async () => {
+  getPreferenceMock.mockResolvedValue('onFocusChange')
+  const editor = createEditor({ uri: 'untitled:///1' })
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toEqual({
+    ...editor,
+    focused: false,
+    widgetRevision: 1,
+  })
+  expect(getPreferenceMock).not.toHaveBeenCalled()
   expect(saveMock).not.toHaveBeenCalled()
 })
 

@@ -2,6 +2,7 @@ import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
 import * as EditorCommandSave from '../EditorCommand/EditorCommandSave.ts'
+import { isUntitledFile } from '../EditorCommand/EditorCommandSave/isUntitledFile.ts'
 import { editorDiagnosticEffect } from '../EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
@@ -137,7 +138,7 @@ export const wrapCommand =
           Editors.set(otherUid, instance.oldState, synchronizedEditor)
         }
       }
-      if (lines !== finalEditor.lines) {
+      if (lines !== finalEditor.lines && !isUntitledFile(finalEditor.uri)) {
         AutoSave.schedule(uid, (token) => saveAfterDelay(uid, token))
       } else if (modified && !finalEditor.modified) {
         AutoSave.dispose(uid)
