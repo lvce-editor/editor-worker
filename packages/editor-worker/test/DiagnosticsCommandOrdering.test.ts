@@ -28,10 +28,10 @@ test('diagnostics completing during a layout command are not overwritten by its 
     return newState
   })
   const diagnostic = { message: 'delayed diagnostic', uri: 'file:///main.ts' }
-  using extensionRpc = ExtensionManagementWorker.registerMockRpc({
+  using _extensionRpc = ExtensionManagementWorker.registerMockRpc({
     'Extensions.executeDiagnosticProvider': async () => [diagnostic],
   })
-  using rendererRpc = RendererWorker.registerMockRpc({
+  using _rendererRpc = RendererWorker.registerMockRpc({
     'Editor.renderPending': async () => undefined,
     'Layout.handleDiagnosticsChange': async () => undefined,
   })
@@ -62,7 +62,7 @@ test('diagnostics completing during a layout command are not overwritten by its 
 test('waiting for a diagnostics provider does not block editor commands', async () => {
   const requested = Promise.withResolvers<void>()
   const provider = Promise.withResolvers<readonly any[]>()
-  using extensionRpc = ExtensionManagementWorker.registerMockRpc({
+  using _extensionRpc = ExtensionManagementWorker.registerMockRpc({
     'Extensions.executeDiagnosticProvider': async () => {
       requested.resolve()
       return provider.promise
