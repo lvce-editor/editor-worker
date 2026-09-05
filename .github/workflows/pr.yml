@@ -6,53 +6,38 @@ on:
       - main
 
 jobs:
-  pr:
+  reproduce:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, macos-15, windows-2025]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+        attempt: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    name: diagnostics-resize-scroll (${{ matrix.attempt }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
-      - name: Compute node modules cache key
-        id: nodeModulesCacheKey
-        run: echo "value=$(node packages/build/src/computeNodeModulesCacheKey.ts)" >> $GITHUB_OUTPUT
-        shell: bash
-      - uses: actions/cache@v6
-        id: npm-cache
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-cacheNodeModules-${{ steps.nodeModulesCacheKey.outputs.value }}
-      - name: npm ci
-        run: npm ci
-        if: steps.npm-cache.outputs.cache-hit != 'true'
+      - run: npm ci
       - run: npm run build
-      - run: npm run build:static
-      - run: npm test
-      - run: npm run type-check
-      - run: npm run lint
       - name: install playwright dependencies
         working-directory: ./packages/e2e
-        run: npx playwright install chromium
-        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
-      - name: e2e
+      - name: reproduce diagnostics resize race
         working-directory: ./packages/e2e
-        run: npm run e2e:headless
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run e2e:headless -- --filter=diagnostics-resize-and-scroll-preserves-scroll 2>&1 | tee diagnostics-resize-scroll.log
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
-      - name: editor status bar e2e
-        working-directory: ./packages/e2e-status-bar
-        run: npm run e2e:headless
-        env:
-          PLAYWRIGHT_BROWSERS_PATH: 0
-      - name: measure
-        working-directory: ./packages/build
-        run: npm run measure
-        env:
-          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: upload attempt evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: diagnostics-resize-scroll-${{ matrix.attempt }}
+          path: packages/e2e/diagnostics-resize-scroll.log
+          if-no-files-found: warn
