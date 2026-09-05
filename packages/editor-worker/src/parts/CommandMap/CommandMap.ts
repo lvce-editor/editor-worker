@@ -175,6 +175,7 @@ import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import { handleSettingsChanged } from '../HandleSettingsChanged/HandleSettingsChanged.ts'
 import * as HandleTab from '../HandleTab/HandleTab.ts'
 import { hotReload } from '../HotReload/HotReload.ts'
+import { configure as configureIds } from '../Id/Id.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import { loadContent } from '../LoadContent/LoadContent.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
@@ -455,8 +456,8 @@ export const commandMap = {
   'EditorSourceAction.handleWheel': EditorSourceActionWidget.handleWheel,
   'EditorSourceAction.selectCurrent': EditorSourceActionWidget.selectCurrent,
   'EditorSourceAction.selectIndex': EditorSourceActionWidget.selectIndex,
-
   'EditorSourceAction.selectItem': EditorSourceActionWidget.selectItem,
+
   'EditorSourceAction.toggleDetails': EditorSourceActionWidget.toggleDetails,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
   'FindWidget.close': EditorFindWidget.close,
@@ -495,6 +496,7 @@ export const commandMap = {
   'Hover.handleSashPointerUp': EditorHover.handleSashPointerUp,
   'Hover.loadContent': EditorHover.loadContent,
   'Hover.render': EditorHoverRender.renderHover,
+  'Id.configure': configureIds,
   'Initialize.initialize': Initialize.intialize,
   'Listener.register': RegisterListener.registerListener,
   'Listener.registerListener': EditorListeners.registerListener,
