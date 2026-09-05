@@ -72,3 +72,13 @@ test('invalidates text caches when lines are edited through JSON', async () => {
     numberOfLines: 2,
   })
 })
+
+test('reapplying a JSON snapshot does not restore stale text render caches', async () => {
+  const snapshot = { ...getComponentState(101), lines: ['changed'] }
+  const current = EditorStates.get(101).newState
+  const rendered = { ...current, differences: [0], lines: ['changed'], textInfos: [['changed', 'Token Text']] }
+  EditorStates.set(101, rendered, rendered)
+  await setComponentState(101, snapshot)
+  expect(EditorStates.get(101).newState.textInfos).toBe(rendered.textInfos)
+  expect(EditorStates.get(101).newState.differences).toBe(rendered.differences)
+})

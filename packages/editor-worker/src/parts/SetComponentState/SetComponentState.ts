@@ -37,7 +37,12 @@ const applyComponentState = async (currentState: EditorState, value: unknown): P
     key,
     JSON.stringify(state[key]) === JSON.stringify(currentJsonState[key]) ? currentState[key as keyof EditorState] : entry,
   ])
-  const newState = Object.fromEntries(entries) as unknown as EditorState
+  // A save can repeat an earlier live edit with its old text caches still in the JSON.
+  const newState = {
+    ...Object.fromEntries(entries),
+    differences: currentState.differences,
+    textInfos: currentState.textInfos,
+  } as unknown as EditorState
   const updatedState =
     newState.lines === currentState.lines
       ? newState
