@@ -10,6 +10,7 @@ export const test: Test = async ({ Editor, FileSystem, KeyBoard, Main, Workspace
   await Editor.setCursor(0, 3)
 
   await KeyBoard.press('Control+Alt+ArrowDown')
+  await Editor.shouldHaveSelections(new Uint32Array([0, 3, 0, 3, 1, 3, 1, 3]))
   await Editor.type('X')
 
   await Editor.shouldHaveText(`alpXha\nbetXa\ngamma`)
