@@ -87,3 +87,40 @@ test('waiting for a diagnostics provider does not block editor commands', async 
   provider.resolve([])
   await diagnostics
 })
+
+test('a queued provider result does not overwrite diagnostics set by a newer command', async () => {
+  const entered = Promise.withResolvers<void>()
+  const finishCommand = Promise.withResolvers<void>()
+  updateDerivedState.mockImplementation(async (_oldState: any, newState: any) => {
+    entered.resolve()
+    await finishCommand.promise
+    return newState
+  })
+  using _extensionRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeDiagnosticProvider': async () => [],
+  })
+  using _rendererRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => undefined,
+    'Layout.handleDiagnosticsChange': async () => undefined,
+  })
+  const editor = {
+    diagnostics: [],
+    diagnosticsEnabled: true,
+    id: 1,
+    languageId: 'typescript',
+    lines: ['text'],
+    uid: 1,
+    uri: 'file:///main.ts',
+  }
+  EditorStates.set(1, editor as any, editor as any)
+  const manualDiagnostics = [{ message: 'explicit diagnostic', uri: editor.uri }]
+  const setDiagnostics = wrapCommand((state: any) => ({ ...state, diagnostics: manualDiagnostics }))
+  const settingDiagnostics = setDiagnostics(1)
+  await entered.promise
+  const pendingProvider = updateDiagnostics(editor)
+  await new Promise<void>((resolve) => setImmediate(resolve))
+  finishCommand.resolve()
+  await Promise.all([settingDiagnostics, pendingProvider])
+
+  expect(EditorStates.get(1).newState.diagnostics).toBe(manualDiagnostics)
+})

@@ -86,7 +86,11 @@ const diagnosticLayoutEqual = (left: any, right: any): boolean =>
   left.width === right.width
 
 const isApplicable = (latest: any, editor: any): boolean =>
-  latest && latest.newState.diagnosticsEnabled && latest.newState.lines === editor.lines && latest.newState.uri === editor.uri
+  latest &&
+  latest.newState.diagnosticsEnabled &&
+  latest.newState.diagnostics === editor.diagnostics &&
+  latest.newState.lines === editor.lines &&
+  latest.newState.uri === editor.uri
 
 const mergeDiagnostics = (editor: any, editorWithDiagnostics: any): any => ({
   ...editor,
