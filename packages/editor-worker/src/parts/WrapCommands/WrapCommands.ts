@@ -63,7 +63,7 @@ export const wrapCommand =
     if (!initialInstance) {
       return undefined
     }
-    const queueKey = initialInstance?.newState.uri || uid
+    const queueKey = JSON.stringify([initialInstance.newState.applicationId ?? null, initialInstance.newState.uri || uid])
     const previous = queues[queueKey]
     const { promise: next, resolve } = Promise.withResolvers<void>()
     queues[queueKey] = next
@@ -118,7 +118,14 @@ export const wrapCommand =
           const otherUid = Number(key)
           const instance = Editors.get(otherUid)
           const editor = instance?.newState
-          if (otherUid === uid || !instance || !editor || editor.initial || editor.uri !== finalEditor.uri) {
+          if (
+            otherUid === uid ||
+            !instance ||
+            !editor ||
+            editor.initial ||
+            editor.uri !== finalEditor.uri ||
+            editor.applicationId !== finalEditor.applicationId
+          ) {
             continue
           }
           const synchronizedEditor = await UpdateDerivedState.updateDerivedState(editor, {

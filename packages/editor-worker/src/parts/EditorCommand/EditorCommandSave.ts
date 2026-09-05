@@ -13,25 +13,25 @@ import { showSaveErrorDialog } from './EditorCommandSave/showSaveErrorDialog.ts'
 
 export const save = async (editor: any): Promise<any> => {
   try {
-    const { platform, uri } = editor
-    if (!isUntitledFile(uri) && (await isReadonlyFile(uri))) {
+    const { applicationId, platform, uri } = editor
+    if (!isUntitledFile(uri) && (await isReadonlyFile(uri, applicationId))) {
       return editor
     }
     const newEditor = await getNewEditor(editor)
     const content = applyLineEndings(TextDocument.getText(newEditor), newEditor.endOfLine)
     if (isUntitledFile(uri)) {
-      const pickedFilePath = await saveUntitledFile(uri, content, platform)
+      const pickedFilePath = await saveUntitledFile(uri, content, platform, applicationId)
       if (pickedFilePath) {
         if (editor.modified) {
-          await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false)
+          await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false, applicationId)
         }
         return { ...newEditor, modified: false, uri: pickedFilePath }
       }
       return newEditor
     }
-    await saveNormalFile(uri, content)
+    await saveNormalFile(uri, content, applicationId)
     if (editor.modified) {
-      await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false)
+      await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false, applicationId)
     }
     return { ...newEditor, modified: false }
   } catch (error) {

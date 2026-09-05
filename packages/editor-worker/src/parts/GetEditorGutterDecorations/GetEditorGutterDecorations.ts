@@ -1,6 +1,6 @@
-import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 import type { EditorGutterDecoration, EditorGutterDecorationType } from '../EditorGutterDecoration/EditorGutterDecoration.ts'
 import type { EditorState } from '../State/State.ts'
+import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/ApplicationExtensionRpc.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 interface ProviderDecoration {
@@ -45,7 +45,8 @@ export const getEditorGutterDecorations = async (editor: EditorState): Promise<r
     uri: editor.uri,
   }
   try {
-    const results = await ExtensionManagementWorker.invoke(
+    const results = await ApplicationExtensionRpc.invoke(
+      editor.applicationId,
       'Extensions.executeProvidersByEvent',
       'onEditorGutterDecoration',
       'ExtensionApi.executeEditorGutterDecorationProvider',

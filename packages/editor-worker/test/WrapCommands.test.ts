@@ -91,6 +91,40 @@ test('serializes concurrent commands for the same editor', async () => {
   expect((EditorStates.get(1).newState as any).text).toBe('abc')
 })
 
+test('does not queue or synchronize identical uris across applications', async () => {
+  const source = {
+    applicationId: 'source',
+    initial: false,
+    lines: ['source'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'memfs:///main.ts',
+  }
+  const preview = { ...source, applicationId: 'preview', lines: ['preview'], uid: 2 }
+  EditorStates.set(1, source as any, source as any)
+  EditorStates.set(2, preview as any, preview as any)
+  const { promise, resolve } = Promise.withResolvers<void>()
+  const command = WrapCommands.wrapCommand(async (editor: any) => {
+    if (editor.applicationId === 'source') {
+      await promise
+    }
+    return { ...editor, lines: [editor.applicationId + ' edited'], modified: true }
+  })
+  const sourceEdit = command(1)
+  try {
+    await command(2)
+    expect(EditorStates.get(1).newState).toBe(source)
+    expect(EditorStates.get(2).newState.lines).toEqual(['preview edited'])
+  } finally {
+    resolve()
+    await sourceEdit
+  }
+  expect(EditorStates.get(1).newState.lines).toEqual(['source edited'])
+  expect(EditorStates.get(2).newState.lines).toEqual(['preview edited'])
+})
+
 test('ignores a command for a disposed editor', async () => {
   EditorStates.dispose(1)
   const command = WrapCommands.wrapCommand((state: any) => state)

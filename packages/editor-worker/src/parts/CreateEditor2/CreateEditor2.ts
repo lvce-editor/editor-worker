@@ -13,9 +13,11 @@ export const createEditor2 = (
   height: number,
   platform: number,
   assetDir: string,
+  applicationId?: string,
 ): void => {
   Assert.number(id)
   const editor: EditorState = {
+    ...(applicationId !== undefined && { applicationId }),
     additionalFocus: 0,
     assetDir,
     bracketMatchInfos: [],
