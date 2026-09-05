@@ -18,6 +18,7 @@ import * as Preferences from '../Preferences/Preferences.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
 export const createEditor = async ({
+  applicationId,
   assetDir,
   columnToReveal,
   completionTriggerCharacters,
@@ -59,6 +60,7 @@ export const createEditor = async ({
   const languages = await getLanguages(platform, assetDir)
   const computedlanguageId = getLanguageId(uri, languages)
   const editor = {
+    ...(applicationId !== undefined && { applicationId }),
     assetDir,
     bracketMatchInfos: [],
     breakPoints: [],

@@ -1,6 +1,6 @@
-import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
 import type { EditorState } from '../State/State.ts'
+import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/ApplicationExtensionRpc.ts'
 import { diagnosticContainsPosition } from '../DiagnosticContainsPosition/DiagnosticContainsPosition.ts'
 import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
@@ -26,7 +26,7 @@ export const getLightBulbRowIndex = async (editor: EditorState): Promise<number>
   }
   const offset = GetOffsetAtCursor.getOffsetAtCursor(editor)
   try {
-    const actions = await ExtensionManagementWorker.invoke('Extensions.executeCodeActionProviders', textDocument, offset)
+    const actions = await ApplicationExtensionRpc.invoke(editor.applicationId, 'Extensions.executeCodeActionProviders', textDocument, offset)
     return Array.isArray(actions) && actions.length > 0 ? rowIndex : -1
   } catch {
     return -1

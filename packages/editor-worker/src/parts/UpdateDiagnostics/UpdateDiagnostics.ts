@@ -1,4 +1,6 @@
 import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
+import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
+import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
 import * as EditorState from '../EditorStates/EditorStates.ts'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
@@ -36,9 +38,9 @@ const handleError = async (error: unknown, editor: any): Promise<any> => {
   return editor
 }
 
-const notifyDiagnosticsChange = async (uri: string): Promise<void> => {
+const notifyDiagnosticsChange = async (uri: string, applicationId?: string): Promise<void> => {
   try {
-    await RendererWorker.invoke('Layout.handleDiagnosticsChange', uri)
+    await ApplicationRpc.invoke(applicationId, 'Layout.handleDiagnosticsChange', uri)
   } catch {
     // Older renderer workers do not support diagnostics change listeners.
   }
@@ -84,7 +86,11 @@ const diagnosticLayoutEqual = (left: any, right: any): boolean =>
   left.width === right.width
 
 const isApplicable = (latest: any, editor: any): boolean =>
-  latest && latest.newState.diagnosticsEnabled && latest.newState.lines === editor.lines && latest.newState.uri === editor.uri
+  latest &&
+  latest.newState.diagnosticsEnabled &&
+  latest.newState.diagnostics === editor.diagnostics &&
+  latest.newState.lines === editor.lines &&
+  latest.newState.uri === editor.uri
 
 const mergeDiagnostics = (editor: any, editorWithDiagnostics: any): any => ({
   ...editor,
@@ -100,32 +106,36 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
   }
   try {
     const diagnostics = await getDiagnostics(editor)
-    let latest = EditorState.get(editor.id)
-    if (!isApplicable(latest, editor)) {
-      return editor
-    }
-    if (diagnosticsEqual(latest.newState.diagnostics, diagnostics)) {
-      return latest.newState
-    }
-    let calculationState = latest.newState
-    let editorWithDiagnostics = await addDiagnostics(calculationState, diagnostics)
-    latest = EditorState.get(editor.id)
-    while (isApplicable(latest, editor) && !diagnosticLayoutEqual(calculationState, latest.newState)) {
-      calculationState = latest.newState
-      editorWithDiagnostics = await addDiagnostics(calculationState, diagnostics)
-      latest = EditorState.get(editor.id)
-    }
-    if (!isApplicable(latest, editor)) {
-      return editor
-    }
-    if (diagnosticsEqual(latest.newState.diagnostics, diagnostics)) {
-      return latest.newState
-    }
-    const newEditor = mergeDiagnostics(latest.newState, editorWithDiagnostics)
-    EditorState.set(editor.id, latest.oldState, newEditor)
-    await RendererWorker.invoke('Editor.renderPending', newEditor.id)
-    await notifyDiagnosticsChange(newEditor.uri)
-    return newEditor
+    return (
+      (await EditorCommandQueue.enqueue(editor.id, async () => {
+        let latest = EditorState.get(editor.id)
+        if (!isApplicable(latest, editor)) {
+          return editor
+        }
+        if (diagnosticsEqual(latest.newState.diagnostics, diagnostics)) {
+          return latest.newState
+        }
+        let calculationState = latest.newState
+        let editorWithDiagnostics = await addDiagnostics(calculationState, diagnostics)
+        latest = EditorState.get(editor.id)
+        while (isApplicable(latest, editor) && !diagnosticLayoutEqual(calculationState, latest.newState)) {
+          calculationState = latest.newState
+          editorWithDiagnostics = await addDiagnostics(calculationState, diagnostics)
+          latest = EditorState.get(editor.id)
+        }
+        if (!isApplicable(latest, editor)) {
+          return editor
+        }
+        if (diagnosticsEqual(latest.newState.diagnostics, diagnostics)) {
+          return latest.newState
+        }
+        const newEditor = mergeDiagnostics(latest.newState, editorWithDiagnostics)
+        EditorState.set(editor.id, latest.oldState, newEditor)
+        await RendererWorker.invoke('Editor.renderPending', newEditor.id)
+        await notifyDiagnosticsChange(newEditor.uri, newEditor.applicationId)
+        return newEditor
+      })) ?? editor
+    )
   } catch (error) {
     return handleError(error, editor)
   }

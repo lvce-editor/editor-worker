@@ -1,4 +1,5 @@
 export interface EditorCreateOptions {
+  readonly applicationId?: string
   readonly assetDir: string
   readonly columnToReveal?: number
   readonly completionTriggerCharacters: any

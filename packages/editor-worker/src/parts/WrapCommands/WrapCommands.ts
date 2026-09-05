@@ -3,6 +3,7 @@ import type { EditorState } from '../State/State.ts'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
 import * as EditorCommandSave from '../EditorCommand/EditorCommandSave.ts'
 import { isUntitledFile } from '../EditorCommand/EditorCommandSave/isUntitledFile.ts'
+import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
 import { editorDiagnosticEffect } from '../EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
@@ -10,7 +11,6 @@ import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEdit
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
-const queues: Record<string, Promise<void> | undefined> = {}
 const cursorUndoLimit = 100
 
 const selectionsEqual = (left: Uint32Array, right: Uint32Array): boolean => {
@@ -59,18 +59,7 @@ const saveAfterDelay = async (uid: number, token: number): Promise<void> => {
 export const wrapCommand =
   (fn: any, preservesTypingCoalescing = false) =>
   async (uid: number, ...args: any[]) => {
-    const initialInstance = Editors.get(uid)
-    if (!initialInstance) {
-      return undefined
-    }
-    const queueKey = initialInstance?.newState.uri || uid
-    const previous = queues[queueKey]
-    const { promise: next, resolve } = Promise.withResolvers<void>()
-    queues[queueKey] = next
-    if (previous) {
-      await previous
-    }
-    try {
+    return EditorCommandQueue.enqueue(uid, async () => {
       const oldInstance = Editors.get(uid)
       if (!oldInstance) {
         return undefined
@@ -118,7 +107,14 @@ export const wrapCommand =
           const otherUid = Number(key)
           const instance = Editors.get(otherUid)
           const editor = instance?.newState
-          if (otherUid === uid || !instance || !editor || editor.initial || editor.uri !== finalEditor.uri) {
+          if (
+            otherUid === uid ||
+            !instance ||
+            !editor ||
+            editor.initial ||
+            editor.uri !== finalEditor.uri ||
+            editor.applicationId !== finalEditor.applicationId
+          ) {
             continue
           }
           const synchronizedEditor = await UpdateDerivedState.updateDerivedState(editor, {
@@ -144,10 +140,5 @@ export const wrapCommand =
         AutoSave.dispose(uid)
       }
       return finalEditor
-    } finally {
-      resolve()
-      if (queues[queueKey] === next) {
-        delete queues[queueKey]
-      }
-    }
+    })
   }

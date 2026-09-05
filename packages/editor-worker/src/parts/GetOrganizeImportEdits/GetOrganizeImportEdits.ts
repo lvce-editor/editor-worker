@@ -1,5 +1,5 @@
-import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 import type { OffsetBasedEdit } from '../OffsetBasedEdit/OffsetBasedEdit.ts'
+import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/ApplicationExtensionRpc.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 export const getOrganizeImportEdits = async (editor: any): Promise<readonly OffsetBasedEdit[]> => {
@@ -9,6 +9,6 @@ export const getOrganizeImportEdits = async (editor: any): Promise<readonly Offs
     text: TextDocument.getText(editor),
     uri: editor.uri,
   }
-  const result = await ExtensionManagementWorker.invoke('Extensions.executeOrganizeImportsProvider', textDocument)
+  const result = await ApplicationExtensionRpc.invoke(editor.applicationId, 'Extensions.executeOrganizeImportsProvider', textDocument)
   return result.found ? (result.result ?? []) : []
 }

@@ -1,8 +1,8 @@
+import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 // TODO maybe use a separate worker for bulk edits and bulk edit history
@@ -56,7 +56,7 @@ const getOpenEditor = (currentEditor: any, uri: string): any => {
   }
   for (const key of EditorStates.getKeys()) {
     const editor = EditorStates.get(Number(key))?.newState
-    if (editor && !editor.initial && editor.uri === uri) {
+    if (editor && !editor.initial && editor.uri === uri && editor.applicationId === currentEditor.applicationId) {
       return editor
     }
   }
@@ -78,9 +78,9 @@ export const applyWorkspaceEdit = async (editor: any, changes: readonly any[]): 
       }
       continue
     }
-    const text = await RendererWorker.readFile(uri)
+    const text = await ApplicationRpc.readFile(editor.applicationId, uri)
     const newText = applyEditsToText(text, edits)
-    await RendererWorker.invoke('FileSystem.writeFile', uri, newText)
+    await ApplicationRpc.invoke(editor.applicationId, 'FileSystem.writeFile', uri, newText)
   }
   return currentEditor
 }

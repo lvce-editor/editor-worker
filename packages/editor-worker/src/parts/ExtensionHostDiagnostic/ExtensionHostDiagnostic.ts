@@ -1,5 +1,5 @@
-import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 import type { Diagnostic } from '../Diagnostic/Diagnostic.ts'
+import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/ApplicationExtensionRpc.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 const getTextDocument = (editor: any) => {
@@ -13,7 +13,7 @@ const getTextDocument = (editor: any) => {
 
 const executeIsolatedDiagnosticProvider = async (editor: any): Promise<readonly Diagnostic[]> => {
   const textDocument = getTextDocument(editor)
-  return ExtensionManagementWorker.invoke('Extensions.executeDiagnosticProvider', textDocument)
+  return ApplicationExtensionRpc.invoke(editor.applicationId, 'Extensions.executeDiagnosticProvider', textDocument)
 }
 
 export const executeDiagnosticProvider = async (editor: any): Promise<readonly Diagnostic[]> => {

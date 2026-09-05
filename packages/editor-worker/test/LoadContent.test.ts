@@ -9,6 +9,7 @@ const getTokenizerMock: any = jest.fn()
 const loadTokenizerMock: any = jest.fn()
 const measureCharacterWidthMock: any = jest.fn()
 const readFileMock: any = jest.fn()
+const rendererInvokeMock: any = jest.fn()
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   ExtensionHost: {
@@ -21,7 +22,7 @@ jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   },
   RendererWorker: {
     getPreference: jest.fn(),
-    invoke: jest.fn(),
+    invoke: rendererInvokeMock,
     readFile: readFileMock,
   },
   SyntaxHighlightingWorker: {
@@ -151,6 +152,33 @@ test('loadContent returns error state when reading file fails', async () => {
   expect(result.textInfos).toEqual([])
   expect(result.height).toBe(200)
   expect(readFileMock).toHaveBeenCalledWith('file:///test.txt')
+})
+
+test('loads a separate document for the same uri in another application', async () => {
+  const source = { ...createState(), applicationId: 'source', id: 2, initial: false, lines: ['unsaved source'], modified: true, uid: 2 }
+  EditorStates.set(2, source, source)
+  rendererInvokeMock.mockResolvedValue('preview file')
+  const preview = { ...createState(), applicationId: 'preview' }
+
+  const result = await LoadContent.loadContent(preview, undefined)
+
+  expect(result.lines).toEqual(['preview file'])
+  expect(result.modified).toBe(false)
+  expect(result.applicationId).toBe('preview')
+  expect(rendererInvokeMock).toHaveBeenCalledWith('Application.execute', 'preview', 'FileSystem.readFile', preview.uri)
+  expect(EditorStates.get(2).newState.lines).toEqual(['unsaved source'])
+})
+
+test('reuses an unsaved document only within its application', async () => {
+  const source = { ...createState(), applicationId: 'source', id: 2, initial: false, lines: ['unsaved source'], modified: true, uid: 2 }
+  EditorStates.set(2, source, source)
+  rendererInvokeMock.mockClear()
+
+  const result = await LoadContent.loadContent({ ...createState(), applicationId: 'source' }, undefined)
+
+  expect(result.lines).toEqual(['unsaved source'])
+  expect(result.modified).toBe(true)
+  expect(rendererInvokeMock).not.toHaveBeenCalled()
 })
 
 test('loadContent returns loaded text without requesting diagnostics', async () => {

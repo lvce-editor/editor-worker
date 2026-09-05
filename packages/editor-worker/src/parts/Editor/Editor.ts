@@ -139,7 +139,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
 
   // Notify main-area-worker about modified status change
   if (!editor.modified) {
-    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri, true)
+    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri, true, editor.applicationId)
   }
 
   // Notify registered listeners about editor changes
