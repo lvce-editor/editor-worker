@@ -59,3 +59,16 @@ test('rejects invalid lines and cursor history', async () => {
   await expect(setComponentState(101, { ...state, lines: [1] })).rejects.toThrow('Editor lines must be an array of strings')
   await expect(setComponentState(101, { ...state, cursorUndoStack: {} })).rejects.toThrow('Editor cursorUndoStack must be an array')
 })
+
+test('invalidates text caches when lines are edited through JSON', async () => {
+  const initial = EditorStates.get(101).newState
+  const previous = { ...initial, invalidStartIndex: 10 }
+  EditorStates.set(101, previous, previous)
+  await setComponentState(101, { ...getComponentState(101), lines: ['changed', 'second line'] })
+  expect(EditorStates.get(101).newState).toMatchObject({
+    incrementalEdits: [],
+    invalidStartIndex: 0,
+    lines: ['changed', 'second line'],
+    numberOfLines: 2,
+  })
+})

@@ -1,5 +1,6 @@
 import type { EditorState } from '../State/State.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
+import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetComponentState from '../GetComponentState/GetComponentState.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
@@ -37,7 +38,11 @@ const applyComponentState = async (currentState: EditorState, value: unknown): P
     JSON.stringify(state[key]) === JSON.stringify(currentJsonState[key]) ? currentState[key as keyof EditorState] : entry,
   ])
   const newState = Object.fromEntries(entries) as unknown as EditorState
-  return UpdateDerivedState.updateDerivedState(currentState, newState)
+  const updatedState =
+    newState.lines === currentState.lines
+      ? newState
+      : { ...newState, incrementalEdits: emptyIncrementalEdits, invalidStartIndex: 0, numberOfLines: newState.lines.length }
+  return UpdateDerivedState.updateDerivedState(currentState, updatedState)
 }
 
 export const setComponentState = EditorStates.wrapCommand(applyComponentState)
