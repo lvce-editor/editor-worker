@@ -13,6 +13,9 @@ export const createEditor2 = (
   height: number,
   platform: number,
   assetDir: string,
+  _languageId?: string,
+  _tokenizePath?: string,
+  _useCache?: boolean,
   applicationId?: string,
 ): void => {
   Assert.number(id)

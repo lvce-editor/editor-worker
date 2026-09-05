@@ -14,10 +14,17 @@ afterEach(() => {
 })
 
 test('creates application-owned editors without changing legacy state shape', () => {
-  createEditor2(101, 'memfs:///main.ts', 0, 0, 400, 600, 1, '/assets', 'source')
+  createEditor2(101, 'memfs:///main.ts', 0, 0, 400, 600, 1, '/assets', 'typescript', '/assets/tokenize.js', true, 'source')
   createEditor2(102, 'memfs:///main.ts', 400, 0, 400, 600, 1, '/assets')
   expect(EditorStates.get(101).newState.applicationId).toBe('source')
   expect(EditorStates.get(102).newState).not.toHaveProperty('applicationId')
+})
+
+test('does not interpret legacy renderer language arguments as application ownership', () => {
+  // The renderer has always sent these trailing arguments, even when unused.
+  const createFromRenderer: (...args: readonly any[]) => void = createEditor2
+  createFromRenderer(101, 'file:///main.ts', 0, 0, 400, 600, 1, '/assets', 'typescript', '/assets/tokenize.js', true)
+  expect(EditorStates.get(101).newState).not.toHaveProperty('applicationId')
 })
 
 test('saving the same uri writes and clears dirty status only in its application', async () => {
