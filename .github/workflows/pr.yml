@@ -26,12 +26,12 @@ jobs:
         run: npx playwright install --with-deps chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
-      - name: reproduce diagnostics resize race
+      - name: verify diagnostics ordering and resize regressions
         working-directory: ./packages/e2e
         shell: bash
         run: |
           set -o pipefail
-          npm run e2e:headless -- --filter=diagnostics-resize-and-scroll-preserves-scroll 2>&1 | tee diagnostics-resize-scroll.log
+          npm run e2e:headless -- --filter=diagnostic 2>&1 | tee diagnostics-resize-scroll.log
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
       - name: upload attempt evidence
