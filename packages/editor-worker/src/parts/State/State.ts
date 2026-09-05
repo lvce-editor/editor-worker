@@ -7,6 +7,7 @@ import type { MergeConflict } from '../MergeConflict/MergeConflict.ts'
 
 export interface EditorState {
   readonly additionalFocus: number
+  readonly applicationId?: string
   readonly assetDir: string
   readonly bracketMatchInfos: readonly BracketMatchInfo[]
   readonly breadcrumbsEnabled?: boolean

@@ -1,6 +1,6 @@
 import { WhenExpression } from '@lvce-editor/constants'
-import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
+import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
@@ -19,9 +19,9 @@ import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
 
-const getWorkspaceUri = async (): Promise<string> => {
+const getWorkspaceUri = async (applicationId?: string): Promise<string> => {
   try {
-    return await RendererWorker.invoke('Workspace.getPath')
+    return await ApplicationRpc.invoke(applicationId, 'Workspace.getPath')
   } catch {
     return ''
   }
@@ -124,7 +124,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   let existingEditor: EditorState | undefined
   for (const key of EditorStates.getKeys()) {
     const editor = EditorStates.get(Number(key))?.newState
-    if (editor && editor.id !== id && !editor.initial && editor.uri === uri) {
+    if (editor && editor.id !== id && !editor.initial && editor.uri === uri && editor.applicationId === state.applicationId) {
       existingEditor = editor
       break
     }
@@ -133,7 +133,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   let endOfLine = existingEditor?.endOfLine || 'lf'
   try {
     if (!existingEditor) {
-      content = await RendererWorker.readFile(uri)
+      content = await ApplicationRpc.readFile(state.applicationId, uri)
       endOfLine = getEndOfLine(content)
       content = normalizeLineEndings(content)
     }
@@ -167,7 +167,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   let documentSymbols = state.documentSymbols || []
   let workspaceUri = state.workspaceUri || ''
   if (breadcrumbsEnabled) {
-    ;[documentSymbols, workspaceUri] = await Promise.all([getDocumentSymbols(newEditor3WithLinks), getWorkspaceUri()])
+    ;[documentSymbols, workspaceUri] = await Promise.all([getDocumentSymbols(newEditor3WithLinks), getWorkspaceUri(state.applicationId)])
   }
   const newEditor3WithBreadcrumbs = {
     ...newEditor3WithLinks,

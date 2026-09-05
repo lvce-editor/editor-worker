@@ -1,5 +1,5 @@
-import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
+import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
 import { getEditorGutterDecorations } from '../GetEditorGutterDecorations/GetEditorGutterDecorations.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
@@ -7,9 +7,9 @@ import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacte
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as Resize from '../Resize/Resize.ts'
 
-const getWorkspaceUri = async (): Promise<string> => {
+const getWorkspaceUri = async (applicationId?: string): Promise<string> => {
   try {
-    return await RendererWorker.invoke('Workspace.getPath')
+    return await ApplicationRpc.invoke(applicationId, 'Workspace.getPath')
   } catch {
     return ''
   }
@@ -40,7 +40,7 @@ export const handleSettingsChanged = async (state: EditorState): Promise<EditorS
     documentSymbols = []
     workspaceUri = ''
   } else if (!state.breadcrumbsEnabled) {
-    ;[documentSymbols, workspaceUri] = await Promise.all([getDocumentSymbols(editorWithUpdatedSettings), getWorkspaceUri()])
+    ;[documentSymbols, workspaceUri] = await Promise.all([getDocumentSymbols(editorWithUpdatedSettings), getWorkspaceUri(state.applicationId)])
   }
   const resizedEditor = Resize.resize(
     {

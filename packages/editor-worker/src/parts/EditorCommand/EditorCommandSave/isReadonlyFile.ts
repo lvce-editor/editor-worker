@@ -1,5 +1,5 @@
-import { RendererWorker } from '@lvce-editor/rpc-registry'
+import * as ApplicationRpc from '../../ApplicationRpc/ApplicationRpc.ts'
 
-export const isReadonlyFile = async (uri: string): Promise<boolean> => {
-  return RendererWorker.invoke('FileSystem.isReadonly', uri)
+export const isReadonlyFile = async (uri: string, applicationId?: string): Promise<boolean> => {
+  return ApplicationRpc.invoke(applicationId, 'FileSystem.isReadonly', uri)
 }

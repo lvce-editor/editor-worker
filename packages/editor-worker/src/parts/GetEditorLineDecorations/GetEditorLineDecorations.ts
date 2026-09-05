@@ -1,6 +1,6 @@
-import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 import type { EditorLineDecoration } from '../EditorLineDecoration/EditorLineDecoration.ts'
 import type { EditorState } from '../State/State.ts'
+import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/ApplicationExtensionRpc.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 interface ProviderDecoration {
@@ -36,7 +36,8 @@ export const getEditorLineDecorations = async (editor: EditorState, rowIndex: nu
     uri: editor.uri,
   }
   try {
-    const results = await ExtensionManagementWorker.invoke(
+    const results = await ApplicationExtensionRpc.invoke(
+      editor.applicationId,
       'Extensions.executeProvidersByEvent',
       'onEditorLineDecoration',
       'ExtensionApi.executeEditorLineDecorationProvider',

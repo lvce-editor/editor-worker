@@ -1,5 +1,5 @@
-import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 import type { SignatureHelpResult } from '../SignatureHelpResult/SignatureHelpResult.ts'
+import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/ApplicationExtensionRpc.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
@@ -16,5 +16,5 @@ export const executeSignatureHelpProvider = async (editor: any, offset: number):
   Assert.object(editor)
   Assert.number(offset)
   const textDocument = getTextDocument(editor)
-  return ExtensionManagementWorker.invoke('Extensions.executeSignatureHelpProvider', textDocument, offset)
+  return ApplicationExtensionRpc.invoke(editor.applicationId, 'Extensions.executeSignatureHelpProvider', textDocument, offset)
 }
