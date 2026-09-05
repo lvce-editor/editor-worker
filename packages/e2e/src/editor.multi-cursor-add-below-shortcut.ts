@@ -8,10 +8,12 @@ export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
   await Editor.setCursor(0, 3)
-  await expect(Locator('.EditorInput textarea')).toBeFocused()
+  const editorInput = Locator('.EditorInput textarea')
+  const cursors = Locator('.EditorCursor')
+  await expect(editorInput).toBeFocused()
 
   await KeyBoard.press('Control+Alt+ArrowDown')
-  await expect(Locator('.EditorCursor')).toHaveCount(2)
+  await expect(cursors).toHaveCount(2)
   await Editor.shouldHaveSelections(new Uint32Array([0, 3, 0, 3, 1, 3, 1, 3]))
   await Editor.type('X')
 
