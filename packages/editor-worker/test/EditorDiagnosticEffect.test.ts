@@ -29,3 +29,10 @@ test('is active when the lines reference changes', () => {
 
   expect(editorDiagnosticEffect.isActive(oldEditor as any, newEditor as any)).toBe(true)
 })
+
+test('is active when the language mode changes without a text edit', () => {
+  const oldEditor = { languageId: 'javascript', lines: ['const value: string = "text"'] }
+  const newEditor = { ...oldEditor, diagnosticsEnabled: true, languageId: 'typescript' }
+
+  expect(editorDiagnosticEffect.isActive(oldEditor as any, newEditor as any)).toBe(true)
+})

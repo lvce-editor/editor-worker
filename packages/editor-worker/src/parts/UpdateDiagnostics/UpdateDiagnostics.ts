@@ -89,6 +89,7 @@ const isApplicable = (latest: any, editor: any): boolean =>
   latest &&
   latest.newState.diagnosticsEnabled &&
   latest.newState.diagnostics === editor.diagnostics &&
+  latest.newState.languageId === editor.languageId &&
   latest.newState.lines === editor.lines &&
   latest.newState.uri === editor.uri
 

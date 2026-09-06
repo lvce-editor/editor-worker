@@ -124,3 +124,43 @@ test('a queued provider result does not overwrite diagnostics set by a newer com
 
   expect(EditorStates.get(1).newState.diagnostics).toBe(manualDiagnostics)
 })
+
+test('editing a shared document refreshes diagnostics in every editor showing it', async () => {
+  const diagnostic = { message: 'Unknown word: retu', uri: 'untitled:shared.ts' }
+  const checkedTexts: string[] = []
+  using _extensionRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeDiagnosticProvider': async (document: any) => {
+      checkedTexts.push(document.text)
+      return []
+    },
+  })
+  using _rendererRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => undefined,
+    'Layout.handleDiagnosticsChange': async () => undefined,
+  })
+  const editor = {
+    diagnostics: [diagnostic],
+    diagnosticsEnabled: true,
+    id: 1,
+    initial: false,
+    languageId: 'typescript',
+    lines: ['retu'],
+    uid: 1,
+    uri: 'untitled:shared.ts',
+  }
+  const sibling = { ...editor, id: 2, uid: 2 }
+  EditorStates.set(1, editor as any, editor as any)
+  EditorStates.set(2, sibling as any, sibling as any)
+  try {
+    const edit = wrapCommand((state: any) => ({ ...state, lines: ['return'] }))
+    await edit(1)
+    await new Promise<void>((resolve) => setImmediate(resolve))
+
+    expect(checkedTexts).toContain('return')
+    expect(EditorStates.get(1).newState.diagnostics).toEqual([])
+    expect(EditorStates.get(2).newState.lines).toEqual(['return'])
+    expect(EditorStates.get(2).newState.diagnostics).toEqual([])
+  } finally {
+    EditorStates.dispose(2)
+  }
+})
