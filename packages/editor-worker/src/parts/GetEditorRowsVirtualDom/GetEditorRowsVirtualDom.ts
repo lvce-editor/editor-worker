@@ -75,7 +75,7 @@ export const getEditorRowsVirtualDom = (
     dom.push({
       childCount: textInfo.length / 2 + rowDecorations.length,
       className,
-      translate: Px.px(difference),
+      translate: difference === 0 ? '' : Px.px(difference),
       type: VirtualDomElements.Div,
     })
     for (let j = 0; j < textInfo.length; j += 2) {
