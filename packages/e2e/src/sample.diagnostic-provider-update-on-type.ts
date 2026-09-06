@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'sample.diagnostic-provider-update-on-type'
 
-export const test: Test = async ({ Editor, Extension, FileSystem, Main, Settings, Workspace }) => {
+export const test: Test = async ({ Command, Editor, Extension, FileSystem, Main, Settings, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/test.xyz`, 'retu')
   await Workspace.setPath(tmpDir)
@@ -41,8 +41,8 @@ export const test: Test = async ({ Editor, Extension, FileSystem, Main, Settings
   await assertSnapshot('return')
   await Editor.type('\nconst value = "é😀"')
   await assertSnapshot('return\nconst value = "é😀"')
-  await Editor.undo()
+  await Command.execute('Editor.undo')
   await assertSnapshot('return')
-  await Editor.redo()
+  await Command.execute('Editor.redo')
   await assertSnapshot('return\nconst value = "é😀"')
 }
