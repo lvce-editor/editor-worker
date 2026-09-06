@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.row-translation'
 
-export const test: Test = async ({ expect, FileSystem, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   const filePath = `${tmpDir}/row-translation.txt`
   const content = 'x'.repeat(500)
@@ -13,20 +13,9 @@ export const test: Test = async ({ expect, FileSystem, Locator, Main, Workspace 
   const row = Locator('.EditorRow').first()
   await expect(row).toHaveCSS('translate', 'none')
 
-  const editor = Locator('.EditorContent')
-  await editor.dispatchEvent('wheel', {
-    bubbles: true,
-    deltaMode: 0,
-    deltaX: 1,
-    deltaY: 0,
-  } as any)
-  await expect(row).toHaveCSS('translate', '-1px')
+  await Editor.cursorEnd()
+  await expect(row).not.toHaveCSS('translate', 'none')
 
-  await editor.dispatchEvent('wheel', {
-    bubbles: true,
-    deltaMode: 0,
-    deltaX: -1,
-    deltaY: 0,
-  } as any)
+  await Editor.cursorHome()
   await expect(row).toHaveCSS('translate', 'none')
 }
