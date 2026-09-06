@@ -137,7 +137,7 @@ test('getEditorVirtualDom', () => {
     {
       childCount: 1,
       className: 'EditorRow',
-      translate: '0px',
+      translate: '',
       type: VirtualDomElements.Div,
     },
     {
