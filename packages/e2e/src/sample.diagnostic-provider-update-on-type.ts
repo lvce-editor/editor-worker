@@ -39,6 +39,7 @@ export const test: Test = async ({ Command, Editor, Extension, FileSystem, Main,
   await Editor.setCursor(0, 4)
   await Editor.type('rn')
   await assertSnapshot('return')
+  await Editor.setCursor(0, 6)
   await Editor.type('\nconst value = "é😀"')
   await assertSnapshot('return\nconst value = "é😀"')
   await Command.execute('Editor.undo')
