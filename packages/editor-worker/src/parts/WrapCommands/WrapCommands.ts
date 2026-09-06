@@ -132,6 +132,9 @@ export const wrapCommand =
             visualDecorations: finalEditor.visualDecorations,
           })
           Editors.set(otherUid, instance.oldState, synchronizedEditor)
+          if (editorDiagnosticEffect.isActive(editor, synchronizedEditor)) {
+            void editorDiagnosticEffect.apply(synchronizedEditor)
+          }
         }
       }
       if (lines !== finalEditor.lines && !isUntitledFile(finalEditor.uri)) {

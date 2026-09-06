@@ -308,3 +308,35 @@ test('updateDiagnostics preserves scrolling while diagnostic decorations are cal
     ['Layout.handleDiagnosticsChange', 'file:///test.ts'],
   ])
 })
+
+test('updateDiagnostics ignores a result for the previous language mode', async () => {
+  const requested = Promise.withResolvers<void>()
+  const result = Promise.withResolvers<readonly any[]>()
+  using _extensionRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeDiagnosticProvider': async () => {
+      requested.resolve()
+      return result.promise
+    },
+  })
+  using _rendererRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => undefined,
+    'Layout.handleDiagnosticsChange': async () => undefined,
+  })
+  const editor = {
+    diagnostics: [],
+    diagnosticsEnabled: true,
+    id: 1,
+    languageId: 'javascript',
+    lines: ['const value: string = "text"'],
+    uri: 'file:///test.ts',
+  }
+  EditorStates.set(1, editor as any, editor as any)
+  const pending = updateDiagnostics(editor)
+  await requested.promise
+  const changed = { ...editor, languageId: 'typescript' }
+  EditorStates.set(1, editor as any, changed as any)
+  result.resolve([{ message: 'Unexpected token :' }])
+  await pending
+
+  expect(EditorStates.get(1).newState).toBe(changed)
+})
