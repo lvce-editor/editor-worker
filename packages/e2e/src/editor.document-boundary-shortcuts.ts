@@ -10,10 +10,12 @@ export const test: Test = async ({ Editor, FileSystem, KeyBoard, Main, Workspace
   await Editor.setCursor(0, 3)
 
   await KeyBoard.press('Control+End')
+  await Editor.shouldHaveCursor(2, 4)
   await Editor.type('X')
   await Editor.shouldHaveText('first\nmiddle\nlastX')
 
   await KeyBoard.press('Control+Home')
+  await Editor.shouldHaveCursor(0, 0)
   await Editor.type('Y')
   await Editor.shouldHaveText('Yfirst\nmiddle\nlastX')
 }
