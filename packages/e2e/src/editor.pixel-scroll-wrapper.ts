@@ -29,6 +29,10 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await expect(rows).toHaveCount(4)
   await expect(lineNumbers).toHaveCount(4)
 
+  await Command.execute('Editor.handlePointerDown', 0, false, false, 31, 55, 1, 30)
+  await Command.execute('Editor.handleMouseDown', 0, false, false, 31, 55, 1)
+  await Editor.shouldHaveSelections(new Uint32Array([3, 0, 3, 0]))
+
   await Editor.setDeltaY(13)
   await expect(layers).toHaveCSS('translate', 'none')
   await expect(gutterRows).toHaveCSS('translate', 'none')
