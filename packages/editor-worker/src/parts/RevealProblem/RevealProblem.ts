@@ -1,9 +1,9 @@
 import type { EditorState } from '../State/State.ts'
-import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import { cursorSet } from '../EditorCommand/EditorCommandCursorSet.ts'
+import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 
 export const revealProblem = (editor: EditorState, rowIndex: number, columnIndex: number): EditorState => {
-  if (!Number.isInteger(rowIndex) || !Number.isInteger(columnIndex)) {
+  if (!Number.isSafeInteger(rowIndex) || !Number.isSafeInteger(columnIndex)) {
     return editor
   }
   const row = Math.max(0, Math.min(rowIndex, editor.lines.length - 1))

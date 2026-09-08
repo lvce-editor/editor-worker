@@ -1,4 +1,3 @@
-import { revealProblem } from '../RevealProblem/RevealProblem.ts'
 import { terminate } from '@lvce-editor/viewlet-registry'
 import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
 import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
@@ -186,6 +185,7 @@ import { render2 } from '../Render2/Render2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
+import { revealProblem } from '../RevealProblem/RevealProblem.ts'
 import { saveState } from '../SaveState/SaveState.ts'
 import {
   sendDeprecatedExtensionHostPortToExtensionManagementWorker,
@@ -244,7 +244,6 @@ export const commandMap = {
   'Editor.cursorLeft': wrapCommand(CursorCharacterLeft.cursorCharacterLeft),
   'Editor.cursorPageDown': wrapCommand(cursorPageDown),
   'Editor.cursorRight': wrapCommand(CursorCharacterRight.cursorCharacterRight),
-  'Editor.revealProblem': wrapCommand(revealProblem),
   'Editor.cursorSet': wrapCommand(EditorCursorSet.cursorSet),
   'Editor.cursorUndo': wrapCommand(CursorUndo.cursorUndo),
   'Editor.cursorUp': wrapCommand(CursorUp.cursorUp),
@@ -372,6 +371,7 @@ export const commandMap = {
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
   'Editor.resize': wrapCommand(Resize.resize),
+  'Editor.revealProblem': wrapCommand(revealProblem),
   'Editor.save': wrapCommand(Save.save),
   'Editor.saveState': wrapGetter(saveState),
   'Editor.scrollByLines': wrapCommand(SetDelta.scrollByLines),

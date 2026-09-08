@@ -33,14 +33,14 @@ test('unfolds the problem while preserving unrelated folds', () => {
     {
       ...editor,
       foldingRanges: [
-        { start: 0, end: 2 },
-        { start: 3, end: 4 },
+        { end: 2, start: 0 },
+        { end: 4, start: 3 },
       ],
     },
     1,
     0,
   )
-  expect(result.foldingRanges).toEqual([{ start: 3, end: 4 }])
+  expect(result.foldingRanges).toEqual([{ end: 4, start: 3 }])
   expect(result.selections).toEqual(new Uint32Array([1, 0, 1, 0]))
 })
 
@@ -55,7 +55,7 @@ test('clamps stale diagnostic positions to the document', () => {
   const result = revealProblem(editor, 100, 100)
   expect(result.selections).toEqual(new Uint32Array([4, 5, 4, 5]))
   expect(revealProblem(editor, -1, -1).selections).toEqual(new Uint32Array([0, 0, 0, 0]))
-  expect(revealProblem(editor, Number.NaN, 0)).toBe(editor)
+  expect(revealProblem(editor, NaN, 0)).toBe(editor)
 })
 
 test('renders the problem highlight on the document row in a scrolled editor', () => {
