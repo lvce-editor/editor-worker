@@ -45,7 +45,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await Editor.shouldHaveSelections(new Uint32Array([3, 0, 3, 0]))
 
   await Command.execute('Editor.resize', { height: 65, width: 800, x: 0, y: 0 }, 10)
-  await Editor.setDeltaY(10000)
+  await Editor.setDeltaY(10_000)
   await expect(layers).toHaveCSS('translate', '0px -15px')
   await expect(rows.first()).toHaveText('line 97')
   await expect(rows).toHaveCount(4)
