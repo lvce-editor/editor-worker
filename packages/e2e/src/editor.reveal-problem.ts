@@ -18,6 +18,6 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await Command.execute('Editor.revealProblem', 79, 0)
   await expect(highlighted).toHaveCount(1)
   await expect(highlighted).toHaveText('line 80')
-  await Main.focus()
+  await Command.execute('Main.focus')
   await expect(highlighted).toHaveCount(0)
 }
