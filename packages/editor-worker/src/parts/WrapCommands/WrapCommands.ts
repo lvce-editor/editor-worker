@@ -145,3 +145,17 @@ export const wrapCommand =
       return finalEditor
     })
   }
+
+export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Promise<EditorState>) => {
+  const command = wrapCommand((editor: EditorState, widgetRevision: number | undefined) => {
+    if (editor.widgetRevision !== widgetRevision) {
+      return editor
+    }
+    return fn(editor)
+  })
+  return (uid: number) => {
+    // DOM focus events can arrive while a queued command is still opening a widget.
+    const widgetRevision = Editors.get(uid)?.newState.widgetRevision
+    return command(uid, widgetRevision)
+  }
+}

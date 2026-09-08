@@ -43,7 +43,7 @@ jobs:
           PLAYWRIGHT_BROWSERS_PATH: 0
       - name: e2e
         working-directory: ./packages/e2e
-        run: npm run e2e:headless -- --trace-renderer-worker --trace-focus
+        run: npm run e2e:headless
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
       - name: editor status bar e2e
@@ -56,9 +56,3 @@ jobs:
         run: npm run measure
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
-      - name: Upload rename diagnostic trace
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: rename-diagnostic-${{ matrix.os }}
-          path: packages/e2e/renderer-worker-traces
