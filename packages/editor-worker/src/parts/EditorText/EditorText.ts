@@ -554,7 +554,10 @@ export const getVisible = async (editor: any, syncIncremental: boolean): Promise
   const { charWidth, deltaX, lines, width } = editor
   const visibleLineIndices =
     editor.visibleLineIndices ||
-    Array.from({ length: Math.min(editor.numberOfVisibleLines, lines.length - editor.minLineY) }, (_, index) => editor.minLineY + index)
+    Array.from(
+      { length: Math.min(editor.maxLineY ?? editor.minLineY + editor.numberOfVisibleLines, lines.length) - editor.minLineY },
+      (_, index) => editor.minLineY + index,
+    )
   if (visibleLineIndices.length === 0) {
     return {
       differences: [],

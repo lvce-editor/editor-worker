@@ -42,6 +42,7 @@ test('renderEditor moves the active line number with the primary cursor', async 
       [
         'renderGutter',
         [
+          { childCount: 2, className: 'GutterRows', type: VirtualDomElements.Div },
           {
             childCount: 1,
             className: 'LineNumber',

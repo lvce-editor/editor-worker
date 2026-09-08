@@ -4,6 +4,7 @@ import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomE
 
 test('renders the primary cursor line number as active', () => {
   expect(GetEditorGutterVirtualDom.getEditorGutterVirtualDom([1, 2], 2)).toEqual([
+    { childCount: 2, className: 'GutterRows', type: VirtualDomElements.Div },
     {
       childCount: 1,
       className: 'LineNumber',
@@ -36,6 +37,7 @@ test('renders a breakpoint marker', () => {
       },
     ]),
   ).toEqual([
+    { childCount: 1, className: 'GutterRows', type: VirtualDomElements.Div },
     {
       ariaLabel: 'Breakpoint on line 2',
       childCount: 1,
@@ -62,6 +64,7 @@ test('renders an accessible clickable lightbulb', () => {
       },
     ]),
   ).toEqual([
+    { childCount: 1, className: 'GutterRows', type: VirtualDomElements.Div },
     {
       ariaLabel: 'Show Code Actions on line 3',
       childCount: 1,
@@ -92,6 +95,7 @@ test('renders accessible added and modified gutter decorations', () => {
       },
     ]),
   ).toEqual([
+    { childCount: 1, className: 'GutterRows', type: VirtualDomElements.Div },
     {
       childCount: 3,
       className: 'LineNumber',

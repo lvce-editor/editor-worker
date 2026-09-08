@@ -1,5 +1,6 @@
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorMinimapConstants from '../EditorMinimapConstants/EditorMinimapConstants.ts'
+import * as EditorViewport from '../EditorViewport/EditorViewport.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 interface Dimensions {
@@ -41,7 +42,7 @@ export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, 
     const finalDeltaY = finalY * state.itemHeight
     const deltaY = Math.min(state.deltaY, finalDeltaY)
     const minLineY = Math.floor(deltaY / state.itemHeight)
-    const maxLineY = Math.min(minLineY + numberOfVisibleLines, total)
+    const maxLineY = Math.min(minLineY + EditorViewport.getRenderedLineCount(height, state.itemHeight, deltaY), total)
     const contentHeight = total * state.rowHeight
     const scrollBarHeight = ScrollBarFunctions.getScrollBarSize(height, contentHeight, state.minimumSliderSize)
     return {

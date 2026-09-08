@@ -46,5 +46,15 @@ const getGutterInfoVirtualDom = (gutterInfo: any, activeLineNumber: number) => {
 
 export const getEditorGutterVirtualDom = (gutterInfos: readonly any[], activeLineNumber = -1) => {
   const dom = gutterInfos.flatMap((gutterInfo) => getGutterInfoVirtualDom(gutterInfo, activeLineNumber))
-  return dom
+  if (gutterInfos.length === 0) {
+    return []
+  }
+  return [
+    {
+      childCount: gutterInfos.length,
+      className: 'GutterRows',
+      type: VirtualDomElements.Div,
+    },
+    ...dom,
+  ]
 }

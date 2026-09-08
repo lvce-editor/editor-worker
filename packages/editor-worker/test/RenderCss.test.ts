@@ -26,6 +26,25 @@ test('renderCss', () => {
   --ScrollBarWidth: 40px;
   --ScrollBarLeft: 20px;
 }
+.Editor[data-uid="1"] .EditorLayers {
+  height: calc(100% + var(--EditorRowHeight));
+  translate: none;
+}
+.Editor[data-uid="1"] .GutterRows {
+  flex: none;
+  width: 100%;
+  translate: none;
+}
+.Editor[data-uid="1"] .EditorRows,
+.Editor[data-uid="1"] .GutterRows {
+  display: flex;
+  flex-direction: column;
+}
+.Editor[data-uid="1"] .EditorRow,
+.Editor[data-uid="1"] .LineNumber {
+  contain: size style;
+  flex: none;
+}
 .Editor[data-uid="1"] .EditorRow {
   height: var(--EditorRowHeight);
   line-height: var(--EditorRowHeight);
@@ -33,6 +52,7 @@ test('renderCss', () => {
 .Editor[data-uid="1"] .MergeConflictActions,
 .Editor[data-uid="1"] .MergeConflictActionsGutter {
   box-sizing: border-box;
+  flex: none;
   height: var(--EditorRowHeight);
   line-height: var(--EditorRowHeight);
 }

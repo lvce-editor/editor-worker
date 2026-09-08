@@ -1,4 +1,5 @@
 import * as Clamp from '../Clamp/Clamp.ts'
+import * as EditorViewport from '../EditorViewport/EditorViewport.ts'
 import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import { getMergeConflicts } from '../GetMergeConflicts/GetMergeConflicts.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
@@ -100,9 +101,10 @@ export const updateLayout = (editor: any, foldingRanges: readonly FoldingRange[]
   const finalDeltaY = finalY * itemHeight
   const deltaY = Clamp.clamp(editor.deltaY, 0, finalDeltaY)
   const startVisualRow = Math.floor(deltaY / itemHeight)
+  const renderedLineCount = EditorViewport.getRenderedLineCount(height, itemHeight, deltaY)
   const visibleViewLineIndices = hasMergeConflictRows
-    ? EditorViewRows.getVisibleViewLineIndices(viewLineIndices, startVisualRow, numberOfVisibleLines)
-    : getViewportLineIndices(lines.length, foldingRanges, startVisualRow, numberOfVisibleLines)
+    ? EditorViewRows.getVisibleViewLineIndices(viewLineIndices, startVisualRow, renderedLineCount)
+    : getViewportLineIndices(lines.length, foldingRanges, startVisualRow, renderedLineCount)
   const visibleLineIndices = hasMergeConflictRows ? EditorViewRows.getVisibleLineIndices(visibleViewLineIndices) : visibleViewLineIndices
   const minLineY = visibleLineIndices[0] ?? 0
   const maxLineY = visibleLineIndices.length === 0 ? 0 : visibleLineIndices.at(-1)! + 1

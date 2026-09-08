@@ -1,3 +1,5 @@
+import * as EditorViewport from '../EditorViewport/EditorViewport.ts'
+
 export const getCss = (
   uid: number,
   rowHeight: number,
@@ -5,14 +7,36 @@ export const getCss = (
   scrollBarTop: number,
   scrollBarWidth: number,
   scrollBarLeft: number,
+  deltaY = 0,
 ): string => {
   const editorSelector = `.Editor[data-uid="${uid}"]`
+  const scrollOffset = EditorViewport.getScrollOffset(deltaY, rowHeight)
+  const translate = scrollOffset === 0 ? 'none' : `0px -${scrollOffset}px`
   return `${editorSelector} {
   --EditorRowHeight: ${rowHeight}px;
   --ScrollBarHeight: ${scrollBarHeight}px;
   --ScrollBarTop: ${scrollBarTop}px;
   --ScrollBarWidth: ${scrollBarWidth}px;
   --ScrollBarLeft: ${scrollBarLeft}px;
+}
+${editorSelector} .EditorLayers {
+  height: calc(100% + var(--EditorRowHeight));
+  translate: ${translate};
+}
+${editorSelector} .GutterRows {
+  flex: none;
+  width: 100%;
+  translate: ${translate};
+}
+${editorSelector} .EditorRows,
+${editorSelector} .GutterRows {
+  display: flex;
+  flex-direction: column;
+}
+${editorSelector} .EditorRow,
+${editorSelector} .LineNumber {
+  contain: size style;
+  flex: none;
 }
 ${editorSelector} .EditorRow {
   height: var(--EditorRowHeight);
@@ -21,6 +45,7 @@ ${editorSelector} .EditorRow {
 ${editorSelector} .MergeConflictActions,
 ${editorSelector} .MergeConflictActionsGutter {
   box-sizing: border-box;
+  flex: none;
   height: var(--EditorRowHeight);
   line-height: var(--EditorRowHeight);
 }
