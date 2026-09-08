@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, expect, jest, test } from '@jest/globals'
+import { WhenExpression, WidgetId } from '@lvce-editor/constants'
 
 const updateDerivedStateMock = jest.fn()
 const editorDiagnosticEffectApplyMock: any = jest.fn()
@@ -43,6 +44,8 @@ jest.unstable_mockModule('../src/parts/EditorDiagnosticEffect/EditorDiagnosticEf
   },
 }))
 
+const { handleFocus } = await import('../src/parts/EditorCommand/EditorCommandHandleFocus.ts')
+const { handleBlur } = await import('../src/parts/EditorCommand/EditorCommandBlur.ts')
 const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
 const WrapCommands = await import('../src/parts/WrapCommands/WrapCommands.ts')
 
@@ -587,4 +590,79 @@ test('does not synchronize document state with another uri', async () => {
   await command(1)
 
   expect(EditorStates.get(2).newState).toBe(secondState)
+})
+
+test('ignores editor focus events queued while a rename widget is opening', async () => {
+  const editor = {
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+    modified: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    widgetRevision: 0,
+    widgets: [],
+  }
+  EditorStates.set(1, editor as any, editor as any)
+  const started = Promise.withResolvers<void>()
+  const finish = Promise.withResolvers<void>()
+  const renameWidget = { id: WidgetId.Rename }
+  const openRename = WrapCommands.wrapCommand(async (state: any) => {
+    started.resolve()
+    await finish.promise
+    return {
+      ...state,
+      focus: WhenExpression.FocusEditorRename,
+      focused: false,
+      widgetRevision: 1,
+      widgets: [renameWidget],
+    }
+  })
+  const opening = openRename(1)
+  await started.promise
+  const focusing = WrapCommands.wrapFocusCommand(handleFocus)(1)
+  const blurring = WrapCommands.wrapCommand(handleBlur)(1)
+  finish.resolve()
+  await Promise.all([opening, focusing, blurring])
+
+  expect(EditorStates.get(1).newState).toMatchObject({
+    focus: WhenExpression.FocusEditorRename,
+    focused: false,
+    widgets: [renameWidget],
+  })
+})
+
+test('applies a new editor focus event after a widget has opened', async () => {
+  const editor = {
+    focus: WhenExpression.FocusEditorRename,
+    focused: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    widgetRevision: 1,
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  await WrapCommands.wrapFocusCommand(handleFocus)(1)
+
+  expect(EditorStates.get(1).newState).toMatchObject({
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+  })
+})
+
+test('keeps a new editor focus event queued after a blur', async () => {
+  const editor = {
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+    modified: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    widgetRevision: 0,
+    widgets: [],
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  const blurring = WrapCommands.wrapCommand(handleBlur)(1)
+  const focusing = WrapCommands.wrapFocusCommand(handleFocus)(1)
+  await Promise.all([blurring, focusing])
+
+  expect(EditorStates.get(1).newState.focused).toBe(true)
 })

@@ -196,7 +196,7 @@ import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
-import { wrapCommand } from '../WrapCommands/WrapCommands.ts'
+import { wrapCommand, wrapFocusCommand } from '../WrapCommands/WrapCommands.ts'
 
 const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
   return ExecuteViewletCommand.executeViewletCommand(commandMap, uid, commandId, ...args)
@@ -308,7 +308,7 @@ export const commandMap = {
   'Editor.handleClickAtPosition': wrapCommand(handleClickAtPosition),
   'Editor.handleContextMenu': wrapCommand(EditorCommandHandleContextMenu.handleContextMenu),
   'Editor.handleDoubleClick': wrapCommand(HandleDoubleClick.handleDoubleClick),
-  'Editor.handleFocus': wrapCommand(HandleFocus.handleFocus),
+  'Editor.handleFocus': wrapFocusCommand(HandleFocus.handleFocus),
   'Editor.handleKeyUp': wrapCommand(HandleKeyUp.handleKeyUp, true),
   'Editor.handleMergeConflictActionsMouseDown': wrapCommand(EditorCommandAcceptMergeConflict.handleMergeConflictActionsMouseDown),
   'Editor.handleMouseDown': wrapCommand(HandleMouseDown.handleMouseDown),

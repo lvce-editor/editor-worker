@@ -284,3 +284,13 @@ test('loadContent ignores malformed saved history', async () => {
   expect(result.redoStack).toEqual([])
   expect(result.undoStack).toEqual([])
 })
+
+for (const formatOnSave of [true, false]) {
+  test(`loads formatOnSave=${formatOnSave} into the editor state`, async () => {
+    const preferences = await getEditorPreferencesMock()
+    getEditorPreferencesMock.mockResolvedValue({ ...preferences, formatOnSave })
+    readFileMock.mockResolvedValue('let x=1')
+    const result = await LoadContent.loadContent(createState(), undefined)
+    expect(result.formatOnSave).toBe(formatOnSave)
+  })
+}

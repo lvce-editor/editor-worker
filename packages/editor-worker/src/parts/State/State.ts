@@ -44,6 +44,7 @@ export interface EditorState {
   readonly fontFamily: string
   readonly fontSize: number
   readonly fontWeight: number
+  readonly formatOnSave?: boolean
   readonly gutterDecorations: readonly EditorGutterDecoration[]
   readonly gutterWidth: number
   readonly handleOffset: number

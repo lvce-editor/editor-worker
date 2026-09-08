@@ -1,10 +1,8 @@
+import type { EditorState } from '../../State/State.ts'
 import * as EditorFormat from '../EditorCommandFormat.ts'
-import { getFormatOnSave } from './getFormatOnSave.ts'
 
-// @ts-ignore
-export const getNewEditor = async (editor) => {
-  const formatOnSave = getFormatOnSave()
-  if (formatOnSave) {
+export const getNewEditor = async (editor: EditorState): Promise<EditorState> => {
+  if (editor.formatOnSave) {
     return EditorFormat.format(editor)
   }
   return editor

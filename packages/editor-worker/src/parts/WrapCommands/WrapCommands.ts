@@ -1,3 +1,4 @@
+import { WhenExpression } from '@lvce-editor/constants'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
@@ -145,3 +146,17 @@ export const wrapCommand =
       return finalEditor
     })
   }
+
+export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Promise<EditorState>) => {
+  const command = wrapCommand((editor: EditorState, widgetRevision: number | undefined) => {
+    if (editor.widgetRevision !== widgetRevision && editor.focus !== WhenExpression.FocusEditorText) {
+      return editor
+    }
+    return fn(editor)
+  })
+  return (uid: number) => {
+    // DOM focus events can arrive while a queued command is still opening a widget.
+    const widgetRevision = Editors.get(uid)?.newState.widgetRevision
+    return command(uid, widgetRevision)
+  }
+}

@@ -1,7 +1,8 @@
 import { afterEach, expect, jest, test } from '@jest/globals'
 import { PlatformType } from '@lvce-editor/constants'
-import { DialogWorker, RendererWorker } from '@lvce-editor/rpc-registry'
+import { DialogWorker, ExtensionManagementWorker, RendererWorker } from '@lvce-editor/rpc-registry'
 import * as EditorCommandSave from '../src/parts/EditorCommand/EditorCommandSave.ts'
+import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
 
 afterEach(() => {
   jest.restoreAllMocks()
@@ -135,3 +136,68 @@ test('save - clears the modified status after saving', async () => {
     ['Main.handleModifiedStatusChange', 'file:///tmp/example.txt', false],
   ])
 })
+
+for (const [formatOnSave, modified] of [
+  [true, true],
+  [true, false],
+  [false, true],
+  [false, false],
+]) {
+  test(`save - formatOnSave=${formatOnSave}, modified=${modified} writes the expected content in the owning application`, async () => {
+    using mockRpc = RendererWorker.registerMockRpc({
+      'Application.execute': async (_applicationId: string, method: string) => (method === 'FileSystem.isReadonly' ? false : undefined),
+    })
+    using mockExtensionRpc = ExtensionManagementWorker.registerMockRpc({
+      'Extensions.invokeForApplication': async () => [{ endOffset: 9, inserted: 'let x = 1\n', startOffset: 0 }],
+    })
+    const editor = {
+      applicationId: 'source',
+      decorations: [],
+      formatOnSave,
+      id: 1,
+      invalidStartIndex: 0,
+      languageId: 'typescript',
+      lineCache: [],
+      lines: ['let x=1; '],
+      minLineY: 0,
+      modified,
+      numberOfVisibleLines: 0,
+      platform: PlatformType.Web,
+      selections: new Uint32Array([0, 0, 0, 0]),
+      tokenizer: TokenizePlainText,
+      uid: 1,
+      undoStack: [],
+      uri: 'memfs:///sample/main.ts',
+    }
+
+    const result = await EditorCommandSave.save(editor)
+
+    expect(result.lines).toEqual(formatOnSave ? ['let x = 1', ''] : editor.lines)
+    expect(result.modified).toBe(false)
+    expect(mockRpc.invocations).toContainEqual([
+      'Application.execute',
+      'source',
+      'FileSystem.writeFile',
+      editor.uri,
+      formatOnSave ? 'let x = 1\n' : 'let x=1; ',
+      'utf8',
+      false,
+    ])
+    const modifiedNotifications = mockRpc.invocations.filter((invocation) => invocation[2] === 'Main.handleModifiedStatusChange')
+    expect(modifiedNotifications.at(-1)).toEqual(
+      formatOnSave || modified ? ['Application.execute', 'source', 'Main.handleModifiedStatusChange', editor.uri, false] : undefined,
+    )
+    expect(mockExtensionRpc.invocations).toEqual(
+      formatOnSave
+        ? [
+            [
+              'Extensions.invokeForApplication',
+              'source',
+              'Extensions.executeFormattingProvider',
+              { documentId: 1, languageId: 'typescript', text: 'let x=1; ', uri: editor.uri },
+            ],
+          ]
+        : [],
+    )
+  })
+}
