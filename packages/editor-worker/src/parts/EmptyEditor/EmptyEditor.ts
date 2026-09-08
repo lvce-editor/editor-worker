@@ -23,7 +23,6 @@ export const emptyEditor = {
   hasListener: false,
   height: 0,
   highlightedLine: -1,
-  problemsHighlightedRow: -1,
   incrementalEdits: emptyIncrementalEdits,
   insertSpaces: true,
   isSelecting: false,
@@ -40,6 +39,7 @@ export const emptyEditor = {
   minLineY: 0,
   outerHeight: 0,
   outerWidth: 0,
+  problemsHighlightedRow: -1,
   redoStack: [],
   scrollBarHeight: 0,
   selectionAnchorPosition: {

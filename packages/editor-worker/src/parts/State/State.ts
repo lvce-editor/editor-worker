@@ -52,7 +52,6 @@ export interface EditorState {
   readonly hasListener: boolean
   readonly height: number
   readonly highlightActiveLineNumber: boolean
-  readonly problemsHighlightedRow: number
   readonly highlightedLine: number
   readonly hoverEnabled: boolean
   readonly id: number
@@ -91,6 +90,7 @@ export interface EditorState {
   readonly platform: number
   readonly primarySelectionIndex: number
   readonly problemNavigationDiagnostic?: any
+  readonly problemsHighlightedRow: number
   readonly redoStack: readonly any[]
   readonly rowHeight: number
   readonly savedSelections: readonly any[]

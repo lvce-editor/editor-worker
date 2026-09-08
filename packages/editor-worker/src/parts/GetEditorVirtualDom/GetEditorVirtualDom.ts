@@ -42,7 +42,6 @@ interface EditorVirtualDomOptions {
   readonly height?: number
   readonly highlightActiveLineNumber?: boolean
   readonly highlightedLine?: number
-  readonly problemsHighlightedRow?: number
   readonly lightBulbRowIndex?: number
   readonly lineNumbers?: boolean
   readonly lines?: readonly string[]
@@ -52,6 +51,7 @@ interface EditorVirtualDomOptions {
   readonly minimapLines?: readonly (readonly (number | string)[])[]
   readonly minLineY?: number
   readonly primarySelectionIndex?: number
+  readonly problemsHighlightedRow?: number
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
   readonly selectionInfos?: readonly any[]
@@ -98,7 +98,6 @@ export const getEditorVirtualDom = ({
   gutterInfos = [],
   highlightActiveLineNumber = true,
   highlightedLine = -1,
-  problemsHighlightedRow = -1,
   lightBulbRowIndex = -1,
   lineNumbers = true,
   lines = [],
@@ -108,6 +107,7 @@ export const getEditorVirtualDom = ({
   minimapLines = [],
   minLineY = 0,
   primarySelectionIndex = 0,
+  problemsHighlightedRow = -1,
   scrollBarDiagnostics = [],
   selectionInfos = [],
   selections = new Uint32Array(),
@@ -172,8 +172,8 @@ export const getEditorVirtualDom = ({
       endOfLineDecorations,
       focused,
       highlightedLine,
-      problemsHighlightedRow,
       lineNumbers,
+      problemsHighlightedRow,
       scrollBarDiagnostics,
       selectionInfos,
       textInfos,

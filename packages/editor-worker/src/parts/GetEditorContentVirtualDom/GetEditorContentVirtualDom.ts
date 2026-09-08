@@ -26,8 +26,8 @@ interface EditorContentVirtualDomOptions {
   readonly focused?: boolean
   readonly height?: number
   readonly highlightedLine?: number
-  readonly problemsHighlightedRow?: number
   readonly lineNumbers?: boolean
+  readonly problemsHighlightedRow?: number
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
   readonly selectionInfos?: readonly any[]
@@ -44,8 +44,8 @@ export const getEditorContentVirtualDom = ({
   endOfLineDecorations = [],
   focused = true,
   highlightedLine = -1,
-  problemsHighlightedRow = -1,
   lineNumbers = true,
+  problemsHighlightedRow = -1,
   scrollBarDiagnostics = [],
   selectionInfos = [],
   textInfos,
