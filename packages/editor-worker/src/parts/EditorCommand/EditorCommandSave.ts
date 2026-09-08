@@ -22,7 +22,7 @@ export const save = async (editor: any): Promise<any> => {
     if (isUntitledFile(uri)) {
       const pickedFilePath = await saveUntitledFile(uri, content, platform, applicationId)
       if (pickedFilePath) {
-        if (editor.modified) {
+        if (newEditor.modified) {
           await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false, applicationId)
         }
         return { ...newEditor, modified: false, uri: pickedFilePath }
@@ -30,7 +30,7 @@ export const save = async (editor: any): Promise<any> => {
       return newEditor
     }
     await saveNormalFile(uri, content, applicationId)
-    if (editor.modified) {
+    if (newEditor.modified) {
       await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false, applicationId)
     }
     return { ...newEditor, modified: false }

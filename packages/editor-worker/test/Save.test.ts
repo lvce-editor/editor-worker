@@ -137,8 +137,13 @@ test('save - clears the modified status after saving', async () => {
   ])
 })
 
-for (const formatOnSave of [true, false]) {
-  test(`save - formatOnSave=${formatOnSave} writes the expected content in the owning application`, async () => {
+for (const [formatOnSave, modified] of [
+  [true, true],
+  [true, false],
+  [false, true],
+  [false, false],
+]) {
+  test(`save - formatOnSave=${formatOnSave}, modified=${modified} writes the expected content in the owning application`, async () => {
     using mockRpc = RendererWorker.registerMockRpc({
       'Application.execute': async (_applicationId: string, method: string) => (method === 'FileSystem.isReadonly' ? false : undefined),
     })
@@ -155,7 +160,7 @@ for (const formatOnSave of [true, false]) {
       lineCache: [],
       lines: ['let x=1; '],
       minLineY: 0,
-      modified: true,
+      modified,
       numberOfVisibleLines: 0,
       platform: PlatformType.Web,
       selections: new Uint32Array([0, 0, 0, 0]),
@@ -178,6 +183,10 @@ for (const formatOnSave of [true, false]) {
       'utf8',
       false,
     ])
+    const modifiedNotifications = mockRpc.invocations.filter((invocation) => invocation[2] === 'Main.handleModifiedStatusChange')
+    expect(modifiedNotifications.at(-1)).toEqual(
+      formatOnSave || modified ? ['Application.execute', 'source', 'Main.handleModifiedStatusChange', editor.uri, false] : undefined,
+    )
     expect(mockExtensionRpc.invocations).toEqual(
       formatOnSave
         ? [
