@@ -52,6 +52,7 @@ export const getEditorRowsVirtualDom = (
   visibleLineIndices: readonly number[] = [],
   endOfLineDecorations: readonly { readonly rowIndex: number; readonly text: string }[] = [],
   visibleViewLineIndices: readonly number[] = [],
+  problemsHighlightedRow = -1,
 ): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = []
   const actualViewRows =
@@ -71,6 +72,9 @@ export const getEditorRowsVirtualDom = (
     let className = ClassNames.EditorRow
     if (rowIndex === highlightedLine) {
       className = MergeClassNames.mergeClassNames(className, ClassNames.EditorRowHighlighted)
+    }
+    if (rowIndex === problemsHighlightedRow) {
+      className = MergeClassNames.mergeClassNames(className, 'EditorProblemsHighlightedRow')
     }
     dom.push({
       childCount: textInfo.length / 2 + rowDecorations.length,

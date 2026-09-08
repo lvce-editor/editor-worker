@@ -97,6 +97,7 @@ export const createEditor2 = (
     outerWidth: width,
     platform,
     primarySelectionIndex: 0,
+    problemsHighlightedRow: -1,
     redoStack: [],
     rowHeight: 0,
     savedSelections: [],

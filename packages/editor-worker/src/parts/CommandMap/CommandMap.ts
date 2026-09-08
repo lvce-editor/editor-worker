@@ -185,6 +185,7 @@ import { render2 } from '../Render2/Render2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
+import { revealProblem } from '../RevealProblem/RevealProblem.ts'
 import { saveState } from '../SaveState/SaveState.ts'
 import {
   sendDeprecatedExtensionHostPortToExtensionManagementWorker,
@@ -370,6 +371,7 @@ export const commandMap = {
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
   'Editor.resize': wrapCommand(Resize.resize),
+  'Editor.revealProblem': wrapCommand(revealProblem),
   'Editor.save': wrapCommand(Save.save),
   'Editor.saveState': wrapGetter(saveState),
   'Editor.scrollByLines': wrapCommand(SetDelta.scrollByLines),

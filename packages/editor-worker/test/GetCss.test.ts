@@ -41,6 +41,11 @@ test('getCss', () => {
   outline: none;
   text-decoration: underline;
 }
+.Editor[data-uid="42"] .EditorProblemsHighlightedRow {
+  background: var(--EditorRangeHighlightBackground, rgba(128, 128, 128, 0.18));
+  outline: 1px solid var(--EditorRangeHighlightBorder, rgba(128, 128, 128, 0.35));
+  outline-offset: -1px;
+}
 .Editor[data-uid="42"] .EditorLineDecoration {
   color: var(--EditorInlineBlameForeground, rgba(255, 255, 255, 0.5));
   font-style: italic;
