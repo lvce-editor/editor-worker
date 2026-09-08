@@ -39,7 +39,7 @@ export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, 
   if (!('foldingRanges' in state)) {
     const total = state.lines.length
     const finalY = Math.max(total - numberOfVisibleLines, 0)
-    const finalDeltaY = finalY * state.itemHeight
+    const finalDeltaY = Math.max(total * state.itemHeight - height, 0)
     const deltaY = Math.min(state.deltaY, finalDeltaY)
     const minLineY = Math.floor(deltaY / state.itemHeight)
     const maxLineY = Math.min(minLineY + EditorViewport.getRenderedLineCount(height, state.itemHeight, deltaY), total)

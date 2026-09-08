@@ -98,7 +98,7 @@ export const updateLayout = (editor: any, foldingRanges: readonly FoldingRange[]
     : []
   const visibleLineCount = hasMergeConflictRows ? viewLineIndices.length : getVisibleLineCount(lines.length, foldingRanges)
   const finalY = Math.max(visibleLineCount - numberOfVisibleLines, 0)
-  const finalDeltaY = finalY * itemHeight
+  const finalDeltaY = Math.max(visibleLineCount * itemHeight - height, 0)
   const deltaY = Clamp.clamp(editor.deltaY, 0, finalDeltaY)
   const startVisualRow = Math.floor(deltaY / itemHeight)
   const renderedLineCount = EditorViewport.getRenderedLineCount(height, itemHeight, deltaY)

@@ -3,5 +3,5 @@ export const getScrollOffset = (deltaY: number, rowHeight: number): number => {
 }
 
 export const getRenderedLineCount = (height: number, rowHeight: number, deltaY: number): number => {
-  return rowHeight > 0 ? Math.ceil((height + getScrollOffset(deltaY, rowHeight)) / rowHeight) : 0
+  return height > 0 && rowHeight > 0 ? Math.ceil((height + getScrollOffset(deltaY, rowHeight)) / rowHeight) : 0
 }

@@ -43,3 +43,11 @@ test('pixel scrolling keeps merge conflict actions in the same row flow', () => 
   )
   expect(state.visibleViewLineIndices).toEqual([0, -2, 1, 2])
 })
+
+test('the final pixel scroll position aligns the document bottom with the viewport', () => {
+  const state = updateLayout({ ...editor, deltaY: 1000, height: 65 }, [])
+  expect(state.finalDeltaY).toBe(335)
+  expect(state.deltaY).toBe(335)
+  expect(state.visibleLineIndices).toEqual([16, 17, 18, 19])
+  expect(getCss(1, 20, 20, 0, 20, 0, state.deltaY)).toContain('translate: 0px -15px;')
+})
