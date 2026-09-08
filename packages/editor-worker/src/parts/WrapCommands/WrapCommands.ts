@@ -1,3 +1,4 @@
+import { WhenExpression } from '@lvce-editor/constants'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
@@ -148,7 +149,7 @@ export const wrapCommand =
 
 export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Promise<EditorState>) => {
   const command = wrapCommand((editor: EditorState, widgetRevision: number | undefined) => {
-    if (editor.widgetRevision !== widgetRevision) {
+    if (editor.widgetRevision !== widgetRevision && editor.focus !== WhenExpression.FocusEditorText) {
       return editor
     }
     return fn(editor)

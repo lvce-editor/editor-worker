@@ -620,7 +620,7 @@ test('ignores editor focus events queued while a rename widget is opening', asyn
   const opening = openRename(1)
   await started.promise
   const focusing = WrapCommands.wrapFocusCommand(handleFocus)(1)
-  const blurring = WrapCommands.wrapFocusCommand(handleBlur)(1)
+  const blurring = WrapCommands.wrapCommand(handleBlur)(1)
   finish.resolve()
   await Promise.all([opening, focusing, blurring])
 
@@ -646,4 +646,23 @@ test('applies a new editor focus event after a widget has opened', async () => {
     focus: WhenExpression.FocusEditorText,
     focused: true,
   })
+})
+
+test('keeps a new editor focus event queued after a blur', async () => {
+  const editor = {
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+    modified: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    widgetRevision: 0,
+    widgets: [],
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  const blurring = WrapCommands.wrapCommand(handleBlur)(1)
+  const focusing = WrapCommands.wrapFocusCommand(handleFocus)(1)
+  await Promise.all([blurring, focusing])
+
+  expect(EditorStates.get(1).newState.focused).toBe(true)
 })
