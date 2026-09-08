@@ -62,6 +62,7 @@ export const createEditor2 = (
     height,
     highlightActiveLineNumber: true,
     highlightedLine: -1,
+    problemsHighlightedRow: -1,
     hoverEnabled: false,
     id,
     incrementalEdits: emptyIncrementalEdits,

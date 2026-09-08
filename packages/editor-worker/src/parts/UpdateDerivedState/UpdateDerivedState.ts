@@ -169,6 +169,7 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
     finalState = {
       ...finalState,
       lightBulbRowIndex: -1,
+      problemsHighlightedRow: -1,
     }
   } else if (shouldUpdateLightBulb(oldState, nextState)) {
     finalState = {

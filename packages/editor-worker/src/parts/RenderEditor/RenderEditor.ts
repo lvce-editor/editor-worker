@@ -34,6 +34,7 @@ const renderLines = {
       visibleLineIndices,
       endOfLineDecorations,
       visibleViewLineIndices,
+      newState.problemsHighlightedRow,
     )
     return [/* method */ 'setText', dom]
   },
@@ -49,6 +50,7 @@ const renderLines = {
     oldState.deltaX === newState.deltaX &&
     oldState.width === newState.width &&
     oldState.highlightedLine === newState.highlightedLine &&
+    oldState.problemsHighlightedRow === newState.problemsHighlightedRow &&
     oldState.debugEnabled === newState.debugEnabled,
 }
 

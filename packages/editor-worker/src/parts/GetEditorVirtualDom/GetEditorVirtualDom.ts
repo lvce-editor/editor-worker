@@ -42,6 +42,7 @@ interface EditorVirtualDomOptions {
   readonly height?: number
   readonly highlightActiveLineNumber?: boolean
   readonly highlightedLine?: number
+  readonly problemsHighlightedRow?: number
   readonly lightBulbRowIndex?: number
   readonly lineNumbers?: boolean
   readonly lines?: readonly string[]
@@ -97,6 +98,7 @@ export const getEditorVirtualDom = ({
   gutterInfos = [],
   highlightActiveLineNumber = true,
   highlightedLine = -1,
+  problemsHighlightedRow = -1,
   lightBulbRowIndex = -1,
   lineNumbers = true,
   lines = [],
@@ -170,6 +172,7 @@ export const getEditorVirtualDom = ({
       endOfLineDecorations,
       focused,
       highlightedLine,
+      problemsHighlightedRow,
       lineNumbers,
       scrollBarDiagnostics,
       selectionInfos,

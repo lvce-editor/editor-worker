@@ -23,6 +23,7 @@ export const emptyEditor = {
   hasListener: false,
   height: 0,
   highlightedLine: -1,
+  problemsHighlightedRow: -1,
   incrementalEdits: emptyIncrementalEdits,
   insertSpaces: true,
   isSelecting: false,

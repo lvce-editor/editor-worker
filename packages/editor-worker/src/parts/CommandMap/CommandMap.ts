@@ -1,3 +1,4 @@
+import { revealProblem } from '../RevealProblem/RevealProblem.ts'
 import { terminate } from '@lvce-editor/viewlet-registry'
 import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
 import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
@@ -243,6 +244,7 @@ export const commandMap = {
   'Editor.cursorLeft': wrapCommand(CursorCharacterLeft.cursorCharacterLeft),
   'Editor.cursorPageDown': wrapCommand(cursorPageDown),
   'Editor.cursorRight': wrapCommand(CursorCharacterRight.cursorCharacterRight),
+  'Editor.revealProblem': wrapCommand(revealProblem),
   'Editor.cursorSet': wrapCommand(EditorCursorSet.cursorSet),
   'Editor.cursorUndo': wrapCommand(CursorUndo.cursorUndo),
   'Editor.cursorUp': wrapCommand(CursorUp.cursorUp),
