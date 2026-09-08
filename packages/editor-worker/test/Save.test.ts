@@ -143,7 +143,7 @@ for (const formatOnSave of [true, false]) {
       'Application.execute': async (_applicationId: string, method: string) => (method === 'FileSystem.isReadonly' ? false : undefined),
     })
     using mockExtensionRpc = ExtensionManagementWorker.registerMockRpc({
-      'Extensions.invokeForApplication': async () => [{ startOffset: 0, endOffset: 9, inserted: 'let x = 1\n' }],
+      'Extensions.invokeForApplication': async () => [{ endOffset: 9, inserted: 'let x = 1\n', startOffset: 0 }],
     })
     const editor = {
       applicationId: 'source',
