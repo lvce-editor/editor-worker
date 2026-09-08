@@ -63,6 +63,7 @@ test('getEditorVirtualDom', () => {
       className: 'Gutter',
       type: VirtualDomElements.Div,
     },
+    { childCount: 1, className: 'GutterRows', type: VirtualDomElements.Div },
     {
       childCount: 1,
       className: 'LineNumber',

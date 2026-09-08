@@ -80,7 +80,7 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
       itemHeight: 24,
       letterSpacing: 1,
       lineNumbers: false,
-      maxLineY: 3,
+      maxLineY: 4,
       minLineY: 1,
       rowHeight: 24,
       tabSize: 4,
