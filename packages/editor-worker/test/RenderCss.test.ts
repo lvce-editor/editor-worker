@@ -42,10 +42,10 @@ test('renderCss', () => {
 }
 .Editor[data-uid="1"] .EditorRow,
 .Editor[data-uid="1"] .LineNumber {
-  contain: size style;
   flex: none;
 }
 .Editor[data-uid="1"] .EditorRow {
+  contain: size style;
   height: var(--EditorRowHeight);
   line-height: var(--EditorRowHeight);
 }
@@ -90,6 +90,7 @@ test('renderCss', () => {
   user-select: none;
 }
 .Editor[data-uid="1"] .LineNumber {
+  contain: content;
   position: relative;
 }
 .Editor[data-uid="1"] .EditorGutterDecoration {

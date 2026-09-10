@@ -35,10 +35,10 @@ ${editorSelector} .GutterRows {
 }
 ${editorSelector} .EditorRow,
 ${editorSelector} .LineNumber {
-  contain: size style;
   flex: none;
 }
 ${editorSelector} .EditorRow {
+  contain: size style;
   height: var(--EditorRowHeight);
   line-height: var(--EditorRowHeight);
 }
@@ -83,6 +83,7 @@ ${editorSelector} .EditorLineDecoration {
   user-select: none;
 }
 ${editorSelector} .LineNumber {
+  contain: content;
   position: relative;
 }
 ${editorSelector} .EditorGutterDecoration {
