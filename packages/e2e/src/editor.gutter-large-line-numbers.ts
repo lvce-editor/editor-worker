@@ -12,11 +12,12 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await Command.execute('Editor.resize', { height: 60, width: 800, x: 0, y: 0 }, 10)
 
   const lineNumbers = Locator('.Gutter .LineNumber')
+  const secondLineNumber = lineNumbers.nth(1)
   for (const rowIndex of [998, 9998]) {
     await Editor.setDeltaY(rowIndex * 20)
-    await expect(lineNumbers.first()).toHaveText(`${rowIndex + 1}`)
-    await expect(lineNumbers.nth(1)).toHaveText(`${rowIndex + 2}`)
-    await expect(lineNumbers.nth(1)).toHaveCSS('contain', 'content')
+    await expect(lineNumbers.first()).toHaveText(String(rowIndex + 1))
+    await expect(secondLineNumber).toHaveText(String(rowIndex + 2))
+    await expect(secondLineNumber).toHaveCSS('contain', 'content')
     await Editor.setDeltaY(-rowIndex * 20)
   }
 }
