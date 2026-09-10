@@ -160,6 +160,7 @@ import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetComm
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as Font from '../Font/Font.ts'
+import { getComponentState } from '../GetComponentState/GetComponentState.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
 import * as GetKeys from '../GetKeys/GetKeys.ts'
@@ -191,6 +192,7 @@ import {
   sendDeprecatedExtensionHostPortToExtensionManagementWorker,
   sendMessagePortToExtensionManagementWorker,
 } from '../SendMessagePortToExtensionManagementWorker/SendMessagePortToExtensionManagementWorker.ts'
+import { setComponentState } from '../SetComponentState/SetComponentState.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
@@ -275,6 +277,7 @@ export const commandMap = {
   'Editor.fold': wrapCommand(fold),
   'Editor.format': wrapCommand(EditorFormat.format),
   'Editor.getCommandIds': getCommandIds,
+  'Editor.getComponentState': getComponentState,
   'Editor.getDiagnostics': ExternalGetPositionAtCursor.getDiagnostics,
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
   'Editor.getKeys': GetKeys.getKeys,
@@ -393,6 +396,7 @@ export const commandMap = {
   'Editor.selectWord': wrapCommand(SelectWord.selectWord),
   'Editor.selectWordLeft': wrapCommand(SelectWordLeft.selectWordLeft),
   'Editor.selectWordRight': wrapCommand(SelectWordRight.selectWordRight),
+  'Editor.setComponentState': setComponentState,
   'Editor.setDebugEnabled': wrapCommand(SetDebugEnabled.setDebugEnabled),
   'Editor.setDecorations': wrapCommand(SetDecorations.setDecorations),
   'Editor.setDelta': wrapCommand(SetDelta.setDelta),
