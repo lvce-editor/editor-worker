@@ -22,10 +22,17 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
     await expect(selections.nth(1)).toHaveCSS('border-top-right-radius', '3px')
     await expect(selections.nth(1)).toHaveCSS('border-bottom-right-radius', '3px')
     await expect(selections.nth(2)).toHaveCSS('border-bottom-left-radius', '3px')
+    const secondPath = `${tmpDir}/rounded-selection-second.txt`
+    await FileSystem.writeFile(secondPath, 'single line')
+    await Main.openUri(secondPath)
+    await Editor.setSelections(new Uint32Array([0, 0, 0, 6]))
+    await expect(selections).toHaveCount(1)
+    await expect(selections.nth(0)).toHaveCSS('border-top-left-radius', '3px')
+    await expect(selections.nth(0)).toHaveCSS('border-bottom-right-radius', '3px')
     await Settings.update({ 'editor.roundedSelection': false })
     await Command.execute('Editor.handleSettingsChanged')
     await expect(selections.nth(0)).toHaveCSS('border-top-left-radius', '0px')
-    await expect(selections.nth(1)).toHaveCSS('border-bottom-right-radius', '0px')
+    await expect(selections.nth(0)).toHaveCSS('border-bottom-right-radius', '0px')
   } finally {
     await Settings.update({ 'editor.roundedSelection': false })
     await Command.execute('Editor.handleSettingsChanged')
