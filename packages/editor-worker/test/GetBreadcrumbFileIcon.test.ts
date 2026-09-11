@@ -1,5 +1,5 @@
 import { expect, jest, test } from '@jest/globals'
-const invoke = jest.fn<any>()
+const invoke = jest.fn<(...args: readonly any[]) => Promise<any>>()
 jest.unstable_mockModule('../src/parts/ApplicationRpc/ApplicationRpc.ts', () => ({ invoke }))
 const { getBreadcrumbFileIcon } = await import('../src/parts/GetBreadcrumbFileIcon/GetBreadcrumbFileIcon.ts')
 test('resolves the filename using the application icon theme', async () => {

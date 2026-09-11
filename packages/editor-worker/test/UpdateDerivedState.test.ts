@@ -1,7 +1,7 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 
-const getDocumentSymbolsMock = jest.fn<any>().mockResolvedValue([])
+const getDocumentSymbolsMock = jest.fn<(...args: readonly any[]) => Promise<any>>().mockResolvedValue([])
 jest.unstable_mockModule('../src/parts/GetDocumentSymbols/GetDocumentSymbols.ts', () => ({ getDocumentSymbols: getDocumentSymbolsMock }))
 
 const getVisibleTextMock: any = jest.fn()
