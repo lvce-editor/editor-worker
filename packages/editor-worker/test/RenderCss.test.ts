@@ -26,6 +26,10 @@ test('renderCss', () => {
   --ScrollBarWidth: 40px;
   --ScrollBarLeft: 20px;
 }
+.Editor[data-uid="1"] .SelectionTopLeft { border-top-left-radius: 3px; }
+.Editor[data-uid="1"] .SelectionTopRight { border-top-right-radius: 3px; }
+.Editor[data-uid="1"] .SelectionBottomRight { border-bottom-right-radius: 3px; }
+.Editor[data-uid="1"] .SelectionBottomLeft { border-bottom-left-radius: 3px; }
 .Editor[data-uid="1"] .EditorLayers {
   height: calc(100% + var(--EditorRowHeight));
   translate: none;

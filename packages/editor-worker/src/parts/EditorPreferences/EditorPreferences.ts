@@ -6,24 +6,14 @@ const kFontFamily = 'editor.fontFamily'
 const kLetterSpacing = 'editor.letterSpacing'
 const kLinks = 'editor.links'
 const kTabSize = 'editor.tabSize'
-const kInsertSpaces = 'editor.insertSpaces'
 const kLineNumbers = 'editor.lineNumbers'
 const kHighlightActiveLineNumber = 'editor.highlightActiveLineNumber'
-const kFormatOnSave = 'editor.formatOnSave'
-const kDiagnostics = 'editor.diagnostics'
 const kQuickSuggestions = 'editor.quickSuggestions'
 const kAutoClosingQuotes = 'editor.autoClosingQuotes'
 const kAutoClosingBrackets = 'editor.autoClosingBrackets'
 const kFontWeight = 'editor.fontWeight'
-const kHover = 'editor.hover'
 const kMinimapEnabled = 'editor.minimap.enabled'
 const kMergeConflictActions = 'editor.mergeConflictActions'
-const kBreadcrumbsEnabled = 'breadcrumbs.enabled'
-const kDragAndDropEnabled = 'editor.dragAndDrop'
-
-export const getDragAndDropEnabled = async () => {
-  return (await Preferences.get(kDragAndDropEnabled)) ?? true
-}
 
 export const isAutoClosingBracketsEnabled = async () => {
   return Boolean(await Preferences.get(kAutoClosingBrackets))
@@ -49,10 +39,6 @@ export const getFontSize = async () => {
   return (await Preferences.get(kFontSize)) || 15 // TODO find out if it is possible to use all numeric values for settings for efficiency, maybe settings could be an array
 }
 
-export const getHoverEnabled = async () => {
-  return (await Preferences.get(kHover)) ?? true
-}
-
 export const getFontFamily = async () => {
   return (await Preferences.get(kFontFamily)) || 'Fira Code'
 }
@@ -66,10 +52,6 @@ export const getLetterSpacing = async () => {
 
 export const getTabSize = async () => {
   return (await Preferences.get(kTabSize)) || 2
-}
-
-export const getInsertSpaces = async () => {
-  return (await Preferences.get(kInsertSpaces)) ?? true
 }
 
 export const getLinks = async () => {
@@ -88,14 +70,6 @@ export const getCompletionTriggerCharacters = async () => {
   return ['.', '/']
 }
 
-export const getFormatOnSave = async () => {
-  return (await Preferences.get(kFormatOnSave)) ?? false
-}
-
-export const diagnosticsEnabled = async () => {
-  return (await Preferences.get(kDiagnostics)) ?? false
-}
-
 export const getFontWeight = async () => {
   return (await Preferences.get(kFontWeight)) ?? 400
 }
@@ -106,8 +80,4 @@ export const getMinimapEnabled = async () => {
 
 export const getMergeConflictActionsEnabled = async () => {
   return (await Preferences.get(kMergeConflictActions)) ?? false
-}
-
-export const getBreadcrumbsEnabled = async () => {
-  return (await Preferences.get(kBreadcrumbsEnabled)) ?? false
 }

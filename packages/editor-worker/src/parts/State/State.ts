@@ -93,6 +93,7 @@ export interface EditorState {
   readonly problemNavigationDiagnostic?: any
   readonly problemsHighlightedRow: number
   readonly redoStack: readonly any[]
+  readonly roundedSelection: boolean
   readonly rowHeight: number
   readonly savedSelections: readonly any[]
   readonly scrollBarHeight: number

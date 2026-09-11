@@ -1,9 +1,13 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
+import { getSelectionCornerClasses } from '../GetSelectionCornerClasses/GetSelectionCornerClasses.ts'
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
-export const getSelectionsVirtualDom = (selections: any, focused = true): readonly VirtualDomNode[] => {
+export const getSelectionsVirtualDom = (selections: any, focused = true, roundedSelection = false): readonly VirtualDomNode[] => {
+  const corners = roundedSelection
+    ? getSelectionCornerClasses(selections.map((value: string | number) => (typeof value === 'number' ? value : Number(value.replace(/px$/, '')))))
+    : []
   const dom: VirtualDomNode[] = []
   const className = focused ? ClassNames.EditorSelection : MergeClassNames.mergeClassNames(ClassNames.EditorSelection, ClassNames.SelectionUnfocused)
   for (let i = 0; i < selections.length; i += 4) {
@@ -13,7 +17,7 @@ export const getSelectionsVirtualDom = (selections: any, focused = true): readon
     const height = selections[i + 3]
     dom.push({
       childCount: 0,
-      className,
+      className: className + (corners[i / 4] || ''),
       height,
       left: x,
       top: y,

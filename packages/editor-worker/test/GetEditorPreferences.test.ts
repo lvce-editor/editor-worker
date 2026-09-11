@@ -12,3 +12,28 @@ test('whitespace token combining is opt-in', async () => {
   getPreference.mockResolvedValue(false)
   expect((await getEditorPreferences()).combineWhitespaceTokens).toBe(false)
 })
+
+test('boolean preferences retain their defaults and explicit values', async () => {
+  getPreference.mockResolvedValue(undefined)
+  expect(await getEditorPreferences()).toMatchObject({
+    breadcrumbsEnabled: false,
+    diagnosticsEnabled: false,
+    dragAndDropEnabled: true,
+    formatOnSave: false,
+    hoverEnabled: true,
+    insertSpaces: true,
+    roundedSelection: false,
+  })
+  for (const value of [false, true]) {
+    getPreference.mockResolvedValue(value)
+    expect(await getEditorPreferences()).toMatchObject({
+      breadcrumbsEnabled: value,
+      diagnosticsEnabled: value,
+      dragAndDropEnabled: value,
+      formatOnSave: value,
+      hoverEnabled: value,
+      insertSpaces: value,
+      roundedSelection: value,
+    })
+  }
+})

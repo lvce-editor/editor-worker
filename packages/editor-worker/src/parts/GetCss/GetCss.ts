@@ -19,6 +19,10 @@ export const getCss = (
   --ScrollBarWidth: ${scrollBarWidth}px;
   --ScrollBarLeft: ${scrollBarLeft}px;
 }
+${editorSelector} .SelectionTopLeft { border-top-left-radius: 3px; }
+${editorSelector} .SelectionTopRight { border-top-right-radius: 3px; }
+${editorSelector} .SelectionBottomRight { border-bottom-right-radius: 3px; }
+${editorSelector} .SelectionBottomLeft { border-bottom-left-radius: 3px; }
 ${editorSelector} .EditorLayers {
   height: calc(100% + var(--EditorRowHeight));
   translate: ${translate};

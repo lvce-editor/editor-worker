@@ -99,6 +99,7 @@ export const createEditor2 = (
     primarySelectionIndex: 0,
     problemsHighlightedRow: -1,
     redoStack: [],
+    roundedSelection: false,
     rowHeight: 0,
     savedSelections: [],
     scrollBarHeight: 0,

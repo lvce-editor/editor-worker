@@ -83,6 +83,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     lineNumbers,
     mergeConflictActionsEnabled,
     minimapEnabled,
+    roundedSelection,
     rowHeight,
     tabSize,
   } = await getEditorPreferences()
@@ -121,6 +122,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     loadError: '',
     mergeConflictActionsEnabled,
     minimapEnabled,
+    roundedSelection,
     rowHeight,
     tabSize,
     tokenizerId: newTokenizerId,

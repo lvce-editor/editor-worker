@@ -124,6 +124,7 @@ export const createEditor = async ({
     platform,
     primarySelectionIndex: 0,
     redoStack: [],
+    roundedSelection: false,
     rowHeight,
     savedSelections,
     scrollBarHeight: 0,
