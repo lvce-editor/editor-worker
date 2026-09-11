@@ -1,6 +1,9 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 
+const getDocumentSymbolsMock = jest.fn<any>().mockResolvedValue([])
+jest.unstable_mockModule('../src/parts/GetDocumentSymbols/GetDocumentSymbols.ts', () => ({ getDocumentSymbols: getDocumentSymbolsMock }))
+
 const getVisibleTextMock: any = jest.fn()
 const getVisibleSelectionsMock: any = jest.fn()
 const getSyncIncrementalEnabledMock: any = jest.fn()
@@ -285,4 +288,20 @@ test('updateDerivedState refreshes gutter decorations after document text change
   const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
 
   expect(result.gutterDecorations).toEqual([{ rowIndex: 0, type: 'modified' }])
+})
+
+test('refreshes breadcrumb symbols after text edits but not cursor moves', async () => {
+  const lines = ['{}']
+  const oldState: any = { breadcrumbsEnabled: true, diagnostics: [], documentSymbols: [], lines, selections: new Uint32Array() }
+  const symbols = [{ name: 'updated' }]
+  getDocumentSymbolsMock.mockResolvedValue(symbols)
+  getDocumentSymbolsMock.mockClear()
+  getVisibleTextMock.mockResolvedValue({ differences: [], textInfos: [] })
+  getVisibleSelectionsMock.mockResolvedValue([])
+  const newState = { ...oldState, lines: ['{"updated": true}'] }
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+  expect(result.documentSymbols).toBe(symbols)
+  expect(getDocumentSymbolsMock).toHaveBeenCalledTimes(1)
+  await UpdateDerivedState.updateDerivedState(result, { ...result, selections: new Uint32Array([0, 1, 0, 1]) })
+  expect(getDocumentSymbolsMock).toHaveBeenCalledTimes(1)
 })

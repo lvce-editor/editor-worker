@@ -10,6 +10,7 @@ export interface EditorState {
   readonly applicationId?: string
   readonly assetDir: string
   readonly bracketMatchInfos: readonly BracketMatchInfo[]
+  readonly breadcrumbFileIcon?: string
   readonly breadcrumbsEnabled?: boolean
   readonly breakPoints: readonly number[]
   readonly canCoalesceTyping?: boolean
