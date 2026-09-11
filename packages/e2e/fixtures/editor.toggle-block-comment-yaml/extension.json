@@ -1,0 +1,11 @@
+{
+  "id": "test.yaml-comments",
+  "name": "YAML comments",
+  "languages": [
+    {
+      "id": "yaml",
+      "extensions": [".yaml"],
+      "configuration": "./languageConfiguration.json"
+    }
+  ]
+}
