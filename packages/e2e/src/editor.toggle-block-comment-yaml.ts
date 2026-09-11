@@ -2,8 +2,8 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.toggle-block-comment-yaml'
 
-export const test: Test = async ({ Command, Editor, Extension, FileSystem, Main, Workspace }) => {
-  await Extension.addWebExtension(import.meta.resolve('../fixtures/editor.toggle-block-comment-yaml'))
+export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace }) => {
+  await Command.execute('ExtensionMeta.addWebExtension', import.meta.resolve('../fixtures/editor.toggle-block-comment-yaml'))
   const tmpDir = await FileSystem.getTmpDir()
   const original = 'steps:\n  run: test\n  env: production'
   await FileSystem.writeFile(`${tmpDir}/test.yaml`, original)
