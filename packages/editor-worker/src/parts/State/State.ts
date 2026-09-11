@@ -15,6 +15,7 @@ export interface EditorState {
   readonly canCoalesceTyping?: boolean
   readonly charWidth: number
   readonly columnWidth: number
+  readonly combineWhitespaceTokens?: boolean
   readonly completionsOnType?: boolean
   readonly completionState: string
   readonly completionTriggerCharacters: readonly string[]

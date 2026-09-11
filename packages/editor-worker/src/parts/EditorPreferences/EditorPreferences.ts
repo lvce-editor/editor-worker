@@ -111,3 +111,7 @@ export const getMergeConflictActionsEnabled = async () => {
 export const getBreadcrumbsEnabled = async () => {
   return (await Preferences.get(kBreadcrumbsEnabled)) ?? false
 }
+
+export const getCombineWhitespaceTokens = async (): Promise<boolean> => {
+  return (await Preferences.get('editor.combineWhitespaceTokens')) ?? false
+}

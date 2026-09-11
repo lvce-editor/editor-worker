@@ -44,3 +44,11 @@ test('reads the documented auto-closing brackets setting', async () => {
   await expect(EditorPreferences.isAutoClosingBracketsEnabled()).resolves.toBe(true)
   expect(getPreference).toHaveBeenCalledWith('editor.autoClosingBrackets')
 })
+
+test('whitespace token combining is opt-in', async () => {
+  getPreference.mockResolvedValue(undefined)
+  await expect(EditorPreferences.getCombineWhitespaceTokens()).resolves.toBe(false)
+  expect(getPreference).toHaveBeenCalledWith('editor.combineWhitespaceTokens')
+  getPreference.mockResolvedValue(true)
+  await expect(EditorPreferences.getCombineWhitespaceTokens()).resolves.toBe(true)
+})

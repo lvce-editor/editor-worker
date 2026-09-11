@@ -64,6 +64,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
     breadcrumbsEnabled,
+    combineWhitespaceTokens,
     completionTriggerCharacters,
     diagnosticsEnabled,
     dragAndDropEnabled,
@@ -99,6 +100,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     ...state,
     breadcrumbsEnabled,
     charWidth,
+    combineWhitespaceTokens,
     completionTriggerCharacters,
     diagnosticsEnabled,
     dragAndDropEnabled,
