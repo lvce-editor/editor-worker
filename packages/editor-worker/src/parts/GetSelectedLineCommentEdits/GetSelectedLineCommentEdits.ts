@@ -8,7 +8,7 @@ export const getSelectedLineCommentEdits = (editor: any, lineComment: string): r
   for (let i = 0; i < selections.length; i += 4) {
     const startRow = Math.min(selections[i], selections[i + 2])
     let endRow = Math.max(selections[i], selections[i + 2])
-    const endColumn = selections[i] > selections[i + 2] ? selections[i + 1] : selections[i + 3]
+    const endColumn = selections[i + (selections[i] > selections[i + 2] ? 1 : 3)]
     if (endRow > startRow && endColumn === 0) {
       endRow--
     }

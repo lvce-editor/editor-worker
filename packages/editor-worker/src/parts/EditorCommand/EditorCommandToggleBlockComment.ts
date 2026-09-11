@@ -2,8 +2,8 @@ import * as Editor from '../Editor/Editor.ts'
 import * as GetBlockComment from '../GetBlockComment/GetBlockComment.ts'
 import * as GetBlockCommentEdits from '../GetBlockCommentEdits/GetBlockCommentEdits.ts'
 import * as GetLineComment from '../GetLineComment/GetLineComment.ts'
-import { getSelectedLineCommentEdits } from '../GetSelectedLineCommentEdits/GetSelectedLineCommentEdits.ts'
 import { getOffsetAtCursor } from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
+import { getSelectedLineCommentEdits } from '../GetSelectedLineCommentEdits/GetSelectedLineCommentEdits.ts'
 
 export const toggleBlockComment = async (editor: any): Promise<any> => {
   const offset = getOffsetAtCursor(editor)
