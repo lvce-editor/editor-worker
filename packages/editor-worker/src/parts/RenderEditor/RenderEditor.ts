@@ -58,11 +58,14 @@ const renderSelections = {
   apply: (oldState: any, newState: any) => {
     const { cursorInfos = [], selectionInfos = [] } = newState
     const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos)
-    const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos, newState.focused)
+    const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos, newState.focused, newState.roundedSelection)
     return [/* method */ 'setSelections', cursorsDom, selectionsDom]
   },
   isEqual: (oldState: any, newState: any) =>
-    oldState.cursorInfos === newState.cursorInfos && oldState.selectionInfos === newState.selectionInfos && oldState.focused === newState.focused,
+    oldState.cursorInfos === newState.cursorInfos &&
+    oldState.selectionInfos === newState.selectionInfos &&
+    oldState.focused === newState.focused &&
+    oldState.roundedSelection === newState.roundedSelection,
 }
 
 const renderCss = {

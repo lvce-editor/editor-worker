@@ -24,6 +24,7 @@ export const getEditorPreferences = async () => {
     breadcrumbsEnabled,
     insertSpaces,
     dragAndDropEnabled,
+    roundedSelection,
     combineWhitespaceTokens,
   ] = await Promise.all([
     EditorPreferences.diagnosticsEnabled(),
@@ -47,6 +48,7 @@ export const getEditorPreferences = async () => {
     EditorPreferences.getBreadcrumbsEnabled(),
     EditorPreferences.getInsertSpaces(),
     EditorPreferences.getDragAndDropEnabled(),
+    EditorPreferences.getRoundedSelection(),
     Preferences.get('editor.combineWhitespaceTokens'),
   ])
   return {
@@ -70,6 +72,7 @@ export const getEditorPreferences = async () => {
     lineNumbers,
     mergeConflictActionsEnabled,
     minimapEnabled,
+    roundedSelection,
     rowHeight,
     tabSize,
   }

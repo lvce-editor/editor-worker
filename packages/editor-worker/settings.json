@@ -895,7 +895,7 @@
     "heading": "Rounded Selection",
     "id": "editor.roundedSelection",
     "type": "boolean",
-    "value": "true"
+    "value": "false"
   },
   {
     "category": "text-editor",

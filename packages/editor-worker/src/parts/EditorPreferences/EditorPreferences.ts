@@ -19,6 +19,10 @@ const kHover = 'editor.hover'
 const kMinimapEnabled = 'editor.minimap.enabled'
 const kMergeConflictActions = 'editor.mergeConflictActions'
 const kBreadcrumbsEnabled = 'breadcrumbs.enabled'
+export const getRoundedSelection = async (): Promise<boolean> => {
+  return (await Preferences.get('editor.roundedSelection')) === true
+}
+
 const kDragAndDropEnabled = 'editor.dragAndDrop'
 
 export const getDragAndDropEnabled = async () => {
