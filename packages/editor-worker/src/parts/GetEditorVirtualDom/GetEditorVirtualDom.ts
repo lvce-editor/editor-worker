@@ -3,6 +3,7 @@ import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGut
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as AriaBoolean from '../AriaBoolean/AriaBoolean.ts'
 import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
+import { combineWhitespaceTokens as combineTokens } from '../CombineWhitespaceTokens/CombineWhitespaceTokens.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as GetEditorBreadcrumbsVirtualDom from '../GetEditorBreadcrumbsVirtualDom/GetEditorBreadcrumbsVirtualDom.ts'
 import * as GetEditorContentVirtualDom from '../GetEditorContentVirtualDom/GetEditorContentVirtualDom.ts'
@@ -29,6 +30,7 @@ interface EditorVirtualDomOptions {
   readonly bracketMatchInfos?: readonly any[]
   readonly breadcrumbsEnabled?: boolean
   readonly breakPoints?: readonly number[]
+  readonly combineWhitespaceTokens?: boolean
   readonly cursorInfos?: readonly any[]
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
@@ -88,6 +90,7 @@ export const getEditorVirtualDom = ({
   bracketMatchInfos = [],
   breadcrumbsEnabled = false,
   breakPoints = [],
+  combineWhitespaceTokens = false,
   cursorInfos = [],
   diagnostics = [],
   differences,
@@ -176,7 +179,7 @@ export const getEditorVirtualDom = ({
       problemsHighlightedRow,
       scrollBarDiagnostics,
       selectionInfos,
-      textInfos,
+      textInfos: combineWhitespaceTokens ? textInfos.map(combineTokens) : textInfos,
       visibleLineIndices: visibleLineIndices || [],
       visibleViewLineIndices,
     }),

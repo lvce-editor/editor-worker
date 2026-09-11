@@ -1,6 +1,14 @@
 [
   {
     "category": "text-editor",
+    "description": "Combine space and tab tokens with the preceding token when rendering to reduce DOM nodes",
+    "heading": "Combine Whitespace Tokens",
+    "id": "editor.combineWhitespaceTokens",
+    "type": "boolean",
+    "value": false
+  },
+  {
+    "category": "text-editor",
     "description": "The font size of the editor",
     "heading": "Font Size",
     "id": "editor.fontSize",

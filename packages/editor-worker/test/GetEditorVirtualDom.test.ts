@@ -371,3 +371,15 @@ test('getEditorVirtualDom - load error', () => {
     text('Failed to read file'),
   ])
 })
+
+test('combining whitespace reduces row children without changing original tokens', () => {
+  const textInfos = [['const', 'Token Keyword', ' ', 'Token Whitespace', 'x', 'Token Variable']]
+  const options = { differences: [0], lineNumbers: false, textInfos, uid: 42 }
+  const originalDom = GetEditorVirtualDom.getEditorVirtualDom(options)
+  const combinedDom = GetEditorVirtualDom.getEditorVirtualDom({ ...options, combineWhitespaceTokens: true })
+  expect(originalDom.find((node) => node.className === 'EditorRow')?.childCount).toBe(3)
+  expect(combinedDom.find((node) => node.className === 'EditorRow')?.childCount).toBe(2)
+  expect(combinedDom).toContainEqual(text('const '))
+  expect(combinedDom.some((node) => node.className === 'Token Whitespace')).toBe(false)
+  expect(GetEditorVirtualDom.getEditorVirtualDom(options)).toEqual(originalDom)
+})

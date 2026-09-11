@@ -1,4 +1,5 @@
 import * as EditorPreferences from '../EditorPreferences/EditorPreferences.ts'
+import * as Preferences from '../Preferences/Preferences.ts'
 
 export const getEditorPreferences = async () => {
   const [
@@ -23,6 +24,7 @@ export const getEditorPreferences = async () => {
     breadcrumbsEnabled,
     insertSpaces,
     dragAndDropEnabled,
+    combineWhitespaceTokens,
   ] = await Promise.all([
     EditorPreferences.diagnosticsEnabled(),
     EditorPreferences.getFontFamily(),
@@ -45,9 +47,11 @@ export const getEditorPreferences = async () => {
     EditorPreferences.getBreadcrumbsEnabled(),
     EditorPreferences.getInsertSpaces(),
     EditorPreferences.getDragAndDropEnabled(),
+    Preferences.get('editor.combineWhitespaceTokens'),
   ])
   return {
     breadcrumbsEnabled,
+    combineWhitespaceTokens: combineWhitespaceTokens ?? false,
     completionTriggerCharacters,
     diagnosticsEnabled,
     dragAndDropEnabled,
