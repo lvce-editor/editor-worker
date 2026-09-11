@@ -5,7 +5,9 @@ import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export const getSelectionsVirtualDom = (selections: any, focused = true, roundedSelection = false): readonly VirtualDomNode[] => {
-  const corners = roundedSelection ? getSelectionCornerClasses(selections.map((value: string | number) => Number.parseFloat(String(value)))) : []
+  const corners = roundedSelection
+    ? getSelectionCornerClasses(selections.map((value: string | number) => (typeof value === 'number' ? value : Number(value.replace(/px$/, '')))))
+    : []
   const dom: VirtualDomNode[] = []
   const className = focused ? ClassNames.EditorSelection : MergeClassNames.mergeClassNames(ClassNames.EditorSelection, ClassNames.SelectionUnfocused)
   for (let i = 0; i < selections.length; i += 4) {
