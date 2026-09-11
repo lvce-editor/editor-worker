@@ -1,4 +1,5 @@
 import * as EditorPreferences from '../EditorPreferences/EditorPreferences.ts'
+import * as Preferences from '../Preferences/Preferences.ts'
 
 export const getEditorPreferences = async () => {
   const [
@@ -46,11 +47,11 @@ export const getEditorPreferences = async () => {
     EditorPreferences.getBreadcrumbsEnabled(),
     EditorPreferences.getInsertSpaces(),
     EditorPreferences.getDragAndDropEnabled(),
-    EditorPreferences.getCombineWhitespaceTokens(),
+    Preferences.get('editor.combineWhitespaceTokens'),
   ])
   return {
     breadcrumbsEnabled,
-    combineWhitespaceTokens,
+    combineWhitespaceTokens: combineWhitespaceTokens ?? false,
     completionTriggerCharacters,
     diagnosticsEnabled,
     dragAndDropEnabled,
