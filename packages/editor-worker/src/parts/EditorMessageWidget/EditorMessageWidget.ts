@@ -5,6 +5,8 @@ import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
+const messageClassName = MergeClassNames.mergeClassNames('Viewlet', 'EditorMessage', 'EditorMessageText', 'EditorOverlayMessage')
+
 interface MessageWidgetState {
   readonly message: string
   readonly uid: number
@@ -19,7 +21,7 @@ export const render = (widget: MessageWidget): readonly any[] => {
   const dom = [
     {
       childCount: 1,
-      className: MergeClassNames.mergeClassNames('Viewlet', 'EditorMessage', 'EditorMessageText', 'EditorOverlayMessage'),
+      className: messageClassName,
       style: `left:${x}px;top:${y}px;`,
       type: VirtualDomElements.Div,
     },

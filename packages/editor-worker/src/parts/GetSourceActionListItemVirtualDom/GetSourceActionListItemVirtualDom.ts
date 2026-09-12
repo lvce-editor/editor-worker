@@ -3,9 +3,12 @@ import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
+const focusedActionClassName = MergeClassNames.mergeClassNames(ClassNames.SourceActionItem, ClassNames.SourceActionItemFocused)
+const sourceActionIconClassName = MergeClassNames.mergeClassNames(ClassNames.SourceActionIcon, ClassNames.MaskIcon, ClassNames.MaskIconSymbolFile)
+
 const getActionClassName = (isFocused: boolean) => {
   if (isFocused) {
-    return MergeClassNames.mergeClassNames(ClassNames.SourceActionItem, ClassNames.SourceActionItemFocused)
+    return focusedActionClassName
   }
   return ClassNames.SourceActionItem
 }
@@ -20,7 +23,7 @@ export const getSourceActionListItemVirtualDom = (sourceAction: any) => {
       type: VirtualDomElements.Div,
     },
     {
-      className: MergeClassNames.mergeClassNames(ClassNames.SourceActionIcon, ClassNames.MaskIcon, ClassNames.MaskIconSymbolFile),
+      className: sourceActionIconClassName,
       type: VirtualDomElements.Div,
     },
     text(name),

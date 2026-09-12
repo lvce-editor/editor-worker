@@ -14,6 +14,9 @@ import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
+const textEditorErrorClassName = MergeClassNames.mergeClassNames('Viewlet', 'TextEditorError')
+const editorClassName = MergeClassNames.mergeClassNames('Viewlet', 'Editor')
+
 const textEditorErrorIconNode: VirtualDomNode = {
   childCount: 0,
   className: MergeClassNames.mergeClassNames('EditorTextIcon', 'EditorTextIconError', 'MaskIcon', 'MaskIconError'),
@@ -127,7 +130,7 @@ export const getEditorVirtualDom = ({
     return [
       {
         childCount: 2,
-        className: MergeClassNames.mergeClassNames('Viewlet', 'TextEditorError'),
+        className: textEditorErrorClassName,
         'data-uid': uid,
         role: AriaRoles.Code,
         type: VirtualDomElements.Div,
@@ -161,7 +164,7 @@ export const getEditorVirtualDom = ({
   return [
     {
       childCount: (showGutter ? 2 : 1) + (minimapEnabled ? 1 : 0) + (breadcrumbsEnabled ? 1 : 0),
-      className: MergeClassNames.mergeClassNames('Viewlet', 'Editor'),
+      className: editorClassName,
       'data-uid': uid,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
       role: AriaRoles.Code,

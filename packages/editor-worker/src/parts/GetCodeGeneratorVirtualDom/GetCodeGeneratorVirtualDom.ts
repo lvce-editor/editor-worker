@@ -7,6 +7,8 @@ import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
+const codeGeneratorInputClassName = MergeClassNames.mergeClassNames(ClassNames.CodeGeneratorInput, ClassNames.InputBox)
+
 const codeGeneratorNode: VirtualDomNode = {
   childCount: 2,
   className: MergeClassNames.mergeClassNames(ClassNames.Viewlet, ClassNames.CodeGeneratorWidget),
@@ -26,7 +28,7 @@ export const getCodeGeneratorVirtualDom = (state: CodeGeneratorState): readonly 
     codeGeneratorNode,
     {
       childCount: 0,
-      className: MergeClassNames.mergeClassNames(ClassNames.CodeGeneratorInput, ClassNames.InputBox),
+      className: codeGeneratorInputClassName,
       name: InputName.CodeGeneratorInput,
       placeholder: enterCode,
       type: VirtualDomElements.Input,
