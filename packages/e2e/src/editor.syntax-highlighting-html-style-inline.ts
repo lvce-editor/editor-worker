@@ -21,7 +21,7 @@ export const test: Test = async ({ expect, Extension, FileSystem, Locator, Main,
   // assert
   const htmlToken = Locator('.Token.Html', { hasText: '<style>' })
   await expect(htmlToken).toBeVisible()
-  const selectorToken = Locator('.Token.CssSelector', { hasText: 'h1' })
+  const selectorToken = Locator('.Token.CssSelector', { hasText: 'h1 ' })
   await expect(selectorToken).toBeVisible()
   const propertyToken = Locator('.Token.CssPropertyName', { hasText: 'color' })
   await expect(propertyToken).toBeVisible()

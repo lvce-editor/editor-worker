@@ -16,6 +16,6 @@ export { userName }`
   await Main.openUri(tsPath)
 
   // assert
-  const typeToken = Locator('.Token.TypePrimitive', { hasText: 'string' })
+  const typeToken = Locator('.Token.TypePrimitive', { hasText: 'string ' })
   await expect(typeToken).toBeVisible()
 }
