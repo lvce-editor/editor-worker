@@ -5,7 +5,7 @@
     "heading": "Combine Whitespace Tokens",
     "id": "editor.combineWhitespaceTokens",
     "type": "boolean",
-    "value": false
+    "value": true
   },
   {
     "category": "text-editor",

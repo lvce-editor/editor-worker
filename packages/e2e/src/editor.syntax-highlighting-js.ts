@@ -16,6 +16,6 @@ console.log(answer)`
   await Main.openUri(jsPath)
 
   // assert
-  const keywordToken = Locator('.Token.Keyword', { hasText: 'const' })
+  const keywordToken = Locator('.Token.Keyword', { hasText: 'const ' })
   await expect(keywordToken).toBeVisible()
 }
