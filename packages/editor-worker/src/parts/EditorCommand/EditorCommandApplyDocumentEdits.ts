@@ -1,7 +1,9 @@
 import type { OffsetBasedEdit } from '../OffsetBasedEdit/OffsetBasedEdit.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as GetDocumentEdits from '../GetDocumentEdits/GetDocumentEdits.ts'
+import { getFormattingSelections } from '../GetFormattingSelections/GetFormattingSelections.ts'
 import * as Logger from '../Logger/Logger.ts'
+import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 export const applyDocumentEdits = (editor: any, edits: readonly OffsetBasedEdit[]): any => {
   if (!Array.isArray(edits)) {
@@ -12,5 +14,7 @@ export const applyDocumentEdits = (editor: any, edits: readonly OffsetBasedEdit[
     return editor
   }
   const documentEdits = GetDocumentEdits.getDocumentEdits(editor, edits)
-  return Editor.scheduleDocumentAndCursorsSelections(editor, documentEdits)
+  const newLines = TextDocument.applyEdits({ ...editor }, documentEdits)
+  const selections = getFormattingSelections(editor.lines, newLines, editor.selections)
+  return Editor.scheduleDocumentAndCursorsSelections(editor, documentEdits, selections)
 }
