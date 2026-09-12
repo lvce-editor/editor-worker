@@ -8,6 +8,7 @@ export interface EditorBreadcrumb {
 }
 
 export interface EditorBreadcrumbState {
+  readonly breadcrumbFileIcon?: string
   readonly breadcrumbsEnabled: boolean
   readonly documentSymbols: readonly DocumentSymbol[]
   readonly lines: readonly string[]
