@@ -24,13 +24,15 @@ export const copyLineDown = (editor: any) => {
       start: position,
     }
   })
-  const selectionChanges = new Uint32Array(uniqueRows.length * 4)
-  for (let i = 0; i < uniqueRows.length; i++) {
-    const rowIndex = uniqueRows[i] + i + 1
-    selectionChanges[i * 4] = rowIndex
-    selectionChanges[i * 4 + 1] = 0
-    selectionChanges[i * 4 + 2] = rowIndex
-    selectionChanges[i * 4 + 3] = 0
+  const rowOffsets = new Map(uniqueRows.map((row, index) => [row, index + 1]))
+  const selectionChanges = new Uint32Array(selections.length)
+  for (let i = 0; i < selections.length; i += 4) {
+    const rowIndex = selections[i] + rowOffsets.get(selections[i])!
+    const columnIndex = selections[i + 1]
+    selectionChanges[i] = rowIndex
+    selectionChanges[i + 1] = columnIndex
+    selectionChanges[i + 2] = rowIndex
+    selectionChanges[i + 3] = columnIndex
   }
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes, selectionChanges)
 }
