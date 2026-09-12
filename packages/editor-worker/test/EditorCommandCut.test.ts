@@ -100,11 +100,11 @@ test('cut - mixed cursor and selection uses selected text mode', async () => {
 })
 
 test.each([
-  { lines: ['', 'alpha'], row: 0, expected: ['alpha'], cursor: 0 },
-  { lines: ['alpha', '', 'beta'], row: 1, expected: ['alpha', 'beta'], cursor: 1 },
-  { lines: ['alpha', ''], row: 1, expected: ['alpha'], cursor: 0 },
-  { lines: [''], row: 0, expected: [''], cursor: 0 },
-])('cut - empty row in $lines', async ({ lines, row, expected, cursor }) => {
+  { cursor: 0, expected: ['alpha'], lines: ['', 'alpha'], row: 0 },
+  { cursor: 1, expected: ['alpha', 'beta'], lines: ['alpha', '', 'beta'], row: 1 },
+  { cursor: 0, expected: ['alpha'], lines: ['alpha', ''], row: 1 },
+  { cursor: 0, expected: [''], lines: [''], row: 0 },
+])('cut - empty row in $lines', async ({ cursor, expected, lines, row }) => {
   const editor = createEditor(lines, EditorSelection.fromRange(row, 0, row, 0))
   const newEditor = await EditorCommandCut.cut(editor)
   expect(newEditor.lines).toEqual(expected)
@@ -112,13 +112,13 @@ test.each([
 })
 
 test.each([
-  { lines: ['', '', 'alpha'], rows: [0, 1], expected: ['alpha'], cursors: [0, 0] },
-  { lines: ['alpha', '', ''], rows: [1, 2], expected: ['alpha'], cursors: [0, 0] },
-  { lines: ['', '', ''], rows: [0, 1, 2], expected: [''], cursors: [0, 0, 0] },
-  { lines: ['', 'alpha', '', 'beta'], rows: [0, 2, 3], expected: ['alpha', ''], cursors: [0, 1, 1] },
-  { lines: ['alpha', '', ''], rows: [0, 1, 2], expected: [''], cursors: [0, 0, 0] },
-  { lines: ['alpha', ''], rows: [0, 1], expected: [''], cursors: [0, 0] },
-])('cut - multiple cursors including empty rows in $lines', async ({ lines, rows, expected, cursors }) => {
+  { cursors: [0, 0], expected: ['alpha'], lines: ['', '', 'alpha'], rows: [0, 1] },
+  { cursors: [0, 0], expected: ['alpha'], lines: ['alpha', '', ''], rows: [1, 2] },
+  { cursors: [0, 0, 0], expected: [''], lines: ['', '', ''], rows: [0, 1, 2] },
+  { cursors: [0, 1, 1], expected: ['alpha', ''], lines: ['', 'alpha', '', 'beta'], rows: [0, 2, 3] },
+  { cursors: [0, 0, 0], expected: [''], lines: ['alpha', '', ''], rows: [0, 1, 2] },
+  { cursors: [0, 0], expected: [''], lines: ['alpha', ''], rows: [0, 1] },
+])('cut - multiple cursors including empty rows in $lines', async ({ cursors, expected, lines, rows }) => {
   const editor = createEditor(lines, new Uint32Array(rows.flatMap((row) => [row, 0, row, 0])))
   const newEditor = await EditorCommandCut.cut(editor)
   expect(newEditor.lines).toEqual(expected)
