@@ -1,0 +1,18 @@
+{
+  "id": "test.editor-format-on-save",
+  "browser": "dist/main.js",
+  "isolated": true,
+  "activation": ["onFormatting:format-test"],
+  "languages": [
+    {
+      "id": "format-test",
+      "extensions": [".format-test"]
+    }
+  ],
+  "formattingProviders": [
+    {
+      "id": "format-test",
+      "languageId": "format-test"
+    }
+  ]
+}
