@@ -1,4 +1,5 @@
 import type { OffsetBasedEdit } from '../OffsetBasedEdit/OffsetBasedEdit.ts'
+import * as EditorSelection from '../Editor/EditorSelection.ts'
 import * as ApplyDocumentEdits from '../EditorCommand/EditorCommandApplyDocumentEdits.ts'
 import * as EditorCommandCloseFind from '../EditorCommand/EditorCommandCloseFind.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
@@ -38,9 +39,6 @@ export const getSelections = (editorUid: number): Uint32Array => {
 
 export const setSelections = async (editorUid: number, selections: Uint32Array): Promise<void> => {
   const editor = GetEditor.getEditor(editorUid)
-  const newEditor = {
-    ...editor,
-    selections,
-  }
+  const newEditor = EditorSelection.setSelections(editor, selections)
   await updateEditor(editorUid, editor, newEditor)
 }

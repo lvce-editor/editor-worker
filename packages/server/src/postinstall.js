@@ -102,9 +102,11 @@ await replace({
 
 const rendererProcessPath = join(staticPath, commitHash, 'packages', 'renderer-process', 'dist', 'rendererProcessMain.js')
 const rendererWorkerPath = join(staticPath, commitHash, 'packages', 'renderer-worker', 'dist', 'rendererWorkerMain.js')
+const findWidgetWorkerPath = join(staticPath, commitHash, 'packages', 'find-widget-worker', 'dist', 'findWidgetWorkerMain.js')
 const renameWorkerPath = join(staticPath, commitHash, 'packages', 'rename-worker', 'dist', 'renameWorkerMain.js')
 const dragAndDropWorkerPath = join(staticPath, commitHash, 'packages', 'drag-and-drop-worker', 'dist', 'dragAndDropWorkerMain.js')
 
+await cp(fileURLToPath(import.meta.resolve('@lvce-editor/find-widget-worker')), findWidgetWorkerPath)
 await cp(fileURLToPath(import.meta.resolve('@lvce-editor/rename-worker')), renameWorkerPath)
 await cp(fileURLToPath(import.meta.resolve('@lvce-editor/drag-and-drop-worker')), dragAndDropWorkerPath)
 
