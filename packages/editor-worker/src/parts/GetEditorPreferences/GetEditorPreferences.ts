@@ -53,7 +53,7 @@ export const getEditorPreferences = async () => {
   ])
   return {
     breadcrumbsEnabled: breadcrumbsEnabled ?? false,
-    combineWhitespaceTokens: combineWhitespaceTokens ?? false,
+    combineWhitespaceTokens: combineWhitespaceTokens ?? true,
     completionTriggerCharacters,
     diagnosticsEnabled: diagnosticsEnabled ?? false,
     dragAndDropEnabled: dragAndDropEnabled ?? true,

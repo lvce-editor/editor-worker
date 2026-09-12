@@ -3,7 +3,6 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 export const name = 'editor.combine-whitespace-tokens'
 
 export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, Settings, Workspace }) => {
-  await Settings.update({ 'editor.combineWhitespaceTokens': true })
   try {
     const tmpDir = await FileSystem.getTmpDir()
     const filePath = `${tmpDir}/combine-whitespace.js`
@@ -28,7 +27,7 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, S
     await expect(whitespace).toHaveCount(0)
     await expect(row).toHaveText('const answer = 42')
   } finally {
-    await Settings.update({ 'editor.combineWhitespaceTokens': false })
+    await Settings.update({ 'editor.combineWhitespaceTokens': true })
     await Command.execute('Editor.handleSettingsChanged')
   }
 }
