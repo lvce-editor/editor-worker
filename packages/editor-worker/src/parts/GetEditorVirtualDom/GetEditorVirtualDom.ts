@@ -3,6 +3,7 @@ import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGut
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as AriaBoolean from '../AriaBoolean/AriaBoolean.ts'
 import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
+import * as ClassNames from '../ClassNames/ClassNames.ts'
 import { combineWhitespaceTokens as combineTokens } from '../CombineWhitespaceTokens/CombineWhitespaceTokens.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as GetEditorBreadcrumbsVirtualDom from '../GetEditorBreadcrumbsVirtualDom/GetEditorBreadcrumbsVirtualDom.ts'
@@ -10,13 +11,12 @@ import * as GetEditorContentVirtualDom from '../GetEditorContentVirtualDom/GetEd
 import * as GetEditorGutterLayerVirtualDom from '../GetEditorGutterLayerVirtualDom/GetEditorGutterLayerVirtualDom.ts'
 import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
 import { getPrimaryCursorRowIndex } from '../GetPrimaryCursorRowIndex/GetPrimaryCursorRowIndex.ts'
-import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 const textEditorErrorIconNode: VirtualDomNode = {
   childCount: 0,
-  className: MergeClassNames.mergeClassNames('EditorTextIcon', 'EditorTextIconError', 'MaskIcon', 'MaskIconError'),
+  className: ClassNames.TextEditorErrorIcon,
   type: VirtualDomElements.Div,
 }
 
@@ -127,7 +127,7 @@ export const getEditorVirtualDom = ({
     return [
       {
         childCount: 2,
-        className: MergeClassNames.mergeClassNames('Viewlet', 'TextEditorError'),
+        className: ClassNames.TextEditorError,
         'data-uid': uid,
         role: AriaRoles.Code,
         type: VirtualDomElements.Div,
@@ -161,7 +161,7 @@ export const getEditorVirtualDom = ({
   return [
     {
       childCount: (showGutter ? 2 : 1) + (minimapEnabled ? 1 : 0) + (breadcrumbsEnabled ? 1 : 0),
-      className: MergeClassNames.mergeClassNames('Viewlet', 'Editor'),
+      className: ClassNames.Editor,
       'data-uid': uid,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
       role: AriaRoles.Code,
