@@ -98,3 +98,29 @@ test('cut - mixed cursor and selection uses selected text mode', async () => {
   expect(newEditor.selections).toEqual(EditorSelection.fromRanges([0, 3, 0, 3], [1, 6, 1, 6]))
   expect(state.writeTextSpy).toHaveBeenCalledWith('beta')
 })
+
+test.each([
+  { lines: ['', 'alpha'], row: 0, expected: ['alpha'], cursor: 0 },
+  { lines: ['alpha', '', 'beta'], row: 1, expected: ['alpha', 'beta'], cursor: 1 },
+  { lines: ['alpha', ''], row: 1, expected: ['alpha'], cursor: 0 },
+  { lines: [''], row: 0, expected: [''], cursor: 0 },
+])('cut - empty row in $lines', async ({ lines, row, expected, cursor }) => {
+  const editor = createEditor(lines, EditorSelection.fromRange(row, 0, row, 0))
+  const newEditor = await EditorCommandCut.cut(editor)
+  expect(newEditor.lines).toEqual(expected)
+  expect(newEditor.selections).toEqual(EditorSelection.fromRange(cursor, 0, cursor, 0))
+})
+
+test.each([
+  { lines: ['', '', 'alpha'], rows: [0, 1], expected: ['alpha'], cursors: [0, 0] },
+  { lines: ['alpha', '', ''], rows: [1, 2], expected: ['alpha'], cursors: [0, 0] },
+  { lines: ['', '', ''], rows: [0, 1, 2], expected: [''], cursors: [0, 0, 0] },
+  { lines: ['', 'alpha', '', 'beta'], rows: [0, 2, 3], expected: ['alpha', ''], cursors: [0, 1, 1] },
+  { lines: ['alpha', '', ''], rows: [0, 1, 2], expected: [''], cursors: [0, 0, 0] },
+  { lines: ['alpha', ''], rows: [0, 1], expected: [''], cursors: [0, 0] },
+])('cut - multiple cursors including empty rows in $lines', async ({ lines, rows, expected, cursors }) => {
+  const editor = createEditor(lines, new Uint32Array(rows.flatMap((row) => [row, 0, row, 0])))
+  const newEditor = await EditorCommandCut.cut(editor)
+  expect(newEditor.lines).toEqual(expected)
+  expect(newEditor.selections).toEqual(new Uint32Array(cursors.flatMap((row) => [row, 0, row, 0])))
+})
