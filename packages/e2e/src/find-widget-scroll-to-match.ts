@@ -17,17 +17,17 @@ export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locat
   await expect(firstMatch).toHaveCount(0)
   await expect(secondMatch).toHaveCount(0)
 
-  await FindWidget.setValue('needle')
-  await Editor.shouldHaveSelections(new Uint32Array([100, 0, 100, 6]))
+  await Locator('.FindWidget .MultilineInputBox').type('needle')
   await expect(firstMatch).toBeVisible()
+  await Editor.shouldHaveSelections(new Uint32Array([100, 0, 100, 6]))
 
   await FindWidget.focusNext()
-  await Editor.shouldHaveSelections(new Uint32Array([200, 0, 200, 6]))
   await expect(secondMatch).toBeVisible()
+  await Editor.shouldHaveSelections(new Uint32Array([200, 0, 200, 6]))
   await expect(firstMatch).toHaveCount(0)
 
   await FindWidget.focusPrevious()
-  await Editor.shouldHaveSelections(new Uint32Array([100, 0, 100, 6]))
   await expect(firstMatch).toBeVisible()
+  await Editor.shouldHaveSelections(new Uint32Array([100, 0, 100, 6]))
   await expect(secondMatch).toHaveCount(0)
 }
