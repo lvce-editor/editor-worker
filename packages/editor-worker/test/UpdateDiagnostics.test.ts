@@ -301,7 +301,7 @@ test('updateDiagnostics preserves scrolling while diagnostic decorations are cal
   await pendingUpdate
 
   expect(extensionManagementWorkerRpc.invocations).toHaveLength(1)
-  expect(textMeasurementWorkerRpc.invocations).toHaveLength(2)
+  expect(textMeasurementWorkerRpc.invocations).toHaveLength(4)
   expect(EditorStates.get(1)?.newState.deltaY).toBe(100)
   expect(rendererWorkerRpc.invocations).toEqual([
     ['Editor.renderPending', 1],
