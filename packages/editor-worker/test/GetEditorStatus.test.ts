@@ -6,10 +6,10 @@ test('returns one-based position, indentation, encoding, and language id', () =>
     endOfLine: 'lf',
     insertSpaces: true,
     languageId: 'typescript',
+    lines: ['first', 'second', 'third', 'fourth', 'fifth'],
     primarySelectionIndex: 4,
     selections: new Uint32Array([0, 0, 0, 0, 2, 3, 4, 5]),
     tabSize: 2,
-    lines: ['first', 'second', 'third', 'fourth', 'fifth'],
   }
 
   expect(getEditorStatus(editor as any)).toEqual({
@@ -29,10 +29,10 @@ test('uses the first position while the editor has no selection', () => {
     endOfLine: 'crlf',
     insertSpaces: false,
     languageId: 'plaintext',
+    lines: [''],
     primarySelectionIndex: 0,
     selections: new Uint32Array(),
     tabSize: 4,
-    lines: [''],
   }
 
   expect(getEditorStatus(editor as any)).toEqual({
