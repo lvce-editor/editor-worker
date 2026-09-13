@@ -83,7 +83,7 @@ test('renders a one-character highlight for an empty diagnostic range', async ()
 test('measures diagnostic width from the rendered text range', async () => {
   using _mockRpc = TextMeasurementWorker.registerMockRpc({
     'TextMeasurement.measureTextWidth'(text: string, _fontWeight: number, _fontSize: number, _fontFamily: string, letterSpacing: number) {
-      const characterWidths: Record<string, number> = { W: 12, a: 5, i: 4 }
+      const characterWidths: Record<string, number> = { a: 5, i: 4, W: 12 }
       const width = [...text].reduce((total, character) => total + (characterWidths[character] || 0), 0)
       return width + Math.max(0, text.length - 1) * letterSpacing
     },
