@@ -5,5 +5,6 @@ export interface EditorStatus {
   readonly insertSpaces: boolean
   readonly languageId: string
   readonly line: number
+  readonly selectedChars: number
   readonly tabSize: number
 }
