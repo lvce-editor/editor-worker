@@ -115,6 +115,8 @@ npx playwright install chromium
 npm run e2e:headless
 ```
 
+The memory benchmark pins its Playwright version in `packages/build` to keep the browser runtime consistent with the memory limit. E2e tests use the browser version required by the test harness.
+
 ## CI and Releases
 
 Pull requests and pushes to `main` run on Ubuntu, macOS, and Windows. CI builds the worker, exports the static test build, runs unit tests, type checks, linting, e2e tests, and memory measurement.
