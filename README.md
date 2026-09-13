@@ -41,7 +41,7 @@ Install dependencies from the repository root:
 npm ci
 ```
 
-The root `postinstall` script bootstraps the packages with Lerna.
+Installation does not modify the installed server assets.
 
 Start a development build and local test server:
 
@@ -49,7 +49,7 @@ Start a development build and local test server:
 npm run dev
 ```
 
-This starts the editor worker watch build and the Lvce Editor test server with `packages/e2e` as the test path.
+This builds the local package, then starts the watch build and the Lvce Editor test server with `packages/e2e` as the test path. The server uses `--link` to load the generated `.tmp/dist` editor-worker package.
 
 ## Common Commands
 
@@ -61,7 +61,7 @@ Run these commands from the repository root unless noted otherwise.
 | `npm run build:watch`  | Watches `packages/editor-worker/src/editorWorkerMain.ts` and rebuilds the worker with esbuild.                         |
 | `npm run build:static` | Exports a static test build into `.tmp/static`. Run `npm run build` first.                                             |
 | `npm run dev`          | Runs the watch build and local test server together.                                                                   |
-| `npm test`             | Runs package test scripts through Lerna.                                                                               |
+| `npm test`             | Runs package test scripts through npm workspaces.                                                                      |
 | `npm run type-check`   | Runs TypeScript project references for all packages.                                                                   |
 | `npm run lint`         | Runs ESLint, Prettier checks, and Knip.                                                                                |
 | `npm run format`       | Formats the repository with Prettier.                                                                                  |
@@ -107,7 +107,7 @@ The worker listens for RPC messages, registers widget modules, initializes unhan
 
 Unit tests live in `packages/editor-worker/test` and are run by the editor-worker package's Jest setup.
 
-End-to-end tests live in `packages/e2e/src` and use fixture extensions from `packages/e2e/fixtures`. Before running e2e tests locally, install Chromium if needed:
+End-to-end tests live in `packages/e2e/src` and use fixture extensions from `packages/e2e/fixtures`. Run `npm run build` from the repository root before launching either e2e suite: both server launchers link the local `.tmp/dist` package. Install Chromium if needed:
 
 ```sh
 cd packages/e2e

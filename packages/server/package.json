@@ -4,17 +4,14 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "postinstall": "node src/postinstall.js",
-    "dev": "node ./src/server.js"
+    "dev": "node ./src/server.js",
+    "test": "node --test test/*.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@lvce-editor/drag-and-drop-worker": "0.11.0",
-    "@lvce-editor/find-widget-worker": "3.16.1",
-    "@lvce-editor/rename-worker": "^1.40.0",
-    "@lvce-editor/server": "0.112.27"
+    "@lvce-editor/server": "0.115.6"
   },
   "devDependencies": {
     "@types/node": "^25.9.3"
