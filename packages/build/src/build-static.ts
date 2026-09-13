@@ -1,6 +1,6 @@
 import { cp, readFile, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import { pathToFileURL } from 'node:url'
+import { dirname, join } from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { root } from './root.ts'
 
 const sharedProcessUrl = import.meta.resolve('@lvce-editor/shared-process')
@@ -10,6 +10,7 @@ const sharedProcess = await import(sharedProcessUrl)
 process.env.PATH_PREFIX = '/editor-worker'
 const { commitHash } = await sharedProcess.exportStatic({
   root,
+  serverStaticPath: join(dirname(fileURLToPath(import.meta.resolve('@lvce-editor/static-server/package.json'))), 'static'),
   extensionPath: '',
   testPath: 'packages/e2e',
 })
