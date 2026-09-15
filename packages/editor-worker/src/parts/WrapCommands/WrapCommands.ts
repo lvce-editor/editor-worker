@@ -12,6 +12,10 @@ import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEdit
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
+const stateCommands = new WeakSet<(...args: any[]) => any>()
+
+export const isStateCommand = (command: (...args: any[]) => any): boolean => stateCommands.has(command)
+
 const cursorUndoLimit = 100
 
 const selectionsEqual = (left: Uint32Array, right: Uint32Array): boolean => {
@@ -57,9 +61,8 @@ const saveAfterDelay = async (uid: number, token: number): Promise<void> => {
 // TODO wrap commands globally, not per editor
 // TODO only store editor state in editor worker, not in renderer worker also
 
-export const wrapCommand =
-  (fn: any, preservesTypingCoalescing = false) =>
-  async (uid: number, ...args: any[]) => {
+export const wrapCommand = (fn: any, preservesTypingCoalescing = false) => {
+  const command = async (uid: number, ...args: any[]) => {
     return EditorCommandQueue.enqueue(uid, async () => {
       const oldInstance = Editors.get(uid)
       if (!oldInstance) {
@@ -147,6 +150,10 @@ export const wrapCommand =
     })
   }
 
+  stateCommands.add(command)
+  return command
+}
+
 export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Promise<EditorState>) => {
   const command = wrapCommand((editor: EditorState, widgetRevision: number | undefined) => {
     if (editor.widgetRevision !== widgetRevision && editor.focus !== WhenExpression.FocusEditorText) {
@@ -154,9 +161,11 @@ export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Prom
     }
     return fn(editor)
   })
-  return (uid: number) => {
+  const focusCommand = (uid: number) => {
     // DOM focus events can arrive while a queued command is still opening a widget.
     const widgetRevision = Editors.get(uid)?.newState.widgetRevision
     return command(uid, widgetRevision)
   }
+  stateCommands.add(focusCommand)
+  return focusCommand
 }

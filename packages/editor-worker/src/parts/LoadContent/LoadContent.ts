@@ -95,8 +95,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const tokenizePath = getTokenizePath(languages, computedLanguageId)
   await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
   const tokenizer = Tokenizer.getTokenizer(computedLanguageId)
-  const newTokenizerId = state.tokenizerId + 1
-  TokenizerMap.set(newTokenizerId, tokenizer)
+  const newTokenizerId = TokenizerMap.register(tokenizer)
   const newEditor0: EditorState = {
     ...state,
     breadcrumbsEnabled,

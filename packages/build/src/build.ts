@@ -1,3 +1,4 @@
+import { generateDtsBundle } from 'dts-bundle-generator'
 import { execa } from 'execa'
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -54,11 +55,18 @@ await rm(dist, { recursive: true, force: true })
 await mkdir(dist, { recursive: true })
 
 await bundleJs()
+const [sdkTypes] = generateDtsBundle([{ filePath: join(root, 'packages/editor-worker/src/diffSdk.ts'), output: { noBanner: true } }], {
+  preferredConfigPath: join(root, 'packages/editor-worker/tsconfig.json'),
+})
+await writeFile(join(dist, 'dist/diff-sdk.d.ts'), sdkTypes)
+
 await buildE2eExtensions()
 
 const version = await getVersion()
 
 const packageJson = await readJson(join(root, 'packages', 'editor-worker', 'package.json'))
+
+packageJson.dependencies = { ...packageJson.dependencies, '@lvce-editor/rpc-registry': packageJson.devDependencies['@lvce-editor/rpc-registry'] }
 
 delete packageJson.scripts
 delete packageJson.devDependencies

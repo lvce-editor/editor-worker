@@ -21,7 +21,7 @@
       "project": ["src/**/*.ts"]
     },
     "packages/editor-worker": {
-      "entry": ["src/editorWorkerMain.ts", "test/**/*.test.ts"],
+      "entry": ["src/editorWorkerMain.ts", "src/diffSdk.ts", "test/**/*.test.ts"],
       "project": ["src/**/*.ts", "test/**/*.ts"],
       "ignoreFiles": ["src/parts/**"],
       "ignoreIssues": {

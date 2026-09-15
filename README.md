@@ -146,3 +146,29 @@ npm run e2e:headless
 ## License
 
 MIT
+
+## Embedded editors
+
+`@lvce-editor/editor-worker/dist/diff-sdk.js` exports `createEmbeddedEditor(options)`
+with TypeScript declarations. It does not start a worker or install message
+listeners. Bundle this entry into the embedding worker; the normal editor worker
+entry does not import it.
+
+The host supplies a unique editor ID, document URI, optional application ID,
+content, font metrics, tokenizer path, and viewport geometry through
+`StandaloneEditorOptions`. Initialize the shared `@lvce-editor/rpc-registry`
+connections before invoking commands that use workbench services (including
+syntax highlighting, preferences, clipboard, and language providers). The SDK
+keeps that dependency external so the host and SDK use the same connections.
+
+The returned editor exposes `execute(command, ...args)`, `getState()`, and
+`dispose()`. State commands accept the usual `Editor.` or `EditorText.` command
+IDs, or their short names, with the same arguments as the normal editor.
+Commands operate on document coordinates. The embedding view is responsible for
+mapping pointer positions and rendering anchors to its display rows.
+Worker lifecycle commands and getters are not accepted by `execute`.
+
+Accepted commands run in order and retain normal-editor undo, selection, and
+same-document synchronization behavior. Read state after awaiting a command.
+Treat returned state as read-only. Await `dispose()` before reusing an ID;
+disposal rejects new commands and drains commands already accepted.

@@ -34,5 +34,19 @@ const options: RollupOptions = {
 export const bundleJs = async (): Promise<void> => {
   const input = await rollup(options)
   const output = Array.isArray(options.output) ? options.output[0] : options.output
-  await input.write(output!)
+  try {
+    await input.write(output!)
+  } finally {
+    await input.close()
+  }
+  const sdk = await rollup({
+    ...options,
+    external: [...(options.external as string[]), '@lvce-editor/rpc-registry'],
+    input: join(root, 'packages/editor-worker/src/diffSdk.ts'),
+  })
+  try {
+    await sdk.write({ ...output, file: join(root, '.tmp/dist/dist/diff-sdk.js') })
+  } finally {
+    await sdk.close()
+  }
 }
