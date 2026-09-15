@@ -57,7 +57,7 @@ const renderLines = {
 const renderSelections = {
   apply: (oldState: any, newState: any) => {
     const { cursorInfos = [], selectionInfos = [] } = newState
-    const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos)
+    const cursorsDom = newState.focused ? GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos) : []
     const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos, newState.focused, newState.roundedSelection)
     return [/* method */ 'setSelections', cursorsDom, selectionsDom]
   },
