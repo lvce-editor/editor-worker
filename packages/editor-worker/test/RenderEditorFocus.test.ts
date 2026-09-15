@@ -75,3 +75,61 @@ test('renderEditor marks selections as unfocused when the editor loses focus', a
     EditorStates.dispose(uid)
   }
 })
+
+test('renderEditor restores cursors when the editor regains focus', async () => {
+  const uid = 910_004
+  const sharedState = {
+    additionalFocus: 0,
+    cursorInfos: ['1px 2px', '3px 4px'],
+    focus: 12,
+    lineNumbers: false,
+    selectionInfos: [1, 2, 3, 4],
+    uid,
+    widgets: [],
+  }
+  const oldState = {
+    ...sharedState,
+    focused: false,
+  }
+  const newState = {
+    ...sharedState,
+    focused: true,
+  }
+  EditorStates.set(uid, oldState as any, newState as any)
+
+  try {
+    await expect(RenderEditor.renderEditor(uid)).resolves.toEqual([
+      [
+        'setSelections',
+        [
+          {
+            childCount: 0,
+            className: 'EditorCursor',
+            translate: '1px 2px',
+            type: VirtualDomElements.Div,
+          },
+          {
+            childCount: 0,
+            className: 'EditorCursor',
+            translate: '3px 4px',
+            type: VirtualDomElements.Div,
+          },
+        ],
+        [
+          {
+            childCount: 0,
+            className: 'EditorSelection',
+            height: 4,
+            left: 1,
+            top: 2,
+            type: VirtualDomElements.Div,
+            width: 3,
+          },
+        ],
+      ],
+      ['setFocused', true],
+    ])
+  } finally {
+    EditorStates.dispose(uid)
+  }
+})

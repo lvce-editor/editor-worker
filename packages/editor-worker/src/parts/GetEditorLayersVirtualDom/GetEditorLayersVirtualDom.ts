@@ -40,7 +40,7 @@ export const getEditorLayersVirtualDom = (
       visibleViewLineIndices,
       problemsHighlightedRow,
     ),
-    ...GetEditorCursorsVirtualDom.getEditorCursorsVirtualDom(cursorInfos),
+    ...GetEditorCursorsVirtualDom.getEditorCursorsVirtualDom(cursorInfos, focused),
     ...GetEditorDiagnosticsVirtualDom.getEditorDiagnosticsVirtualDom(diagnostics, bracketMatchInfos),
   ]
 }
