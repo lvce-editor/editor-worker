@@ -18,12 +18,18 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, S
   await expect(propertyTokens).toHaveCount(0)
   await expect(plainText).toBeVisible()
 
-  await Settings.update({ 'editor.diagnostics': true, 'editor.minimap.enabled': true })
-  await expect(minimap).toHaveCount(0)
-  await expect(propertyTokens).toHaveCount(0)
+  const diagnostics = await Command.execute('Preferences.get', 'editor.diagnostics')
+  const minimapEnabled = await Command.execute('Preferences.get', 'editor.minimap.enabled')
+  try {
+    await Settings.update({ 'editor.diagnostics': true, 'editor.minimap.enabled': true })
+    await expect(minimap).toHaveCount(0)
+    await expect(propertyTokens).toHaveCount(0)
 
-  const normalUri = `${tmpDir}/normal.json`
-  await FileSystem.writeFile(normalUri, '{"normal":true}')
-  await Main.openUri(normalUri)
-  await expect(normalProperty).toBeVisible()
+    const normalUri = `${tmpDir}/normal.json`
+    await FileSystem.writeFile(normalUri, '{"normal":true}')
+    await Main.openUri(normalUri)
+    await expect(normalProperty).toBeVisible()
+  } finally {
+    await Settings.update({ 'editor.diagnostics': diagnostics, 'editor.minimap.enabled': minimapEnabled })
+  }
 }
