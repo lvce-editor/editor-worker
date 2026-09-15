@@ -163,7 +163,7 @@ for (const [formatOnSave, modified] of [
       modified,
       numberOfVisibleLines: 0,
       platform: PlatformType.Web,
-      selections: new Uint32Array([0, 0, 0, 0]),
+      selections: new Uint32Array([0, 4, 0, 4]),
       tokenizer: TokenizePlainText,
       uid: 1,
       undoStack: [],
@@ -174,6 +174,7 @@ for (const [formatOnSave, modified] of [
 
     expect(result.lines).toEqual(formatOnSave ? ['let x = 1', ''] : editor.lines)
     expect(result.modified).toBe(false)
+    expect(result.selections).toEqual(new Uint32Array([0, 4, 0, 4]))
     expect(mockRpc.invocations).toContainEqual([
       'Application.execute',
       'source',
