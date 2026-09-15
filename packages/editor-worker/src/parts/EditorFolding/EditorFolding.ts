@@ -89,6 +89,14 @@ export const getViewportLineIndices = (
   return result
 }
 
+const getLongestLineWidth = (lines: readonly string[], charWidth: number): number => {
+  let longest = 0
+  for (const line of lines) {
+    longest = Math.max(longest, line.length)
+  }
+  return longest * charWidth
+}
+
 export const updateLayout = (editor: any, foldingRanges: readonly FoldingRange[]) => {
   const { height, itemHeight, lines, minimumSliderSize, numberOfVisibleLines, rowHeight } = editor
   const mergeConflicts = editor.mergeConflictActionsEnabled ? getMergeConflicts(lines) : []
@@ -118,6 +126,9 @@ export const updateLayout = (editor: any, foldingRanges: readonly FoldingRange[]
     finalY,
     foldingRanges,
     maxLineY,
+    ...(editor.largeFile && {
+      longestLineWidth: getLongestLineWidth(lines, editor.charWidth),
+    }),
     mergeConflicts,
     minLineY,
     scrollBarHeight,
