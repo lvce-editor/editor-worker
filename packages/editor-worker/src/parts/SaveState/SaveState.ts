@@ -1,8 +1,9 @@
 import type { EditorState } from '../State/State.ts'
 
 export const saveState = (state: EditorState, savedState: unknown): any => {
-  const { lines, redoStack, undoStack } = state
+  const { largeFile, lines, redoStack, undoStack } = state
   return {
+    ...(largeFile && { largeFile: true }),
     lines,
     redoStack,
     undoStack,

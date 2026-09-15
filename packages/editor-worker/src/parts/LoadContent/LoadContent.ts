@@ -9,6 +9,7 @@ import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferenc
 import { getEndOfLine } from '../GetEndOfLine/GetEndOfLine.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
+import { largeFilePreferences } from '../LargeFilePreferences/LargeFilePreferences.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import { normalizeLineEndings } from '../NormalizeLineEndings/NormalizeLineEndings.ts'
@@ -60,7 +61,7 @@ const getSavedHistory = (
   return { redoStack, undoStack }
 }
 
-export const loadContent = async (state: EditorState, savedState: unknown) => {
+export const loadContent = async (state: EditorState, savedState: unknown, largeFile = false) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
     breadcrumbsEnabled,
@@ -92,11 +93,6 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const languages = await getLanguages(platform, assetDir)
   TokenizerState.setTokenizePaths(languages)
   const computedLanguageId = getLanguageId(uri, languages)
-  const tokenizePath = getTokenizePath(languages, computedLanguageId)
-  await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
-  const tokenizer = Tokenizer.getTokenizer(computedLanguageId)
-  const newTokenizerId = state.tokenizerId + 1
-  TokenizerMap.set(newTokenizerId, tokenizer)
   const newEditor0: EditorState = {
     ...state,
     breadcrumbsEnabled,
@@ -125,7 +121,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     roundedSelection,
     rowHeight,
     tabSize,
-    tokenizerId: newTokenizerId,
+    tokenizerId: state.tokenizerId,
   }
   let existingEditor: EditorState | undefined
   for (const key of EditorStates.getKeys()) {
@@ -156,10 +152,22 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     }
   }
 
+  const savedLargeFile = !!savedState && typeof savedState === 'object' && (savedState as Record<string, unknown>).largeFile === true
+  largeFile ||= state.largeFile === true || existingEditor?.largeFile === true || savedLargeFile || content.length > 50 * 1024 * 1024
+  const effectiveEditor = { ...newEditor0, largeFile, ...(largeFile && largeFilePreferences) }
+  if (!largeFile) {
+    const tokenizePath = getTokenizePath(languages, computedLanguageId)
+    await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
+    const tokenizer = Tokenizer.getTokenizer(computedLanguageId)
+    const newTokenizerId = state.tokenizerId + 1
+    TokenizerMap.set(newTokenizerId, tokenizer)
+    effectiveEditor.tokenizerId = newTokenizerId
+  }
+
   const savedHistory = existingEditor ? undefined : getSavedHistory(savedState, content)
 
   // TODO avoid creating intermediate editors here
-  const newEditor1 = Editor.setBounds({ ...newEditor0, endOfLine }, x, y, width, height, 9)
+  const newEditor1 = Editor.setBounds({ ...effectiveEditor, endOfLine }, x, y, width, height, 9)
   const newEditor2 = Editor.setText(newEditor1, content)
   let newEditor3 = newEditor2
 
@@ -172,7 +180,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
 
   let documentSymbols = state.documentSymbols || []
   let workspaceUri = state.workspaceUri || ''
-  if (breadcrumbsEnabled) {
+  if (effectiveEditor.breadcrumbsEnabled) {
     ;[documentSymbols, workspaceUri] = await Promise.all([getDocumentSymbols(newEditor3WithLinks), getWorkspaceUri(state.applicationId)])
   }
   const newEditor3WithBreadcrumbs = {
@@ -195,7 +203,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const completionsOnType = Boolean(completionsOnTypeRaw)
   const newEditor5: EditorState = {
     ...newEditor4,
-    completionsOnType,
+    completionsOnType: !largeFile && completionsOnType,
     initial: false,
     modified: existingEditor?.modified || false,
     redoStack: existingEditor?.redoStack || savedHistory?.redoStack || [],

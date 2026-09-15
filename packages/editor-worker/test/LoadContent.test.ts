@@ -294,3 +294,46 @@ for (const formatOnSave of [true, false]) {
     expect(result.formatOnSave).toBe(formatOnSave)
   })
 }
+
+test('confirmed large files disable automatic services and tokenizer loading', async () => {
+  getEditorPreferencesMock.mockResolvedValue({
+    breadcrumbsEnabled: true,
+    diagnosticsEnabled: true,
+    formatOnSave: true,
+    hoverEnabled: true,
+    isQuickSuggestionsEnabled: true,
+    minimapEnabled: true,
+    rowHeight: 20,
+  })
+  readFileMock.mockResolvedValue('https://example.com\nconst x = 1')
+  const result = await LoadContent.loadContent(createState(), undefined, true)
+  expect(result).toMatchObject({
+    breadcrumbsEnabled: false,
+    completionsOnType: false,
+    decorations: [],
+    diagnosticsEnabled: false,
+    formatOnSave: false,
+    hoverEnabled: false,
+    isQuickSuggestionsEnabled: false,
+    largeFile: true,
+    minimapEnabled: false,
+  })
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+  expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
+})
+
+test('large file mode survives restoring saved state', async () => {
+  readFileMock.mockResolvedValue('text')
+  const result = await LoadContent.loadContent(createState(), { largeFile: true })
+  expect(result.largeFile).toBe(true)
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+})
+
+test('split editors inherit large file mode and unsaved content', async () => {
+  const source = { ...createState(), id: 2, initial: false, largeFile: true, lines: ['edited'], modified: true }
+  EditorStates.set(2, source, source)
+  const result = await LoadContent.loadContent(createState(), undefined)
+  expect(result).toMatchObject({ largeFile: true, lines: ['edited'], modified: true })
+  expect(readFileMock).not.toHaveBeenCalled()
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+})
