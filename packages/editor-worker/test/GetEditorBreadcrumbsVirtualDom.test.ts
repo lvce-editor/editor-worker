@@ -23,7 +23,7 @@ test('renders breadcrumb items separated by chevron icons', () => {
 
   expect(dom[0]).toEqual({
     ariaLabel: 'Breadcrumbs',
-    childCount: 8,
+    childCount: 5,
     className: 'EditorBreadcrumbs',
     type: 40,
   })
@@ -50,4 +50,27 @@ test('renders an empty breadcrumb row for an empty uri', () => {
       type: 40,
     },
   ])
+})
+
+test.each([
+  [15, 'String'],
+  [16, 'Number'],
+  [17, 'Boolean'],
+  [18, 'Array'],
+  [19, 'Object'],
+  [21, 'Null'],
+])('renders JSON kind %s with its icon', (kind, icon) => {
+  const dom = getEditorBreadcrumbsVirtualDom({
+    breadcrumbFileIcon: '/icons/package.svg',
+    breadcrumbsEnabled: true,
+    documentSymbols: [{ endOffset: 10, kind, name: 'value', selectionEndOffset: 5, selectionStartOffset: 0, startOffset: 0 }],
+    lines: ['value'],
+    primarySelectionIndex: 0,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uri: '/workspace/package.json',
+    workspaceUri: '/workspace',
+  })
+  expect(dom[0].childCount).toBe(3)
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'FileIcon', src: '/icons/package.svg' }))
+  expect(dom).toContainEqual(expect.objectContaining({ className: `EditorBreadcrumbIcon MaskIcon MaskIconSymbol${icon}` }))
 })
