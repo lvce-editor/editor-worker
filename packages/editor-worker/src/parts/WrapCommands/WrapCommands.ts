@@ -10,11 +10,12 @@ import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
+import { trackStateCommands } from '../TrackStateCommands/TrackStateCommands.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
-const stateCommands = new WeakSet<(...args: any[]) => any>()
+const stateCommands = trackStateCommands ? new WeakSet<(...args: any[]) => any>() : undefined
 
-export const isStateCommand = (command: (...args: any[]) => any): boolean => stateCommands.has(command)
+export const isStateCommand = (command: (...args: any[]) => any): boolean => stateCommands?.has(command) ?? false
 
 const cursorUndoLimit = 100
 
@@ -150,7 +151,7 @@ export const wrapCommand = (fn: any, preservesTypingCoalescing = false) => {
     })
   }
 
-  stateCommands.add(command)
+  stateCommands?.add(command)
   return command
 }
 
@@ -166,6 +167,6 @@ export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Prom
     const widgetRevision = Editors.get(uid)?.newState.widgetRevision
     return command(uid, widgetRevision)
   }
-  stateCommands.add(focusCommand)
+  stateCommands?.add(focusCommand)
   return focusCommand
 }

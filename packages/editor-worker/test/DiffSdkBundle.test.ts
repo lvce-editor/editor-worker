@@ -38,6 +38,8 @@ test('published SDK imports and edits without installing worker listeners', asyn
       y: 0,
     })
     try {
+      await expect(editor.execute('dispose')).rejects.toThrow('Unsupported editor command')
+      await expect(editor.execute('getState')).rejects.toThrow('Unsupported editor command')
       await editor.execute('type', 'x')
       expect(editor.getState().lines).toEqual(['xhello'])
     } finally {
@@ -56,4 +58,6 @@ test('normal worker bundle does not load the diff SDK', async () => {
   const code = await readFile(new URL('../../../.tmp/dist/dist/editorWorkerMain.js', import.meta.url), 'utf8')
   expect(code).not.toContain('createEmbeddedEditor')
   expect(code).not.toContain('diff-sdk')
+  expect(code).not.toContain('stateCommands')
+  expect(code).not.toContain('isStateCommand')
 })

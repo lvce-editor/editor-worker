@@ -1,8 +1,8 @@
 import pluginTypeScript from '@babel/preset-typescript'
 import { babel } from '@rollup/plugin-babel'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
-import { join } from 'path'
-import { rollup, type RollupOptions } from 'rollup'
+import { join, normalize } from 'path'
+import { rollup, type Plugin, type RollupOptions } from 'rollup'
 import { root } from './root.ts'
 
 const options: RollupOptions = {
@@ -32,7 +32,21 @@ const options: RollupOptions = {
 }
 
 export const bundleJs = async (): Promise<void> => {
-  const input = await rollup(options)
+  const input = await rollup({
+    ...options,
+    plugins: [
+      {
+        name: 'disable-sdk-command-tracking',
+        load(id) {
+          if (normalize(id) === join(root, 'packages/editor-worker/src/parts/TrackStateCommands/TrackStateCommands.ts')) {
+            return 'export const trackStateCommands = false'
+          }
+          return null
+        },
+      },
+      ...(options.plugins as Plugin[]),
+    ],
+  })
   const output = Array.isArray(options.output) ? options.output[0] : options.output
   try {
     await input.write(output!)
