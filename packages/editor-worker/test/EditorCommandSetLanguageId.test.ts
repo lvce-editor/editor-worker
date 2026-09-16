@@ -2,7 +2,7 @@ import { beforeEach, expect, jest, test } from '@jest/globals'
 
 const getTokenizerMock = jest.fn()
 const loadTokenizerMock = jest.fn()
-const setTokenizerMock = jest.fn()
+const registerTokenizerMock = jest.fn()
 
 jest.unstable_mockModule('../src/parts/Tokenizer/Tokenizer.ts', () => ({
   getTokenizer: getTokenizerMock,
@@ -10,7 +10,7 @@ jest.unstable_mockModule('../src/parts/Tokenizer/Tokenizer.ts', () => ({
 }))
 
 jest.unstable_mockModule('../src/parts/TokenizerMap/TokenizerMap.ts', () => ({
-  set: setTokenizerMock,
+  register: registerTokenizerMock,
 }))
 
 const { setLanguageId } = await import('../src/parts/EditorCommand/EditorCommandSetLanguageId.ts')
@@ -18,7 +18,7 @@ const { setLanguageId } = await import('../src/parts/EditorCommand/EditorCommand
 beforeEach(() => {
   getTokenizerMock.mockReset()
   loadTokenizerMock.mockReset()
-  setTokenizerMock.mockReset()
+  registerTokenizerMock.mockReset()
 })
 
 test('setLanguageId loads the tokenizer and invalidates syntax highlighting', async () => {
@@ -34,16 +34,17 @@ test('setLanguageId loads the tokenizer and invalidates syntax highlighting', as
     tokenizeLine() {},
   }
   getTokenizerMock.mockReturnValue(tokenizer)
+  registerTokenizerMock.mockReturnValue(17)
 
   const result = await setLanguageId(editor, 'xyz', '/extensions/test/tokenizeXyz.js')
 
   expect(loadTokenizerMock).toHaveBeenCalledWith('xyz', '/extensions/test/tokenizeXyz.js')
-  expect(setTokenizerMock).toHaveBeenCalledWith(3, tokenizer)
+  expect(registerTokenizerMock).toHaveBeenCalledWith(tokenizer)
   expect(result).toEqual({
     ...editor,
     focused: true,
     invalidStartIndex: 0,
     languageId: 'xyz',
-    tokenizerId: 3,
+    tokenizerId: 17,
   })
 })
