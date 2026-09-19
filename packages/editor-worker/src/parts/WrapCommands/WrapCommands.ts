@@ -2,7 +2,6 @@ import { WhenExpression } from '@lvce-editor/constants'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
-import * as DisposeRenameWorker from '../DisposeRenameWorker/DisposeRenameWorker.ts'
 import * as EditorCommandSave from '../EditorCommand/EditorCommandSave.ts'
 import { isUntitledFile } from '../EditorCommand/EditorCommandSave/isUntitledFile.ts'
 import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
@@ -11,6 +10,7 @@ import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
+import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
 const cursorUndoLimit = 100
@@ -90,7 +90,7 @@ export const wrapCommand =
       }
       const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
       Editors.set(uid, state, newEditorWithDerivedState)
-      await DisposeRenameWorker.disposeRenameWorkerIfNeeded(state, newEditorWithDerivedState)
+      await RenameWorker.dispose()
       if (editorDiagnosticEffect.isActive(state, newEditorWithDerivedState)) {
         void editorDiagnosticEffect.apply(newEditorWithDerivedState)
       }

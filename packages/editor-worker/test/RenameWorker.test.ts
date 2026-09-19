@@ -1,4 +1,5 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
+import { WidgetId } from '@lvce-editor/constants'
 
 const launchRenameWorker = jest.fn<() => Promise<any>>()
 
@@ -7,8 +8,11 @@ jest.unstable_mockModule('../src/parts/LaunchRenameWorker/LaunchRenameWorker.ts'
 }))
 
 const RenameWorker = await import('../src/parts/RenameWorker/RenameWorker.ts')
+const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
 
 beforeEach(async () => {
+  EditorStates.dispose(1)
+  EditorStates.dispose(2)
   await RenameWorker.dispose()
   launchRenameWorker.mockReset()
 })
@@ -65,4 +69,25 @@ test('dispose clears a failed initialization', async () => {
   await RenameWorker.invoke('Rename.create')
 
   expect(launchRenameWorker).toHaveBeenCalledTimes(2)
+})
+
+test('dispose keeps a worker used by another editor', async () => {
+  const rpc = {
+    dispose: jest.fn(),
+    invoke: jest.fn<(...args: any[]) => Promise<any>>().mockResolvedValue('result'),
+  }
+  launchRenameWorker.mockResolvedValue(rpc)
+  await RenameWorker.invoke('Rename.create')
+  const editor = { uid: 1, widgets: [{ id: WidgetId.Rename }] }
+  const otherEditor = { uid: 2, widgets: [] }
+  EditorStates.set(editor.uid, editor as any, editor as any)
+  EditorStates.set(otherEditor.uid, otherEditor as any, otherEditor as any)
+
+  await RenameWorker.dispose()
+
+  expect(rpc.dispose).not.toHaveBeenCalled()
+  EditorStates.dispose(editor.uid)
+  EditorStates.dispose(otherEditor.uid)
+  await RenameWorker.dispose()
+  expect(rpc.dispose).toHaveBeenCalledTimes(1)
 })
