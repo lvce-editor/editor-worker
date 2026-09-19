@@ -1,38 +1,70 @@
-import * as Assert from '../Assert/Assert.ts'
 import * as Editor from '../Editor/Editor.ts'
-import * as TextDocument from '../TextDocument/TextDocument.ts'
-// TODO handle multiline selection
+import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
+
+interface CopyLineOperation {
+  readonly endRowIndex: number
+  readonly startRowIndex: number
+}
+
+const getCopyLineOperations = (selections: Uint32Array): CopyLineOperation[] => {
+  const operations: CopyLineOperation[] = []
+  for (let i = 0; i < selections.length; i += 4) {
+    const [startRowIndex, , selectionEndRowIndex, endColumnIndex] = GetSelectionPairs.getSelectionPairs(selections, i)
+    const endRowIndex = startRowIndex < selectionEndRowIndex && endColumnIndex === 0 ? selectionEndRowIndex - 1 : selectionEndRowIndex
+    operations.push({
+      endRowIndex,
+      startRowIndex,
+    })
+  }
+  operations.sort((a, b) => a.startRowIndex - b.startRowIndex || a.endRowIndex - b.endRowIndex)
+  const mergedOperations: CopyLineOperation[] = []
+  for (const operation of operations) {
+    const previous = mergedOperations.at(-1)
+    if (previous && previous.endRowIndex >= operation.startRowIndex) {
+      mergedOperations[mergedOperations.length - 1] = {
+        ...previous,
+        endRowIndex: Math.max(previous.endRowIndex, operation.endRowIndex),
+      }
+    } else {
+      mergedOperations.push(operation)
+    }
+  }
+  return mergedOperations
+}
 
 export const copyLineDown = (editor: any) => {
   const { selections } = editor
-  const rows: number[] = []
-  for (let i = 0; i < selections.length; i += 4) {
-    const rowIndex = selections[i]
-    Assert.number(rowIndex)
-    rows.push(rowIndex)
-  }
-  const uniqueRows = [...new Set(rows)].toSorted((a, b) => a - b)
-  const changes = uniqueRows.map((rowIndex) => {
-    const position = {
-      columnIndex: 0,
-      rowIndex,
-    }
+  const operations = getCopyLineOperations(selections)
+  const changes = operations.map(({ endRowIndex, startRowIndex }) => {
+    const selectedLines = editor.lines.slice(startRowIndex, endRowIndex + 1)
     return {
-      deleted: [''],
-      end: position,
-      inserted: [TextDocument.getLine(editor, rowIndex), ''],
-      start: position,
+      deleted: selectedLines,
+      end: {
+        columnIndex: editor.lines[endRowIndex].length,
+        rowIndex: endRowIndex,
+      },
+      inserted: [...selectedLines, ...selectedLines],
+      start: {
+        columnIndex: 0,
+        rowIndex: startRowIndex,
+      },
     }
   })
-  const rowOffsets = new Map(uniqueRows.map((row, index) => [row, index + 1]))
+  const getRowOffset = (rowIndex: number) => {
+    let offset = 0
+    for (const operation of operations) {
+      if (operation.startRowIndex <= rowIndex) {
+        offset += operation.endRowIndex - operation.startRowIndex + 1
+      }
+    }
+    return offset
+  }
   const selectionChanges = new Uint32Array(selections.length)
   for (let i = 0; i < selections.length; i += 4) {
-    const rowIndex = selections[i] + rowOffsets.get(selections[i])!
-    const columnIndex = selections[i + 1]
-    selectionChanges[i] = rowIndex
-    selectionChanges[i + 1] = columnIndex
-    selectionChanges[i + 2] = rowIndex
-    selectionChanges[i + 3] = columnIndex
+    selectionChanges[i] = selections[i] + getRowOffset(selections[i])
+    selectionChanges[i + 1] = selections[i + 1]
+    selectionChanges[i + 2] = selections[i + 2] + getRowOffset(selections[i + 2])
+    selectionChanges[i + 3] = selections[i + 3]
   }
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes, selectionChanges)
 }

@@ -110,3 +110,63 @@ test('editorCopyLineDown - multiple cursors on the same line', async () => {
     selections: new Uint32Array([1, 2, 1, 2, 1, 6, 1, 6]),
   })
 })
+
+test('editorCopyLineDown - multiline selection', async () => {
+  const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['one', 'two', 'three', 'four'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(1, 1, 2, 1),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
+  }
+
+  expect(await EditorCopyLineDown.copyLineDown(editor)).toMatchObject({
+    lines: ['one', 'two', 'three', 'two', 'three', 'four'],
+    selections: EditorSelection.fromRange(3, 1, 4, 1),
+  })
+})
+
+test('editorCopyLineDown - reversed multiline selection', async () => {
+  const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['one', 'two', 'three', 'four'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(2, 1, 1, 1),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
+  }
+
+  expect(await EditorCopyLineDown.copyLineDown(editor)).toMatchObject({
+    lines: ['one', 'two', 'three', 'two', 'three', 'four'],
+    selections: EditorSelection.fromRange(4, 1, 3, 1),
+  })
+})
+
+test('editorCopyLineDown - multiline selection ending at column zero', async () => {
+  const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['one', 'two', 'three'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 1, 2, 0),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
+  }
+
+  expect(await EditorCopyLineDown.copyLineDown(editor)).toMatchObject({
+    lines: ['one', 'two', 'one', 'two', 'three'],
+    selections: EditorSelection.fromRange(2, 1, 4, 0),
+  })
+})
