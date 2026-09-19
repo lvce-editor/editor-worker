@@ -10,6 +10,7 @@ import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
+import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
 const cursorUndoLimit = 100
@@ -89,6 +90,7 @@ export const wrapCommand =
       }
       const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
       Editors.set(uid, state, newEditorWithDerivedState)
+      await RenameWorker.dispose()
       if (editorDiagnosticEffect.isActive(state, newEditorWithDerivedState)) {
         void editorDiagnosticEffect.apply(newEditorWithDerivedState)
       }
