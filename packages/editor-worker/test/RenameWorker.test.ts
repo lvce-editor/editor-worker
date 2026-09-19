@@ -34,10 +34,7 @@ test('dispose terminates the cached worker and allows a fresh worker to be launc
 })
 
 test('dispose waits for a worker that is still initializing', async () => {
-  let resolveLaunch: (rpc: any) => void = () => {}
-  const launchPromise = new Promise((resolve) => {
-    resolveLaunch = resolve
-  })
+  const { promise: launchPromise, resolve: resolveLaunch } = Promise.withResolvers<any>()
   const rpc = {
     dispose: jest.fn(),
     invoke: jest.fn<(...args: any[]) => Promise<any>>().mockResolvedValue(undefined),

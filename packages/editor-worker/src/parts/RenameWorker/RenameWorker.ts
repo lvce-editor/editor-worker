@@ -20,13 +20,15 @@ export const invoke = async (method: string, ...params: readonly any[]): Promise
 }
 
 export const dispose = async (): Promise<void> => {
-  const workerPromise = state.workerPromise
+  const { workerPromise } = state
   state.workerPromise = undefined
   if (!workerPromise) {
     return
   }
-  const worker = await workerPromise.catch(() => undefined)
-  if (worker) {
+  try {
+    const worker = await workerPromise
     await worker.dispose()
+  } catch {
+    // The worker may fail while it is initializing.
   }
 }

@@ -1,5 +1,5 @@
-import * as Editors from '../EditorStates/EditorStates.ts'
 import * as DisposeRenameWorker from '../DisposeRenameWorker/DisposeRenameWorker.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import * as GetWidgetInvoke from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as Names from '../Names/Names.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
