@@ -90,6 +90,14 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   const newLines = TextDocument.applyEdits(editor, changes)
   const partialNewEditor = updateLines(editor, newLines)
   const newSelections = selectionChanges || EditorSelection.applyEdit(partialNewEditor, changes)
+  const selectionHistory = {
+    after: newSelections,
+    before: editor.selections,
+  }
+  Object.defineProperty(changes, 'selectionHistory', {
+    configurable: true,
+    value: selectionHistory,
+  })
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
   // invalidStartIndex, lineCache, etc. just for testing editorType
@@ -170,7 +178,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
 }
 // @ts-ignore
-export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes) => {
+export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes, selectionChanges = undefined) => {
   Assert.object(editor)
   Assert.array(changes)
   if (changes.length === 0) {
@@ -178,7 +186,7 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes)
   }
   const newLines = TextDocument.applyEdits(editor, changes)
   const partialNewEditor = updateLines(editor, newLines)
-  const newSelections = EditorSelection.applyEdit(partialNewEditor, changes)
+  const newSelections = selectionChanges || EditorSelection.applyEdit(partialNewEditor, changes)
   const invalidStartIndex = Math.min(editor.invalidStartIndex, changes[0].start.rowIndex)
   const newEditor = {
     ...partialNewEditor,

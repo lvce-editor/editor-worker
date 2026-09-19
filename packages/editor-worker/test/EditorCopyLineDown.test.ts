@@ -12,6 +12,8 @@ ExtensionHost.set(mockRpc)
 RendererWorker.set(mockRpc)
 
 import * as EditorCopyLineDown from '../src/parts/EditorCommand/EditorCommandCopyLineDown.ts'
+import * as EditorCommandRedo from '../src/parts/EditorCommand/EditorCommandRedo.ts'
+import * as EditorCommandUndo from '../src/parts/EditorCommand/EditorCommandUndo.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
 
@@ -169,4 +171,29 @@ test('editorCopyLineDown - multiline selection ending at column zero', async () 
     lines: ['one', 'two', 'one', 'two', 'three'],
     selections: EditorSelection.fromRange(2, 1, 4, 0),
   })
+})
+
+test('editorCopyLineDown - undo restores a copied line', async () => {
+  const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['one', 'two'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 1, 0, 1),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
+  }
+
+  const copiedEditor = await EditorCopyLineDown.copyLineDown(editor)
+  const undoneEditor = await EditorCommandUndo.undo(copiedEditor)
+
+  expect(undoneEditor.lines).toEqual(['one', 'two'])
+  expect(undoneEditor.selections).toEqual(EditorSelection.fromRange(0, 1, 0, 1))
+
+  const redoneEditor = await EditorCommandRedo.redo(undoneEditor)
+  expect(redoneEditor.lines).toEqual(['one', 'one', 'two'])
+  expect(redoneEditor.selections).toEqual(EditorSelection.fromRange(1, 1, 1, 1))
 })
