@@ -7,6 +7,7 @@ import { isUntitledFile } from '../EditorCommand/EditorCommandSave/isUntitledFil
 import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
 import { editorDiagnosticEffect } from '../EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
+import * as DisposeRenameWorker from '../DisposeRenameWorker/DisposeRenameWorker.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
@@ -89,6 +90,7 @@ export const wrapCommand =
       }
       const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
       Editors.set(uid, state, newEditorWithDerivedState)
+      await DisposeRenameWorker.disposeRenameWorkerIfNeeded(state, newEditorWithDerivedState)
       if (editorDiagnosticEffect.isActive(state, newEditorWithDerivedState)) {
         void editorDiagnosticEffect.apply(newEditorWithDerivedState)
       }

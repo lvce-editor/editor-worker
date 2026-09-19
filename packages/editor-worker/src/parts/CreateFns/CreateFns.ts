@@ -1,4 +1,5 @@
 import * as Editors from '../EditorStates/EditorStates.ts'
+import * as DisposeRenameWorker from '../DisposeRenameWorker/DisposeRenameWorker.ts'
 import * as GetWidgetInvoke from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as Names from '../Names/Names.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
@@ -56,6 +57,7 @@ const createFn = (key: string, name: string, widgetId: number) => {
     const latestAfterInvoke = Editors.get(editor.uid).newState
     const latestChildIndex = latestAfterInvoke.widgets.findIndex(isWidget)
     if (latestChildIndex === -1) {
+      await DisposeRenameWorker.disposeRenameWorkerIfNeeded(editor, latestAfterInvoke)
       Editors.set(editor.uid, editor, latestAfterInvoke)
       return latestAfterInvoke
     }

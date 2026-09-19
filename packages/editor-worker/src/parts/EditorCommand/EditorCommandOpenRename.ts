@@ -1,6 +1,7 @@
 import { WidgetId } from '@lvce-editor/constants'
 import type { RenameState } from '../RenameState/RenameState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
+import * as DisposeRenameWorker from '../DisposeRenameWorker/DisposeRenameWorker.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
@@ -31,15 +32,22 @@ export const openRename = async (editor: any) => {
   }
 
   const fullFocus = true
-  const editorWithRenameWidget = await AddWidgetToEditor.addWidgetToEditor(
-    WidgetId.Rename,
-    FocusKey.FocusEditorRename,
-    editor,
-    RenameWidgetFactory.create,
-    newStateGenerator,
-    fullFocus,
-  )
+  let editorWithRenameWidget
+  try {
+    editorWithRenameWidget = await AddWidgetToEditor.addWidgetToEditor(
+      WidgetId.Rename,
+      FocusKey.FocusEditorRename,
+      editor,
+      RenameWidgetFactory.create,
+      newStateGenerator,
+      fullFocus,
+    )
+  } catch (error) {
+    await DisposeRenameWorker.disposeRenameWorkerIfUnused()
+    throw error
+  }
   if (editorWithRenameWidget === editor) {
+    await DisposeRenameWorker.disposeRenameWorkerIfUnused()
     return editor
   }
   const wordBefore = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
