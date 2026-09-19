@@ -12,6 +12,8 @@ ExtensionHost.set(mockRpc)
 RendererWorker.set(mockRpc)
 
 import * as EditorCopyLineDown from '../src/parts/EditorCommand/EditorCommandCopyLineDown.ts'
+import * as EditorCommandRedo from '../src/parts/EditorCommand/EditorCommandRedo.ts'
+import * as EditorCommandUndo from '../src/parts/EditorCommand/EditorCommandUndo.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
 
@@ -109,4 +111,89 @@ test('editorCopyLineDown - multiple cursors on the same line', async () => {
     lines: ['line 1', 'line 1', 'line 2', 'line 3'],
     selections: new Uint32Array([1, 2, 1, 2, 1, 6, 1, 6]),
   })
+})
+
+test('editorCopyLineDown - multiline selection', async () => {
+  const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['one', 'two', 'three', 'four'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(1, 1, 2, 1),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
+  }
+
+  expect(await EditorCopyLineDown.copyLineDown(editor)).toMatchObject({
+    lines: ['one', 'two', 'three', 'two', 'three', 'four'],
+    selections: EditorSelection.fromRange(3, 1, 4, 1),
+  })
+})
+
+test('editorCopyLineDown - reversed multiline selection', async () => {
+  const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['one', 'two', 'three', 'four'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(2, 1, 1, 1),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
+  }
+
+  expect(await EditorCopyLineDown.copyLineDown(editor)).toMatchObject({
+    lines: ['one', 'two', 'three', 'two', 'three', 'four'],
+    selections: EditorSelection.fromRange(4, 1, 3, 1),
+  })
+})
+
+test('editorCopyLineDown - multiline selection ending at column zero', async () => {
+  const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['one', 'two', 'three'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 1, 2, 0),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
+  }
+
+  expect(await EditorCopyLineDown.copyLineDown(editor)).toMatchObject({
+    lines: ['one', 'two', 'one', 'two', 'three'],
+    selections: EditorSelection.fromRange(2, 1, 4, 0),
+  })
+})
+
+test('editorCopyLineDown - undo restores a copied line', async () => {
+  const editor = {
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['one', 'two'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 1, 0, 1),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
+  }
+
+  const copiedEditor = await EditorCopyLineDown.copyLineDown(editor)
+  const undoneEditor = await EditorCommandUndo.undo(copiedEditor)
+
+  expect(undoneEditor.lines).toEqual(['one', 'two'])
+  expect(undoneEditor.selections).toEqual(EditorSelection.fromRange(0, 1, 0, 1))
+
+  const redoneEditor = await EditorCommandRedo.redo(undoneEditor)
+  expect(redoneEditor.lines).toEqual(['one', 'one', 'two'])
+  expect(redoneEditor.selections).toEqual(EditorSelection.fromRange(1, 1, 1, 1))
 })

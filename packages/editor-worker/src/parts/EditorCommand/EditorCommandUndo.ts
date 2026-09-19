@@ -9,10 +9,11 @@ export const undo = (state: EditorState): EditorState | Promise<EditorState> => 
   }
   const last = undoStack.at(-1)
   const inverseChanges = last.toReversed().map(InverseChange.inverseChange)
+  const selectionChanges = last.selectionHistory?.before
   const newState = {
     ...state,
     redoStack: [...(state.redoStack || []), last],
     undoStack: undoStack.slice(0, -1),
   }
-  return Editor.scheduleDocumentAndCursorsSelectionIsUndo(newState, inverseChanges)
+  return Editor.scheduleDocumentAndCursorsSelectionIsUndo(newState, inverseChanges, selectionChanges)
 }
