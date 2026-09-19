@@ -9,6 +9,7 @@ export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator
   await FileSystem.writeFile(uri, 'const alpha = 1\n')
   await Workspace.setPath(tmpDir)
   await Main.openUri(uri)
+  await new Promise((resolve) => setTimeout(resolve, 100))
   await Editor.setCursor(0, 8)
 
   // act
@@ -17,6 +18,7 @@ export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator
   await expect(renameWidget).toBeVisible()
   await KeyBoard.press('Escape')
   await expect(renameWidget).toBeHidden()
+  await new Promise((resolve) => setTimeout(resolve, 100))
   await Editor.openRename()
 
   // assert
