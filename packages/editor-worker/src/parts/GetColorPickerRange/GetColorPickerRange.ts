@@ -1,4 +1,3 @@
-import { cssNamedColors } from '../CssNamedColors/CssNamedColors.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 export interface ColorRange {
@@ -13,13 +12,8 @@ const noColorRange: ColorRange = {
   value: '',
 }
 
-const colorPattern = new RegExp(`#[\\da-f]{3,8}\\b|\\b(?:hsla?|rgba?)\\([^)]*\\)|\\b(?:${cssNamedColors.join('|')})\\b`, 'gi')
-
-const isColorIdentifierCharacter = (character: string | undefined): boolean => {
-  return character !== undefined && /[\da-z_-]/i.test(character)
-}
-
-export const getColorPickerRange = (editor: any): ColorRange => {
+const colorPattern = /#[\da-f]{3,8}\b|\b(?:hsla?|rgba?)\([^)]*\)/gi
+export const getColorPickerRange = async (editor: any): Promise<ColorRange> => {
   const { lines, selections } = editor
   if (!selections || selections.length < 4) {
     return noColorRange
@@ -49,9 +43,6 @@ export const getColorPickerRange = (editor: any): ColorRange => {
   for (const match of line.matchAll(colorPattern)) {
     const startColumn = match.index
     const endColumn = startColumn + match[0].length
-    if (isColorIdentifierCharacter(line[startColumn - 1]) || isColorIdentifierCharacter(line[endColumn])) {
-      continue
-    }
     if (columnIndex >= startColumn && columnIndex <= endColumn) {
       return {
         endOffset: TextDocument.offsetAt(editor, rowIndex, endColumn),
@@ -60,5 +51,14 @@ export const getColorPickerRange = (editor: any): ColorRange => {
       }
     }
   }
-  return noColorRange
+  const { getNamedColorRange } = await import('../GetNamedColorRange/GetNamedColorRange.ts')
+  const namedColorRange = getNamedColorRange(line, columnIndex)
+  if (!namedColorRange) {
+    return noColorRange
+  }
+  return {
+    endOffset: TextDocument.offsetAt(editor, rowIndex, namedColorRange.end),
+    startOffset: TextDocument.offsetAt(editor, rowIndex, namedColorRange.start),
+    value: namedColorRange.value,
+  }
 }
