@@ -13,8 +13,7 @@ const noColorRange: ColorRange = {
 }
 
 const colorPattern = /#[\da-f]{3,8}\b|\b(?:hsla?|rgba?)\([^)]*\)/gi
-
-export const getColorPickerRange = (editor: any): ColorRange => {
+export const getColorPickerRange = async (editor: any): Promise<ColorRange> => {
   const { lines, selections } = editor
   if (!selections || selections.length < 4) {
     return noColorRange
@@ -52,5 +51,14 @@ export const getColorPickerRange = (editor: any): ColorRange => {
       }
     }
   }
-  return noColorRange
+  const { getNamedColorRange } = await import('../GetNamedColorRange/GetNamedColorRange.ts')
+  const namedColorRange = getNamedColorRange(line, columnIndex)
+  if (!namedColorRange) {
+    return noColorRange
+  }
+  return {
+    endOffset: TextDocument.offsetAt(editor, rowIndex, namedColorRange.end),
+    startOffset: TextDocument.offsetAt(editor, rowIndex, namedColorRange.start),
+    value: namedColorRange.value,
+  }
 }
