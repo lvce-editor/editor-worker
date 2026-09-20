@@ -1,4 +1,5 @@
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import { cssNamedColors } from '../CssNamedColors/CssNamedColors.ts'
 
 export interface ColorRange {
   readonly endOffset: number
@@ -12,7 +13,11 @@ const noColorRange: ColorRange = {
   value: '',
 }
 
-const colorPattern = /#[\da-f]{3,8}\b|\b(?:hsla?|rgba?)\([^)]*\)/gi
+const colorPattern = new RegExp(`#[\\da-f]{3,8}\\b|\\b(?:hsla?|rgba?)\\([^)]*\\)|\\b(?:${cssNamedColors.join('|')})\\b`, 'gi')
+
+const isColorIdentifierCharacter = (character: string | undefined): boolean => {
+  return character !== undefined && /[\da-z_-]/i.test(character)
+}
 
 export const getColorPickerRange = (editor: any): ColorRange => {
   const { lines, selections } = editor
@@ -44,6 +49,9 @@ export const getColorPickerRange = (editor: any): ColorRange => {
   for (const match of line.matchAll(colorPattern)) {
     const startColumn = match.index
     const endColumn = startColumn + match[0].length
+    if (isColorIdentifierCharacter(line[startColumn - 1]) || isColorIdentifierCharacter(line[endColumn])) {
+      continue
+    }
     if (columnIndex >= startColumn && columnIndex <= endColumn) {
       return {
         endOffset: TextDocument.offsetAt(editor, rowIndex, endColumn),

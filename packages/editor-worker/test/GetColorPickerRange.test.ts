@@ -18,6 +18,30 @@ test('finds a functional color under the cursor', () => {
   expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 26, startOffset: 7, value: 'hsl(240, 100%, 50%)' })
 })
 
+test('finds a named color under the cursor', () => {
+  const editor = {
+    lines: ['color: orange; background: blue;'],
+    selections: EditorSelection.fromRange(0, 10, 0, 10),
+  }
+  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 13, startOffset: 7, value: 'orange' })
+})
+
+test('finds a mixed-case named color under the cursor', () => {
+  const editor = {
+    lines: ['color: ReBeccAPurple;'],
+    selections: EditorSelection.fromRange(0, 12, 0, 12),
+  }
+  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 20, startOffset: 7, value: 'ReBeccAPurple' })
+})
+
+test('does not find a named color inside an identifier', () => {
+  const editor = {
+    lines: ['--orange-color: 1;'],
+    selections: EditorSelection.fromRange(0, 4, 0, 4),
+  }
+  expect(GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: -1, startOffset: -1, value: '' })
+})
+
 test('uses a non-empty single-line selection', () => {
   const editor = {
     lines: ['color: rgba(1, 2, 3, 0.5);'],
