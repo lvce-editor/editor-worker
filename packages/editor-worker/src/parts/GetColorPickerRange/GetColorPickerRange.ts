@@ -1,5 +1,5 @@
-import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { cssNamedColors } from '../CssNamedColors/CssNamedColors.ts'
+import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 export interface ColorRange {
   readonly endOffset: number
