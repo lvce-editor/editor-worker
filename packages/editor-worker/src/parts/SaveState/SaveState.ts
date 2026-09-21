@@ -10,7 +10,7 @@ export const saveState = (state: EditorState, hotReload: unknown): any => {
       lines,
       modified,
       redoStack,
-      selections: [...state.selections],
+      selections: [...selections],
       undoStack,
     }
   }
