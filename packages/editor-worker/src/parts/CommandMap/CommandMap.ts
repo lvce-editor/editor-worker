@@ -197,7 +197,7 @@ import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
-import { wrapCommand, wrapFocusCommand } from '../WrapCommands/WrapCommands.ts'
+import { wrapCommand, wrapFocusCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
 
 const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
   return ExecuteViewletCommand.executeViewletCommand(commandMap, uid, commandId, ...args)
