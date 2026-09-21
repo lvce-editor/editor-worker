@@ -294,3 +294,35 @@ for (const formatOnSave of [true, false]) {
     expect(result.formatOnSave).toBe(formatOnSave)
   })
 }
+
+test('hot reload restores a draft and history even when the file is unavailable', async () => {
+  readFileMock.mockRejectedValue(new Error('file removed while editing'))
+  const undoStack = [['undo draft']]
+  const redoStack = [['redo draft']]
+  const result = await LoadContent.loadContent(createState(), {
+    endOfLine: 'crlf',
+    hotReload: true,
+    lines: ['unsaved', 'draft'],
+    modified: true,
+    redoStack,
+    undoStack,
+  })
+  expect(result.lines).toEqual(['unsaved', 'draft'])
+  expect(result.modified).toBe(true)
+  expect(result.endOfLine).toBe('crlf')
+  expect(result.undoStack).toBe(undoStack)
+  expect(result.redoStack).toBe(redoStack)
+  expect(readFileMock).not.toHaveBeenCalled()
+})
+
+test('ordinary reload never applies an unsaved draft snapshot without the explicit transient flag', async () => {
+  readFileMock.mockResolvedValue('disk content')
+  const result = await LoadContent.loadContent(createState(), {
+    lines: ['unsaved draft'],
+    modified: true,
+    redoStack: [],
+    undoStack: [],
+  })
+  expect(result.lines).toEqual(['disk content'])
+  expect(result.modified).toBe(false)
+})
