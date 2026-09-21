@@ -60,7 +60,7 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
         })
       } else {
         const inserted = line.replace('$0', '')
-        const cursorColumnIndex = selectionEndColumn + 2
+        const cursorColumnIndex = selectionStartColumn - snippet.deleted + placeholderIndex
         selectionChanges.push(selectionStartRow, cursorColumnIndex, selectionStartRow, cursorColumnIndex)
         changes.push({
           deleted: [''],
