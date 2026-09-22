@@ -147,6 +147,7 @@ import * as EditorUndo from '../EditorCommand/EditorCommandUndo.ts'
 import { unfold } from '../EditorCommand/EditorCommandUnfold.ts'
 import * as Unindent from '../EditorCommand/EditorCommandUnindent.ts'
 import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorCompletionWidget.ts'
+import * as Editor from '../Editor/Editor.ts'
 import * as EditorFindWidget from '../EditorFindWidget/EditorFindWidget.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
@@ -184,7 +185,6 @@ import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
 import { render2 } from '../Render2/Render2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
-import * as Resize from '../Resize/Resize.ts'
 import { revealProblem } from '../RevealProblem/RevealProblem.ts'
 import { saveState } from '../SaveState/SaveState.ts'
 import {
@@ -370,7 +370,7 @@ export const commandMap = {
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
-  'Editor.resize': wrapCommand(Resize.resize),
+  'Editor.resize': wrapCommand(Editor.resize),
   'Editor.revealProblem': wrapCommand(revealProblem),
   'Editor.save': wrapCommand(Save.save),
   'Editor.saveState': wrapGetter(saveState),
