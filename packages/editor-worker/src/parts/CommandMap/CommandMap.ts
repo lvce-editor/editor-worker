@@ -203,6 +203,11 @@ const executeViewletCommand = (uid: number, commandId: string, ...args: readonly
   return ExecuteViewletCommand.executeViewletCommand(commandMap, uid, commandId, ...args)
 }
 
+const resize = async (editor: any, dimensions: any) => {
+  const resizedEditor = Resize.resize(editor, dimensions, editor.columnWidth)
+  return EditorFindWidget.resize(resizedEditor, dimensions)
+}
+
 export const commandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
   'CodeGenerator.accept': CodeGeneratorAccept.codeGeneratorAccept,
@@ -370,7 +375,7 @@ export const commandMap = {
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
-  'Editor.resize': wrapCommand(Resize.resize),
+  'Editor.resize': wrapCommand(resize),
   'Editor.revealProblem': wrapCommand(revealProblem),
   'Editor.save': wrapCommand(Save.save),
   'Editor.saveState': wrapGetter(saveState),
