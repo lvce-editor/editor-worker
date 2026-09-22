@@ -1,7 +1,6 @@
 import * as ApplyWidgetChanges from '../ApplyWidgetChanges/ApplyWidgetChanges.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
-import * as EditorFindWidget from '../EditorFindWidget/EditorFindWidget.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
@@ -276,11 +275,6 @@ export const hasSelection = (editor: any) => {
 
 export const setBounds = (editor: any, x: number, y: number, width: number, height: number, columnWidth: number) => {
   return Resize.resize(editor, { height, width, x, y }, columnWidth)
-}
-
-export const resize = async (editor: any, dimensions: any) => {
-  const resizedEditor = Resize.resize(editor, dimensions, editor.columnWidth)
-  return EditorFindWidget.resize(resizedEditor, dimensions)
 }
 
 export const setText = (editor: any, text: string) => {
