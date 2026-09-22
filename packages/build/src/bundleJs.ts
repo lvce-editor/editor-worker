@@ -7,12 +7,13 @@ import { root } from './root.ts'
 
 const options: RollupOptions = {
   input: join(root, 'packages/editor-worker/src/editorWorkerMain.ts'),
-  preserveEntrySignatures: 'strict',
+  preserveEntrySignatures: 'exports-only',
   treeshake: {
     propertyReadSideEffects: false,
   },
   output: {
-    file: join(root, '.tmp/dist/dist/editorWorkerMain.js'),
+    dir: join(root, '.tmp/dist/dist'),
+    entryFileNames: 'editorWorkerMain.js',
     format: 'es',
     freeze: false,
     generatedCode: {

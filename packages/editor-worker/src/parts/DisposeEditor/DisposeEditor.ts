@@ -3,6 +3,7 @@ import * as AutoSave from '../AutoSave/AutoSave.ts'
 import * as ColorPickerWorker from '../ColorPickerWorker/ColorPickerWorker.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import { notifyEditorStatusCleared } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
+import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
 import * as RenderWidgets from '../RenderWidgets/RenderWidgets.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
@@ -23,6 +24,7 @@ export const disposeEditor = async (editorUid: number): Promise<readonly any[]> 
   WidgetRevision.dispose(editorUid)
   AutoSave.dispose(editorUid)
   EditorStates.dispose(editorUid)
+  await RenameWorker.dispose()
   if (EditorStates.getKeys().length === 0) {
     await notifyEditorStatusCleared()
   }
