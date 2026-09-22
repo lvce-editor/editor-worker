@@ -19,11 +19,12 @@ export const set = (editor: any, timeout: any, x: number, y: number, token: numb
 }
 
 export const clear = (editorUid?: number): void => {
-  if (editorUid !== undefined && state.editor?.uid !== editorUid) {
+  const { editor, timeout } = state
+  if (editorUid !== undefined && editor?.uid !== editorUid) {
     return
   }
-  if (state.timeout !== -1) {
-    clearTimeout(state.timeout)
+  if (timeout !== -1) {
+    clearTimeout(timeout)
   }
   state.editor = undefined
   state.timeout = -1

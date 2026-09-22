@@ -137,12 +137,11 @@ test('handleMouseMove - ignores a slow hover result after the pointer moves', as
     'Editor.renderPending': jest.fn(),
   })
   let resolveSlowHover: ((editor: any) => void) | undefined
-  showHover.mockImplementationOnce(
-    () =>
-      new Promise((resolve) => {
-        resolveSlowHover = resolve
-      }),
-  )
+  const slowHover = Promise.withResolvers<any>()
+  showHover.mockImplementationOnce(() => {
+    resolveSlowHover = slowHover.resolve
+    return slowHover.promise
+  })
   showHover.mockImplementationOnce(async (latestEditor: any) => ({
     ...latestEditor,
     widgets: [{ id: 'latest' }],

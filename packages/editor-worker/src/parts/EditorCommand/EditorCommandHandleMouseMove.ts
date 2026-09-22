@@ -39,7 +39,7 @@ const onHoverIdle = async (token: number) => {
     if (latestToken !== token || !editor) {
       return
     }
-    const instance = Editors.get((editor as any).uid)
+    const instance = Editors.get(editor.uid)
     if (!instance || !instance.newState.hoverEnabled) {
       return
     }

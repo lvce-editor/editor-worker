@@ -11,8 +11,8 @@ export interface EditorCreateOptions {
   readonly formatOnSave: boolean
   readonly height: number
   readonly highlightActiveLineNumber?: boolean
-  readonly hoverEnabled: boolean
   readonly hoverDelay?: number
+  readonly hoverEnabled: boolean
   readonly id: number
   readonly isAutoClosingBracketsEnabled: boolean
   readonly isAutoClosingQuotesEnabled: boolean
