@@ -9,7 +9,7 @@ import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferenc
 import { getEndOfLine } from '../GetEndOfLine/GetEndOfLine.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
-import { largeFilePreferences } from '../LargeFilePreferences/LargeFilePreferences.ts'
+import { getLargeFilePreferences } from '../LargeFilePreferences/LargeFilePreferences.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import { normalizeLineEndings } from '../NormalizeLineEndings/NormalizeLineEndings.ts'
@@ -154,7 +154,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
 
   const savedLargeFile = !!savedState && typeof savedState === 'object' && (savedState as Record<string, unknown>).largeFile === true
   largeFile ||= state.largeFile === true || existingEditor?.largeFile === true || savedLargeFile || content.length > 50 * 1024 * 1024
-  const effectiveEditor = { ...newEditor0, largeFile, ...(largeFile && largeFilePreferences) }
+  const effectiveEditor = { ...newEditor0, largeFile, ...(largeFile && getLargeFilePreferences()) }
   if (!largeFile) {
     const tokenizePath = getTokenizePath(languages, computedLanguageId)
     await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)

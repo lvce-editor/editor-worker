@@ -3,7 +3,7 @@ import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
 import { getEditorGutterDecorations } from '../GetEditorGutterDecorations/GetEditorGutterDecorations.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
-import { largeFilePreferences } from '../LargeFilePreferences/LargeFilePreferences.ts'
+import { getLargeFilePreferences } from '../LargeFilePreferences/LargeFilePreferences.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as Resize from '../Resize/Resize.ts'
@@ -17,7 +17,7 @@ const getWorkspaceUri = async (applicationId?: string): Promise<string> => {
 }
 
 export const handleSettingsChanged = async (state: EditorState): Promise<EditorState> => {
-  const editorPreferences = { ...(await getEditorPreferences()), ...(state.largeFile && largeFilePreferences) }
+  const editorPreferences = { ...(await getEditorPreferences()), ...(state.largeFile && getLargeFilePreferences()) }
   const { breadcrumbsEnabled, diagnosticsEnabled, fontFamily, fontSize, fontWeight, letterSpacing, minimapEnabled, rowHeight } = editorPreferences
   const [charWidth, completionsOnTypeRaw] = await Promise.all([
     MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing),

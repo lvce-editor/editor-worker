@@ -1,4 +1,4 @@
-export const largeFilePreferences = {
+export const getLargeFilePreferences = () => ({
   breadcrumbsEnabled: false,
   completionsOnType: false,
   completionTriggerCharacters: [],
@@ -11,4 +11,4 @@ export const largeFilePreferences = {
   isQuickSuggestionsEnabled: false,
   mergeConflictActionsEnabled: false,
   minimapEnabled: false,
-}
+})
