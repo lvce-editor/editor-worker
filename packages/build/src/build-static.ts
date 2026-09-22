@@ -8,12 +8,25 @@ const sharedProcessUrl = import.meta.resolve('@lvce-editor/shared-process')
 const sharedProcess = await import(sharedProcessUrl)
 
 process.env.PATH_PREFIX = '/editor-worker'
+const staticServerPath = join(dirname(fileURLToPath(import.meta.resolve('@lvce-editor/static-server/package.json'))), 'static')
 const { commitHash } = await sharedProcess.exportStatic({
   root,
-  serverStaticPath: join(dirname(fileURLToPath(import.meta.resolve('@lvce-editor/static-server/package.json'))), 'static'),
+  serverStaticPath: staticServerPath,
   extensionPath: '',
   testPath: 'packages/e2e',
 })
+
+await cp(
+  dirname(fileURLToPath(import.meta.resolve('@lvce-editor/find-widget-worker'))),
+  join(root, 'dist', commitHash, 'packages', 'find-widget-worker', 'dist'),
+  { recursive: true },
+)
+
+await cp(
+  dirname(fileURLToPath(import.meta.resolve('@lvce-editor/find-widget-worker'))),
+  join(staticServerPath, commitHash, 'packages', 'find-widget-worker', 'dist'),
+  { recursive: true },
+)
 
 const patchFile = async (path: string, occurrence: string, replacement: string): Promise<void> => {
   const content = await readFile(path, 'utf8')

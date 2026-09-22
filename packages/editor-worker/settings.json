@@ -27,6 +27,16 @@
   },
   {
     "category": "text-editor",
+    "description": "The font size of the find widget",
+    "heading": "Find Widget Font Size",
+    "id": "editor.findWidgetFontSize",
+    "type": "number",
+    "value": 0,
+    "minimum": 0,
+    "maximum": 100
+  },
+  {
+    "category": "text-editor",
     "description": "Format a file when it is saved",
     "heading": "Format On Save",
     "id": "editor.formatOnSave",
