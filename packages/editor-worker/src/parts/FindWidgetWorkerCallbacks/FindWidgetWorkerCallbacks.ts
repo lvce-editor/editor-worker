@@ -7,6 +7,7 @@ import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
+import * as Preferences from '../Preferences/Preferences.ts'
 
 const updateEditor = async (editorUid: number, editor: any, newEditor: any): Promise<void> => {
   if (newEditor === editor) {
@@ -35,6 +36,10 @@ export const getLines = (editorUid: number): readonly string[] => {
 
 export const getSelections = (editorUid: number): Uint32Array => {
   return GetEditor.getEditor(editorUid).selections
+}
+
+export const getFindWidgetFontSize = async (): Promise<unknown> => {
+  return Preferences.get('editor.findWidgetFontSize')
 }
 
 export const setSelections = async (editorUid: number, selections: Uint32Array): Promise<void> => {

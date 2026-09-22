@@ -6,6 +6,7 @@ test('provides editor callbacks to the find widget worker', () => {
     'Editor.applyDocumentEdits',
     'Editor.closeFind2',
     'Editor.getLines2',
+    'Editor.getFindWidgetFontSize',
     'Editor.getSelections2',
     'Editor.setSelections2',
   ])

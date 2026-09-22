@@ -4,6 +4,7 @@ export const getFindWidgetWorkerCommandMap = (): Record<string, (...args: readon
   'Editor.applyDocumentEdits': FindWidgetWorkerCallbacks.applyDocumentEdits,
   'Editor.closeFind2': FindWidgetWorkerCallbacks.closeFind,
   'Editor.getLines2': FindWidgetWorkerCallbacks.getLines,
+  'Editor.getFindWidgetFontSize': FindWidgetWorkerCallbacks.getFindWidgetFontSize,
   'Editor.getSelections2': FindWidgetWorkerCallbacks.getSelections,
   'Editor.setSelections2': FindWidgetWorkerCallbacks.setSelections,
 })
