@@ -2,6 +2,9 @@ import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 
 export const setLanguageId = async (editor: any, languageId: string, tokenizePath: string) => {
+  if (editor.largeFile) {
+    return { ...editor, languageId }
+  }
   const { tokenizerId } = editor
   await Tokenizer.loadTokenizer(languageId, tokenizePath)
   const tokenizer = Tokenizer.getTokenizer(languageId)

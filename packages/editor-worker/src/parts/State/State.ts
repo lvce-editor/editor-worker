@@ -68,6 +68,7 @@ export interface EditorState {
   readonly isSelecting: boolean
   readonly itemHeight: number
   readonly languageId: string
+  readonly largeFile?: boolean
   readonly letterSpacing: number
   readonly lightBulbRowIndex: number
   readonly lineCache: readonly any[]

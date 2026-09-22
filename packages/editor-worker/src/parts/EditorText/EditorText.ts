@@ -1,4 +1,5 @@
 import * as GetDecorationClassName from '../GetDecorationClassName/GetDecorationClassName.ts'
+import { getLargeFileVisible } from '../GetLargeFileVisible/GetLargeFileVisible.ts'
 import * as GetTokensViewport2 from '../GetTokensViewport2/GetTokensViewport2.ts'
 import * as LoadTokenizers from '../LoadTokenizers/LoadTokenizers.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
@@ -546,6 +547,9 @@ const getLineInfosViewport = (
 }
 
 export const getVisible = async (editor: any, syncIncremental: boolean): Promise<{ differences: number[]; textInfos: string[][] }> => {
+  if (editor.largeFile) {
+    return getLargeFileVisible(editor)
+  }
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
   // invalidStartIndex, lineCache, etc. just for testing editorType

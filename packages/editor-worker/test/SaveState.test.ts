@@ -12,3 +12,7 @@ test('saveState preserves document history', () => {
     undoStack,
   })
 })
+
+test('saveState preserves large file mode', () => {
+  expect(saveState({ largeFile: true, lines: ['text'], redoStack: [], undoStack: [] } as any, undefined)).toMatchObject({ largeFile: true })
+})
