@@ -15,6 +15,12 @@ const { commitHash } = await sharedProcess.exportStatic({
   testPath: 'packages/e2e',
 })
 
+await cp(
+  dirname(fileURLToPath(import.meta.resolve('@lvce-editor/find-widget-worker'))),
+  join(root, 'dist', commitHash, 'packages', 'find-widget-worker', 'dist'),
+  { recursive: true },
+)
+
 const patchFile = async (path: string, occurrence: string, replacement: string): Promise<void> => {
   const content = await readFile(path, 'utf8')
   if (content.includes(occurrence)) {
