@@ -27,7 +27,7 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
 
   // act
   await Editor.setCursor(0, 11)
-  await Command.execute('Editor.showHover')
+  await Command.execute('Editor.showHover', { columnIndex: 11, rowIndex: 0 })
 
   // assert
   await expect(hover).toHaveText('def')
