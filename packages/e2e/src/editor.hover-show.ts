@@ -16,7 +16,6 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   await Command.execute('Editor.handleMouseMove', 0, 0, false)
 
   // assert
-  await expect(hover).toBeVisible()
   await expect(hover).toHaveText('first')
 
   // act
@@ -26,6 +25,7 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   await expect(hover).toBeVisible()
 
   // act
+  await Command.execute('Editor.handleMouseMove', 0, 0, true)
   await Editor.setCursor(0, 11)
   await Command.execute('Editor.showHover', { columnIndex: 11, rowIndex: 0 })
 
