@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals'
-import { getVisibleBracketMatches } from '../src/parts/GetVisibleBracketMatches/GetVisibleBracketMatches.ts'
+import { getBracketMatchPositions, getVisibleBracketMatches } from '../src/parts/GetVisibleBracketMatches/GetVisibleBracketMatches.ts'
 
 const createEditor = (lines: readonly string[], selections: Uint32Array) =>
   ({
@@ -54,4 +54,45 @@ test('getVisibleBracketMatches does not highlight brackets for a selection', asy
   const editor = createEditor(['(value)'], new Uint32Array([0, 0, 0, 7]))
 
   await expect(getVisibleBracketMatches(editor)).resolves.toEqual([])
+})
+
+test('getBracketMatchPositions reuses matches while the document and cursor are unchanged', () => {
+  const lines = ['(value)']
+  const selections = new Uint32Array([0, 0, 0, 0])
+
+  const first = getBracketMatchPositions(lines, selections)
+  const second = getBracketMatchPositions(lines, selections)
+
+  expect(second).toBe(first)
+})
+
+test('getBracketMatchPositions invalidates cached matches when the cursor changes', () => {
+  const lines = ['(value)', '[]']
+  const selections = new Uint32Array([0, 0, 0, 0])
+
+  const first = getBracketMatchPositions(lines, selections)
+  selections[0] = 1
+  selections[1] = 0
+  selections[2] = 1
+  selections[3] = 0
+  const second = getBracketMatchPositions(lines, selections)
+
+  expect(second).not.toBe(first)
+  expect(second).toEqual([
+    { columnIndex: 0, rowIndex: 1 },
+    { columnIndex: 1, rowIndex: 1 },
+  ])
+})
+
+test('getBracketMatchPositions invalidates cached matches when the document changes', () => {
+  const selections = new Uint32Array([0, 0, 0, 0])
+
+  const first = getBracketMatchPositions(['(value)'], selections)
+  const second = getBracketMatchPositions(['[value]'], selections)
+
+  expect(second).not.toBe(first)
+  expect(second).toEqual([
+    { columnIndex: 0, rowIndex: 0 },
+    { columnIndex: 6, rowIndex: 0 },
+  ])
 })
