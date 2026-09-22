@@ -63,6 +63,7 @@ export const createEditor2 = (
     highlightActiveLineNumber: true,
     highlightedLine: -1,
     hoverEnabled: false,
+    hoverDelay: 200,
     id,
     incrementalEdits: emptyIncrementalEdits,
     initial: true,

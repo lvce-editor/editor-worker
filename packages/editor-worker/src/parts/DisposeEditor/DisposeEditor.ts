@@ -1,6 +1,7 @@
 import { WidgetId } from '@lvce-editor/constants'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
 import * as ColorPickerWorker from '../ColorPickerWorker/ColorPickerWorker.ts'
+import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import { notifyEditorStatusCleared } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
@@ -12,6 +13,7 @@ export const disposeEditor = async (editorUid: number): Promise<readonly any[]> 
   if (!editor) {
     return []
   }
+  EditorHoverState.clear(editorUid)
   for (const widget of editor.widgets) {
     if (widget.id === WidgetId.ColorPicker) {
       await ColorPickerWorker.invoke('ColorPicker.dispose', widget.newState.uid)

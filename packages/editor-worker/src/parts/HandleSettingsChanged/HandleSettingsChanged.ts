@@ -4,6 +4,7 @@ import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
 import { getEditorGutterDecorations } from '../GetEditorGutterDecorations/GetEditorGutterDecorations.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
 import { getLargeFilePreferences } from '../LargeFilePreferences/LargeFilePreferences.ts'
+import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as Resize from '../Resize/Resize.ts'
@@ -34,6 +35,9 @@ export const handleSettingsChanged = async (state: EditorState): Promise<EditorS
     itemHeight: rowHeight,
     minimapRevision: (state.minimapRevision || 0) + (minimapEnabled ? 1 : 0),
     visualDecorations: diagnosticsEnabled ? state.visualDecorations : [],
+  }
+  if (!editorWithUpdatedSettings.hoverEnabled) {
+    EditorHoverState.clear(state.uid)
   }
   let documentSymbols = state.documentSymbols || []
   let workspaceUri = state.workspaceUri || ''
