@@ -1,5 +1,6 @@
 import type { EditorState } from '../State/State.ts'
 import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
+import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
 import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
 import { getEditorGutterDecorations } from '../GetEditorGutterDecorations/GetEditorGutterDecorations.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
@@ -34,6 +35,9 @@ export const handleSettingsChanged = async (state: EditorState): Promise<EditorS
     itemHeight: rowHeight,
     minimapRevision: (state.minimapRevision || 0) + (minimapEnabled ? 1 : 0),
     visualDecorations: diagnosticsEnabled ? state.visualDecorations : [],
+  }
+  if (!editorWithUpdatedSettings.hoverEnabled) {
+    EditorHoverState.clear(state.uid)
   }
   let documentSymbols = state.documentSymbols || []
   let workspaceUri = state.workspaceUri || ''

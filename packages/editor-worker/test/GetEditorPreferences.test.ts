@@ -20,7 +20,8 @@ test('boolean preferences retain their defaults and explicit values', async () =
     diagnosticsEnabled: false,
     dragAndDropEnabled: true,
     formatOnSave: false,
-    hoverEnabled: true,
+    hoverDelay: 200,
+    hoverEnabled: false,
     insertSpaces: true,
     roundedSelection: false,
   })
@@ -36,4 +37,22 @@ test('boolean preferences retain their defaults and explicit values', async () =
       roundedSelection: value,
     })
   }
+})
+
+test('normalizes the hover delay and falls back for invalid values', async () => {
+  getPreference.mockImplementation(async (key) => {
+    if (key === 'editor.hoverDelay') {
+      return '350'
+    }
+    return undefined
+  })
+  expect((await getEditorPreferences()).hoverDelay).toBe(350)
+
+  getPreference.mockImplementation(async (key) => {
+    if (key === 'editor.hoverDelay') {
+      return -1
+    }
+    return undefined
+  })
+  expect((await getEditorPreferences()).hoverDelay).toBe(200)
 })

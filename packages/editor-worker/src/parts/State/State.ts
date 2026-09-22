@@ -54,6 +54,7 @@ export interface EditorState {
   readonly height: number
   readonly highlightActiveLineNumber: boolean
   readonly highlightedLine: number
+  readonly hoverDelay?: number
   readonly hoverEnabled: boolean
   readonly id: number
   readonly incrementalEdits: readonly any[]

@@ -759,7 +759,17 @@
     "heading": "Hover",
     "id": "editor.hover",
     "type": "boolean",
-    "value": "true"
+    "value": false
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the delay in milliseconds after which hover information will show up",
+    "heading": "Hover Delay",
+    "id": "editor.hoverDelay",
+    "type": "number",
+    "value": 200,
+    "minimum": 0,
+    "maximum": 10000
   },
   {
     "category": "text-editor",

@@ -13,6 +13,9 @@ const showHover = async (editor: any, position: any, token: number) => {
     return
   }
   const latestEditor = instance.newState
+  if (!latestEditor.hoverEnabled) {
+    return
+  }
   const newEditor = await EditorCommandShowHover.showHover(latestEditor, position)
   const latestInstance = Editors.get(editor.uid)
   if (latestEditor === newEditor || !latestInstance || latestInstance.newState !== latestEditor || EditorHoverState.get().token !== token) {
@@ -33,7 +36,11 @@ const showHover = async (editor: any, position: any, token: number) => {
 const onHoverIdle = async (token: number) => {
   try {
     const { editor, token: latestToken, x, y } = EditorHoverState.get()
-    if (latestToken !== token) {
+    if (latestToken !== token || !editor) {
+      return
+    }
+    const instance = Editors.get(editor.uid)
+    if (!instance || !instance.newState.hoverEnabled) {
       return
     }
     const position = await EditorPosition.at(editor, x, y)
@@ -43,9 +50,8 @@ const onHoverIdle = async (token: number) => {
   }
 }
 
-const hoverDelay = 200
-
 export const handleMouseMove = async (editor: any, x: number, y: number, altKey: boolean) => {
+  EditorHoverState.clear()
   if (altKey) {
     return EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey(editor, x, y)
   }
@@ -53,12 +59,8 @@ export const handleMouseMove = async (editor: any, x: number, y: number, altKey:
   if (!editorWithoutDefinitionLink.hoverEnabled) {
     return editorWithoutDefinitionLink
   }
-  const oldState = EditorHoverState.get()
-  if (oldState.timeout !== -1) {
-    clearTimeout(oldState.timeout)
-  }
   const token = Id.create()
-  const timeout = setTimeout(onHoverIdle, hoverDelay, token)
+  const timeout = setTimeout(onHoverIdle, editorWithoutDefinitionLink.hoverDelay ?? 200, token)
   EditorHoverState.set(editorWithoutDefinitionLink, timeout, x, y, token)
   return editorWithoutDefinitionLink
 }

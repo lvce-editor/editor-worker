@@ -6,7 +6,7 @@ const provider = {
   provideHover(textDocument, offset) {
     return {
       text: 'abc',
-      documentation: 'def',
+      documentation: offset === 11 ? 'def' : offset < 5 ? 'first' : 'second',
     }
   },
 }
