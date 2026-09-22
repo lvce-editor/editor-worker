@@ -4,10 +4,10 @@ import * as ApplyDocumentEdits from '../EditorCommand/EditorCommandApplyDocument
 import * as EditorCommandCloseFind from '../EditorCommand/EditorCommandCloseFind.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
+import * as Preferences from '../Preferences/Preferences.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
-import * as Preferences from '../Preferences/Preferences.ts'
 
 const updateEditor = async (editorUid: number, editor: any, newEditor: any): Promise<void> => {
   if (newEditor === editor) {
