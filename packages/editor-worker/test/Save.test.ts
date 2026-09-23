@@ -234,15 +234,7 @@ test('save without formatting skips the formatter for one save and preserves for
   expect(savedWithoutFormatting.modified).toBe(false)
   expect(savedWithoutFormatting.formatOnSave).toBe(true)
   expect(mockExtensionRpc.invocations).toEqual([])
-  expect(mockRpc.invocations).toContainEqual([
-    'Application.execute',
-    'source',
-    'FileSystem.writeFile',
-    editor.uri,
-    'let x=1; ',
-    'utf8',
-    false,
-  ])
+  expect(mockRpc.invocations).toContainEqual(['Application.execute', 'source', 'FileSystem.writeFile', editor.uri, 'let x=1; ', 'utf8', false])
 
   await EditorCommandSave.save(savedWithoutFormatting)
 
