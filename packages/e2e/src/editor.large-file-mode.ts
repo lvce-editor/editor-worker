@@ -9,6 +9,7 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, S
   const propertyToken = Locator('.Token.JsonPropertyName', { hasText: 'name' })
   const propertyTokens = Locator('.Token.JsonPropertyName')
   const plainText = Locator('.Token.Text', { hasText: '{"name":"demo"}' })
+  const largeFileText = Locator('.Token.Text')
   const minimap = Locator('.EditorMinimap')
   const normalProperty = Locator('.Token.JsonPropertyName', { hasText: 'normal' })
   await Main.openUri(uri)
@@ -29,6 +30,12 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, S
     await FileSystem.writeFile(normalUri, '{"normal":true}')
     await Main.openUri(normalUri)
     await expect(normalProperty).toBeVisible()
+
+    const heapSnapshotUri = `${tmpDir}/heap-snapshot.json`
+    await FileSystem.writeFile(heapSnapshotUri, `{"snapshot":"${'x'.repeat(10 * 1024 * 1024 + 1)}"}`)
+    await Main.openUri(heapSnapshotUri)
+    await expect(propertyTokens).toHaveCount(0)
+    await expect(largeFileText).toBeVisible()
   } finally {
     await Settings.update({ 'editor.diagnostics': diagnostics, 'editor.minimap.enabled': minimapEnabled })
   }
