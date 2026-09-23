@@ -322,6 +322,31 @@ test('confirmed large files disable automatic services and tokenizer loading', a
   expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
 })
 
+test('large files automatically disable services and tokenizer loading', async () => {
+  getEditorPreferencesMock.mockResolvedValue({
+    breadcrumbsEnabled: true,
+    diagnosticsEnabled: true,
+    formatOnSave: true,
+    hoverEnabled: true,
+    isQuickSuggestionsEnabled: true,
+    minimapEnabled: true,
+    rowHeight: 20,
+  })
+  readFileMock.mockResolvedValue('x'.repeat(10 * 1024 * 1024 + 1))
+  const result = await LoadContent.loadContent(createState(), undefined)
+  expect(result).toMatchObject({
+    breadcrumbsEnabled: false,
+    diagnosticsEnabled: false,
+    formatOnSave: false,
+    hoverEnabled: false,
+    isQuickSuggestionsEnabled: false,
+    largeFile: true,
+    minimapEnabled: false,
+  })
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+  expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
+})
+
 test('large file mode survives restoring saved state', async () => {
   readFileMock.mockResolvedValue('text')
   const result = await LoadContent.loadContent(createState(), { largeFile: true })

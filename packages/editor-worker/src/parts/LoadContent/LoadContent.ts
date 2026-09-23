@@ -20,6 +20,8 @@ import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
 
+const largeFileContentLength = 10 * 1024 * 1024
+
 const getWorkspaceUri = async (applicationId?: string): Promise<string> => {
   try {
     return await ApplicationRpc.invoke(applicationId, 'Workspace.getPath')
@@ -155,7 +157,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
   }
 
   const savedLargeFile = !!savedState && typeof savedState === 'object' && (savedState as Record<string, unknown>).largeFile === true
-  largeFile ||= state.largeFile === true || existingEditor?.largeFile === true || savedLargeFile || content.length > 50 * 1024 * 1024
+  largeFile ||= state.largeFile === true || existingEditor?.largeFile === true || savedLargeFile || content.length > largeFileContentLength
   const effectiveEditor = { ...newEditor0, largeFile, ...(largeFile && getLargeFilePreferences()) }
   if (!largeFile) {
     const tokenizePath = getTokenizePath(languages, computedLanguageId)
