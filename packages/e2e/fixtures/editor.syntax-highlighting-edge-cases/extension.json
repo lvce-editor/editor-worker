@@ -1,0 +1,119 @@
+{
+  "id": "test.syntax-highlighting-edge-cases",
+  "name": "Syntax Highlighting Edge Cases",
+  "description": "Provides syntax highlighting success and fallback fixtures.",
+  "main": "missing-main.js",
+  "activation": ["onLanguage:sh-main-missing"],
+  "languages": [
+    {
+      "id": "sh-valid",
+      "extensions": [".shvalid"],
+      "tokenize": "src/tokenizeValid.js"
+    },
+    {
+      "id": "sh-main-missing",
+      "extensions": [".shmainmissing"],
+      "tokenize": "src/tokenizeValid.js"
+    },
+    {
+      "id": "sh-missing-tokenizer",
+      "extensions": [".shmissingtokenizer"],
+      "tokenize": "src/doesNotExist.js"
+    },
+    {
+      "id": "sh-top-level-error",
+      "extensions": [".shtoplevelerror"],
+      "tokenize": "src/tokenizeTopLevelError.js"
+    },
+    {
+      "id": "sh-missing-tokenize-line",
+      "extensions": [".shmissingtokenizeline"],
+      "tokenize": "src/tokenizeMissingTokenizeLine.js"
+    },
+    {
+      "id": "sh-invalid-token-map-array",
+      "extensions": [".shinvalidtokenmaparray"],
+      "tokenize": "src/tokenizeInvalidTokenMapArray.js"
+    },
+    {
+      "id": "sh-invalid-token-map-null",
+      "extensions": [".shinvalidtokenmapnull"],
+      "tokenize": "src/tokenizeInvalidTokenMapNull.js"
+    },
+    {
+      "id": "sh-invalid-token-map-string",
+      "extensions": [".shinvalidtokenmapstring"],
+      "tokenize": "src/tokenizeInvalidTokenMapString.js"
+    },
+    {
+      "id": "sh-runtime-error",
+      "extensions": [".shruntimeerror"],
+      "tokenize": "src/tokenizeRuntimeError.js"
+    },
+    {
+      "id": "sh-invalid-result-null",
+      "extensions": [".shinvalidresultnull"],
+      "tokenize": "src/tokenizeInvalidResultNull.js"
+    },
+    {
+      "id": "sh-invalid-result-no-tokens",
+      "extensions": [".shinvalidresultnotokens"],
+      "tokenize": "src/tokenizeInvalidResultNoTokens.js"
+    },
+    {
+      "id": "sh-invalid-result-no-state",
+      "extensions": [".shinvalidresultnostate"],
+      "tokenize": "src/tokenizeInvalidResultNoState.js"
+    },
+    {
+      "id": "sh-empty-tokens",
+      "extensions": [".shemptytokens"],
+      "tokenize": "src/tokenizeEmptyTokens.js"
+    },
+    {
+      "id": "sh-unknown-token-type",
+      "extensions": [".shunknowntokentype"],
+      "tokenize": "src/tokenizeUnknownTokenType.js"
+    },
+    {
+      "id": "sh-legacy-object-tokens",
+      "extensions": [".shlegacyobjecttokens"],
+      "tokenize": "src/tokenizeLegacyObjectTokens.js"
+    },
+    {
+      "id": "sh-nested-missing-language",
+      "extensions": [".shnestedmissing"],
+      "tokenize": "src/tokenizeNestedMissingLanguage.js"
+    },
+    {
+      "id": "sh-nested-zero-length",
+      "extensions": [".shnestedzero"],
+      "tokenize": "src/tokenizeNestedZeroLength.js"
+    },
+    {
+      "id": "sh-nested-partial",
+      "extensions": [".shnestedpartial"],
+      "tokenize": "src/tokenizeNestedPartial.js"
+    },
+    {
+      "id": "sh-nested-runtime-error",
+      "extensions": [".shnestedruntime"],
+      "tokenize": "src/tokenizeNestedRuntimeError.js"
+    },
+    {
+      "id": "sh-nested-outer",
+      "extensions": [".shnestedmulti"],
+      "tokenize": "src/tokenizeNestedOuter.js"
+    },
+    {
+      "id": "sh-nested-middle",
+      "extensions": [".shnestedmiddle"],
+      "tokenize": "src/tokenizeNestedMiddle.js"
+    },
+    {
+      "id": "sh-nested-inner",
+      "extensions": [".shnestedinner"],
+      "tokenize": "src/tokenizeNestedInner.js"
+    }
+  ]
+}
