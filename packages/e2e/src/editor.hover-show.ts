@@ -16,10 +16,10 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   await Command.execute('Editor.handleMouseMove', 0, 0, false)
 
   // assert
-  await expect(hover).toBeHidden()
+  await expect(hover).toHaveText('first')
 
   // act
-  await Command.execute('Editor.handleMouseMove', 200, 10, false)
+  await Command.execute('Editor.handleMouseMove', 1000, 10, false)
 
   // assert
   await expect(hover).toBeVisible()
@@ -34,6 +34,15 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
 
   // act
   await Main.closeAllEditors()
+
+  // assert
+  await expect(hover).toBeHidden()
+
+  // act
+  const emptyUri = `${tmpDir}/src/empty.xyz`
+  await FileSystem.writeFile(emptyUri, 'globalThis.AbortSignal.abort()')
+  await Main.openUri(emptyUri)
+  await Command.execute('Editor.handleMouseMove', 0, 0, false)
 
   // assert
   await expect(hover).toBeHidden()
