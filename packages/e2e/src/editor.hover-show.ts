@@ -37,4 +37,13 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
 
   // assert
   await expect(hover).toBeHidden()
+
+  // act
+  const emptyUri = `${tmpDir}/src/empty.xyz`
+  await FileSystem.writeFile(emptyUri, 'globalThis.AbortSignal.abort()')
+  await Main.openUri(emptyUri)
+  await Command.execute('Editor.handleMouseMove', 0, 0, false)
+
+  // assert
+  await expect(hover).toBeHidden()
 }
