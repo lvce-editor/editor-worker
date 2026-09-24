@@ -16,13 +16,13 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   await Command.execute('Editor.handleMouseMove', 0, 0, false)
 
   // assert
-  await expect(hover).toHaveText('first')
+  await expect(hover).toBeHidden()
 
   // act
-  await Command.execute('Editor.handleMouseMove', 1000, 10, false)
+  await Command.execute('Editor.handleMouseMove', 200, 10, false)
 
   // assert
-  await expect(hover).toBeVisible()
+  await expect(hover).toHaveText('first')
 
   // act
   await Command.execute('Editor.handleMouseMove', 0, 0, true)
