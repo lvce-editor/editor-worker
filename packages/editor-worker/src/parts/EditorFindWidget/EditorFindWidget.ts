@@ -1,4 +1,4 @@
-import { WidgetId } from '@lvce-editor/constants'
+import { ViewletCommand, WidgetId } from '@lvce-editor/constants'
 import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import type { EditorState } from '../State/State.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
@@ -9,6 +9,7 @@ import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 
 const commandsToForward = [
+  ViewletCommand.SetPatches,
   RenderMethod.SetDom2,
   RenderMethod.SetCss,
   RenderMethod.SetBounds2,
