@@ -156,6 +156,10 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     }
   }
 
+  if (state.lifecycle?.disposed) {
+    return state
+  }
+
   const savedLargeFile = !!savedState && typeof savedState === 'object' && (savedState as Record<string, unknown>).largeFile === true
   largeFile ||= state.largeFile === true || existingEditor?.largeFile === true || savedLargeFile || content.length > largeFileContentLength
   const effectiveEditor = { ...newEditor0, largeFile, ...(largeFile && getLargeFilePreferences()) }
