@@ -1,4 +1,5 @@
 import type { Rpc } from '@lvce-editor/rpc'
+import { WidgetId } from '@lvce-editor/constants'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as LaunchRenameWorker from '../LaunchRenameWorker/LaunchRenameWorker.ts'
 
@@ -12,7 +13,7 @@ export const invoke = async (method: string, ...params: readonly any[]): Promise
 }
 
 export const dispose = async (): Promise<void> => {
-  if (Editors.getKeys().length > 1) {
+  if (Editors.getKeys().some((uid) => Editors.get(Number(uid))?.newState.widgets?.some((widget) => widget.id === WidgetId.Rename))) {
     return
   }
   const promise = workerPromise
