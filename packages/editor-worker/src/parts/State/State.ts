@@ -1,6 +1,7 @@
 import type { BracketMatchInfo } from '../BracketMatchInfo/BracketMatchInfo.ts'
 import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
 import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGutterDecoration.ts'
+import type { EditorLifecycle } from '../EditorLifecycle/EditorLifecycle.ts'
 import type { EditorLineDecoration } from '../EditorLineDecoration/EditorLineDecoration.ts'
 import type { EndOfLine } from '../EndOfLine/EndOfLine.ts'
 import type { MergeConflict } from '../MergeConflict/MergeConflict.ts'
@@ -71,6 +72,7 @@ export interface EditorState {
   readonly languageId: string
   readonly largeFile?: boolean
   readonly letterSpacing: number
+  readonly lifecycle?: EditorLifecycle
   readonly lightBulbRowIndex: number
   readonly lineCache: readonly any[]
   readonly lineNumbers: boolean

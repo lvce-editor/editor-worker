@@ -11,6 +11,13 @@ const measureCharacterWidthMock: any = jest.fn()
 const readFileMock: any = jest.fn()
 const rendererInvokeMock: any = jest.fn()
 
+jest.unstable_mockModule('../src/parts/FileSystemWorker/FileSystemWorker.ts', () => ({
+  invoke: (method: string, ...args: any[]) =>
+    method === 'FileSystem.readFile'
+      ? readFileMock(...args)
+      : rendererInvokeMock('Application.execute', args[0], 'FileSystem.readFile', ...args.slice(2)),
+}))
+
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   ExtensionHost: {
     invoke: extensionHostInvoke,
@@ -361,4 +368,21 @@ test('split editors inherit large file mode and unsaved content', async () => {
   expect(result).toMatchObject({ largeFile: true, lines: ['edited'], modified: true })
   expect(readFileMock).not.toHaveBeenCalled()
   expect(loadTokenizerMock).not.toHaveBeenCalled()
+})
+
+test('closing while a file read is pending does not create document lines or request tokenization', async () => {
+  const { promise, resolve } = Promise.withResolvers<string>()
+  const started = Promise.withResolvers<void>()
+  readFileMock.mockImplementation(() => {
+    started.resolve()
+    return promise
+  })
+  const state = { ...createState(), lifecycle: { disposed: false } }
+  const pending = LoadContent.loadContent(state, undefined)
+  await started.promise
+  state.lifecycle.disposed = true
+  resolve('large document contents')
+  expect(await pending).toBe(state)
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+  expect(getVisibleMock).not.toHaveBeenCalled()
 })

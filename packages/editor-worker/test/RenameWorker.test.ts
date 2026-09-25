@@ -87,7 +87,25 @@ test('dispose keeps a worker used by another editor', async () => {
 
   expect(rpc.dispose).not.toHaveBeenCalled()
   EditorStates.dispose(editor.uid)
-  EditorStates.dispose(otherEditor.uid)
+  await RenameWorker.dispose()
+  expect(rpc.dispose).toHaveBeenCalledTimes(1)
+})
+
+test('dispose keeps the only editor active rename widget alive', async () => {
+  const rpc = {
+    dispose: jest.fn(),
+    invoke: jest.fn<(...args: any[]) => Promise<any>>().mockResolvedValue(undefined),
+  }
+  launchRenameWorker.mockResolvedValue(rpc)
+  await RenameWorker.invoke('Rename.create')
+  const editor = { uid: 1, widgets: [{ id: WidgetId.Rename }] }
+  EditorStates.set(editor.uid, editor as any, editor as any)
+
+  await RenameWorker.dispose()
+
+  expect(rpc.dispose).not.toHaveBeenCalled()
+  const closed = { ...editor, widgets: [] }
+  EditorStates.set(editor.uid, editor as any, closed as any)
   await RenameWorker.dispose()
   expect(rpc.dispose).toHaveBeenCalledTimes(1)
 })

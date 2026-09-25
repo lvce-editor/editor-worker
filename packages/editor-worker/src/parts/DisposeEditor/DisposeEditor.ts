@@ -6,6 +6,8 @@ import * as EditorStates from '../EditorStates/EditorStates.ts'
 import { notifyEditorStatusCleared } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
 import * as RenderWidgets from '../RenderWidgets/RenderWidgets.ts'
+import * as SyntaxHighlightingState from '../SyntaxHighlightingState/SyntaxHighlightingState.ts'
+import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 export const disposeEditor = async (editorUid: number): Promise<readonly any[]> => {
@@ -13,20 +15,30 @@ export const disposeEditor = async (editorUid: number): Promise<readonly any[]> 
   if (!editor) {
     return []
   }
+  if (editor.lifecycle) {
+    editor.lifecycle.disposed = true
+    delete editor.lifecycle.sentLines
+  }
+  // Invalidate the registry before awaiting widget or worker cleanup.
+  EditorStates.dispose(editorUid)
+  AutoSave.dispose(editorUid)
   EditorHoverState.clear(editorUid)
+  WidgetRevision.dispose(editorUid)
+  const pending: Promise<unknown>[] = []
+  if (SyntaxHighlightingState.getEnabled()) {
+    pending.push(SyntaxHighlightingWorker.invoke('TextDocument.dispose', editor.id))
+  }
   for (const widget of editor.widgets) {
     if (widget.id === WidgetId.ColorPicker) {
-      await ColorPickerWorker.invoke('ColorPicker.dispose', widget.newState.uid)
+      pending.push(ColorPickerWorker.invoke('ColorPicker.dispose', widget.newState.uid))
     }
   }
   const commands = RenderWidgets.renderWidgets(editor, {
     ...editor,
     widgets: [],
   })
-  WidgetRevision.dispose(editorUid)
-  AutoSave.dispose(editorUid)
-  EditorStates.dispose(editorUid)
-  await RenameWorker.dispose()
+  pending.push(RenameWorker.dispose())
+  await Promise.all(pending)
   if (EditorStates.getKeys().length === 0) {
     await notifyEditorStatusCleared()
   }

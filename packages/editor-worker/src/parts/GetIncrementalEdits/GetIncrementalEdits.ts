@@ -4,7 +4,7 @@ import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncremental
 import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
 
 export const getIncrementalEdits = async (oldState: EditorState, newState: EditorState) => {
-  if (!newState.undoStack) {
+  if (newState.lifecycle?.disposed || !newState.undoStack) {
     return emptyIncrementalEdits
   }
   if (oldState.undoStack === newState.undoStack) {
