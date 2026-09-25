@@ -4,8 +4,6 @@ export const saveState = (state: EditorState, savedState: unknown): any => {
   const { largeFile, lines, redoStack, undoStack } = state
   return {
     ...(largeFile && { largeFile: true }),
-    lines,
-    redoStack,
-    undoStack,
+    ...((redoStack.length > 0 || undoStack.length > 0) && { lines, redoStack, undoStack }),
   }
 }
