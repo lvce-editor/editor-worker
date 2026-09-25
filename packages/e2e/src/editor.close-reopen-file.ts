@@ -8,19 +8,20 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Wo
   await Workspace.setPath(tmpDir)
   await Main.closeAllEditors()
 
+  const editorRows = Locator('.EditorRows')
   for (let cycle = 0; cycle < 3; cycle++) {
     const content = `revision ${cycle}`
     await FileSystem.writeFile(uri, content)
     await Main.openUri(uri)
-    await expect(Locator('.EditorRows')).toHaveText(content)
+    await expect(editorRows).toHaveText(content)
     await Editor.setCursor(0, content.length)
     await Editor.type(' saved')
     await Main.save()
     await FileSystem.shouldHaveFile(uri, `${content} saved`)
     await Main.closeAllEditors()
-    await expect(Locator('.EditorRows')).toBeHidden()
+    await expect(editorRows).toBeHidden()
     await Main.openUri(uri)
-    await expect(Locator('.EditorRows')).toHaveText(`${content} saved`)
+    await expect(editorRows).toHaveText(`${content} saved`)
     await Main.closeAllEditors()
   }
 }
