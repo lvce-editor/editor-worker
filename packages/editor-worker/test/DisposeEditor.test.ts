@@ -39,3 +39,18 @@ test('disposes editor widgets and state', async () => {
 test('does nothing when editor is already disposed', async () => {
   await expect(DisposeEditor.disposeEditor(900_003)).resolves.toEqual([])
 })
+
+test('releases the closed editor rendered DOM and preserves other editors', async () => {
+  const RenderedDoms = await import('../src/parts/RenderedDoms/RenderedDoms.ts')
+  const editor = { uid: 900_005, widgets: [] }
+  const otherDom = [{ text: 'still open', type: 12 }]
+  EditorStates.set(editor.uid, editor as any, editor as any)
+  RenderedDoms.set(editor.uid, [{ text: 'closed document', type: 12 }])
+  RenderedDoms.set(900_006, otherDom)
+
+  await DisposeEditor.disposeEditor(editor.uid)
+
+  expect(RenderedDoms.get(editor.uid)).toBeUndefined()
+  expect(RenderedDoms.get(900_006)).toBe(otherDom)
+  RenderedDoms.clear()
+})
