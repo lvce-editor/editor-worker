@@ -5,6 +5,7 @@ import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import { notifyEditorStatusCleared } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
+import * as RenderedDoms from '../RenderedDoms/RenderedDoms.ts'
 import * as RenderWidgets from '../RenderWidgets/RenderWidgets.ts'
 import * as SyntaxHighlightingState from '../SyntaxHighlightingState/SyntaxHighlightingState.ts'
 import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
@@ -21,6 +22,7 @@ export const disposeEditor = async (editorUid: number): Promise<readonly any[]> 
   }
   // Invalidate the registry before awaiting widget or worker cleanup.
   EditorStates.dispose(editorUid)
+  RenderedDoms.dispose(editorUid)
   AutoSave.dispose(editorUid)
   EditorHoverState.clear(editorUid)
   WidgetRevision.dispose(editorUid)
