@@ -74,6 +74,58 @@ test('editorCopyLineDown - multiple cursors', async () => {
   })
 })
 
+test('editorCopyLineDown - reveals the primary cursor after copying at the bottom of the viewport', async () => {
+  const editor = {
+    decorations: [],
+    deltaY: 0,
+    foldingRanges: [],
+    height: 40,
+    invalidStartIndex: 0,
+    itemHeight: 20,
+    lineCache: [],
+    lines: ['one', 'two', 'three', 'four'],
+    minimumSliderSize: 10,
+    numberOfVisibleLines: 2,
+    primarySelectionIndex: 4,
+    rowHeight: 20,
+    selections: EditorSelection.fromRanges([0, 0, 0, 0], [1, 0, 1, 0]),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
+  }
+
+  const newEditor = await EditorCopyLineDown.copyLineDown(editor)
+
+  expect(newEditor).toMatchObject({
+    deltaY: 40,
+    lines: ['one', 'one', 'two', 'two', 'three', 'four'],
+    selections: EditorSelection.fromRanges([1, 0, 1, 0], [3, 0, 3, 0]),
+  })
+})
+
+test('editorCopyLineDown - keeps the viewport when the primary cursor remains visible', async () => {
+  const editor = {
+    decorations: [],
+    deltaY: 0,
+    foldingRanges: [],
+    height: 40,
+    invalidStartIndex: 0,
+    itemHeight: 20,
+    lineCache: [],
+    lines: ['one', 'two', 'three', 'four'],
+    minimumSliderSize: 10,
+    numberOfVisibleLines: 2,
+    primarySelectionIndex: 0,
+    rowHeight: 20,
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
+    tokenizer: TokenizePlainText,
+    undoStack: [],
+  }
+
+  const newEditor = await EditorCopyLineDown.copyLineDown(editor)
+
+  expect(newEditor.deltaY).toBe(0)
+})
+
 test.each([0, 2])('editorCopyLineDown - cursor at end of row %i', async (row) => {
   const editor = {
     decorations: [],
