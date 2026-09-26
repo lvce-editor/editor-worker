@@ -10,7 +10,20 @@ export const toggleCompletion = async (editor: any) => {
   const { widgets } = editor
   const isCompletionOpen = HasWidget.hasWidget(widgets, WidgetId.Completion)
   if (isCompletionOpen) {
-    return EditorCommandCloseCompletion.closeCompletion(editor)
+    const newEditor = await EditorCommandCloseCompletion.closeCompletion(editor)
+    if (!editor.completionWidgetDismissedOnBlur) {
+      return newEditor
+    }
+    return {
+      ...newEditor,
+      completionWidgetDismissedOnBlur: false,
+    }
+  }
+  if (editor.completionWidgetDismissedOnBlur) {
+    return {
+      ...editor,
+      completionWidgetDismissedOnBlur: false,
+    }
   }
   return EditorCommandOpenCompletion.openCompletion(editor)
 }

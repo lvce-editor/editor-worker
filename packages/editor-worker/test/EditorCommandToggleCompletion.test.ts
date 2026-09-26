@@ -24,6 +24,14 @@ test('opens the suggest widget when it is closed', async () => {
   expect(closeCompletion).not.toHaveBeenCalled()
 })
 
+test('does not reopen the suggest widget when blur already dismissed it', async () => {
+  const editor = { completionWidgetDismissedOnBlur: true, widgets: [] }
+
+  expect(await toggleCompletion(editor)).toEqual({ completionWidgetDismissedOnBlur: false, widgets: [] })
+  expect(openCompletion).not.toHaveBeenCalled()
+  expect(closeCompletion).not.toHaveBeenCalled()
+})
+
 test('closes the suggest widget when it is open', async () => {
   const editor = { widgets: [{ id: WidgetId.Completion }] }
 

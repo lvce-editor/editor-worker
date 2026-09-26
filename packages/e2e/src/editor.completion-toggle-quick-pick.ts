@@ -13,17 +13,30 @@ export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locato
   await Editor.setCursor(0, 0)
 
   const completions = Locator('.EditorCompletion')
-  await expect(completions).toBeHidden()
+  await Editor.closeCompletion()
+  const expectVisibility = async (isVisible: boolean, failureMessage: string) => {
+    try {
+      if (isVisible) {
+        await expect(completions).toBeVisible()
+      } else {
+        await expect(completions).toBeHidden()
+      }
+    } catch {
+      throw new Error(failureMessage)
+    }
+  }
+  await expectVisibility(false, 'Editor.closeCompletion did not close the initial completion widget')
 
   await QuickPick.open()
   await QuickPick.selectItem('Editor: Toggle Suggest Widget')
-  await expect(completions).toBeVisible()
+  await expectVisibility(true, 'The first palette toggle did not open completion')
+
+  await QuickPick.open()
+  await expectVisibility(true, 'Opening the palette hid the completion widget')
+  await QuickPick.selectItem('Editor: Toggle Suggest Widget')
+  await expectVisibility(false, 'The second palette toggle did not close completion')
 
   await QuickPick.open()
   await QuickPick.selectItem('Editor: Toggle Suggest Widget')
-  await expect(completions).toBeHidden()
-
-  await QuickPick.open()
-  await QuickPick.selectItem('Editor: Toggle Suggest Widget')
-  await expect(completions).toBeVisible()
+  await expectVisibility(true, 'The third palette toggle did not reopen completion')
 }
