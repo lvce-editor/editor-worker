@@ -22,6 +22,14 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Settings, 
 
     await Editor.shouldHaveText('hello ([world])')
     await Editor.shouldHaveSelections(new Uint32Array([0, 13, 0, 8]))
+
+    await Command.execute('Editor.undo')
+    await Editor.shouldHaveText('hello (world)')
+    await Editor.shouldHaveSelections(new Uint32Array([0, 12, 0, 7]))
+
+    await Command.execute('Editor.redo')
+    await Editor.shouldHaveText('hello ([world])')
+    await Editor.shouldHaveSelections(new Uint32Array([0, 13, 0, 8]))
   } finally {
     await Settings.update({ 'editor.autoClosingBrackets': autoClosingBrackets })
   }
