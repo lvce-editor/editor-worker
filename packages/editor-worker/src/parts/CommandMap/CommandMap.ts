@@ -140,6 +140,7 @@ import * as EditorTabCompletion from '../EditorCommand/EditorCommandTabCompletio
 import * as EditorToggleBlockComment from '../EditorCommand/EditorCommandToggleBlockComment.ts'
 import { toggleBreakpoint } from '../EditorCommand/EditorCommandToggleBreakpoint.ts'
 import * as EditorToggleComment from '../EditorCommand/EditorCommandToggleComment.ts'
+import * as EditorCommandToggleCompletion from '../EditorCommand/EditorCommandToggleCompletion.ts'
 import * as EditorToggleLineComment from '../EditorCommand/EditorCommandToggleLineComment.ts'
 import * as EditorType from '../EditorCommand/EditorCommandType.ts'
 import * as EditorTypeWithAutoClosing from '../EditorCommand/EditorCommandTypeWithAutoClosing.ts'
@@ -422,6 +423,7 @@ export const commandMap = {
   'Editor.toggleBlockComment': wrapCommand(EditorToggleBlockComment.toggleBlockComment),
   'Editor.toggleBreakpoint': wrapCommand(toggleBreakpoint),
   'Editor.toggleComment': wrapCommand(EditorToggleComment.toggleComment),
+  'Editor.toggleCompletion': wrapCommand(EditorCommandToggleCompletion.toggleCompletion),
   'Editor.toggleLineComment': wrapCommand(EditorToggleLineComment.editorToggleLineComment),
   'Editor.toggleMinimap': ToggleMinimap.toggleMinimap,
   'Editor.type': wrapCommand(EditorType.type, true),

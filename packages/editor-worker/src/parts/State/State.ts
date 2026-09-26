@@ -21,6 +21,7 @@ export interface EditorState {
   readonly completionState: string
   readonly completionTriggerCharacters: readonly string[]
   readonly completionUid: number
+  readonly completionWidgetDismissedOnBlur?: boolean
   readonly cursorInfos: readonly any[]
   readonly cursorUndoStack?: readonly Uint32Array[]
   readonly cursorWidth: number
