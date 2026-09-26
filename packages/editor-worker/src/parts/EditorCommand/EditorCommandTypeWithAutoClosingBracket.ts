@@ -38,12 +38,12 @@ export const typeWithAutoClosingBracket = (editor: any, text: string) => {
           ? [text + change.deleted[0] + closingBracket]
           : [text + change.deleted[0], ...change.deleted.slice(1, -1), change.deleted.at(-1) + closingBracket]
       const start = {
-        rowIndex: change.start.rowIndex + lineDelta,
         columnIndex: change.start.columnIndex + 1,
+        rowIndex: change.start.rowIndex + lineDelta,
       }
       const end = {
+        columnIndex: (change.inserted.length === 1 ? change.start.columnIndex + change.inserted[0].length : change.inserted.at(-1).length) - 1,
         rowIndex: start.rowIndex + change.inserted.length - 1,
-        columnIndex: change.inserted.length === 1 ? change.start.columnIndex + change.inserted[0].length - 1 : change.inserted.at(-1).length - 1,
       }
       const anchor = isReversedSelection ? end : start
       const active = isReversedSelection ? start : end
