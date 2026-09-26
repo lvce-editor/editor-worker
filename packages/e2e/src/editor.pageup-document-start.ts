@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.pageup-document-start'
 
-export const test: Test = async ({ Editor, FileSystem, KeyBoard, Locator, Main, Workspace, expect }) => {
+export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   const filePath = `${tmpDir}/file.txt`
   const lines = Array.from({ length: 60 }, (_, index) => `line ${String(index).padStart(2, '0')}`)
@@ -25,7 +25,8 @@ export const test: Test = async ({ Editor, FileSystem, KeyBoard, Locator, Main, 
 
   await expect(cursor).toBeVisible()
   await expect(cursor).toHaveCSS('translate', '0px')
-  await expect(Locator('.EditorRow').first()).toContainText('line 00')
+  const firstRow = Locator('.EditorRow').first()
+  await expect(firstRow).toContainText('line 00')
   const firstPageUpSelections = await Editor.getSelections()
   if (firstPageUpSelections[0] !== 0 || firstPageUpSelections[1] !== 0) {
     throw new Error('PageUp did not move the cursor to document position 0/0')
