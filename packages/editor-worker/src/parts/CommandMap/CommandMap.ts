@@ -22,6 +22,7 @@ import * as EditorCommandCloseCompletion from '../EditorCommand/EditorCommandClo
 import * as EditorCommandCloseFind from '../EditorCommand/EditorCommandCloseFind.ts'
 import * as CloseRename from '../EditorCommand/EditorCommandCloseRename.ts'
 import * as EditorCommandCloseSourceAction from '../EditorCommand/EditorCommandCloseSourceAction.ts'
+import * as EditorCommandToggleCompletion from '../EditorCommand/EditorCommandToggleCompletion.ts'
 import * as EditorOpenColorPicker from '../EditorCommand/EditorCommandColorPicker.ts'
 import * as Composition from '../EditorCommand/EditorCommandComposition.ts'
 import * as Copy from '../EditorCommand/EditorCommandCopy.ts'
@@ -422,6 +423,7 @@ export const commandMap = {
   'Editor.toggleBlockComment': wrapCommand(EditorToggleBlockComment.toggleBlockComment),
   'Editor.toggleBreakpoint': wrapCommand(toggleBreakpoint),
   'Editor.toggleComment': wrapCommand(EditorToggleComment.toggleComment),
+  'Editor.toggleCompletion': wrapCommand(EditorCommandToggleCompletion.toggleCompletion),
   'Editor.toggleLineComment': wrapCommand(EditorToggleLineComment.editorToggleLineComment),
   'Editor.toggleMinimap': ToggleMinimap.toggleMinimap,
   'Editor.type': wrapCommand(EditorType.type, true),

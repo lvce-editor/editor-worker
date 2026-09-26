@@ -9,6 +9,10 @@ export const goToBracket = () => {
   return I18nString.i18nString(UiStrings.GoToBracket)
 }
 
+export const editorToggleSuggestWidget = () => {
+  return I18nString.i18nString(UiStrings.EditorToggleSuggestWidget)
+}
+
 export const noDefinitionFound = () => {
   return I18nString.i18nString(UiStrings.NoDefinitionFound)
 }

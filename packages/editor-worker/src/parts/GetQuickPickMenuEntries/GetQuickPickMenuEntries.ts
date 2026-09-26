@@ -141,5 +141,9 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       id: 'Editor.toggleMinimap',
       label: EditorStrings.viewToggleMinimap(),
     },
+    {
+      id: 'Editor.toggleCompletion',
+      label: EditorStrings.editorToggleSuggestWidget(),
+    },
   ]
 }
