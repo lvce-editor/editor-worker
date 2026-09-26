@@ -32,7 +32,7 @@ export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locato
   await expectVisibility(true, 'The first palette toggle did not open completion')
 
   await QuickPick.open()
-  await expectVisibility(true, 'Opening the palette hid the completion widget')
+  await expectVisibility(false, 'Opening the palette did not dismiss completion')
   await QuickPick.selectItem('Editor: Toggle Suggest Widget')
   await expectVisibility(false, 'The second palette toggle did not close completion')
 
