@@ -17,6 +17,7 @@ const editorContentNode: VirtualDomNode = {
 
 interface EditorContentVirtualDomOptions {
   readonly bracketMatchInfos?: readonly any[]
+  readonly breadcrumbsEnabled?: boolean
   readonly cursorInfos?: readonly any[]
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
@@ -39,6 +40,7 @@ interface EditorContentVirtualDomOptions {
 
 export const getEditorContentVirtualDom = ({
   bracketMatchInfos = [],
+  breadcrumbsEnabled = false,
   cursorInfos = [],
   diagnostics = [],
   differences,
@@ -55,7 +57,10 @@ export const getEditorContentVirtualDom = ({
   visibleViewLineIndices = [],
 }: EditorContentVirtualDomOptions): readonly VirtualDomNode[] => {
   return [
-    editorContentNode,
+    {
+      ...editorContentNode,
+      className: breadcrumbsEnabled ? 'EditorContent EditorBreadcrumbsOffset' : 'EditorContent',
+    },
     ...GetEditorInputVirtualDom.getEditorInputVirtualDom(),
     ...GetEditorLayersVirtualDom.getEditorLayersVirtualDom(
       selectionInfos,

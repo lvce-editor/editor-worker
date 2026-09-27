@@ -71,6 +71,7 @@ const getMinimapVirtualDom = (
   minimapEnabled: boolean,
   minimapLines: readonly (readonly (number | string)[])[],
   minLineY: number,
+  breadcrumbsEnabled: boolean,
 ): readonly VirtualDomNode[] => {
   if (!minimapEnabled) {
     return []
@@ -79,7 +80,7 @@ const getMinimapVirtualDom = (
     {
       ariaHidden: AriaBoolean.True,
       childCount: 0,
-      className: 'EditorMinimap',
+      className: breadcrumbsEnabled ? 'EditorMinimap EditorBreadcrumbsOffset' : 'EditorMinimap',
       'data-lineCount': minimapLines.length,
       'data-visibleStart': minLineY,
       type: VirtualDomElements.Div,
@@ -145,8 +146,10 @@ export const getEditorVirtualDom = ({
   const showGutter = lineNumbers || breakPoints.length > 0 || lightBulbRowIndex >= 0 || gutterDecorations.length > 0
   const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
   const activeLineNumber = highlightActiveLineNumber ? primaryCursorRowIndex + 1 : -1
-  const gutterDom = showGutter ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, activeLineNumber) : []
-  const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY)
+  const gutterDom = showGutter
+    ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, activeLineNumber, breadcrumbsEnabled)
+    : []
+  const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY, breadcrumbsEnabled)
   const breadcrumbsDom = breadcrumbsEnabled
     ? GetEditorBreadcrumbsVirtualDom.getEditorBreadcrumbsVirtualDom({
         breadcrumbsEnabled,
@@ -171,6 +174,7 @@ export const getEditorVirtualDom = ({
     ...gutterDom,
     ...GetEditorContentVirtualDom.getEditorContentVirtualDom({
       bracketMatchInfos,
+      breadcrumbsEnabled,
       cursorInfos,
       diagnostics,
       differences,
