@@ -45,14 +45,15 @@ test('notifies the application after removing a disposed editor from problems', 
   const editor = {
     applicationId: 'test-application',
     id: 900_007,
-    uri: 'app://settings.json',
     uid: 900_007,
+    uri: 'app://settings.json',
     widgets: [],
   }
+  let stateWasRemovedWhenNotified = false
   using rendererWorkerRpc = RendererWorker.registerMockRpc({
     'Application.execute': async (_applicationId: string, method: string) => {
       if (method === 'Layout.handleDiagnosticsChange') {
-        expect(EditorStates.get(editor.uid)).toBeUndefined()
+        stateWasRemovedWhenNotified = !EditorStates.getKeys().includes(String(editor.uid))
       }
     },
   })
@@ -63,6 +64,7 @@ test('notifies the application after removing a disposed editor from problems', 
   expect(rendererWorkerRpc.invocations).toEqual([
     ['Application.execute', 'test-application', 'Layout.handleDiagnosticsChange', 'app://settings.json'],
   ])
+  expect(stateWasRemovedWhenNotified).toBe(true)
   expect(EditorStates.get(editor.uid)).toBeUndefined()
 })
 
