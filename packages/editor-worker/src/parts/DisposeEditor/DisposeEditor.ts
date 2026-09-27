@@ -1,4 +1,5 @@
 import { WidgetId } from '@lvce-editor/constants'
+import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
 import * as ColorPickerWorker from '../ColorPickerWorker/ColorPickerWorker.ts'
 import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
@@ -22,6 +23,11 @@ export const disposeEditor = async (editorUid: number): Promise<readonly any[]> 
   }
   // Invalidate the registry before awaiting widget or worker cleanup.
   EditorStates.dispose(editorUid)
+  try {
+    await ApplicationRpc.invoke(editor.applicationId, 'Layout.handleDiagnosticsChange', editor.uri)
+  } catch {
+    // Older renderer workers do not support diagnostics change listeners.
+  }
   RenderedDoms.dispose(editorUid)
   AutoSave.dispose(editorUid)
   EditorHoverState.clear(editorUid)
