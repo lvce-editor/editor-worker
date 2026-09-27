@@ -7,5 +7,5 @@ export const editorDiagnosticEffect = {
     return UpdateDiagnostics.updateDiagnostics(editor)
   },
   isActive: (oldEditor: EditorState, newEditor: EditorState) =>
-    !oldEditor.initial && newEditor.diagnosticsEnabled && (oldEditor.lines !== newEditor.lines || oldEditor.languageId !== newEditor.languageId),
+    !oldEditor.initial && !newEditor.loadError && newEditor.diagnosticsEnabled && (oldEditor.lines !== newEditor.lines || oldEditor.languageId !== newEditor.languageId),
 }
