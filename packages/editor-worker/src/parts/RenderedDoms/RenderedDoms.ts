@@ -13,3 +13,7 @@ export const set = (uid: number, dom: readonly VirtualDomNode[]): void => {
 export const clear = (): void => {
   renderedDoms.clear()
 }
+
+export const dispose = (uid: number): void => {
+  renderedDoms.delete(uid)
+}

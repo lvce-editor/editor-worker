@@ -1,18 +1,10 @@
 import * as ClassNames from '../ClassNames/ClassNames.ts'
-import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
-const getActionClassName = (isFocused: boolean) => {
-  if (isFocused) {
-    return MergeClassNames.mergeClassNames(ClassNames.SourceActionItem, ClassNames.SourceActionItemFocused)
-  }
-  return ClassNames.SourceActionItem
-}
-
 export const getSourceActionListItemVirtualDom = (sourceAction: any) => {
   const { isFocused, name } = sourceAction
-  const actionClassName = getActionClassName(isFocused)
+  const actionClassName = isFocused ? ClassNames.SourceActionItemFocused : ClassNames.SourceActionItem
   return [
     {
       childCount: 2,
@@ -20,7 +12,7 @@ export const getSourceActionListItemVirtualDom = (sourceAction: any) => {
       type: VirtualDomElements.Div,
     },
     {
-      className: MergeClassNames.mergeClassNames(ClassNames.SourceActionIcon, ClassNames.MaskIcon, ClassNames.MaskIconSymbolFile),
+      className: ClassNames.SourceActionIcon,
       type: VirtualDomElements.Div,
     },
     text(name),

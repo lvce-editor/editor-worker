@@ -17,6 +17,7 @@ const editorContentNode: VirtualDomNode = {
 
 interface EditorContentVirtualDomOptions {
   readonly bracketMatchInfos?: readonly any[]
+  readonly breadcrumbsEnabled?: boolean
   readonly cursorInfos?: readonly any[]
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
@@ -28,6 +29,7 @@ interface EditorContentVirtualDomOptions {
   readonly highlightedLine?: number
   readonly lineNumbers?: boolean
   readonly problemsHighlightedRow?: number
+  readonly roundedSelection?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
   readonly selectionInfos?: readonly any[]
@@ -38,6 +40,7 @@ interface EditorContentVirtualDomOptions {
 
 export const getEditorContentVirtualDom = ({
   bracketMatchInfos = [],
+  breadcrumbsEnabled = false,
   cursorInfos = [],
   diagnostics = [],
   differences,
@@ -46,6 +49,7 @@ export const getEditorContentVirtualDom = ({
   highlightedLine = -1,
   lineNumbers = true,
   problemsHighlightedRow = -1,
+  roundedSelection = false,
   scrollBarDiagnostics = [],
   selectionInfos = [],
   textInfos,
@@ -53,7 +57,10 @@ export const getEditorContentVirtualDom = ({
   visibleViewLineIndices = [],
 }: EditorContentVirtualDomOptions): readonly VirtualDomNode[] => {
   return [
-    editorContentNode,
+    {
+      ...editorContentNode,
+      className: breadcrumbsEnabled ? 'EditorContent EditorBreadcrumbsOffset' : 'EditorContent',
+    },
     ...GetEditorInputVirtualDom.getEditorInputVirtualDom(),
     ...GetEditorLayersVirtualDom.getEditorLayersVirtualDom(
       selectionInfos,
@@ -69,6 +76,7 @@ export const getEditorContentVirtualDom = ({
       focused,
       visibleViewLineIndices,
       problemsHighlightedRow,
+      roundedSelection,
     ),
     ...GetEditorScrollBarDiagnosticsVirtualDom.getEditorScrollBarDiagnosticsVirtualDom(scrollBarDiagnostics),
     ...GetScrollBarVirtualDom.getScrollBarVirtualDom(),

@@ -11,13 +11,13 @@ import { saveNormalFile } from './EditorCommandSave/saveNormalFile.ts'
 import { saveUntitledFile } from './EditorCommandSave/saveUntitledFile.ts'
 import { showSaveErrorDialog } from './EditorCommandSave/showSaveErrorDialog.ts'
 
-export const save = async (editor: any): Promise<any> => {
+export const save = async (editor: any, skipFormatting = false): Promise<any> => {
   try {
     const { applicationId, platform, uri } = editor
     if (!isUntitledFile(uri) && (await isReadonlyFile(uri, applicationId))) {
       return editor
     }
-    const newEditor = await getNewEditor(editor)
+    const newEditor = await getNewEditor(editor, skipFormatting)
     const content = applyLineEndings(TextDocument.getText(newEditor), newEditor.endOfLine)
     if (isUntitledFile(uri)) {
       const pickedFilePath = await saveUntitledFile(uri, content, platform, applicationId)

@@ -3,6 +3,7 @@ import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGut
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as AriaBoolean from '../AriaBoolean/AriaBoolean.ts'
 import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
+import * as ClassNames from '../ClassNames/ClassNames.ts'
 import { combineWhitespaceTokens as combineTokens } from '../CombineWhitespaceTokens/CombineWhitespaceTokens.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as GetEditorBreadcrumbsVirtualDom from '../GetEditorBreadcrumbsVirtualDom/GetEditorBreadcrumbsVirtualDom.ts'
@@ -10,13 +11,12 @@ import * as GetEditorContentVirtualDom from '../GetEditorContentVirtualDom/GetEd
 import * as GetEditorGutterLayerVirtualDom from '../GetEditorGutterLayerVirtualDom/GetEditorGutterLayerVirtualDom.ts'
 import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
 import { getPrimaryCursorRowIndex } from '../GetPrimaryCursorRowIndex/GetPrimaryCursorRowIndex.ts'
-import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 const textEditorErrorIconNode: VirtualDomNode = {
   childCount: 0,
-  className: MergeClassNames.mergeClassNames('EditorTextIcon', 'EditorTextIconError', 'MaskIcon', 'MaskIconError'),
+  className: ClassNames.TextEditorErrorIcon,
   type: VirtualDomElements.Div,
 }
 
@@ -55,6 +55,7 @@ interface EditorVirtualDomOptions {
   readonly minLineY?: number
   readonly primarySelectionIndex?: number
   readonly problemsHighlightedRow?: number
+  readonly roundedSelection?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
   readonly selectionInfos?: readonly any[]
@@ -71,6 +72,7 @@ const getMinimapVirtualDom = (
   minimapEnabled: boolean,
   minimapLines: readonly (readonly (number | string)[])[],
   minLineY: number,
+  breadcrumbsEnabled: boolean,
 ): readonly VirtualDomNode[] => {
   if (!minimapEnabled) {
     return []
@@ -79,7 +81,7 @@ const getMinimapVirtualDom = (
     {
       ariaHidden: AriaBoolean.True,
       childCount: 0,
-      className: 'EditorMinimap',
+      className: breadcrumbsEnabled ? 'EditorMinimap EditorBreadcrumbsOffset' : 'EditorMinimap',
       'data-lineCount': minimapLines.length,
       'data-visibleStart': minLineY,
       type: VirtualDomElements.Div,
@@ -113,6 +115,7 @@ export const getEditorVirtualDom = ({
   minLineY = 0,
   primarySelectionIndex = 0,
   problemsHighlightedRow = -1,
+  roundedSelection = false,
   scrollBarDiagnostics = [],
   selectionInfos = [],
   selections = new Uint32Array(),
@@ -127,7 +130,7 @@ export const getEditorVirtualDom = ({
     return [
       {
         childCount: 2,
-        className: MergeClassNames.mergeClassNames('Viewlet', 'TextEditorError'),
+        className: ClassNames.TextEditorError,
         'data-uid': uid,
         role: AriaRoles.Code,
         type: VirtualDomElements.Div,
@@ -145,8 +148,10 @@ export const getEditorVirtualDom = ({
   const showGutter = lineNumbers || breakPoints.length > 0 || lightBulbRowIndex >= 0 || gutterDecorations.length > 0
   const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
   const activeLineNumber = highlightActiveLineNumber ? primaryCursorRowIndex + 1 : -1
-  const gutterDom = showGutter ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, activeLineNumber) : []
-  const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY)
+  const gutterDom = showGutter
+    ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, activeLineNumber, breadcrumbsEnabled)
+    : []
+  const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY, breadcrumbsEnabled)
   const breadcrumbsDom = breadcrumbsEnabled
     ? GetEditorBreadcrumbsVirtualDom.getEditorBreadcrumbsVirtualDom({
         breadcrumbFileIcon,
@@ -162,7 +167,7 @@ export const getEditorVirtualDom = ({
   return [
     {
       childCount: (showGutter ? 2 : 1) + (minimapEnabled ? 1 : 0) + (breadcrumbsEnabled ? 1 : 0),
-      className: MergeClassNames.mergeClassNames('Viewlet', 'Editor'),
+      className: ClassNames.Editor,
       'data-uid': uid,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
       role: AriaRoles.Code,
@@ -172,6 +177,7 @@ export const getEditorVirtualDom = ({
     ...gutterDom,
     ...GetEditorContentVirtualDom.getEditorContentVirtualDom({
       bracketMatchInfos,
+      breadcrumbsEnabled,
       cursorInfos,
       diagnostics,
       differences,
@@ -180,6 +186,7 @@ export const getEditorVirtualDom = ({
       highlightedLine,
       lineNumbers,
       problemsHighlightedRow,
+      roundedSelection,
       scrollBarDiagnostics,
       selectionInfos,
       textInfos: combineWhitespaceTokens ? textInfos.map(combineTokens) : textInfos,

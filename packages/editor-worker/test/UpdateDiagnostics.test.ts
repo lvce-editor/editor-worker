@@ -136,6 +136,19 @@ test('updateDiagnostics skips disabled diagnostics', async () => {
   await expect(updateDiagnostics(editor)).resolves.toBe(editor)
 })
 
+test('updateDiagnostics skips editor content that failed to load', async () => {
+  const editor = {
+    diagnosticsEnabled: true,
+    id: 1,
+    languageId: 'json',
+    lines: [],
+    loadError: 'file not found',
+    uri: 'file:///missing.json',
+  }
+
+  await expect(updateDiagnostics(editor)).resolves.toBe(editor)
+})
+
 test('updateDiagnostics ignores results after the editor is closed', async () => {
   const diagnosticsRequested = Promise.withResolvers<void>()
   const diagnosticsResult = Promise.withResolvers<readonly any[]>()
@@ -198,6 +211,35 @@ test('updateDiagnostics ignores stale results after the editor text changes', as
 
   await expect(pendingUpdate).resolves.toBe(editor)
   expect(EditorStates.get(1)?.newState).toBe(edited)
+})
+
+test('updateDiagnostics ignores results after loading the document fails', async () => {
+  const diagnosticsRequested = Promise.withResolvers<void>()
+  const diagnosticsResult = Promise.withResolvers<readonly any[]>()
+  using _extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeDiagnosticProvider': async () => {
+      diagnosticsRequested.resolve()
+      return diagnosticsResult.promise
+    },
+  })
+  const editor = {
+    diagnostics: [],
+    diagnosticsEnabled: true,
+    id: 1,
+    languageId: 'json',
+    lines: [],
+    uri: 'file:///missing.json',
+  }
+  const failedLoad = { ...editor, loadError: 'file not found' }
+  EditorStates.set(1, editor as any, editor as any)
+
+  const pendingUpdate = updateDiagnostics(editor)
+  await diagnosticsRequested.promise
+  EditorStates.set(1, editor as any, failedLoad as any)
+  diagnosticsResult.resolve([{ message: 'Expected a JSON value', uri: editor.uri }])
+
+  await expect(pendingUpdate).resolves.toBe(editor)
+  expect(EditorStates.get(1)?.newState).toBe(failedLoad)
 })
 
 test('updateDiagnostics preserves scrolling and skips rendering for unchanged empty diagnostics', async () => {
@@ -301,7 +343,7 @@ test('updateDiagnostics preserves scrolling while diagnostic decorations are cal
   await pendingUpdate
 
   expect(extensionManagementWorkerRpc.invocations).toHaveLength(1)
-  expect(textMeasurementWorkerRpc.invocations).toHaveLength(2)
+  expect(textMeasurementWorkerRpc.invocations).toHaveLength(4)
   expect(EditorStates.get(1)?.newState.deltaY).toBe(100)
   expect(rendererWorkerRpc.invocations).toEqual([
     ['Editor.renderPending', 1],

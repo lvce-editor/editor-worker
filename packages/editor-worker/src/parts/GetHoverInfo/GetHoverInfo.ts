@@ -43,6 +43,9 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
     return undefined
   }
   const { displayString = '', displayStringLanguageId = '', documentation = '' } = hover || {}
+  if (!displayString.trim() && !documentation.trim() && matchingDiagnostics.length === 0) {
+    return undefined
+  }
   const tokenizerPath = ''
   const lineInfos = displayString
     ? await TokenizeCodeBlock.tokenizeCodeBlock(displayString, displayStringLanguageId || fallbackDisplayStringLanguageId, tokenizerPath)

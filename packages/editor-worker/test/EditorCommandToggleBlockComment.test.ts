@@ -2,6 +2,7 @@ import { expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
 import { ExtensionHost, RendererWorker, SyntaxHighlightingWorker } from '@lvce-editor/rpc-registry'
 import { toggleBlockComment } from '../src/parts/EditorCommand/EditorCommandToggleBlockComment.ts'
+import { editorToggleLineComment } from '../src/parts/EditorCommand/EditorCommandToggleLineComment.ts'
 import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
 
 const mockRpc = MockRpc.create({
@@ -44,4 +45,16 @@ test.each([
   const editor = { ...emptyEditor, lines, selections: new Uint32Array(selections), uri: 'file:///test.yaml' }
   const result = await toggleBlockComment(editor)
   expect(result.lines).toEqual(expected)
+})
+
+test.each([
+  { lines: ['one: 1', 'two: 2'], rows: [0, 1], selections: [0, 2, 1, 5] },
+  { lines: ['one: 1', 'two: 2'], rows: [0, 1], selections: [1, 5, 0, 2] },
+  { lines: ['one: 1', 'two: 2', 'three: 3'], rows: [0, 1], selections: [0, 0, 2, 0] },
+])('toggles every selected line comment for selections $selections', async ({ lines, rows, selections }) => {
+  const editor = { ...emptyEditor, lines, selections: new Uint32Array(selections), uri: 'file:///test.yaml' }
+  const commented = await editorToggleLineComment(editor)
+  expect(commented.lines).toEqual(lines.map((line, index) => (rows.includes(index) ? `# ${line}` : line)))
+  const uncommented = await editorToggleLineComment(commented)
+  expect(uncommented.lines).toEqual(lines)
 })

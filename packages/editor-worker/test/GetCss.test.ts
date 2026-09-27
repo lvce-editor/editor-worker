@@ -3,12 +3,18 @@ import { getCss } from '../src/parts/GetCss/GetCss.ts'
 
 test('getCss', () => {
   expect(getCss(42, 20, 24, 8, 40, 20)).toBe(`.Editor[data-uid="42"] {
+  --EditorRowContain: size style;
   --EditorRowHeight: 20px;
   --ScrollBarHeight: 24px;
   --ScrollBarTop: 8px;
   --ScrollBarWidth: 40px;
   --ScrollBarLeft: 20px;
 }
+.EditorRow { contain: var(--EditorRowContain, strict); }
+.Editor[data-uid="42"] .SelectionTopLeft { border-top-left-radius: 3px; }
+.Editor[data-uid="42"] .SelectionTopRight { border-top-right-radius: 3px; }
+.Editor[data-uid="42"] .SelectionBottomRight { border-bottom-right-radius: 3px; }
+.Editor[data-uid="42"] .SelectionBottomLeft { border-bottom-left-radius: 3px; }
 .Editor[data-uid="42"] .EditorLayers {
   height: calc(100% + var(--EditorRowHeight));
   translate: none;
@@ -22,15 +28,6 @@ test('getCss', () => {
 .Editor[data-uid="42"] .GutterRows {
   display: flex;
   flex-direction: column;
-}
-.Editor[data-uid="42"] .EditorRow,
-.Editor[data-uid="42"] .LineNumber {
-  flex: none;
-}
-.Editor[data-uid="42"] .EditorRow {
-  contain: size style;
-  height: var(--EditorRowHeight);
-  line-height: var(--EditorRowHeight);
 }
 .Editor[data-uid="42"] .MergeConflictActions,
 .Editor[data-uid="42"] .MergeConflictActionsGutter {
@@ -71,10 +68,6 @@ test('getCss', () => {
   font-style: italic;
   margin-left: 2em;
   user-select: none;
-}
-.Editor[data-uid="42"] .LineNumber {
-  contain: content;
-  position: relative;
 }
 .Editor[data-uid="42"] .EditorGutterDecoration {
   bottom: 0;

@@ -25,6 +25,19 @@ test('getEditorVirtualDom marks selections as unfocused', () => {
   })
 })
 
+test('getEditorVirtualDom does not render cursors when unfocused', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    cursorInfos: ['1px 2px'],
+    differences: [],
+    focused: false,
+    lineNumbers: false,
+    textInfos: [],
+    uid: 42,
+  })
+
+  expect(dom).not.toContainEqual(expect.objectContaining({ className: 'EditorCursor' }))
+})
+
 test('getEditorVirtualDom', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     cursorInfos: ['144.962px 180px'],
@@ -208,6 +221,21 @@ test('getEditorVirtualDom', () => {
       type: VirtualDomElements.Div,
     },
   ])
+})
+
+test('getEditorVirtualDom adds a direct offset class to breadcrumb-aligned children', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    breadcrumbsEnabled: true,
+    differences: [],
+    gutterInfos: [1],
+    minimapEnabled: true,
+    textInfos: [],
+    uid: 42,
+  })
+
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'Gutter EditorBreadcrumbsOffset' }))
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'EditorContent EditorBreadcrumbsOffset' }))
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'EditorMinimap EditorBreadcrumbsOffset' }))
 })
 
 test('getEditorVirtualDom - folded line numbers', () => {

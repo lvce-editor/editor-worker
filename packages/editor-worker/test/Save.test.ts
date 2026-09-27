@@ -163,7 +163,7 @@ for (const [formatOnSave, modified] of [
       modified,
       numberOfVisibleLines: 0,
       platform: PlatformType.Web,
-      selections: new Uint32Array([0, 0, 0, 0]),
+      selections: new Uint32Array([0, 4, 0, 4]),
       tokenizer: TokenizePlainText,
       uid: 1,
       undoStack: [],
@@ -174,6 +174,7 @@ for (const [formatOnSave, modified] of [
 
     expect(result.lines).toEqual(formatOnSave ? ['let x = 1', ''] : editor.lines)
     expect(result.modified).toBe(false)
+    expect(result.selections).toEqual(new Uint32Array([0, 4, 0, 4]))
     expect(mockRpc.invocations).toContainEqual([
       'Application.execute',
       'source',
@@ -201,3 +202,49 @@ for (const [formatOnSave, modified] of [
     )
   })
 }
+
+test('save without formatting skips the formatter for one save and preserves format-on-save', async () => {
+  using mockRpc = RendererWorker.registerMockRpc({
+    'Application.execute': async (_applicationId: string, method: string) => (method === 'FileSystem.isReadonly' ? false : undefined),
+  })
+  using mockExtensionRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.invokeForApplication': async () => [{ endOffset: 9, inserted: 'let x = 1\n', startOffset: 0 }],
+  })
+  const editor = {
+    applicationId: 'source',
+    decorations: [],
+    formatOnSave: true,
+    id: 1,
+    invalidStartIndex: 0,
+    languageId: 'typescript',
+    lineCache: [],
+    lines: ['let x=1; '],
+    minLineY: 0,
+    modified: true,
+    numberOfVisibleLines: 0,
+    platform: PlatformType.Web,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tokenizer: TokenizePlainText,
+    uid: 1,
+    undoStack: [],
+    uri: 'memfs:///sample/main.ts',
+  }
+
+  const savedWithoutFormatting = await EditorCommandSave.save(editor, true)
+  expect(savedWithoutFormatting.lines).toEqual(editor.lines)
+  expect(savedWithoutFormatting.modified).toBe(false)
+  expect(savedWithoutFormatting.formatOnSave).toBe(true)
+  expect(mockExtensionRpc.invocations).toEqual([])
+  expect(mockRpc.invocations).toContainEqual(['Application.execute', 'source', 'FileSystem.writeFile', editor.uri, 'let x=1; ', 'utf8', false])
+
+  await EditorCommandSave.save(savedWithoutFormatting)
+
+  expect(mockExtensionRpc.invocations).toEqual([
+    [
+      'Extensions.invokeForApplication',
+      'source',
+      'Extensions.executeFormattingProvider',
+      { documentId: 1, languageId: 'typescript', text: 'let x=1; ', uri: editor.uri },
+    ],
+  ])
+})

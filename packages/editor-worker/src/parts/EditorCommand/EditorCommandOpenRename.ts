@@ -31,15 +31,22 @@ export const openRename = async (editor: any) => {
   }
 
   const fullFocus = true
-  const editorWithRenameWidget = await AddWidgetToEditor.addWidgetToEditor(
-    WidgetId.Rename,
-    FocusKey.FocusEditorRename,
-    editor,
-    RenameWidgetFactory.create,
-    newStateGenerator,
-    fullFocus,
-  )
+  let editorWithRenameWidget
+  try {
+    editorWithRenameWidget = await AddWidgetToEditor.addWidgetToEditor(
+      WidgetId.Rename,
+      FocusKey.FocusEditorRename,
+      editor,
+      RenameWidgetFactory.create,
+      newStateGenerator,
+      fullFocus,
+    )
+  } catch (error) {
+    await RenameWorker.dispose()
+    throw error
+  }
   if (editorWithRenameWidget === editor) {
+    await RenameWorker.dispose()
     return editor
   }
   const wordBefore = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)

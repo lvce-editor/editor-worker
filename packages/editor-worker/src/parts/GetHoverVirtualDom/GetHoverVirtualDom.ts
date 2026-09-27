@@ -53,7 +53,7 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
   if (diagnostics && diagnostics.length > 0) {
     dom.push({
       childCount: diagnostics.length * 2,
-      className: MergeClassNames.mergeClassNames(ClassNames.HoverDisplayString, ClassNames.HoverProblem),
+      className: ClassNames.HoverProblem,
       type: VirtualDomElements.Div,
     })
     for (const diagnostic of diagnostics) {

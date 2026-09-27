@@ -21,3 +21,8 @@ test('does not combine tokens containing visible characters or line breaks', () 
   const tokens = ['x', 'Token Variable', ' y', 'Token String', '\n', 'Token Whitespace']
   expect(combineWhitespaceTokens(tokens)).toEqual(tokens)
 })
+
+test('preserves decoration boundaries on both sides of whitespace', () => {
+  const tokens = ['alpha', 'Token Variable R', ' ', 'Token Whitespace', '=', 'Token Operator', ' ', 'Token Whitespace R']
+  expect(combineWhitespaceTokens(tokens)).toEqual(tokens)
+})

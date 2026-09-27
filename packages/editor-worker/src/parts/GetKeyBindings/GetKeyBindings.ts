@@ -368,6 +368,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.cursorDocumentStart',
+      key: KeyCode.PageUp,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.deleteLeft',
       key: KeyCode.Backspace,
       when: WhenExpression.FocusEditorText,
