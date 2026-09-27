@@ -13,3 +13,9 @@ test('opens completion with the owning editor application', async () => {
   await openCompletion(editor)
   expect(invoke).toHaveBeenNthCalledWith(1, 'Completions.create', 99, 0, 0, 0, 0, 42, 'plaintext', 'preview')
 })
+
+test('requires an application id before opening completion', async () => {
+  invoke.mockClear()
+  await expect(openCompletion(emptyEditor)).rejects.toThrow('applicationId is required to open completion')
+  expect(invoke).not.toHaveBeenCalled()
+})
