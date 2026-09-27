@@ -71,7 +71,7 @@ const getSavedLanguageId = (savedState: unknown, languages: readonly any[]): str
   if (typeof explicitLanguageId !== 'string' || !explicitLanguageId) {
     return undefined
   }
-  if (!languages.some((language) => language?.id === explicitLanguageId)) {
+  if (languages.every((language) => language?.id !== explicitLanguageId)) {
     return undefined
   }
   return explicitLanguageId
