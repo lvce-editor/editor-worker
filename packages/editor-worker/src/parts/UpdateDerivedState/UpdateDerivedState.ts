@@ -3,6 +3,7 @@ import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
+import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
 import { getEditorGutterDecorations } from '../GetEditorGutterDecorations/GetEditorGutterDecorations.ts'
 import * as GetLightBulbRowIndex from '../GetLightBulbRowIndex/GetLightBulbRowIndex.ts'
 import * as GetMinimapLines from '../GetMinimapLines/GetMinimapLines.ts'
@@ -124,11 +125,14 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
   const layoutState = oldState.lines !== newState.lines && 'foldingRanges' in newState ? EditorFolding.updateLayout(newState, []) : newState
   const nextState = mergeConflictsEqual(oldState, layoutState) ? layoutState : { ...layoutState, incrementalEdits: emptyIncrementalEdits }
   let finalState = nextState
+  if (nextState.breadcrumbsEnabled && oldState.lines !== nextState.lines && oldState.documentSymbols === nextState.documentSymbols) {
+    finalState = { ...finalState, documentSymbols: await getDocumentSymbols(nextState) }
+  }
   if (shouldUpdateVisibleTextData(oldState, nextState)) {
     const syncIncremental = SyncIncremental.getEnabled()
     const { differences, textInfos } = await EditorText.getVisible(nextState, syncIncremental)
     finalState = {
-      ...nextState,
+      ...finalState,
       differences,
       textInfos,
     }

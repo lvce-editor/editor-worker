@@ -28,6 +28,7 @@ const textEditorErrorMessageNode: VirtualDomNode = {
 
 interface EditorVirtualDomOptions {
   readonly bracketMatchInfos?: readonly any[]
+  readonly breadcrumbFileIcon?: string
   readonly breadcrumbsEnabled?: boolean
   readonly breakPoints?: readonly number[]
   readonly combineWhitespaceTokens?: boolean
@@ -90,6 +91,7 @@ const getMinimapVirtualDom = (
 
 export const getEditorVirtualDom = ({
   bracketMatchInfos = [],
+  breadcrumbFileIcon = '',
   breadcrumbsEnabled = false,
   breakPoints = [],
   combineWhitespaceTokens = false,
@@ -152,6 +154,7 @@ export const getEditorVirtualDom = ({
   const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY, breadcrumbsEnabled)
   const breadcrumbsDom = breadcrumbsEnabled
     ? GetEditorBreadcrumbsVirtualDom.getEditorBreadcrumbsVirtualDom({
+        breadcrumbFileIcon,
         breadcrumbsEnabled,
         documentSymbols,
         lines,

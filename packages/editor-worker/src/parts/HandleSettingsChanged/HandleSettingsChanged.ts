@@ -3,6 +3,7 @@ import type { EditorState } from '../State/State.ts'
 import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
 import * as FindWidgetWorker from '../FindWidgetWorker/FindWidgetWorker.ts'
+import { getBreadcrumbFileIcon } from '../GetBreadcrumbFileIcon/GetBreadcrumbFileIcon.ts'
 import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
 import { getEditorGutterDecorations } from '../GetEditorGutterDecorations/GetEditorGutterDecorations.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
@@ -59,15 +60,21 @@ export const handleSettingsChanged = async (state: EditorState): Promise<EditorS
   }
   let documentSymbols = state.documentSymbols || []
   let workspaceUri = state.workspaceUri || ''
+  let breadcrumbFileIcon = state.breadcrumbFileIcon || ''
   if (!breadcrumbsEnabled) {
     documentSymbols = []
     workspaceUri = ''
+    breadcrumbFileIcon = ''
   } else if (!state.breadcrumbsEnabled) {
     ;[documentSymbols, workspaceUri] = await Promise.all([getDocumentSymbols(editorWithUpdatedSettings), getWorkspaceUri(state.applicationId)])
+  }
+  if (breadcrumbsEnabled) {
+    breadcrumbFileIcon = await getBreadcrumbFileIcon(state.uri, state.applicationId)
   }
   const resizedEditor = Resize.resize(
     {
       ...editorWithUpdatedSettings,
+      breadcrumbFileIcon,
       documentSymbols,
       workspaceUri,
     },

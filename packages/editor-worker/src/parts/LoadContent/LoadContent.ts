@@ -4,6 +4,7 @@ import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import { getBreadcrumbFileIcon } from '../GetBreadcrumbFileIcon/GetBreadcrumbFileIcon.ts'
 import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
 import { getEndOfLine } from '../GetEndOfLine/GetEndOfLine.ts'
@@ -204,11 +205,14 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
 
   let documentSymbols = state.documentSymbols || []
   let workspaceUri = state.workspaceUri || ''
+  let breadcrumbFileIcon = state.breadcrumbFileIcon || ''
   if (effectiveEditor.breadcrumbsEnabled) {
+    breadcrumbFileIcon = await getBreadcrumbFileIcon(uri, state.applicationId)
     ;[documentSymbols, workspaceUri] = await Promise.all([getDocumentSymbols(newEditor3WithLinks), getWorkspaceUri(state.applicationId)])
   }
   const newEditor3WithBreadcrumbs = {
     ...newEditor3WithLinks,
+    breadcrumbFileIcon,
     documentSymbols,
     workspaceUri,
   }
