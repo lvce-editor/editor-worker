@@ -38,6 +38,7 @@ export interface EditorState {
   readonly embeds: any
   readonly endOfLine: EndOfLine
   readonly endOfLineDecorations: readonly EditorLineDecoration[]
+  readonly explicitLanguageId?: string
   readonly finalDeltaY: number
   readonly finalY: number
   readonly focus: number

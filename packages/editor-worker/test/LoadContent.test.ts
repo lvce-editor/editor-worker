@@ -229,6 +229,29 @@ test('loadContent uses a tokenizer from a later contribution for the same langua
   expect(loadTokenizerMock).toHaveBeenCalledWith('plaintext', '/test/tokenizePlainText.js')
 })
 
+test('loadContent restores a valid explicitly selected language mode', async () => {
+  getLanguagesMock.mockResolvedValue([
+    { extensions: ['.txt'], id: 'plaintext', tokenize: '' },
+    { id: 'javascript', tokenize: '/test/tokenizeJavaScript.js' },
+  ])
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), { explicitLanguageId: 'javascript' })
+
+  expect(result.languageId).toBe('javascript')
+  expect(result.explicitLanguageId).toBe('javascript')
+  expect(loadTokenizerMock).toHaveBeenCalledWith('javascript', '/test/tokenizeJavaScript.js')
+})
+
+test('loadContent ignores a saved language mode that is not registered', async () => {
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), { explicitLanguageId: 'unknown' })
+
+  expect(result.languageId).toBe('plaintext')
+  expect(result.explicitLanguageId).toBeUndefined()
+})
+
 test('loadContent reuses unsaved content from another editor for the same uri', async () => {
   const existingEditor = {
     ...createState(),

@@ -63,6 +63,20 @@ const getSavedHistory = (
   return { redoStack, undoStack }
 }
 
+const getSavedLanguageId = (savedState: unknown, languages: readonly any[]): string | undefined => {
+  if (!savedState || typeof savedState !== 'object') {
+    return undefined
+  }
+  const { explicitLanguageId } = savedState as Record<string, unknown>
+  if (typeof explicitLanguageId !== 'string' || !explicitLanguageId) {
+    return undefined
+  }
+  if (languages.every((language) => language?.id !== explicitLanguageId)) {
+    return undefined
+  }
+  return explicitLanguageId
+}
+
 export const loadContent = async (state: EditorState, savedState: unknown, largeFile = false) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
@@ -95,7 +109,8 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
   TokenizerState.setTokenizePaths(languages)
-  const computedLanguageId = getLanguageId(uri, languages)
+  const explicitLanguageId = getSavedLanguageId(savedState, languages)
+  const computedLanguageId = explicitLanguageId || getLanguageId(uri, languages)
   const newEditor0: EditorState = {
     ...state,
     breadcrumbsEnabled,
@@ -104,6 +119,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     completionTriggerCharacters,
     diagnosticsEnabled,
     dragAndDropEnabled,
+    ...(explicitLanguageId && { explicitLanguageId }),
     fontFamily,
     fontSize,
     fontWeight,

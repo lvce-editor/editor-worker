@@ -17,6 +17,12 @@ test('saveState preserves large file mode', () => {
   expect(saveState({ largeFile: true, lines: ['text'], redoStack: [], undoStack: [] } as any, undefined)).toMatchObject({ largeFile: true })
 })
 
+test('saveState preserves explicitly selected language modes', () => {
+  expect(saveState({ explicitLanguageId: 'javascript', lines: [], redoStack: [], undoStack: [] } as any, undefined)).toEqual({
+    explicitLanguageId: 'javascript',
+  })
+})
+
 test('an unedited document does not retain a copy of its contents in saved state', () => {
   expect(saveState({ lines: ['large document'], redoStack: [], undoStack: [] } as any, undefined)).toEqual({})
 })
