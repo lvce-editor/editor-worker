@@ -1,5 +1,6 @@
 import { expect, jest, test } from '@jest/globals'
 import { WidgetId } from '@lvce-editor/constants'
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 
 jest.unstable_mockModule('../src/parts/ColorPickerWorker/ColorPickerWorker.ts', () => ({
   invoke: jest.fn(),
@@ -38,6 +39,33 @@ test('disposes editor widgets and state', async () => {
 
 test('does nothing when editor is already disposed', async () => {
   await expect(DisposeEditor.disposeEditor(900_003)).resolves.toEqual([])
+})
+
+test('notifies the application after removing a disposed editor from problems', async () => {
+  const editor = {
+    applicationId: 'test-application',
+    id: 900_007,
+    uid: 900_007,
+    uri: 'app://settings.json',
+    widgets: [],
+  }
+  let stateWasRemovedWhenNotified = false
+  using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Application.execute': async (_applicationId: string, method: string) => {
+      if (method === 'Layout.handleDiagnosticsChange') {
+        stateWasRemovedWhenNotified = !EditorStates.getKeys().includes(String(editor.uid))
+      }
+    },
+  })
+  EditorStates.set(editor.uid, editor as any, editor as any)
+
+  await DisposeEditor.disposeEditor(editor.uid)
+
+  expect(rendererWorkerRpc.invocations).toEqual([
+    ['Application.execute', 'test-application', 'Layout.handleDiagnosticsChange', 'app://settings.json'],
+  ])
+  expect(stateWasRemovedWhenNotified).toBe(true)
+  expect(EditorStates.get(editor.uid)).toBeUndefined()
 })
 
 test('releases the closed editor rendered DOM and preserves other editors', async () => {
