@@ -119,7 +119,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     completionTriggerCharacters,
     diagnosticsEnabled,
     dragAndDropEnabled,
-    explicitLanguageId,
+    ...(explicitLanguageId && { explicitLanguageId }),
     fontFamily,
     fontSize,
     fontWeight,
