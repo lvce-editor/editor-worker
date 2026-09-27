@@ -9,6 +9,7 @@ import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferenc
 import { getEndOfLine } from '../GetEndOfLine/GetEndOfLine.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
+import { getLargeFilePreferences } from '../LargeFilePreferences/LargeFilePreferences.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
 import { normalizeLineEndings } from '../NormalizeLineEndings/NormalizeLineEndings.ts'
@@ -18,6 +19,8 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
+
+const largeFileContentLength = 10 * 1024 * 1024
 
 const getWorkspaceUri = async (applicationId?: string): Promise<string> => {
   try {
@@ -60,7 +63,21 @@ const getSavedHistory = (
   return { redoStack, undoStack }
 }
 
-export const loadContent = async (state: EditorState, savedState: unknown) => {
+const getSavedLanguageId = (savedState: unknown, languages: readonly any[]): string | undefined => {
+  if (!savedState || typeof savedState !== 'object') {
+    return undefined
+  }
+  const { explicitLanguageId } = savedState as Record<string, unknown>
+  if (typeof explicitLanguageId !== 'string' || !explicitLanguageId) {
+    return undefined
+  }
+  if (languages.every((language) => language?.id !== explicitLanguageId)) {
+    return undefined
+  }
+  return explicitLanguageId
+}
+
+export const loadContent = async (state: EditorState, savedState: unknown, largeFile = false) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
     breadcrumbsEnabled,
@@ -73,6 +90,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     fontWeight,
     formatOnSave,
     highlightActiveLineNumber,
+    hoverDelay,
     hoverEnabled,
     insertSpaces,
     isAutoClosingBracketsEnabled,
@@ -91,12 +109,8 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
   TokenizerState.setTokenizePaths(languages)
-  const computedLanguageId = getLanguageId(uri, languages)
-  const tokenizePath = getTokenizePath(languages, computedLanguageId)
-  await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
-  const tokenizer = Tokenizer.getTokenizer(computedLanguageId)
-  const newTokenizerId = state.tokenizerId + 1
-  TokenizerMap.set(newTokenizerId, tokenizer)
+  const explicitLanguageId = getSavedLanguageId(savedState, languages)
+  const computedLanguageId = explicitLanguageId || getLanguageId(uri, languages)
   const newEditor0: EditorState = {
     ...state,
     breadcrumbsEnabled,
@@ -105,11 +119,13 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     completionTriggerCharacters,
     diagnosticsEnabled,
     dragAndDropEnabled,
+    ...(explicitLanguageId && { explicitLanguageId }),
     fontFamily,
     fontSize,
     fontWeight,
     formatOnSave,
     highlightActiveLineNumber,
+    hoverDelay,
     hoverEnabled,
     insertSpaces,
     isAutoClosingBracketsEnabled,
@@ -125,7 +141,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     roundedSelection,
     rowHeight,
     tabSize,
-    tokenizerId: newTokenizerId,
+    tokenizerId: state.tokenizerId,
   }
   let existingEditor: EditorState | undefined
   for (const key of EditorStates.getKeys()) {
@@ -156,10 +172,26 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     }
   }
 
+  if (state.lifecycle?.disposed) {
+    return state
+  }
+
+  const savedLargeFile = !!savedState && typeof savedState === 'object' && (savedState as Record<string, unknown>).largeFile === true
+  largeFile ||= state.largeFile === true || existingEditor?.largeFile === true || savedLargeFile || content.length > largeFileContentLength
+  const effectiveEditor = { ...newEditor0, largeFile, ...(largeFile && getLargeFilePreferences()) }
+  if (!largeFile) {
+    const tokenizePath = getTokenizePath(languages, computedLanguageId)
+    await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
+    const tokenizer = Tokenizer.getTokenizer(computedLanguageId)
+    const newTokenizerId = state.tokenizerId + 1
+    TokenizerMap.set(newTokenizerId, tokenizer)
+    effectiveEditor.tokenizerId = newTokenizerId
+  }
+
   const savedHistory = existingEditor ? undefined : getSavedHistory(savedState, content)
 
   // TODO avoid creating intermediate editors here
-  const newEditor1 = Editor.setBounds({ ...newEditor0, endOfLine }, x, y, width, height, 9)
+  const newEditor1 = Editor.setBounds({ ...effectiveEditor, endOfLine }, x, y, width, height, 9)
   const newEditor2 = Editor.setText(newEditor1, content)
   let newEditor3 = newEditor2
 
@@ -172,7 +204,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
 
   let documentSymbols = state.documentSymbols || []
   let workspaceUri = state.workspaceUri || ''
-  if (breadcrumbsEnabled) {
+  if (effectiveEditor.breadcrumbsEnabled) {
     ;[documentSymbols, workspaceUri] = await Promise.all([getDocumentSymbols(newEditor3WithLinks), getWorkspaceUri(state.applicationId)])
   }
   const newEditor3WithBreadcrumbs = {
@@ -195,7 +227,7 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const completionsOnType = Boolean(completionsOnTypeRaw)
   const newEditor5: EditorState = {
     ...newEditor4,
-    completionsOnType,
+    completionsOnType: !largeFile && completionsOnType,
     initial: false,
     modified: existingEditor?.modified || false,
     redoStack: existingEditor?.redoStack || savedHistory?.redoStack || [],

@@ -1,15 +1,16 @@
 import { afterEach, expect, jest, test } from '@jest/globals'
 
 const invoke = jest.fn<(...args: readonly unknown[]) => Promise<unknown>>()
-const readFile = jest.fn<(uri: string) => Promise<string>>()
+const readFile = jest.fn<(method: string, uri: string) => Promise<string>>()
 const scheduleDocumentAndCursorsSelections = jest.fn<(editor: any, changes: readonly any[]) => Promise<any>>()
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   RendererWorker: {
     invoke,
-    readFile,
   },
 }))
+
+jest.unstable_mockModule('../src/parts/FileSystemWorker/FileSystemWorker.ts', () => ({ invoke: readFile }))
 
 jest.unstable_mockModule('../src/parts/Editor/Editor.ts', () => ({
   scheduleDocumentAndCursorsSelections,
@@ -136,7 +137,7 @@ test('applyWorkspaceEdit updates closed files on disk', async () => {
   ])
 
   expect(result).toBe(editor)
-  expect(readFile).toHaveBeenCalledWith('file:///target.ts')
+  expect(readFile).toHaveBeenCalledWith('FileSystem.readFile', 'file:///target.ts')
   expect(invoke).toHaveBeenCalledWith('FileSystem.writeFile', 'file:///target.ts', 'export const newName = 1')
 })
 

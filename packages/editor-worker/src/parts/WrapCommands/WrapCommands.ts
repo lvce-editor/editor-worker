@@ -10,6 +10,7 @@ import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
+import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
 const cursorUndoLimit = 100
@@ -58,7 +59,7 @@ const saveAfterDelay = async (uid: number, token: number): Promise<void> => {
 // TODO only store editor state in editor worker, not in renderer worker also
 
 export const wrapCommand =
-  (fn: any, preservesTypingCoalescing = false) =>
+  (fn: any, preservesTypingCoalescing = false, returnState = true) =>
   async (uid: number, ...args: any[]) => {
     return EditorCommandQueue.enqueue(uid, async () => {
       const oldInstance = Editors.get(uid)
@@ -85,10 +86,11 @@ export const wrapCommand =
         }
       }
       if (state === newEditor) {
-        return newEditor
+        return returnState ? newEditor : undefined
       }
       const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
       Editors.set(uid, state, newEditorWithDerivedState)
+      await RenameWorker.dispose()
       if (editorDiagnosticEffect.isActive(state, newEditorWithDerivedState)) {
         void editorDiagnosticEffect.apply(newEditorWithDerivedState)
       }
@@ -143,17 +145,21 @@ export const wrapCommand =
       } else if (modified && !finalEditor.modified) {
         AutoSave.dispose(uid)
       }
-      return finalEditor
+      return returnState ? finalEditor : undefined
     })
   }
 
-export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Promise<EditorState>) => {
-  const command = wrapCommand((editor: EditorState, widgetRevision: number | undefined) => {
-    if (editor.widgetRevision !== widgetRevision && editor.focus !== WhenExpression.FocusEditorText) {
-      return editor
-    }
-    return fn(editor)
-  })
+export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Promise<EditorState>, returnState = true) => {
+  const command = wrapCommand(
+    (editor: EditorState, widgetRevision: number | undefined) => {
+      if (editor.widgetRevision !== widgetRevision && editor.focus !== WhenExpression.FocusEditorText) {
+        return editor
+      }
+      return fn(editor)
+    },
+    false,
+    returnState,
+  )
   return (uid: number) => {
     // DOM focus events can arrive while a queued command is still opening a widget.
     const widgetRevision = Editors.get(uid)?.newState.widgetRevision

@@ -85,3 +85,10 @@ test('includes Toggle Minimap', () => {
     label: 'View: Toggle Minimap',
   })
 })
+
+test('includes Toggle Suggest Widget', () => {
+  expect(getQuickPickMenuEntries()).toContainEqual({
+    id: 'Editor.toggleCompletion',
+    label: 'Editor: Toggle Suggest Widget',
+  })
+})

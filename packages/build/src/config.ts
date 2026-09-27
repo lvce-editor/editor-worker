@@ -1,10 +1,10 @@
 import { join } from 'node:path'
 import { root } from './root.ts'
 
-export const threshold = 1_110_000
+export const threshold = 1_104_500
 
 export const workerPath = join(root, '.tmp/dist/dist/editorWorkerMain.js')
 
 export const minifiedWorkerPath = join(root, '.tmp/dist/dist/editorWorkerMain.min.js')
 
-export const playwrightPath = new URL('../../../node_modules/playwright/index.mjs', import.meta.url).href
+export const playwrightPath = import.meta.resolve('playwright')

@@ -140,6 +140,7 @@ import * as EditorTabCompletion from '../EditorCommand/EditorCommandTabCompletio
 import * as EditorToggleBlockComment from '../EditorCommand/EditorCommandToggleBlockComment.ts'
 import { toggleBreakpoint } from '../EditorCommand/EditorCommandToggleBreakpoint.ts'
 import * as EditorToggleComment from '../EditorCommand/EditorCommandToggleComment.ts'
+import * as EditorCommandToggleCompletion from '../EditorCommand/EditorCommandToggleCompletion.ts'
 import * as EditorToggleLineComment from '../EditorCommand/EditorCommandToggleLineComment.ts'
 import * as EditorType from '../EditorCommand/EditorCommandType.ts'
 import * as EditorTypeWithAutoClosing from '../EditorCommand/EditorCommandTypeWithAutoClosing.ts'
@@ -197,10 +198,15 @@ import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
-import { wrapCommand, wrapFocusCommand } from '../WrapCommands/WrapCommands.ts'
+import { wrapCommand, wrapFocusCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
 
 const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
   return ExecuteViewletCommand.executeViewletCommand(commandMap, uid, commandId, ...args)
+}
+
+const resize = async (editor: any, dimensions: any) => {
+  const resizedEditor = Resize.resize(editor, dimensions, editor.columnWidth)
+  return EditorFindWidget.resize(resizedEditor, dimensions)
 }
 
 export const commandMap = {
@@ -370,7 +376,7 @@ export const commandMap = {
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
-  'Editor.resize': wrapCommand(Resize.resize),
+  'Editor.resize': wrapCommand(resize),
   'Editor.revealProblem': wrapCommand(revealProblem),
   'Editor.save': wrapCommand(Save.save),
   'Editor.saveState': wrapGetter(saveState),
@@ -417,6 +423,7 @@ export const commandMap = {
   'Editor.toggleBlockComment': wrapCommand(EditorToggleBlockComment.toggleBlockComment),
   'Editor.toggleBreakpoint': wrapCommand(toggleBreakpoint),
   'Editor.toggleComment': wrapCommand(EditorToggleComment.toggleComment),
+  'Editor.toggleCompletion': wrapCommand(EditorCommandToggleCompletion.toggleCompletion),
   'Editor.toggleLineComment': wrapCommand(EditorToggleLineComment.editorToggleLineComment),
   'Editor.toggleMinimap': ToggleMinimap.toggleMinimap,
   'Editor.type': wrapCommand(EditorType.type, true),

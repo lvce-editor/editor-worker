@@ -1,6 +1,16 @@
 import * as EditorPreferences from '../EditorPreferences/EditorPreferences.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 
+const DEFAULT_HOVER_DELAY = 200
+
+const getHoverDelay = (value: unknown): number => {
+  const delay = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(delay) || delay < 0) {
+    return DEFAULT_HOVER_DELAY
+  }
+  return delay
+}
+
 export const getEditorPreferences = async () => {
   const [
     diagnosticsEnabled,
@@ -9,6 +19,7 @@ export const getEditorPreferences = async () => {
     fontWeight,
     formatOnSave,
     hoverEnabled,
+    hoverDelay,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
@@ -33,6 +44,7 @@ export const getEditorPreferences = async () => {
     EditorPreferences.getFontWeight(),
     Preferences.get('editor.formatOnSave'),
     Preferences.get('editor.hover'),
+    Preferences.get('editor.hoverDelay'),
     EditorPreferences.isAutoClosingBracketsEnabled(),
     EditorPreferences.isAutoClosingQuotesEnabled(),
     EditorPreferences.isAutoClosingTagsEnabled(),
@@ -62,7 +74,8 @@ export const getEditorPreferences = async () => {
     fontWeight,
     formatOnSave: formatOnSave ?? false,
     highlightActiveLineNumber,
-    hoverEnabled: hoverEnabled ?? true,
+    hoverDelay: getHoverDelay(hoverDelay),
+    hoverEnabled: hoverEnabled ?? false,
     insertSpaces: insertSpaces ?? true,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,

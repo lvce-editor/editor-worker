@@ -71,6 +71,7 @@ test('handleBlur closes transient widgets and clears additional focus', async ()
   expect(result).toEqual({
     ...editor,
     additionalFocus: 0,
+    completionWidgetDismissedOnBlur: true,
     focused: false,
     widgetRevision: 1,
     widgets: [findWidget],

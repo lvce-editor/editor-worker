@@ -2,6 +2,9 @@ import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/Application
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 export const getFormattingEdits = async (editor: any): Promise<readonly any[]> => {
+  if (editor.largeFile) {
+    return []
+  }
   const textDocument = {
     documentId: editor.id || editor.uid,
     languageId: editor.languageId,

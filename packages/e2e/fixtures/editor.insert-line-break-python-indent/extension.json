@@ -1,0 +1,11 @@
+{
+  "id": "test.python-indent",
+  "name": "Python indentation",
+  "languages": [
+    {
+      "id": "python-test",
+      "extensions": [".pyt"],
+      "configuration": "./languageConfiguration.json"
+    }
+  ]
+}
