@@ -20,6 +20,7 @@ export const getCss = (
   --ScrollBarWidth: ${scrollBarWidth}px;
   --ScrollBarLeft: ${scrollBarLeft}px;
 }
+.EditorRow { contain: var(--EditorRowContain, strict); }
 ${editorSelector} .SelectionTopLeft { border-top-left-radius: 3px; }
 ${editorSelector} .SelectionTopRight { border-top-right-radius: 3px; }
 ${editorSelector} .SelectionBottomRight { border-bottom-right-radius: 3px; }
@@ -77,10 +78,6 @@ ${editorSelector} .EditorLineDecoration {
   font-style: italic;
   margin-left: 2em;
   user-select: none;
-}
-${editorSelector} .LineNumber {
-  contain: content;
-  position: relative;
 }
 ${editorSelector} .EditorGutterDecoration {
   bottom: 0;

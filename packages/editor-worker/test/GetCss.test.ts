@@ -10,6 +10,7 @@ test('getCss', () => {
   --ScrollBarWidth: 40px;
   --ScrollBarLeft: 20px;
 }
+.EditorRow { contain: var(--EditorRowContain, strict); }
 .Editor[data-uid="42"] .SelectionTopLeft { border-top-left-radius: 3px; }
 .Editor[data-uid="42"] .SelectionTopRight { border-top-right-radius: 3px; }
 .Editor[data-uid="42"] .SelectionBottomRight { border-bottom-right-radius: 3px; }
@@ -67,10 +68,6 @@ test('getCss', () => {
   font-style: italic;
   margin-left: 2em;
   user-select: none;
-}
-.Editor[data-uid="42"] .LineNumber {
-  contain: content;
-  position: relative;
 }
 .Editor[data-uid="42"] .EditorGutterDecoration {
   bottom: 0;

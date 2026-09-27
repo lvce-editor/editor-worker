@@ -27,6 +27,7 @@ test('renderCss', () => {
   --ScrollBarWidth: 40px;
   --ScrollBarLeft: 20px;
 }
+.EditorRow { contain: var(--EditorRowContain, strict); }
 .Editor[data-uid="1"] .SelectionTopLeft { border-top-left-radius: 3px; }
 .Editor[data-uid="1"] .SelectionTopRight { border-top-right-radius: 3px; }
 .Editor[data-uid="1"] .SelectionBottomRight { border-bottom-right-radius: 3px; }
@@ -84,10 +85,6 @@ test('renderCss', () => {
   font-style: italic;
   margin-left: 2em;
   user-select: none;
-}
-.Editor[data-uid="1"] .LineNumber {
-  contain: content;
-  position: relative;
 }
 .Editor[data-uid="1"] .EditorGutterDecoration {
   bottom: 0;
