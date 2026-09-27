@@ -42,9 +42,6 @@ test('does nothing when editor is already disposed', async () => {
 })
 
 test('notifies the application after removing a disposed editor from problems', async () => {
-  using rendererWorkerRpc = RendererWorker.registerMockRpc({
-    'Application.execute': async () => undefined,
-  })
   const editor = {
     applicationId: 'test-application',
     id: 900_007,
@@ -52,6 +49,13 @@ test('notifies the application after removing a disposed editor from problems', 
     uid: 900_007,
     widgets: [],
   }
+  using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Application.execute': async (_applicationId: string, method: string) => {
+      if (method === 'Layout.handleDiagnosticsChange') {
+        expect(EditorStates.get(editor.uid)).toBeUndefined()
+      }
+    },
+  })
   EditorStates.set(editor.uid, editor as any, editor as any)
 
   await DisposeEditor.disposeEditor(editor.uid)
