@@ -223,6 +223,21 @@ test('getEditorVirtualDom', () => {
   ])
 })
 
+test('getEditorVirtualDom adds a direct offset class to breadcrumb-aligned children', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    breadcrumbsEnabled: true,
+    differences: [],
+    gutterInfos: [1],
+    minimapEnabled: true,
+    textInfos: [],
+    uid: 42,
+  })
+
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'Gutter EditorBreadcrumbsOffset' }))
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'EditorContent EditorBreadcrumbsOffset' }))
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'EditorMinimap EditorBreadcrumbsOffset' }))
+})
+
 test('getEditorVirtualDom - folded line numbers', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     differences: [],
