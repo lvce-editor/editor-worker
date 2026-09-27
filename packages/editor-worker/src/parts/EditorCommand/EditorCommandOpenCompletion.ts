@@ -21,9 +21,6 @@ const newStateGenerator = async (state: CompletionState, parentUid: number): Pro
 }
 
 export const openCompletion = async (editor: any) => {
-  if (typeof editor.applicationId !== 'string') {
-    throw new TypeError('applicationId is required to open completion')
-  }
   const fullFocus = false
   return AddWidgetToEditor.addWidgetToEditor(
     WidgetId.Completion,
