@@ -20,6 +20,7 @@ test('renderCss', () => {
     ViewletCommand.SetCss,
     1,
     `.Editor[data-uid="1"] {
+  --EditorRowContain: size style;
   --EditorRowHeight: 20px;
   --ScrollBarHeight: 24px;
   --ScrollBarTop: 8px;
@@ -43,15 +44,6 @@ test('renderCss', () => {
 .Editor[data-uid="1"] .GutterRows {
   display: flex;
   flex-direction: column;
-}
-.Editor[data-uid="1"] .EditorRow,
-.Editor[data-uid="1"] .LineNumber {
-  flex: none;
-}
-.Editor[data-uid="1"] .EditorRow {
-  contain: size style;
-  height: var(--EditorRowHeight);
-  line-height: var(--EditorRowHeight);
 }
 .Editor[data-uid="1"] .MergeConflictActions,
 .Editor[data-uid="1"] .MergeConflictActionsGutter {
