@@ -5,6 +5,7 @@ test('returns editor bounds alongside cursor coordinates for popup placement', (
   const editor = {
     columnWidth: 8,
     deltaY: 20,
+    gutterWidth: 29,
     rowHeight: 20,
     selections: [2, 10, 2, 10],
     width: 180,
@@ -16,7 +17,7 @@ test('returns editor bounds alongside cursor coordinates for popup placement', (
     editorWidth: 180,
     editorX: 300,
     rowIndex: 2,
-    x: 380,
+    x: 409,
     y: 90,
   })
 })
