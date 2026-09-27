@@ -14,8 +14,10 @@ test('opens completion with the owning editor application', async () => {
   expect(invoke).toHaveBeenNthCalledWith(1, 'Completions.create', 99, 0, 0, 0, 0, 42, 'plaintext', 'preview')
 })
 
-test('requires an application id before opening completion', async () => {
+test('preserves an absent application id for global completion providers', async () => {
   invoke.mockClear()
-  await expect(openCompletion(emptyEditor)).rejects.toThrow('applicationId is required to open completion')
-  expect(invoke).not.toHaveBeenCalled()
+  const editor = { ...emptyEditor, languageId: 'plaintext', uid: 43, widgets: [] }
+  EditorStates.set(43, editor, editor)
+  await openCompletion(editor)
+  expect(invoke).toHaveBeenNthCalledWith(1, 'Completions.create', 99, 0, 0, 0, 0, 43, 'plaintext', undefined)
 })
