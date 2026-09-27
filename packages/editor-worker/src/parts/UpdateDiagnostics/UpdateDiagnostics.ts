@@ -88,6 +88,7 @@ const diagnosticLayoutEqual = (left: any, right: any): boolean =>
 const isApplicable = (latest: any, editor: any): boolean =>
   latest &&
   latest.newState.diagnosticsEnabled &&
+  !latest.newState.loadError &&
   latest.newState.diagnostics === editor.diagnostics &&
   latest.newState.languageId === editor.languageId &&
   latest.newState.lines === editor.lines &&
@@ -102,7 +103,7 @@ const mergeDiagnostics = (editor: any, editorWithDiagnostics: any): any => ({
 })
 
 export const updateDiagnostics = async (editor: any): Promise<any> => {
-  if (!editor.diagnosticsEnabled) {
+  if (!editor.diagnosticsEnabled || editor.loadError) {
     return editor
   }
   try {
