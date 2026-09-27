@@ -1,5 +1,6 @@
 import { expect, jest, test } from '@jest/globals'
 import { WidgetId } from '@lvce-editor/constants'
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 
 jest.unstable_mockModule('../src/parts/ColorPickerWorker/ColorPickerWorker.ts', () => ({
   invoke: jest.fn(),
@@ -31,14 +32,53 @@ test('disposes editor widgets and state', async () => {
   }
   EditorStates.set(editorUid, editor as any, editor as any)
 
-  await expect(DisposeEditor.disposeEditor(editorUid)).resolves.toEqual([
-    ['Viewlet.dispose', 900_002],
-    ['Viewlet.dispose', 900_004],
-  ])
+  await expect(DisposeEditor.disposeEditor(editorUid)).resolves.toEqual([['Viewlet.setWidgets', 900_001, 1, []]])
   expect(ColorPickerWorker.invoke).toHaveBeenCalledWith('ColorPicker.dispose', 900_002)
   expect(EditorStates.get(editorUid)).toBeUndefined()
 })
 
 test('does nothing when editor is already disposed', async () => {
   await expect(DisposeEditor.disposeEditor(900_003)).resolves.toEqual([])
+})
+
+test('notifies the application after removing a disposed editor from problems', async () => {
+  const editor = {
+    applicationId: 'test-application',
+    id: 900_007,
+    uid: 900_007,
+    uri: 'app://settings.json',
+    widgets: [],
+  }
+  let stateWasRemovedWhenNotified = false
+  using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Application.execute': async (_applicationId: string, method: string) => {
+      if (method === 'Layout.handleDiagnosticsChange') {
+        stateWasRemovedWhenNotified = !EditorStates.getKeys().includes(String(editor.uid))
+      }
+    },
+  })
+  EditorStates.set(editor.uid, editor as any, editor as any)
+
+  await DisposeEditor.disposeEditor(editor.uid)
+
+  expect(rendererWorkerRpc.invocations).toEqual([
+    ['Application.execute', 'test-application', 'Layout.handleDiagnosticsChange', 'app://settings.json'],
+  ])
+  expect(stateWasRemovedWhenNotified).toBe(true)
+  expect(EditorStates.get(editor.uid)).toBeUndefined()
+})
+
+test('releases the closed editor rendered DOM and preserves other editors', async () => {
+  const RenderedDoms = await import('../src/parts/RenderedDoms/RenderedDoms.ts')
+  const editor = { uid: 900_005, widgets: [] }
+  const otherDom = [{ text: 'still open', type: 12 }]
+  EditorStates.set(editor.uid, editor as any, editor as any)
+  RenderedDoms.set(editor.uid, [{ text: 'closed document', type: 12 }])
+  RenderedDoms.set(900_006, otherDom)
+
+  await DisposeEditor.disposeEditor(editor.uid)
+
+  expect(RenderedDoms.get(editor.uid)).toBeUndefined()
+  expect(RenderedDoms.get(900_006)).toBe(otherDom)
+  RenderedDoms.clear()
 })

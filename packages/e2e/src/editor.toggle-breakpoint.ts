@@ -16,6 +16,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard
   await expect(breakpoint).toHaveAttribute('title', 'Breakpoint on line 1')
 
   await KeyBoard.press('F9')
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
   await expect(breakpoint).toBeHidden()
 }

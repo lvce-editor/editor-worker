@@ -12,6 +12,7 @@ content 2`,
   )
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
+  await new Promise((resolve) => setTimeout(resolve, 100))
   await Editor.setSelections(new Uint32Array([0, 0, 0, 7]))
   await Editor.openFind()
 
@@ -22,6 +23,7 @@ content 2`,
 
   // act - close the find widget
   await KeyBoard.press('Escape')
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
   // assert - find widget should be hidden
   await expect(findWidget).toBeHidden()

@@ -1,11 +1,51 @@
 import { afterEach, beforeEach, expect, jest, test } from '@jest/globals'
+import { WhenExpression, WidgetId } from '@lvce-editor/constants'
 
 const updateDerivedStateMock = jest.fn()
+const editorDiagnosticEffectApplyMock: any = jest.fn()
+const editorDiagnosticEffectIsActiveMock: any = jest.fn()
+const autoSaveScheduleMock = jest.fn<(uid: number, save: (token: number) => Promise<void>) => void>()
+const autoSaveIsLatestMock = jest.fn<(uid: number, token: number) => boolean>()
+const autoSaveConsumeMock = jest.fn<(uid: number, token: number) => void>()
+const autoSaveDisposeMock = jest.fn<(uid: number) => void>()
+const saveMock = jest.fn()
+const getPreferenceMock = jest.fn<(key: string) => Promise<string>>()
+const rendererInvokeMock = jest.fn()
+
+jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
+  RendererWorker: {
+    invoke: rendererInvokeMock,
+  },
+}))
+
+jest.unstable_mockModule('../src/parts/AutoSave/AutoSave.ts', () => ({
+  consume: autoSaveConsumeMock,
+  dispose: autoSaveDisposeMock,
+  isLatest: autoSaveIsLatestMock,
+  schedule: autoSaveScheduleMock,
+}))
+
+jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandSave.ts', () => ({
+  save: saveMock,
+}))
+
+jest.unstable_mockModule('../src/parts/Preferences/Preferences.ts', () => ({
+  get: getPreferenceMock,
+}))
 
 jest.unstable_mockModule('../src/parts/UpdateDerivedState/UpdateDerivedState.ts', () => ({
   updateDerivedState: updateDerivedStateMock,
 }))
 
+jest.unstable_mockModule('../src/parts/EditorDiagnosticEffect/EditorDiagnosticEffect.ts', () => ({
+  editorDiagnosticEffect: {
+    apply: editorDiagnosticEffectApplyMock,
+    isActive: editorDiagnosticEffectIsActiveMock,
+  },
+}))
+
+const { handleFocus } = await import('../src/parts/EditorCommand/EditorCommandHandleFocus.ts')
+const { handleBlur } = await import('../src/parts/EditorCommand/EditorCommandBlur.ts')
 const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
 const WrapCommands = await import('../src/parts/WrapCommands/WrapCommands.ts')
 
@@ -14,15 +54,33 @@ beforeEach(() => {
     text: '',
   }
   EditorStates.set(1, state as any, state as any)
+  editorDiagnosticEffectApplyMock.mockReset()
+  editorDiagnosticEffectApplyMock.mockImplementation(async (newState: any) => newState)
+  editorDiagnosticEffectIsActiveMock.mockReset()
+  editorDiagnosticEffectIsActiveMock.mockReturnValue(false)
   updateDerivedStateMock.mockReset()
   updateDerivedStateMock.mockImplementation(async (_oldState, newState) => {
     await Promise.resolve()
     return newState
   })
+  autoSaveScheduleMock.mockReset()
+  autoSaveIsLatestMock.mockReset()
+  autoSaveIsLatestMock.mockReturnValue(true)
+  autoSaveConsumeMock.mockReset()
+  autoSaveDisposeMock.mockReset()
+  saveMock.mockReset()
+  saveMock.mockImplementation(async (editor: any) => ({
+    ...editor,
+    modified: false,
+  }))
+  getPreferenceMock.mockReset()
+  getPreferenceMock.mockResolvedValue('afterDelay')
+  rendererInvokeMock.mockReset()
 })
 
 afterEach(() => {
   EditorStates.dispose(1)
+  EditorStates.dispose(2)
 })
 
 test('serializes concurrent commands for the same editor', async () => {
@@ -34,4 +92,577 @@ test('serializes concurrent commands for the same editor', async () => {
   await Promise.all([command(1, 'a'), command(1, 'b'), command(1, 'c')])
 
   expect((EditorStates.get(1).newState as any).text).toBe('abc')
+})
+
+test('does not queue or synchronize identical uris across applications', async () => {
+  const source = {
+    applicationId: 'source',
+    initial: false,
+    lines: ['source'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'memfs:///main.ts',
+  }
+  const preview = { ...source, applicationId: 'preview', lines: ['preview'], uid: 2 }
+  EditorStates.set(1, source as any, source as any)
+  EditorStates.set(2, preview as any, preview as any)
+  const { promise, resolve } = Promise.withResolvers<void>()
+  const command = WrapCommands.wrapCommand(async (editor: any) => {
+    if (editor.applicationId === 'source') {
+      await promise
+    }
+    return { ...editor, lines: [editor.applicationId + ' edited'], modified: true }
+  })
+  const sourceEdit = command(1)
+  try {
+    await command(2)
+    expect(EditorStates.get(1).newState).toBe(source)
+    expect(EditorStates.get(2).newState.lines).toEqual(['preview edited'])
+  } finally {
+    resolve()
+    await sourceEdit
+  }
+  expect(EditorStates.get(1).newState.lines).toEqual(['source edited'])
+  expect(EditorStates.get(2).newState.lines).toEqual(['preview edited'])
+})
+
+test('ignores a command for a disposed editor', async () => {
+  EditorStates.dispose(1)
+  const command = WrapCommands.wrapCommand((state: any) => state)
+
+  await expect(command(1)).resolves.toBeUndefined()
+})
+
+test('ignores a queued command when the editor is disposed', async () => {
+  const firstCommandStarted = Promise.withResolvers<void>()
+  const finishFirstCommand = Promise.withResolvers<void>()
+  const command = WrapCommands.wrapCommand(async (state: any) => {
+    firstCommandStarted.resolve()
+    await finishFirstCommand.promise
+    return state
+  })
+  const queuedCommand = WrapCommands.wrapCommand((state: any) => state)
+
+  const first = command(1)
+  await firstCommandStarted.promise
+  const second = queuedCommand(1)
+  EditorStates.dispose(1)
+  finishFirstCommand.resolve()
+
+  await expect(first).resolves.toBeDefined()
+  await expect(second).resolves.toBeUndefined()
+})
+
+test('requests diagnostics without blocking commands after the editor text changes', async () => {
+  const oldState = {
+    diagnosticsEnabled: true,
+    lines: [''],
+    uri: 'file:///one.txt',
+  }
+  const newState = {
+    diagnosticsEnabled: true,
+    lines: ['x'],
+    uri: 'file:///one.txt',
+  }
+  const stateWithDiagnostics = {
+    ...newState,
+    diagnostics: [{ message: 'error' }],
+  }
+  EditorStates.set(1, oldState as any, oldState as any)
+  editorDiagnosticEffectIsActiveMock.mockReturnValue(true)
+  const diagnosticsResult = Promise.withResolvers<typeof stateWithDiagnostics>()
+  editorDiagnosticEffectApplyMock.mockReturnValue(diagnosticsResult.promise)
+  const command = WrapCommands.wrapCommand(() => newState)
+
+  const result = await command(1)
+
+  expect(editorDiagnosticEffectIsActiveMock).toHaveBeenCalledWith(oldState, newState)
+  expect(editorDiagnosticEffectApplyMock).toHaveBeenCalledWith(newState)
+  expect(result).toBe(newState)
+  expect(EditorStates.get(1).newState).toBe(newState)
+  diagnosticsResult.resolve(stateWithDiagnostics)
+})
+
+test('serializes commands for editors showing the same uri', async () => {
+  const firstState = {
+    initial: false,
+    lines: [''],
+    modified: false,
+    redoStack: [],
+    text: '',
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///same.txt',
+  }
+  const secondState = {
+    ...firstState,
+    uid: 2,
+  }
+  EditorStates.set(1, firstState as any, firstState as any)
+  EditorStates.set(2, secondState as any, secondState as any)
+  const order: string[] = []
+  const command = WrapCommands.wrapCommand(async (state: any, label: string) => {
+    order.push(`start-${label}`)
+    await Promise.resolve()
+    order.push(`end-${label}`)
+    return {
+      ...state,
+      text: state.text + label,
+    }
+  })
+
+  await Promise.all([command(1, 'left'), command(2, 'right')])
+
+  expect(order).toEqual(['start-left', 'end-left', 'start-right', 'end-right'])
+})
+
+test('breaks typing coalescing for other commands', async () => {
+  const state = {
+    canCoalesceTyping: true,
+    initial: false,
+    lines: ['abc'],
+    modified: true,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => editor)
+
+  const result = await command(1)
+
+  expect(result.canCoalesceTyping).toBe(false)
+})
+
+test('preserves typing coalescing for typing commands', async () => {
+  const state = {
+    canCoalesceTyping: true,
+    initial: false,
+    lines: ['abc'],
+    modified: true,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => editor, true)
+
+  const result = await command(1)
+
+  expect(result.canCoalesceTyping).toBe(true)
+})
+
+test('records cursor and selection changes', async () => {
+  const selections = new Uint32Array([0, 0, 0, 0])
+  const state = {
+    initial: false,
+    isSelecting: false,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    selections,
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    selections: new Uint32Array([0, 1, 0, 1]),
+  }))
+
+  const result = await command(1)
+
+  expect(result.cursorUndoStack).toEqual([selections])
+  expect(result.cursorUndoStack[0]).not.toBe(selections)
+})
+
+test('groups pointer-drag selection changes', async () => {
+  const previousSelections = new Uint32Array([0, 0, 0, 0])
+  const state = {
+    cursorUndoStack: [previousSelections],
+    initial: false,
+    isSelecting: true,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    selections: new Uint32Array([0, 0, 0, 1]),
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    selections: new Uint32Array([0, 0, 0, 2]),
+  }))
+
+  const result = await command(1)
+
+  expect(result.cursorUndoStack).toEqual([previousSelections])
+})
+
+test('records a pointer drag that starts at the current cursor', async () => {
+  const selections = new Uint32Array([0, 0, 0, 0])
+  const state = {
+    initial: false,
+    isSelecting: false,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    selections,
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    isSelecting: true,
+  }))
+
+  const result = await command(1)
+
+  expect(result.cursorUndoStack).toEqual([selections])
+})
+
+test('clears cursor history after a document edit', async () => {
+  const state = {
+    cursorUndoStack: [new Uint32Array([0, 0, 0, 0])],
+    initial: false,
+    isSelecting: false,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    selections: new Uint32Array([0, 3, 0, 3]),
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['abcd'],
+    selections: new Uint32Array([0, 4, 0, 4]),
+  }))
+
+  const result = await command(1)
+
+  expect(result.cursorUndoStack).toEqual([])
+})
+
+test('synchronizes document state with another editor showing the same uri', async () => {
+  const firstState = {
+    decorations: [],
+    diagnostics: [],
+    incrementalEdits: [],
+    initial: false,
+    invalidStartIndex: 0,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///same.txt',
+    visualDecorations: [],
+  }
+  const secondState = {
+    ...firstState,
+    focused: true,
+    uid: 2,
+  }
+  EditorStates.set(1, firstState as any, firstState as any)
+  EditorStates.set(2, secondState as any, secondState as any)
+  const edit = [{ inserted: ['x'] }]
+  const command = WrapCommands.wrapCommand((state: any) => ({
+    ...state,
+    lines: ['abcx'],
+    modified: true,
+    undoStack: [edit],
+  }))
+
+  await command(1)
+
+  expect(EditorStates.get(2).newState).toMatchObject({
+    focused: true,
+    lines: ['abcx'],
+    modified: true,
+    undoStack: [edit],
+  })
+  expect(autoSaveScheduleMock).toHaveBeenCalledWith(1, expect.any(Function))
+})
+
+test('schedules auto save when undo changes a modified document', async () => {
+  const state = {
+    initial: false,
+    lines: ['edited'],
+    modified: true,
+    redoStack: [],
+    uid: 1,
+    undoStack: [[{ inserted: ['edited'] }]],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['original'],
+    redoStack: editor.undoStack,
+    undoStack: [],
+  }))
+
+  await command(1)
+
+  expect(autoSaveScheduleMock).toHaveBeenCalledWith(1, expect.any(Function))
+})
+
+test('does not schedule auto save for an untitled file', async () => {
+  const state = {
+    initial: false,
+    lines: [''],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'untitled:///1',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['edited'],
+    modified: true,
+  }))
+
+  await command(1)
+
+  expect(autoSaveScheduleMock).not.toHaveBeenCalled()
+  expect(saveMock).not.toHaveBeenCalled()
+  expect(EditorStates.get(1).newState).toMatchObject({ lines: ['edited'], modified: true })
+})
+
+test('scheduled auto save uses the latest modified editor state', async () => {
+  const state = {
+    initial: false,
+    lines: ['original'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['edited'],
+    modified: true,
+  }))
+
+  await command(1)
+  const saveAfterDelay = autoSaveScheduleMock.mock.calls[0][1]
+  await saveAfterDelay(1)
+
+  expect(getPreferenceMock).toHaveBeenCalledWith('files.autoSave')
+  expect(saveMock).toHaveBeenCalledWith(expect.objectContaining({ lines: ['edited'], modified: true }))
+  expect(EditorStates.get(1).newState).toMatchObject({ lines: ['edited'], modified: false })
+  expect(rendererInvokeMock).toHaveBeenCalledWith('Editor.renderPending', 1)
+})
+
+test('scheduled auto save persists a document change even when modified is false', async () => {
+  const state = {
+    initial: false,
+    lines: ['original'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['edited'],
+  }))
+
+  await command(1)
+  const saveAfterDelay = autoSaveScheduleMock.mock.calls[0][1]
+  await saveAfterDelay(1)
+
+  expect(saveMock).toHaveBeenCalledWith(expect.objectContaining({ lines: ['edited'], modified: false }))
+  expect(rendererInvokeMock).toHaveBeenCalledWith('Editor.renderPending', 1)
+})
+
+test('cancels a pending auto save when the editor is saved explicitly', async () => {
+  const state = {
+    initial: false,
+    lines: ['edited'],
+    modified: true,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    modified: false,
+  }))
+
+  await command(1)
+
+  expect(autoSaveDisposeMock).toHaveBeenCalledWith(1)
+  expect(autoSaveScheduleMock).not.toHaveBeenCalled()
+})
+
+test('scheduled auto save does not save when the setting is off', async () => {
+  const state = {
+    initial: false,
+    lines: ['original'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    lines: ['edited'],
+    modified: true,
+  }))
+  getPreferenceMock.mockResolvedValue('off')
+
+  await command(1)
+  const saveAfterDelay = autoSaveScheduleMock.mock.calls[0][1]
+  await saveAfterDelay(1)
+
+  expect(saveMock).not.toHaveBeenCalled()
+  expect(EditorStates.get(1).newState.modified).toBe(true)
+  expect(rendererInvokeMock).not.toHaveBeenCalled()
+})
+
+test('does not schedule auto save when document text is unchanged', async () => {
+  const state = {
+    initial: false,
+    lines: ['abc'],
+    modified: true,
+    redoStack: [],
+    selection: 0,
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const command = WrapCommands.wrapCommand((editor: any) => ({
+    ...editor,
+    selection: 1,
+  }))
+
+  await command(1)
+
+  expect(autoSaveScheduleMock).not.toHaveBeenCalled()
+})
+
+test('does not synchronize document state with another uri', async () => {
+  const firstState = {
+    initial: false,
+    lines: ['abc'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///one.txt',
+  }
+  const secondState = {
+    ...firstState,
+    uid: 2,
+    uri: 'file:///two.txt',
+  }
+  EditorStates.set(1, firstState as any, firstState as any)
+  EditorStates.set(2, secondState as any, secondState as any)
+  const command = WrapCommands.wrapCommand((state: any) => ({
+    ...state,
+    lines: ['abcx'],
+  }))
+
+  await command(1)
+
+  expect(EditorStates.get(2).newState).toBe(secondState)
+})
+
+test('ignores editor focus events queued while a rename widget is opening', async () => {
+  const editor = {
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+    modified: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    widgetRevision: 0,
+    widgets: [],
+  }
+  EditorStates.set(1, editor as any, editor as any)
+  const started = Promise.withResolvers<void>()
+  const finish = Promise.withResolvers<void>()
+  const renameWidget = { id: WidgetId.Rename }
+  const openRename = WrapCommands.wrapCommand(async (state: any) => {
+    started.resolve()
+    await finish.promise
+    return {
+      ...state,
+      focus: WhenExpression.FocusEditorRename,
+      focused: false,
+      widgetRevision: 1,
+      widgets: [renameWidget],
+    }
+  })
+  const opening = openRename(1)
+  await started.promise
+  const focusing = WrapCommands.wrapFocusCommand(handleFocus)(1)
+  const blurring = WrapCommands.wrapCommand(handleBlur)(1)
+  finish.resolve()
+  await Promise.all([opening, focusing, blurring])
+
+  expect(EditorStates.get(1).newState).toMatchObject({
+    focus: WhenExpression.FocusEditorRename,
+    focused: false,
+    widgets: [renameWidget],
+  })
+})
+
+test('applies a new editor focus event after a widget has opened', async () => {
+  const editor = {
+    focus: WhenExpression.FocusEditorRename,
+    focused: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    widgetRevision: 1,
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  await WrapCommands.wrapFocusCommand(handleFocus)(1)
+
+  expect(EditorStates.get(1).newState).toMatchObject({
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+  })
+})
+
+test('keeps a new editor focus event queued after a blur', async () => {
+  const editor = {
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+    modified: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    widgetRevision: 0,
+    widgets: [],
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  const blurring = WrapCommands.wrapCommand(handleBlur)(1)
+  const focusing = WrapCommands.wrapFocusCommand(handleFocus)(1)
+  await Promise.all([blurring, focusing])
+
+  expect(EditorStates.get(1).newState.focused).toBe(true)
 })

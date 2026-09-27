@@ -16,9 +16,11 @@ beforeEach(() => {
 
 test('applyRender flattens widget render commands', () => {
   const oldState: any = {
+    uid: 42,
     widgets: [],
   }
   const newState: any = {
+    uid: 42,
     widgets: [
       {
         id: widgetId,
@@ -32,5 +34,6 @@ test('applyRender flattens widget render commands', () => {
   expect(ApplyRender.applyRender(oldState, newState, [DiffType.RenderWidgets])).toEqual([
     ['create-widget', 1],
     ['append-widget', 1],
+    ['Viewlet.setWidgets', 42, 1, [1]],
   ])
 })

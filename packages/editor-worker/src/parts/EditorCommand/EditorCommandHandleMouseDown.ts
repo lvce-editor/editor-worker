@@ -1,7 +1,9 @@
+import { DragAndDropWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as ClickDetailType from '../ClickDetailType/ClickDetailType.ts'
 import * as GetModifier from '../GetModifier/GetModifier.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
+import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { handleClickAtPosition } from './EditorCommandHandleClickAtPosition.ts'
 import * as EditorHandleDoubleClick from './EditorCommandHandleDoubleClick.ts'
 import * as EditorHandleSingleClick from './EditorCommandHandleSingleClick.ts'
@@ -36,6 +38,38 @@ const handleSecondaryMouseDown = async (state: EditorState, x: number, y: number
   return handleClickAtPosition(state, 0, position.rowIndex, position.columnIndex)
 }
 
+const startTextDrag = async (state: EditorState, x: number, y: number): Promise<EditorState | undefined> => {
+  const position = await EditorPosition.at(state, x, y)
+  const selectionIndex = state.primarySelectionIndex || 0
+  const [startRowIndex, startColumnIndex, endRowIndex, endColumnIndex] = GetSelectionPairs.getSelectionPairs(state.selections, selectionIndex)
+  const startOffset = TextDocument.offsetAt(state, startRowIndex, startColumnIndex)
+  const endOffset = TextDocument.offsetAt(state, endRowIndex, endColumnIndex)
+  const pointerOffset = TextDocument.offsetAt(state, position.rowIndex, position.columnIndex)
+  if (startOffset === endOffset || pointerOffset < startOffset || pointerOffset >= endOffset) {
+    return undefined
+  }
+  try {
+    if (state.textDragId) {
+      await DragAndDropWorker.invoke('DragAndDrop.discardTextDrag', state.textDragId)
+    }
+    const text = TextDocument.getText(state).slice(startOffset, endOffset)
+    const textDragId = await DragAndDropWorker.invoke('DragAndDrop.createTextDrag', {
+      endOffset,
+      sourceUri: state.uri,
+      startOffset,
+      text,
+    })
+    return {
+      ...state,
+      isSelecting: false,
+      textDragDropPosition: position,
+      textDragId,
+    }
+  } catch {
+    return undefined
+  }
+}
+
 export const handleMouseDown = async (
   state: EditorState,
   button: number,
@@ -44,12 +78,19 @@ export const handleMouseDown = async (
   x: number,
   y: number,
   detail: any,
+  shiftKey = false,
 ): Promise<EditorState> => {
   if (button === SecondaryButton) {
     return handleSecondaryMouseDown(state, x, y)
   }
   if (button !== PrimaryButton) {
     return state
+  }
+  if (shiftKey && state.dragAndDropEnabled && detail === ClickDetailType.Single) {
+    const dragState = await startTextDrag(state, x, y)
+    if (dragState) {
+      return dragState
+    }
   }
   const modifier = GetModifier.getModifier(altKey, ctrlKey)
   let newState

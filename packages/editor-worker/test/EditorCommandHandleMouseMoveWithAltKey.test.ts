@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals'
-import { RendererWorker } from '@lvce-editor/rpc-registry'
+import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 import * as DecorationType from '../src/parts/DecorationType/DecorationType.ts'
 import * as EditorCommandHandleMouseMoveWithAltKey from '../src/parts/EditorCommand/EditorCommandHandleMouseMoveWithAltKey.ts'
 
@@ -29,32 +29,32 @@ const definition = {
 }
 
 test('handleMouseMoveWithAltKey - decorates the hovered word when a definition exists', async () => {
-  using mockRpc = RendererWorker.registerMockRpc({
-    'ExtensionHostDefinition.executeDefinitionProvider': async () => definition,
+  using mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': async () => ({ found: true, result: definition }),
   })
   const editor = createEditor(['before target after'])
 
   const result = await EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey(editor, 90, 10)
 
   expect(result.decorations).toEqual([7, 6, DecorationType.DefinitionLink, 0])
-  expect(mockRpc.invocations[0][2]).toBe(9)
+  expect(mockRpc.invocations[0][4]).toBe(9)
 })
 
 test('handleMouseMoveWithAltKey - computes offsets on later lines', async () => {
-  using mockRpc = RendererWorker.registerMockRpc({
-    'ExtensionHostDefinition.executeDefinitionProvider': async () => definition,
+  using mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': async () => ({ found: true, result: definition }),
   })
   const editor = createEditor(['first', 'target'])
 
   const result = await EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey(editor, 20, 25)
 
   expect(result.decorations).toEqual([6, 6, DecorationType.DefinitionLink, 0])
-  expect(mockRpc.invocations[0][2]).toBe(8)
+  expect(mockRpc.invocations[0][4]).toBe(8)
 })
 
 test('handleMouseMoveWithAltKey - preserves existing decorations', async () => {
-  using _mockRpc = RendererWorker.registerMockRpc({
-    'ExtensionHostDefinition.executeDefinitionProvider': async () => definition,
+  using _mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': async () => ({ found: true, result: definition }),
   })
   const editor = createEditor(['target'], [10, 3, DecorationType.Link, 0])
 
@@ -64,8 +64,8 @@ test('handleMouseMoveWithAltKey - preserves existing decorations', async () => {
 })
 
 test('handleMouseMoveWithAltKey - replaces a previous definition link', async () => {
-  using _mockRpc = RendererWorker.registerMockRpc({
-    'ExtensionHostDefinition.executeDefinitionProvider': async () => definition,
+  using _mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': async () => ({ found: true, result: definition }),
   })
   const editor = createEditor(['before target'], [0, 6, DecorationType.DefinitionLink, 0])
 
@@ -75,8 +75,8 @@ test('handleMouseMoveWithAltKey - replaces a previous definition link', async ()
 })
 
 test('handleMouseMoveWithAltKey - avoids another provider request within the decorated word', async () => {
-  using mockRpc = RendererWorker.registerMockRpc({
-    'ExtensionHostDefinition.executeDefinitionProvider': async () => definition,
+  using mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': async () => ({ found: true, result: definition }),
   })
   const editor = createEditor(['target'], [0, 6, DecorationType.DefinitionLink, 0])
 
@@ -87,8 +87,8 @@ test('handleMouseMoveWithAltKey - avoids another provider request within the dec
 })
 
 test('handleMouseMoveWithAltKey - clears the previous link when there is no definition', async () => {
-  using _mockRpc = RendererWorker.registerMockRpc({
-    'ExtensionHostDefinition.executeDefinitionProvider': async () => undefined,
+  using _mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': async () => ({ found: true, result: undefined }),
   })
   const editor = createEditor(['target'], [10, 2, DecorationType.DefinitionLink, 0])
 
@@ -98,10 +98,8 @@ test('handleMouseMoveWithAltKey - clears the previous link when there is no defi
 })
 
 test('handleMouseMoveWithAltKey - clears the previous link when no provider exists', async () => {
-  using _mockRpc = RendererWorker.registerMockRpc({
-    'ExtensionHostDefinition.executeDefinitionProvider': async () => {
-      throw new Error('Failed to execute definition provider: No definition provider found for plaintext')
-    },
+  using _mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': async () => ({ found: false }),
   })
   const editor = createEditor(['target'], [10, 2, DecorationType.DefinitionLink, 0])
 
@@ -111,8 +109,8 @@ test('handleMouseMoveWithAltKey - clears the previous link when no provider exis
 })
 
 test('handleMouseMoveWithAltKey - does not request a definition over whitespace', async () => {
-  using mockRpc = RendererWorker.registerMockRpc({
-    'ExtensionHostDefinition.executeDefinitionProvider': async () => definition,
+  using mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': async () => ({ found: true, result: definition }),
   })
   const editor = createEditor([' target'], [1, 6, DecorationType.DefinitionLink, 0])
 
@@ -123,8 +121,8 @@ test('handleMouseMoveWithAltKey - does not request a definition over whitespace'
 })
 
 test('handleMouseMoveWithAltKey - rethrows definition provider errors', async () => {
-  using _mockRpc = RendererWorker.registerMockRpc({
-    'ExtensionHostDefinition.executeDefinitionProvider': async () => {
+  using _mockRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeLanguageProvider': async () => {
       throw new Error('provider failed')
     },
   })

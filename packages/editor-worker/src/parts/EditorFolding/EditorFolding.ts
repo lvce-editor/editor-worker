@@ -1,4 +1,7 @@
 import * as Clamp from '../Clamp/Clamp.ts'
+import * as EditorViewport from '../EditorViewport/EditorViewport.ts'
+import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
+import { getMergeConflicts } from '../GetMergeConflicts/GetMergeConflicts.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 export interface FoldingRange {
@@ -86,14 +89,31 @@ export const getViewportLineIndices = (
   return result
 }
 
+const getLongestLineWidth = (lines: readonly string[], charWidth: number): number => {
+  let longest = 0
+  for (const line of lines) {
+    longest = Math.max(longest, line.length)
+  }
+  return longest * charWidth
+}
+
 export const updateLayout = (editor: any, foldingRanges: readonly FoldingRange[]) => {
   const { height, itemHeight, lines, minimumSliderSize, numberOfVisibleLines, rowHeight } = editor
-  const visibleLineCount = getVisibleLineCount(lines.length, foldingRanges)
+  const mergeConflicts = editor.mergeConflictActionsEnabled ? getMergeConflicts(lines) : []
+  const hasMergeConflictRows = mergeConflicts.length > 0
+  const viewLineIndices = hasMergeConflictRows
+    ? EditorViewRows.getViewLineIndices(lines.length, (rowIndex) => isRowHidden(rowIndex, foldingRanges), mergeConflicts)
+    : []
+  const visibleLineCount = hasMergeConflictRows ? viewLineIndices.length : getVisibleLineCount(lines.length, foldingRanges)
   const finalY = Math.max(visibleLineCount - numberOfVisibleLines, 0)
-  const finalDeltaY = finalY * itemHeight
+  const finalDeltaY = Math.max(visibleLineCount * itemHeight - height, 0)
   const deltaY = Clamp.clamp(editor.deltaY, 0, finalDeltaY)
   const startVisualRow = Math.floor(deltaY / itemHeight)
-  const visibleLineIndices = getViewportLineIndices(lines.length, foldingRanges, startVisualRow, numberOfVisibleLines)
+  const renderedLineCount = EditorViewport.getRenderedLineCount(height, itemHeight, deltaY)
+  const visibleViewLineIndices = hasMergeConflictRows
+    ? EditorViewRows.getVisibleViewLineIndices(viewLineIndices, startVisualRow, renderedLineCount)
+    : getViewportLineIndices(lines.length, foldingRanges, startVisualRow, renderedLineCount)
+  const visibleLineIndices = hasMergeConflictRows ? EditorViewRows.getVisibleLineIndices(visibleViewLineIndices) : visibleViewLineIndices
   const minLineY = visibleLineIndices[0] ?? 0
   const maxLineY = visibleLineIndices.length === 0 ? 0 : visibleLineIndices.at(-1)! + 1
   const contentHeight = visibleLineCount * rowHeight
@@ -106,10 +126,16 @@ export const updateLayout = (editor: any, foldingRanges: readonly FoldingRange[]
     finalY,
     foldingRanges,
     maxLineY,
+    ...(editor.largeFile && {
+      longestLineWidth: getLongestLineWidth(lines, editor.charWidth),
+    }),
+    mergeConflicts,
     minLineY,
     scrollBarHeight,
     scrollBarY,
+    viewLineIndices,
     visibleLineIndices,
+    visibleViewLineIndices,
   }
 }
 

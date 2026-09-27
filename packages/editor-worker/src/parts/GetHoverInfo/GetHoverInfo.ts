@@ -1,4 +1,5 @@
 import * as Assert from '../Assert/Assert.ts'
+import { diagnosticContainsPosition } from '../DiagnosticContainsPosition/DiagnosticContainsPosition.ts'
 import * as GetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as EditorPosition from '../EditorCommand/EditorCommandPosition.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
@@ -7,22 +8,10 @@ import * as MeasureTextHeight from '../MeasureTextHeight/MeasureTextHeight.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as TokenizeCodeBlock from '../TokenizeCodeBlock/TokenizeCodeBlock.ts'
 
-const getHoverPosition = (position: any, selections: any) => {
-  if (position) {
-    return position
-  }
-  const rowIndex = selections[0]
-  const columnIndex = selections[1]
-  return {
-    columnIndex,
-    rowIndex,
-  }
-}
-
 const getMatchingDiagnostics = (diagnostics: any, rowIndex: number, columnIndex: number) => {
   const matching: any[] = []
   for (const diagnostic of diagnostics) {
-    if (diagnostic.rowIndex === rowIndex) {
+    if (diagnosticContainsPosition(diagnostic, rowIndex, columnIndex)) {
       matching.push(diagnostic)
     }
   }
@@ -34,54 +23,67 @@ const fallbackDisplayStringLanguageId = 'typescript' // TODO remove this
 const hoverDocumentationFontSize = 15
 const hoverDocumentationFontFamily = 'Fira Code'
 const hoverDocumentationLineHeight = '1.33333'
-const hoverBorderLeft = 1
-const hoverBorderRight = 1
-const hoverPaddingLeft = 8
-const hoverPaddingRight = 8
-const hovverFullWidth = 400
-const hoverDocumentationWidth = hovverFullWidth - hoverPaddingLeft - hoverPaddingRight - hoverBorderLeft - hoverBorderRight
-
-const getHoverPositionXy = (editor: any, rowIndex: number, wordStart: any, documentationHeight: any) => {
-  const x = EditorPosition.x(editor, rowIndex, wordStart)
-  const y = editor.height - EditorPosition.y(editor, rowIndex) + editor.y + 40
-  return {
-    x,
-    y,
-  }
-}
+const hoverWidth = 600
+const hoverDocumentationWidth = hoverWidth - 18
 
 export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   Assert.number(editorUid)
   const instance = Editors.get(editorUid)
   const editor = instance.newState
   const { selections } = editor
-  const { columnIndex, rowIndex } = getHoverPosition(position, selections)
+  const { columnIndex, rowIndex } = position || { columnIndex: selections[1], rowIndex: selections[0] }
   const offset = TextDocument.offsetAt(editor, rowIndex, columnIndex)
-  const hover = await Hover.getHover(editor, offset)
-  if (!hover) {
-    return undefined
-  }
-  const { displayString, displayStringLanguageId, documentation } = hover
-  const tokenizerPath = ''
-  const lineInfos = await TokenizeCodeBlock.tokenizeCodeBlock(
-    displayString,
-    displayStringLanguageId || fallbackDisplayStringLanguageId,
-    tokenizerPath,
-  )
-  const wordPart = GetWordAt.getWordBefore(editor, rowIndex, columnIndex)
-  const wordStart = columnIndex - wordPart.length
-  const documentationHeight = await MeasureTextHeight.measureTextBlockHeight(
-    documentation,
-    hoverDocumentationFontFamily,
-    hoverDocumentationFontSize,
-    hoverDocumentationLineHeight,
-    hoverDocumentationWidth,
-  )
-  const { x, y } = getHoverPositionXy(editor, rowIndex, wordStart, documentationHeight)
   const diagnostics = editor.diagnostics || []
   const matchingDiagnostics = getMatchingDiagnostics(diagnostics, rowIndex, columnIndex)
+  let hover
+  try {
+    hover = await Hover.getHover(editor, offset)
+  } catch {}
+  if (!hover && matchingDiagnostics.length === 0) {
+    return undefined
+  }
+  const { displayString = '', displayStringLanguageId = '', documentation = '' } = hover || {}
+  if (!displayString.trim() && !documentation.trim() && matchingDiagnostics.length === 0) {
+    return undefined
+  }
+  const tokenizerPath = ''
+  const lineInfos = displayString
+    ? await TokenizeCodeBlock.tokenizeCodeBlock(displayString, displayStringLanguageId || fallbackDisplayStringLanguageId, tokenizerPath)
+    : []
+  const wordPart = GetWordAt.getWordBefore(editor, rowIndex, columnIndex)
+  const wordStart = columnIndex - wordPart.length
+  const documentationHeight = documentation
+    ? await MeasureTextHeight.measureTextBlockHeight(
+        documentation,
+        hoverDocumentationFontFamily,
+        hoverDocumentationFontSize,
+        hoverDocumentationLineHeight,
+        hoverDocumentationWidth,
+      )
+    : 0
+  let diagnosticText = ''
+  for (const diagnostic of matchingDiagnostics) {
+    diagnosticText += `${diagnosticText ? '\n' : ''}${diagnostic.message} ${diagnostic.source} (${diagnostic.code})`
+  }
+  const diagnosticsHeight = diagnosticText
+    ? (await MeasureTextHeight.measureTextBlockHeight(
+        diagnosticText,
+        editor.fontFamily,
+        editor.fontSize,
+        `${editor.rowHeight}px`,
+        hoverDocumentationWidth,
+      )) + 10
+    : 0
+  const height = Math.min(
+    diagnosticsHeight + (lineInfos.length > 0 ? lineInfos.length * editor.rowHeight + 12 : 0) + (documentation ? documentationHeight + 11 : 0) || 20,
+    editor.height,
+  )
+  const x = Math.max(editor.x, Math.min(EditorPosition.x(editor, rowIndex, wordStart), editor.x + editor.width - hoverWidth))
+  const rowBottom = EditorPosition.y(editor, rowIndex)
+  const y = rowBottom + height <= editor.y + editor.height ? rowBottom : Math.max(editor.y, rowBottom - editor.rowHeight - height)
   return {
     documentation,
+    height,
     lineInfos,
     matchingDiagnostics,
     x,

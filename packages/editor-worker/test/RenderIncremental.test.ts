@@ -177,4 +177,64 @@ test('renderIncremental renders measured diagnostic decorations', () => {
     ]),
     type: 6,
   })
+  expect(command[2]).toContainEqual({
+    nodes: expect.arrayContaining([
+      expect.objectContaining({
+        className: 'ScrollBarDiagnostic ScrollBarDiagnosticError',
+        height: 3,
+        top: 0,
+      }),
+    ]),
+    type: 6,
+  })
+})
+
+test('renderIncremental renders one scrollbar marker for each diagnostic without scrollable content', () => {
+  const initialState = createState(0, [])
+  initialState.initial = true
+  const renderedState = {
+    ...createState(0, [
+      ['one', 'Token Identifier'],
+      ['two', 'Token Identifier'],
+      ['three', 'Token Identifier'],
+    ]),
+    diagnostics: [
+      { columnIndex: 0, endColumnIndex: 1, rowIndex: 0, type: 'error' },
+      { columnIndex: 0, endColumnIndex: 1, rowIndex: 1, type: 'warning' },
+      { columnIndex: 0, endColumnIndex: 1, rowIndex: 2, type: 'error' },
+    ],
+    height: 400,
+    lines: ['one', 'two', 'three'],
+  }
+
+  const command = RenderIncremental.renderIncremental(initialState, renderedState)
+  const diagnosticMarkerPatch = command[2].find((patch: any) => patch.nodes?.some((node: any) => node.className?.startsWith('ScrollBarDiagnostic ')))
+  const diagnosticMarkers = diagnosticMarkerPatch.nodes.filter((node: any) => node.className?.startsWith('ScrollBarDiagnostic '))
+
+  expect(diagnosticMarkers).toHaveLength(3)
+  expect(diagnosticMarkers).toEqual([
+    expect.objectContaining({ className: 'ScrollBarDiagnostic ScrollBarDiagnosticError', top: 0 }),
+    expect.objectContaining({ className: 'ScrollBarDiagnostic ScrollBarDiagnosticWarning', top: 133 }),
+    expect.objectContaining({ className: 'ScrollBarDiagnostic ScrollBarDiagnosticError', top: 267 }),
+  ])
+})
+
+test('renderIncremental renders end of line decorations', () => {
+  const initialState = createState(0, [])
+  initialState.initial = true
+  const renderedState = {
+    ...createState(0, [['const value = 1', 'Token Identifier']]),
+    endOfLineDecorations: [{ rowIndex: 0, text: 'Test User • Initial commit' }],
+  }
+
+  const command = RenderIncremental.renderIncremental(initialState, renderedState)
+
+  expect(command[2]).toContainEqual({
+    nodes: expect.arrayContaining([
+      expect.objectContaining({
+        className: 'EditorLineDecoration',
+      }),
+    ]),
+    type: 6,
+  })
 })

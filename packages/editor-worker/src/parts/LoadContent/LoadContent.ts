@@ -1,21 +1,34 @@
 import { WhenExpression } from '@lvce-editor/constants'
-import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
+import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 import * as Editor from '../Editor/Editor.ts'
+import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
-import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
-import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
+import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
 import { getEditorPreferences } from '../GetEditorPreferences/GetEditorPreferences.ts'
+import { getEndOfLine } from '../GetEndOfLine/GetEndOfLine.ts'
 import { getLanguageId } from '../GetLanguageId/GetLanguageId.ts'
 import { getLanguages } from '../GetLanguages/GetLanguages.ts'
+import { getLargeFilePreferences } from '../LargeFilePreferences/LargeFilePreferences.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as MeasureCharacterWidth from '../MeasureCharacterWidth/MeasureCharacterWidth.ts'
+import { normalizeLineEndings } from '../NormalizeLineEndings/NormalizeLineEndings.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
+import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
-import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
+
+const largeFileContentLength = 10 * 1024 * 1024
+
+const getWorkspaceUri = async (applicationId?: string): Promise<string> => {
+  try {
+    return await ApplicationRpc.invoke(applicationId, 'Workspace.getPath')
+  } catch {
+    return ''
+  }
+}
 
 const getTokenizePath = (languages: readonly any[], languageId: string): string => {
   for (const language of languages) {
@@ -33,20 +46,62 @@ const getErrorMessage = (error: unknown): string => {
   return String(error)
 }
 
-export const loadContent = async (state: EditorState, savedState: unknown) => {
+const getSavedHistory = (
+  savedState: unknown,
+  content: string,
+): { readonly redoStack: readonly any[]; readonly undoStack: readonly any[] } | undefined => {
+  if (!savedState || typeof savedState !== 'object') {
+    return undefined
+  }
+  const { lines, redoStack, undoStack } = savedState as Record<string, unknown>
+  if (!Array.isArray(lines) || lines.some((line) => typeof line !== 'string') || lines.join('\n') !== content) {
+    return undefined
+  }
+  if (!Array.isArray(redoStack) || !Array.isArray(undoStack)) {
+    return undefined
+  }
+  return { redoStack, undoStack }
+}
+
+const getSavedLanguageId = (savedState: unknown, languages: readonly any[]): string | undefined => {
+  if (!savedState || typeof savedState !== 'object') {
+    return undefined
+  }
+  const { explicitLanguageId } = savedState as Record<string, unknown>
+  if (typeof explicitLanguageId !== 'string' || !explicitLanguageId) {
+    return undefined
+  }
+  if (!languages.some((language) => language?.id === explicitLanguageId)) {
+    return undefined
+  }
+  return explicitLanguageId
+}
+
+export const loadContent = async (state: EditorState, savedState: unknown, largeFile = false) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
+    breadcrumbsEnabled,
+    combineWhitespaceTokens,
     completionTriggerCharacters,
     diagnosticsEnabled,
+    dragAndDropEnabled,
     fontFamily,
     fontSize,
     fontWeight,
+    formatOnSave,
+    highlightActiveLineNumber,
+    hoverDelay,
+    hoverEnabled,
+    insertSpaces,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
     isQuickSuggestionsEnabled,
     letterSpacing,
     lineNumbers,
+    mergeConflictActionsEnabled,
+    minimapEnabled,
+    roundedSelection,
     rowHeight,
     tabSize,
   } = await getEditorPreferences()
@@ -54,39 +109,56 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
   TokenizerState.setTokenizePaths(languages)
-  let languageId = getLanguageId(uri, languages)
-  try {
-    const value = await RendererWorker.invoke('LocalStorage.getJson', `editor.language-mode:${uri}`)
-    if (typeof value === 'string' && value) languageId = value
-  } catch {}
-  const tokenizePath = getTokenizePath(languages, languageId)
-  await Tokenizer.loadTokenizer(languageId, tokenizePath)
-  const tokenizer = Tokenizer.getTokenizer(languageId)
-  const tokenizerId = state.tokenizerId + 1
-  TokenizerMap.set(tokenizerId, tokenizer)
+  const explicitLanguageId = getSavedLanguageId(savedState, languages)
+  const computedLanguageId = explicitLanguageId || getLanguageId(uri, languages)
   const newEditor0: EditorState = {
     ...state,
+    breadcrumbsEnabled,
     charWidth,
+    combineWhitespaceTokens,
     completionTriggerCharacters,
     diagnosticsEnabled,
+    dragAndDropEnabled,
+    explicitLanguageId,
     fontFamily,
     fontSize,
     fontWeight,
+    formatOnSave,
+    highlightActiveLineNumber,
+    hoverDelay,
+    hoverEnabled,
+    insertSpaces,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
     isQuickSuggestionsEnabled,
-    languageId,
+    languageId: computedLanguageId,
     letterSpacing,
     lineNumbers,
     loadError: '',
+    mergeConflictActionsEnabled,
+    minimapEnabled,
+    roundedSelection,
     rowHeight,
     tabSize,
-    tokenizerId,
+    tokenizerId: state.tokenizerId,
   }
-  let content = ''
+  let existingEditor: EditorState | undefined
+  for (const key of EditorStates.getKeys()) {
+    const editor = EditorStates.get(Number(key))?.newState
+    if (editor && editor.id !== id && !editor.initial && editor.uri === uri && editor.applicationId === state.applicationId) {
+      existingEditor = editor
+      break
+    }
+  }
+  let content = existingEditor ? TextDocument.getText(existingEditor) : ''
+  let endOfLine = existingEditor?.endOfLine || 'lf'
   try {
-    content = await RendererWorker.readFile(uri)
+    if (!existingEditor) {
+      content = await ApplicationRpc.readFile(state.applicationId, uri)
+      endOfLine = getEndOfLine(content)
+      content = normalizeLineEndings(content)
+    }
   } catch (error) {
     const newEditor1 = Editor.setBounds(newEditor0, x, y, width, height, 9)
     return {
@@ -100,8 +172,26 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     }
   }
 
+  if (state.lifecycle?.disposed) {
+    return state
+  }
+
+  const savedLargeFile = !!savedState && typeof savedState === 'object' && (savedState as Record<string, unknown>).largeFile === true
+  largeFile ||= state.largeFile === true || existingEditor?.largeFile === true || savedLargeFile || content.length > largeFileContentLength
+  const effectiveEditor = { ...newEditor0, largeFile, ...(largeFile && getLargeFilePreferences()) }
+  if (!largeFile) {
+    const tokenizePath = getTokenizePath(languages, computedLanguageId)
+    await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
+    const tokenizer = Tokenizer.getTokenizer(computedLanguageId)
+    const newTokenizerId = state.tokenizerId + 1
+    TokenizerMap.set(newTokenizerId, tokenizer)
+    effectiveEditor.tokenizerId = newTokenizerId
+  }
+
+  const savedHistory = existingEditor ? undefined : getSavedHistory(savedState, content)
+
   // TODO avoid creating intermediate editors here
-  const newEditor1 = Editor.setBounds(newEditor0, x, y, width, height, 9)
+  const newEditor1 = Editor.setBounds({ ...effectiveEditor, endOfLine }, x, y, width, height, 9)
   const newEditor2 = Editor.setText(newEditor1, content)
   let newEditor3 = newEditor2
 
@@ -112,29 +202,36 @@ export const loadContent = async (state: EditorState, savedState: unknown) => {
     decorations: linkDecorations,
   }
 
-  const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(newEditor3WithLinks, syncIncremental)
-  const newEditor4 = {
+  let documentSymbols = state.documentSymbols || []
+  let workspaceUri = state.workspaceUri || ''
+  if (effectiveEditor.breadcrumbsEnabled) {
+    ;[documentSymbols, workspaceUri] = await Promise.all([getDocumentSymbols(newEditor3WithLinks), getWorkspaceUri(state.applicationId)])
+  }
+  const newEditor3WithBreadcrumbs = {
     ...newEditor3WithLinks,
+    documentSymbols,
+    workspaceUri,
+  }
+
+  const syncIncremental = SyncIncremental.getEnabled()
+  const { differences, textInfos } = await EditorText.getVisible(newEditor3WithBreadcrumbs, syncIncremental)
+  const newEditor4 = {
+    ...newEditor3WithBreadcrumbs,
     differences,
     focus: WhenExpression.FocusEditorText,
     focused: true,
     textInfos,
   }
 
-  // TODO only sync when needed
-  // e.g. it might not always be necessary to send text to extension host worker
-  // @ts-ignore
-  await ExtensionHostWorker.invoke(ExtensionHostCommandType.TextDocumentSyncFull, uri, id, languageId, content)
-
-  const editorWithDiagnostics = diagnosticsEnabled ? await UpdateDiagnostics.getEditorWithDiagnostics(newEditor4) : newEditor4
-
   const completionsOnTypeRaw = await Preferences.get('editor.completionsOnType')
   const completionsOnType = Boolean(completionsOnTypeRaw)
   const newEditor5: EditorState = {
-    ...editorWithDiagnostics,
-    completionsOnType,
+    ...newEditor4,
+    completionsOnType: !largeFile && completionsOnType,
     initial: false,
+    modified: existingEditor?.modified || false,
+    redoStack: existingEditor?.redoStack || savedHistory?.redoStack || [],
+    undoStack: existingEditor?.undoStack || savedHistory?.undoStack || [],
   }
   return newEditor5
 }

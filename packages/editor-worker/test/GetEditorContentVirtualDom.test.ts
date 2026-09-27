@@ -11,7 +11,7 @@ test('getEditorContentVirtualDom', () => {
     differences: [0],
     finalDeltaY: 80,
     height: 40,
-    scrollBarDiagnostics: [{ height: 5, type: 'warning', width: 6, x: 7, y: 8 }],
+    scrollBarDiagnostics: [{ height: 5, top: 8, type: 'warning' }],
     scrollBarHeight: 24,
     selectionInfos: [1, 2, 3, 4],
     textInfos: [['x', 'Token X']],
@@ -29,6 +29,13 @@ test('getEditorContentVirtualDom', () => {
   expect(dom.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbVertical')).toEqual({
     childCount: 0,
     className: 'ScrollBarThumb ScrollBarThumbVertical',
+    type: VirtualDomElements.Div,
+  })
+  expect(dom).toContainEqual({
+    childCount: 0,
+    className: 'ScrollBarDiagnostic ScrollBarDiagnosticWarning',
+    height: 5,
+    top: 8,
     type: VirtualDomElements.Div,
   })
 })

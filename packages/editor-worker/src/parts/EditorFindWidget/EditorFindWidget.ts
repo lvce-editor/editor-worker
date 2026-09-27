@@ -1,4 +1,4 @@
-import { WidgetId } from '@lvce-editor/constants'
+import { ViewletCommand, WidgetId } from '@lvce-editor/constants'
 import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
 import type { EditorState } from '../State/State.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
@@ -9,9 +9,9 @@ import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 
 const commandsToForward = [
+  ViewletCommand.SetPatches,
   RenderMethod.SetDom2,
   RenderMethod.SetCss,
-  RenderMethod.AppendToBody,
   RenderMethod.SetBounds2,
   RenderMethod.RegisterEventListeners,
   RenderMethod.SetSelectionByName,
@@ -24,9 +24,11 @@ const commandsToForward = [
 export const render = (widget: IFindWidget) => {
   const commands: readonly any[] = FindWidgetRender.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
-  const { uid } = widget.newState
+  const { editorUid, uid } = widget.newState
   for (const command of commands) {
-    if (commandsToForward.includes(command[0])) {
+    if (command[0] === RenderMethod.SetFocusContext) {
+      wrappedCommands.push([command[0], editorUid, ...command.slice(1)])
+    } else if (commandsToForward.includes(command[0])) {
       wrappedCommands.push(command)
     } else {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
@@ -39,7 +41,7 @@ export const add = (widget: IFindWidget) => {
 }
 
 export const remove = (widget: IFindWidget) => {
-  return [['Viewlet.dispose', widget.newState.uid]]
+  return []
 }
 
 export const focusFindInput = <T extends Pick<EditorState, 'widgets'>>(editor: T): T => {
@@ -75,9 +77,11 @@ export const {
   handleInput,
   handleReplaceFocus,
   handleReplaceInput,
+  handleSettingsChanged,
   handleToggleReplaceFocus,
   replace,
   replaceAll,
+  resize,
   toggleMatchCase,
   toggleMatchWholeWord,
   togglePreserveCase,
@@ -102,9 +106,11 @@ export const {
     'handleInput',
     'handleReplaceFocus',
     'handleReplaceInput',
+    'handleSettingsChanged',
     'handleToggleReplaceFocus',
     'replace',
     'replaceAll',
+    'resize',
     'toggleMatchCase',
     'toggleMatchWholeWord',
     'toggleReplace',

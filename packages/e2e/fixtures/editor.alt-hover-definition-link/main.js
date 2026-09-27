@@ -1,3 +1,5 @@
+import { activate as activateExtensionApi, registerDefinitionProvider } from '@lvce-editor/api'
+
 const getWordAtOffset = (text, offset) => {
   const before = text.slice(0, offset).match(/[\w-]+$/)?.[0] || ''
   const after = text.slice(offset).match(/^[\w-]+/)?.[0] || ''
@@ -5,6 +7,7 @@ const getWordAtOffset = (text, offset) => {
 }
 
 const provider = {
+  id: 'definition-link-test',
   languageId: 'definition-link-test',
   provideDefinition(textDocument, offset) {
     if (getWordAtOffset(textDocument.text, offset) === 'missing') {
@@ -19,6 +22,5 @@ const provider = {
   },
 }
 
-export const activate = () => {
-  vscode.registerDefinitionProvider(provider)
-}
+await activateExtensionApi()
+registerDefinitionProvider(provider)

@@ -2,14 +2,7 @@ import { beforeEach, expect, jest, test } from '@jest/globals'
 
 const getTokenizerMock = jest.fn()
 const loadTokenizerMock = jest.fn()
-const rendererInvokeMock: any = jest.fn()
 const setTokenizerMock = jest.fn()
-
-jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
-  RendererWorker: {
-    invoke: rendererInvokeMock,
-  },
-}))
 
 jest.unstable_mockModule('../src/parts/Tokenizer/Tokenizer.ts', () => ({
   getTokenizer: getTokenizerMock,
@@ -25,9 +18,7 @@ const { setLanguageId } = await import('../src/parts/EditorCommand/EditorCommand
 beforeEach(() => {
   getTokenizerMock.mockReset()
   loadTokenizerMock.mockReset()
-  rendererInvokeMock.mockReset()
   setTokenizerMock.mockReset()
-  rendererInvokeMock.mockResolvedValue(undefined)
 })
 
 test('setLanguageId loads the tokenizer and invalidates syntax highlighting', async () => {
@@ -38,7 +29,6 @@ test('setLanguageId loads the tokenizer and invalidates syntax highlighting', as
     languageId: 'plaintext',
     tokenizerId: 2,
     uid: 1,
-    uri: 'file:///test.txt',
   }
   const tokenizer = {
     tokenizeLine() {},
@@ -49,9 +39,9 @@ test('setLanguageId loads the tokenizer and invalidates syntax highlighting', as
 
   expect(loadTokenizerMock).toHaveBeenCalledWith('xyz', '/extensions/test/tokenizeXyz.js')
   expect(setTokenizerMock).toHaveBeenCalledWith(3, tokenizer)
-  expect(rendererInvokeMock).toHaveBeenCalledWith('LocalStorage.setJson', 'editor.language-mode:file:///test.txt', 'xyz')
   expect(result).toEqual({
     ...editor,
+    explicitLanguageId: undefined,
     focused: true,
     invalidStartIndex: 0,
     languageId: 'xyz',
@@ -59,15 +49,10 @@ test('setLanguageId loads the tokenizer and invalidates syntax highlighting', as
   })
 })
 
-test('setLanguageId succeeds when storage fails', async () => {
-  const editor = {
-    tokenizerId: 2,
-    uri: 'file:///test.txt',
-  }
+test('setLanguageId records explicitly selected language modes', async () => {
   getTokenizerMock.mockReturnValue({})
-  rendererInvokeMock.mockRejectedValue(new Error('storage unavailable'))
 
-  const result = await setLanguageId(editor, 'xyz', '/extensions/test/tokenizeXyz.js')
+  const result = await setLanguageId({ tokenizerId: 2 }, 'xyz', '/extensions/test/tokenizeXyz.js', true)
 
-  expect(result.languageId).toBe('xyz')
+  expect(result.explicitLanguageId).toBe('xyz')
 })

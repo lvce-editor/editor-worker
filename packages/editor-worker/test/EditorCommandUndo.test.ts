@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
+import { ExtensionHost, RendererWorker, SyntaxHighlightingWorker } from '@lvce-editor/rpc-registry'
 
 const mockRpc = MockRpc.create({
   commandMap: {},
@@ -10,10 +10,28 @@ const mockRpc = MockRpc.create({
 })
 ExtensionHost.set(mockRpc)
 RendererWorker.set(mockRpc)
+SyntaxHighlightingWorker.set(
+  MockRpc.create({
+    commandMap: {},
+    invoke: async () => [{}],
+  }),
+)
 
+import { commandMap } from '../src/parts/CommandMap/CommandMap.ts'
+import * as Editor from '../src/parts/Editor/Editor.ts'
 import * as EditorCommandUndo from '../src/parts/EditorCommand/EditorCommandUndo.ts'
 import * as EditOrigin from '../src/parts/EditOrigin/EditOrigin.ts'
+import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
+import * as GetDocumentEdits from '../src/parts/GetDocumentEdits/GetDocumentEdits.ts'
+
+const createChange = (text: string, columnIndex: number) => ({
+  deleted: [''],
+  end: { columnIndex, rowIndex: 0 },
+  inserted: [text],
+  origin: EditOrigin.EditorType,
+  start: { columnIndex, rowIndex: 0 },
+})
 
 test('undo - inserted character', async () => {
   const editor = {
@@ -45,6 +63,108 @@ test('undo - inserted character', async () => {
   }
   const newEditor = await EditorCommandUndo.undo(editor)
   expect(newEditor.lines).toEqual([''])
+})
+
+test('undo - contiguous typing group', async () => {
+  const editor = {
+    ...emptyEditor,
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['abc'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    selections: new Uint32Array([0, 3, 0, 3]),
+    undoStack: [
+      [
+        {
+          deleted: [''],
+          end: {
+            columnIndex: 0,
+            rowIndex: 0,
+          },
+          inserted: ['abc'],
+          origin: EditOrigin.EditorType,
+          start: {
+            columnIndex: 0,
+            rowIndex: 0,
+          },
+        },
+      ],
+    ],
+  }
+
+  const newEditor = await EditorCommandUndo.undo(editor)
+
+  expect(newEditor.lines).toEqual([''])
+})
+
+test('undo - replace all with shorter text', async () => {
+  const original = 'replace me; replace me; Replace Me'
+  const documentEdits = GetDocumentEdits.getDocumentEdits({ lines: [original] }, [
+    { endOffset: 10, inserted: 'updated', startOffset: 0 },
+    { endOffset: 22, inserted: 'updated', startOffset: 12 },
+    { endOffset: 34, inserted: 'Updated', startOffset: 24 },
+  ])
+  const editor = {
+    ...emptyEditor,
+    decorations: [],
+    invalidStartIndex: 0,
+    lineCache: [],
+    lines: ['updated; updated; Updated'],
+    minLineY: 0,
+    numberOfVisibleLines: 32,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    undoStack: [documentEdits],
+  }
+
+  const newEditor = await EditorCommandUndo.undo(editor)
+
+  expect(newEditor.lines).toEqual([original])
+})
+
+test('schedule document edits - coalesces contiguous typing', async () => {
+  let editor = {
+    ...emptyEditor,
+    invalidStartIndex: 0,
+    lines: [''],
+    modified: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    uri: 'file:///test.txt',
+  }
+
+  editor = await Editor.scheduleDocumentAndCursorsSelections(editor, [createChange('a', 0)])
+  editor = await Editor.scheduleDocumentAndCursorsSelections(editor, [createChange('b', 1)])
+
+  expect(editor.undoStack).toEqual([[{ ...createChange('a', 0), inserted: ['ab'] }]])
+})
+
+test('beforeinput coalesces contiguous typing into one undo', async () => {
+  const uid = 1
+  const editor = {
+    ...emptyEditor,
+    initial: false,
+    invalidStartIndex: 0,
+    lines: [''],
+    modified: false,
+    numberOfVisibleLines: 32,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid,
+    uri: 'file:///test.txt',
+  }
+  EditorStates.set(uid, editor, editor)
+
+  await commandMap['Editor.handleBeforeInput'](uid, 'insertText', 'a')
+  await commandMap['Editor.handleKeyUp'](uid, 'a')
+  await commandMap['Editor.handleBeforeInput'](uid, 'insertText', 'b')
+  await commandMap['Editor.handleKeyUp'](uid, 'b')
+  await commandMap['Editor.handleBeforeInput'](uid, 'insertText', 'c')
+  await commandMap['Editor.handleKeyUp'](uid, 'c')
+  await commandMap['Editor.undo'](uid)
+
+  expect(EditorStates.get(uid).newState.lines).toEqual([''])
+  EditorStates.dispose(uid)
 })
 
 test('undo - deleted character', async () => {

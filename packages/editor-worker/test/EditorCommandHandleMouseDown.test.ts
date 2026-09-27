@@ -1,4 +1,5 @@
 import { expect, test } from '@jest/globals'
+import { DragAndDropWorker } from '@lvce-editor/rpc-registry'
 import * as EditorCommandHandleMouseDown from '../src/parts/EditorCommand/EditorCommandHandleMouseDown.ts'
 
 const createEditor = () => {
@@ -8,6 +9,7 @@ const createEditor = () => {
     cursorWidth: 2,
     deltaX: 0,
     deltaY: 0,
+    dragAndDropEnabled: true,
     fontFamily: 'monospace',
     fontSize: 14,
     fontWeight: 400,
@@ -27,6 +29,9 @@ const createEditor = () => {
     rowHeightIncludingMargin: 20,
     selections: new Uint32Array([0, 0, 0, 0]),
     tabSize: 2,
+    textDragDropPosition: { columnIndex: 0, rowIndex: 0 },
+    textDragId: 0,
+    uri: 'file:///workspace/file.txt',
     widgets: [],
     width: 400,
     x: 0,
@@ -111,4 +116,90 @@ test('handleMouseDown - unknown detail returns state unchanged', async () => {
   const result = await EditorCommandHandleMouseDown.handleMouseDown(editor as any, 0, false, false, 0, 0, 0)
 
   expect(result).toBe(editor)
+})
+
+test('handleMouseDown - Shift click inside a selection starts a text drag session', async () => {
+  using mockRpc = DragAndDropWorker.registerMockRpc({
+    'DragAndDrop.createTextDrag'() {
+      return 42
+    },
+  })
+  const editor = {
+    ...createEditor(),
+    selections: new Uint32Array([0, 0, 0, 5]),
+  }
+
+  const result = await EditorCommandHandleMouseDown.handleMouseDown(editor as any, 0, false, false, 24, 0, 1, true)
+
+  expect(result).toMatchObject({
+    isSelecting: false,
+    selections: editor.selections,
+    textDragDropPosition: { columnIndex: 3, rowIndex: 0 },
+    textDragId: 42,
+  })
+  expect(mockRpc.invocations).toEqual([
+    [
+      'DragAndDrop.createTextDrag',
+      {
+        endOffset: 5,
+        sourceUri: 'file:///workspace/file.txt',
+        startOffset: 0,
+        text: 'hello',
+      },
+    ],
+  ])
+})
+
+test('handleMouseDown - starting a new text drag discards the previous session', async () => {
+  using mockRpc = DragAndDropWorker.registerMockRpc({
+    'DragAndDrop.createTextDrag'() {
+      return 8
+    },
+    'DragAndDrop.discardTextDrag'() {},
+  })
+  const editor = {
+    ...createEditor(),
+    selections: new Uint32Array([0, 0, 0, 5]),
+    textDragId: 7,
+  }
+
+  const result = await EditorCommandHandleMouseDown.handleMouseDown(editor as any, 0, false, false, 24, 0, 1, true)
+
+  expect(result.textDragId).toBe(8)
+  expect(mockRpc.invocations[0]).toEqual(['DragAndDrop.discardTextDrag', 7])
+})
+
+test('handleMouseDown - Shift click outside a selection keeps normal selection behavior', async () => {
+  using mockRpc = DragAndDropWorker.registerMockRpc({})
+  const editor = {
+    ...createEditor(),
+    selections: new Uint32Array([0, 0, 0, 5]),
+  }
+
+  const result = await EditorCommandHandleMouseDown.handleMouseDown(editor as any, 0, false, false, 80, 0, 1, true)
+
+  expect(result).toMatchObject({
+    isSelecting: true,
+    selections: new Uint32Array([0, 10, 0, 10]),
+    textDragId: 0,
+  })
+  expect(mockRpc.invocations).toEqual([])
+})
+
+test('handleMouseDown - disabled drag and drop keeps normal selection behavior', async () => {
+  using mockRpc = DragAndDropWorker.registerMockRpc({})
+  const editor = {
+    ...createEditor(),
+    dragAndDropEnabled: false,
+    selections: new Uint32Array([0, 0, 0, 5]),
+  }
+
+  const result = await EditorCommandHandleMouseDown.handleMouseDown(editor as any, 0, false, false, 24, 0, 1, true)
+
+  expect(result).toMatchObject({
+    isSelecting: true,
+    selections: new Uint32Array([0, 3, 0, 3]),
+    textDragId: 0,
+  })
+  expect(mockRpc.invocations).toEqual([])
 })

@@ -1,0 +1,1040 @@
+[
+  {
+    "category": "text-editor",
+    "description": "Combine space and tab tokens with the preceding token when rendering to reduce DOM nodes",
+    "heading": "Combine Whitespace Tokens",
+    "id": "editor.combineWhitespaceTokens",
+    "type": "boolean",
+    "value": true
+  },
+  {
+    "category": "text-editor",
+    "description": "The font size of the editor",
+    "heading": "Font Size",
+    "id": "editor.fontSize",
+    "type": "number",
+    "value": 15,
+    "minimum": 10,
+    "maximum": 100
+  },
+  {
+    "category": "text-editor",
+    "description": "The font family of the editor",
+    "heading": "Font Family",
+    "id": "editor.fontFamily",
+    "type": "string",
+    "value": "Fira Code"
+  },
+  {
+    "category": "text-editor",
+    "description": "The font size of the find widget",
+    "heading": "Find Widget Font Size",
+    "id": "editor.findWidgetFontSize",
+    "type": "number",
+    "value": 0,
+    "minimum": 0,
+    "maximum": 100
+  },
+  {
+    "category": "text-editor",
+    "description": "Format a file when it is saved",
+    "heading": "Format On Save",
+    "id": "editor.formatOnSave",
+    "type": "boolean",
+    "value": false
+  },
+  {
+    "category": "text-editor",
+    "description": "Show completions automatically while typing",
+    "heading": "Completions On Type",
+    "id": "editor.completionsOnType",
+    "type": "boolean",
+    "value": false
+  },
+  {
+    "category": "text-editor",
+    "description": "Show diagnostics in the editor",
+    "heading": "Diagnostics",
+    "id": "editor.diagnostics",
+    "type": "boolean",
+    "value": true
+  },
+  {
+    "category": "text-editor",
+    "description": "The font weight of the editor",
+    "heading": "Font Weight",
+    "id": "editor.fontWeight",
+    "type": "number",
+    "value": 400,
+    "minimum": 100,
+    "maximum": 900
+  },
+  {
+    "category": "text-editor",
+    "description": "Show breadcrumbs above the editor",
+    "heading": "Breadcrumbs",
+    "id": "breadcrumbs.enabled",
+    "type": "boolean",
+    "value": false
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls how lines should wrap",
+    "heading": "Word Wrap",
+    "id": "editor.wordWrap",
+    "options": [
+      {
+        "id": "editor.on",
+        "label": "On"
+      },
+      {
+        "id": "editor.off",
+        "label": "off"
+      }
+    ],
+    "type": "enum",
+    "value": "off"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the display of line numbers",
+    "heading": "Line Numbers",
+    "id": "editor.lineNumbers",
+    "options": [
+      {
+        "id": "editor.on",
+        "label": "On"
+      },
+      {
+        "id": "editor.off",
+        "label": "off"
+      }
+    ],
+    "type": "enum",
+    "value": "on"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether actions for accepting merge conflict changes are shown in the editor",
+    "heading": "Merge Conflict Actions",
+    "id": "editor.mergeConflictActions",
+    "type": "boolean",
+    "value": false
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the primary cursor line number is highlighted",
+    "heading": "Highlight Active Line Number",
+    "id": "editor.highlightActiveLineNumber",
+    "type": "boolean",
+    "value": true
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the minimap is shown",
+    "heading": "Minimap",
+    "id": "editor.minimap.enabled",
+    "type": "boolean",
+    "value": false
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor will scroll beyond the last line",
+    "heading": "Scroll Beyond Last Line",
+    "id": "editor.scrollBeyondLastLine",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor will scroll smoothly",
+    "heading": "Smooth Scrolling",
+    "id": "editor.smoothScrolling",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls how the cursor should blink",
+    "heading": "Cursor Blinking",
+    "id": "editor.cursorBlinking",
+    "type": "string",
+    "value": "blink"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the cursor style",
+    "heading": "Cursor Style",
+    "id": "editor.cursorStyle",
+    "type": "string",
+    "value": "line"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the width of the cursor",
+    "heading": "Cursor Width",
+    "id": "editor.cursorWidth",
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "category": "text-editor",
+    "description": "The number of spaces a tab is equal to",
+    "heading": "Tab Size",
+    "id": "editor.tabSize",
+    "type": "number",
+    "value": 4,
+    "minimum": 1,
+    "maximum": 8
+  },
+  {
+    "category": "text-editor",
+    "description": "Insert spaces when pressing Tab",
+    "heading": "Insert Spaces",
+    "id": "editor.insertSpaces",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor will automatically adjust the indentation",
+    "heading": "Detect Indentation",
+    "id": "editor.detectIndentation",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Remove trailing auto inserted whitespace",
+    "heading": "Trim Auto Whitespace",
+    "id": "editor.trimAutoWhitespace",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Special handling for large files to disable certain features",
+    "heading": "Large File Optimizations",
+    "id": "editor.largeFileOptimizations",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls how the editor should render whitespace characters",
+    "heading": "Render Whitespace",
+    "id": "editor.renderWhitespace",
+    "type": "string",
+    "value": "selection"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should render control characters",
+    "heading": "Render Control Characters",
+    "id": "editor.renderControlCharacters",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls how the editor should render the current line highlight",
+    "heading": "Render Line Highlight",
+    "id": "editor.renderLineHighlight",
+    "type": "string",
+    "value": "line"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor shows CodeLens",
+    "heading": "Code Lens",
+    "id": "editor.codeLens",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor has code folding enabled",
+    "heading": "Folding",
+    "id": "editor.folding",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls when the folding controls on the gutter are automatically hidden",
+    "heading": "Show Folding Controls",
+    "id": "editor.showFoldingControls",
+    "type": "string",
+    "value": "mouseover"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether clicking on the empty content after a folded line will unfold the line",
+    "heading": "Unfold On Click After End",
+    "id": "editor.unfoldOnClickAfterEnd",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should detect links and make them clickable",
+    "heading": "Links",
+    "id": "editor.links",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should render the inline color decorators and color picker",
+    "heading": "Color Decorators",
+    "id": "editor.colorDecorators",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should show the lightbulb code action",
+    "heading": "Lightbulb",
+    "id": "editor.lightbulb",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Code actions to be run on save",
+    "heading": "Code Actions On Save",
+    "id": "editor.codeActionsOnSave",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Format a file on paste",
+    "heading": "Format On Paste",
+    "id": "editor.formatOnPaste",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Format a file on type",
+    "heading": "Format On Type",
+    "id": "editor.formatOnType",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls if suggestions should be accepted on commit characters",
+    "heading": "Accept Suggestion On Commit Character",
+    "id": "editor.acceptSuggestionOnCommitCharacter",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls if suggestions should be accepted on Enter",
+    "heading": "Accept Suggestion On Enter",
+    "id": "editor.acceptSuggestionOnEnter",
+    "type": "string",
+    "value": "on"
+  },
+  {
+    "category": "text-editor",
+    "description": "Enables tab completions",
+    "heading": "Tab Completion",
+    "id": "editor.tabCompletion",
+    "type": "string",
+    "value": "on"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether completions should be computed based on words in the document",
+    "heading": "Word Based Suggestions",
+    "id": "editor.wordBasedSuggestions",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether suggestions should automatically show up when typing trigger characters",
+    "heading": "Suggest On Trigger Characters",
+    "id": "editor.suggestOnTriggerCharacters",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether suggestions should automatically show up while typing",
+    "heading": "Quick Suggestions",
+    "id": "editor.quickSuggestions",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should show parameter hints",
+    "heading": "Parameter Hints",
+    "id": "editor.parameterHints",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should automatically close brackets after opening them",
+    "heading": "Auto Closing Brackets",
+    "id": "editor.autoClosingBrackets",
+    "type": "string",
+    "value": "always"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should automatically close quotes after opening them",
+    "heading": "Auto Closing Quotes",
+    "id": "editor.autoClosingQuotes",
+    "type": "string",
+    "value": "always"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should type over closing quotes or brackets",
+    "heading": "Auto Closing Overtype",
+    "id": "editor.autoClosingOvertype",
+    "type": "string",
+    "value": "auto"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should remove adjacent closing quotes or brackets when deleting",
+    "heading": "Auto Closing Delete",
+    "id": "editor.autoClosingDelete",
+    "type": "string",
+    "value": "auto"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should automatically surround selections",
+    "heading": "Auto Surround",
+    "id": "editor.autoSurround",
+    "type": "string",
+    "value": "quotes"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should enable bracket pair colorization",
+    "heading": "Bracket Pair Colorization",
+    "id": "editor.bracketPairColorization",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should render bracket pair guides",
+    "heading": "Guides",
+    "id": "editor.guides",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor allows moving selections via drag and drop",
+    "heading": "Drag And Drop",
+    "id": "editor.dragAndDrop",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether syntax highlighting should be copied when copying text",
+    "heading": "Copy With Syntax Highlighting",
+    "id": "editor.copyWithSyntaxHighlighting",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "The modifier to be used to add multiple cursors with the mouse",
+    "heading": "Multi Cursor Modifier",
+    "id": "editor.multiCursorModifier",
+    "type": "string",
+    "value": "alt"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls how the editor should handle multiple cursors when pasting",
+    "heading": "Multi Cursor Paste",
+    "id": "editor.multiCursorPaste",
+    "type": "string",
+    "value": "full"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should highlight similar matches to the selection",
+    "heading": "Occurrences Highlight",
+    "id": "editor.occurrencesHighlight",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should highlight similar matches to the selection",
+    "heading": "Selection Highlight",
+    "id": "editor.selectionHighlight",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should enable semantic highlighting",
+    "heading": "Semantic Highlighting",
+    "id": "editor.semanticHighlighting",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Overrides editor syntax highlighting colors",
+    "heading": "Token Color Customizations",
+    "id": "editor.tokenColorCustomizations",
+    "type": "string",
+    "value": "{}"
+  },
+  {
+    "category": "text-editor",
+    "description": "Overrides workbench colors",
+    "heading": "Workbench Color Customizations",
+    "id": "editor.workbenchColorCustomizations",
+    "type": "string",
+    "value": "{}"
+  },
+  {
+    "category": "text-editor",
+    "description": "Overrides editor colors",
+    "heading": "Editor Color Customizations",
+    "id": "editorColorCustomizations",
+    "type": "string",
+    "value": "{}"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the diff editor shows the diff side by side or inline",
+    "heading": "Diff Editor",
+    "id": "editor.diffEditor",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the diff editor shows the diff side by side or inline",
+    "heading": "Diff Word Wrap",
+    "id": "editor.diffWordWrap",
+    "type": "string",
+    "value": "inherit"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the diff editor shows code lens",
+    "heading": "Diff Code Lens",
+    "id": "editor.diffCodeLens",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the diff editor shows the diff side by side or inline",
+    "heading": "Diff Render Side By Side",
+    "id": "editor.diffRenderSideBySide",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the diff editor ignores changes in whitespace",
+    "heading": "Diff Ignore Trim Whitespace",
+    "id": "editor.diffIgnoreTrimWhitespace",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the diff editor shows indicators",
+    "heading": "Diff Render Indicators",
+    "id": "editor.diffRenderIndicators",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the diff editor shows the overview ruler",
+    "heading": "Diff Render Overview Ruler",
+    "id": "editor.diffRenderOverviewRuler",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the diff editor shows the revert icon in the margin",
+    "heading": "Diff Render Margin Revert Icon",
+    "id": "editor.diffRenderMarginRevertIcon",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor is in insert mode",
+    "heading": "Insert Mode",
+    "id": "editor.insertMode",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor is in overwrite mode",
+    "heading": "Overwrite Mode",
+    "id": "editor.overwriteMode",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor is read only",
+    "heading": "Read Only",
+    "id": "editor.readOnly",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should run in a mode where it is optimized for screen readers",
+    "heading": "Accessibility Support",
+    "id": "editor.accessibilitySupport",
+    "type": "string",
+    "value": "auto"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should automatically adjust the indentation",
+    "heading": "Auto Indent",
+    "id": "editor.autoIndent",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should highlight matching brackets",
+    "heading": "Bracket Matching",
+    "id": "editor.bracketMatching",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should use centered layout",
+    "heading": "Centered Layout",
+    "id": "editor.centeredLayout",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should support column selection",
+    "heading": "Column Selection",
+    "id": "editor.columnSelection",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should show the context menu",
+    "heading": "Context Menu",
+    "id": "editor.contextmenu",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the cursor should be animated",
+    "heading": "Cursor Smooth Caret Animation",
+    "id": "editor.cursorSmoothCaretAnimation",
+    "type": "string",
+    "value": "off"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the number of extra characters beyond which the editor will scroll horizontally",
+    "heading": "Cursor Surrounding Lines",
+    "id": "editor.cursorSurroundingLines",
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls when the cursor should be hidden",
+    "heading": "Cursor Surrounding Lines Style",
+    "id": "editor.cursorSurroundingLinesStyle",
+    "type": "string",
+    "value": "all"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should disable optimizations for monospace fonts",
+    "heading": "Disable Monospace Optimizations",
+    "id": "editor.disableMonospaceOptimizations",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether copying without a selection copies the current line",
+    "heading": "Empty Selection Clipboard",
+    "id": "editor.emptySelectionClipboard",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "An extra class name to add to the editor",
+    "heading": "Extra Editor Class Name",
+    "id": "editor.extraEditorClassName",
+    "type": "string",
+    "value": ""
+  },
+  {
+    "category": "text-editor",
+    "description": "Scrolling speed multiplier when pressing Alt",
+    "heading": "Fast Scroll Sensitivity",
+    "id": "editor.fastScrollSensitivity",
+    "type": "number",
+    "value": "5"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should add extra space on the bottom",
+    "heading": "Find",
+    "id": "editor.find",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should scroll beyond the last line",
+    "heading": "Fixed Overflow Widgets",
+    "id": "editor.fixedOverflowWidgets",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the folding strategy",
+    "heading": "Folding Strategy",
+    "id": "editor.foldingStrategy",
+    "type": "string",
+    "value": "auto"
+  },
+  {
+    "category": "text-editor",
+    "description": "Enables/Disables font ligatures",
+    "heading": "Font Ligatures",
+    "id": "editor.fontLigatures",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should render the vertical glyph margin",
+    "heading": "Glyph Margin",
+    "id": "editor.glyphMargin",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the behavior the 'Go to Definition'-mouse gesture",
+    "heading": "Go To Location",
+    "id": "editor.gotoLocation",
+    "type": "string",
+    "value": "mouse"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the cursor should be hidden in the overview ruler",
+    "heading": "Hide Cursor In Overview Ruler",
+    "id": "editor.hideCursorInOverviewRuler",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should show hover",
+    "heading": "Hover",
+    "id": "editor.hover",
+    "type": "boolean",
+    "value": false
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the delay in milliseconds after which hover information will show up",
+    "heading": "Hover Delay",
+    "id": "editor.hoverDelay",
+    "type": "number",
+    "value": 200,
+    "minimum": 0,
+    "maximum": 10000
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should be in a diff editor",
+    "heading": "In Diff Editor",
+    "id": "editor.inDiffEditor",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "The letter spacing",
+    "heading": "Letter Spacing",
+    "id": "editor.letterSpacing",
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should show the lightbulb code action",
+    "heading": "Lightbulb Enabled",
+    "id": "editor.lightbulbEnabled",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "The width reserved for line decorations (in px)",
+    "heading": "Line Decorations Width",
+    "id": "editor.lineDecorationsWidth",
+    "type": "number",
+    "value": "10"
+  },
+  {
+    "category": "text-editor",
+    "description": "The line height",
+    "heading": "Line Height",
+    "id": "editor.lineHeight",
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should highlight matching brackets",
+    "heading": "Match Brackets",
+    "id": "editor.matchBrackets",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "A multiplier to be used on the deltaX and deltaY of mouse wheel scroll events",
+    "heading": "Mouse Wheel Scroll Sensitivity",
+    "id": "editor.mouseWheelScrollSensitivity",
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "category": "text-editor",
+    "description": "Zoom the font of the editor when using mouse wheel and holding Ctrl",
+    "heading": "Mouse Wheel Zoom",
+    "id": "editor.mouseWheelZoom",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Merge overlapping selections",
+    "heading": "Multi Cursor Merge Overlapping",
+    "id": "editor.multiCursorMergeOverlapping",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether a border should be drawn around the overview ruler",
+    "heading": "Overview Ruler Border",
+    "id": "editor.overviewRulerBorder",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the number of decorations that can show in the overview ruler",
+    "heading": "Overview Ruler Lanes",
+    "id": "editor.overviewRulerLanes",
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls if the peek widget should be focused by default",
+    "heading": "Peek Widget Default Focus",
+    "id": "editor.peekWidgetDefaultFocus",
+    "type": "string",
+    "value": "editor"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the delay in milliseconds after which quick suggestions will show up",
+    "heading": "Quick Suggestions Delay",
+    "id": "editor.quickSuggestionsDelay",
+    "type": "number",
+    "value": "10"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should render the final newline as a space",
+    "heading": "Render Final Newline",
+    "id": "editor.renderFinalNewline",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should render validation decorations",
+    "heading": "Render Validation Decorations",
+    "id": "editor.renderValidationDecorations",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "When revealing the cursor, a virtual padding (px) is added to the cursor, turning on a block cursor",
+    "heading": "Reveal Horizontal Right Padding",
+    "id": "editor.revealHorizontalRightPadding",
+    "type": "number",
+    "value": "30"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether selections should have rounded corners",
+    "heading": "Rounded Selection",
+    "id": "editor.roundedSelection",
+    "type": "boolean",
+    "value": "false"
+  },
+  {
+    "category": "text-editor",
+    "description": "Render vertical rulers at a certain number of monospace characters",
+    "heading": "Rulers",
+    "id": "editor.rulers",
+    "type": "string",
+    "value": "[]"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls how many characters the editor will scroll horizontally",
+    "heading": "Scroll Beyond Last Column",
+    "id": "editor.scrollBeyondLastColumn",
+    "type": "number",
+    "value": "5"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the visibility and behavior of the scrollbars",
+    "heading": "Scrollbar",
+    "id": "editor.scrollbar",
+    "type": "string",
+    "value": "auto"
+  },
+  {
+    "category": "text-editor",
+    "description": "Scroll only along the predominant axis when scrolling both vertically and horizontally at the same time",
+    "heading": "Scroll Predominant Axis",
+    "id": "editor.scrollPredominantAxis",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether the editor should use the CLIPBOARD selection",
+    "heading": "Selection Clipboard",
+    "id": "editor.selectionClipboard",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Editor background color",
+    "heading": "Editor background",
+    "id": "editor.background",
+    "type": "color",
+    "value": "#567567"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls fading out of unused code",
+    "heading": "Show Unused",
+    "id": "editor.showUnused",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether snippets are shown with other suggestions and how they are sorted",
+    "heading": "Snippet Suggestions",
+    "id": "editor.snippetSuggestions",
+    "type": "string",
+    "value": "bottom"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls whether suggestions should automatically show up while typing",
+    "heading": "Suggest",
+    "id": "editor.suggest",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Font size for the suggest widget",
+    "heading": "Suggest Font Size",
+    "id": "editor.suggestFontSize",
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "category": "text-editor",
+    "description": "Line height for the suggest widget",
+    "heading": "Suggest Line Height",
+    "id": "editor.suggestLineHeight",
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls how suggestions are selected when showing the suggest widget",
+    "heading": "Suggest Selection",
+    "id": "editor.suggestSelection",
+    "type": "string",
+    "value": "recentlyUsed"
+  },
+  {
+    "category": "text-editor",
+    "description": "Inserting and deleting whitespace follows tab stops",
+    "heading": "Use Tab Stops",
+    "id": "editor.useTabStops",
+    "type": "boolean",
+    "value": "true"
+  },
+  {
+    "category": "text-editor",
+    "description": "Characters that will be used as word separators when doing word related navigations or operations",
+    "heading": "Word Separators",
+    "id": "editor.wordSeparators",
+    "type": "string",
+    "value": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?"
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the indentation of wrapped lines",
+    "heading": "Wrapping Indent",
+    "id": "editor.wrappingIndent",
+    "type": "string",
+    "value": "same"
+  }
+]

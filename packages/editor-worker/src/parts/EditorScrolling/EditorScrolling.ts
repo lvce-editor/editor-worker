@@ -3,6 +3,8 @@ import * as Assert from '../Assert/Assert.ts'
 import * as Clamp from '../Clamp/Clamp.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import * as EditorViewport from '../EditorViewport/EditorViewport.ts'
+import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import * as ScrollingFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 
@@ -10,29 +12,29 @@ import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 export const setDeltaY = async (state: EditorState, value: number): Promise<EditorState> => {
   Assert.object(state)
   Assert.number(value)
-  const { deltaY, finalDeltaY, height, itemHeight, numberOfVisibleLines, scrollBarHeight } = state
+  const { deltaY, finalDeltaY, height, itemHeight, scrollBarHeight } = state
   const newDeltaY = Clamp.clamp(value, 0, finalDeltaY)
   if (deltaY === newDeltaY) {
     return state
   }
-  const minLineY = Math.floor(newDeltaY / itemHeight)
-  const maxLineY = minLineY + numberOfVisibleLines
-  const newEditor1 =
-    state.foldingRanges?.length > 0
-      ? EditorFolding.updateLayout({ ...state, deltaY: newDeltaY }, state.foldingRanges)
-      : {
-          ...state,
-          deltaY: newDeltaY,
-          maxLineY,
-          minLineY,
-          scrollBarY: ScrollingFunctions.getScrollBarY(newDeltaY, finalDeltaY, height, scrollBarHeight),
-          ...('visibleLineIndices' in state && {
-            visibleLineIndices: Array.from(
-              { length: Math.max(Math.min(maxLineY, state.lines.length) - minLineY, 0) },
-              (_, index) => minLineY + index,
-            ),
-          }),
-        }
+  const startVisualRow = Math.floor(newDeltaY / itemHeight)
+  const renderedLineCount = EditorViewport.getRenderedLineCount(height, itemHeight, newDeltaY)
+  const hasMergeConflictRows = state.viewLineIndices?.length > 0
+  const visibleViewLineIndices = hasMergeConflictRows
+    ? EditorViewRows.getVisibleViewLineIndices(state.viewLineIndices, startVisualRow, renderedLineCount)
+    : EditorFolding.getViewportLineIndices(state.lines.length, state.foldingRanges || [], startVisualRow, renderedLineCount)
+  const visibleLineIndices = hasMergeConflictRows ? EditorViewRows.getVisibleLineIndices(visibleViewLineIndices) : visibleViewLineIndices
+  const minLineY = visibleLineIndices[0] ?? 0
+  const maxLineY = visibleLineIndices.length === 0 ? 0 : visibleLineIndices.at(-1)! + 1
+  const newEditor1 = {
+    ...state,
+    deltaY: newDeltaY,
+    maxLineY,
+    minLineY,
+    scrollBarY: ScrollingFunctions.getScrollBarY(newDeltaY, finalDeltaY, height, scrollBarHeight),
+    visibleLineIndices,
+    visibleViewLineIndices,
+  }
   const syncIncremental = SyncIncremental.getEnabled()
 
   const { differences, textInfos } = await EditorText.getVisible(newEditor1, syncIncremental)

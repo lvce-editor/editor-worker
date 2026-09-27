@@ -20,3 +20,17 @@ test('handlePointerDown - returns state unchanged for detail 1', async () => {
 
   expect(result).toBe(editor)
 })
+
+test('handlePointerDown - stores gutter width', async () => {
+  const editor = {
+    gutterWidth: 0,
+    isSelecting: false,
+  }
+
+  const result = await EditorCommandHandlePointerDown.handlePointerDown(editor as any, 0, false, false, 0, 0, 1, 30)
+
+  expect(result).toEqual({
+    gutterWidth: 30,
+    isSelecting: false,
+  })
+})

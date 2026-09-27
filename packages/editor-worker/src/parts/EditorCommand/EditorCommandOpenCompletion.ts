@@ -9,8 +9,8 @@ import * as FocusKey from '../FocusKey/FocusKey.ts'
 const newStateGenerator = async (state: CompletionState, parentUid: number): Promise<CompletionState> => {
   const { height, uid, width, x, y } = state
   const { newState } = Editors.get(parentUid)
-  const { languageId } = newState
-  await CompletionWorker.invoke('Completions.create', uid, x, y, width, height, parentUid, languageId)
+  const { applicationId, languageId } = newState
+  await CompletionWorker.invoke('Completions.create', uid, x, y, width, height, parentUid, languageId, applicationId)
   await CompletionWorker.invoke('Completions.loadContent', uid)
   const diff = await CompletionWorker.invoke('Completions.diff2', uid)
   const commands = await CompletionWorker.invoke('Completions.render2', uid, diff)

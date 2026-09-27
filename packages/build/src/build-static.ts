@@ -1,20 +1,32 @@
 import { cp, readFile, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import { pathToFileURL } from 'node:url'
+import { dirname, join } from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { root } from './root.ts'
 
-const sharedProcessPath = join(root, 'packages', 'server', 'node_modules', '@lvce-editor', 'shared-process', 'index.js')
-
-const sharedProcessUrl = pathToFileURL(sharedProcessPath).toString()
+const sharedProcessUrl = import.meta.resolve('@lvce-editor/shared-process')
 
 const sharedProcess = await import(sharedProcessUrl)
 
 process.env.PATH_PREFIX = '/editor-worker'
+const staticServerPath = join(dirname(fileURLToPath(import.meta.resolve('@lvce-editor/static-server/package.json'))), 'static')
 const { commitHash } = await sharedProcess.exportStatic({
   root,
+  serverStaticPath: staticServerPath,
   extensionPath: '',
   testPath: 'packages/e2e',
 })
+
+await cp(
+  dirname(fileURLToPath(import.meta.resolve('@lvce-editor/find-widget-worker'))),
+  join(root, 'dist', commitHash, 'packages', 'find-widget-worker', 'dist'),
+  { recursive: true },
+)
+
+await cp(
+  dirname(fileURLToPath(import.meta.resolve('@lvce-editor/find-widget-worker'))),
+  join(staticServerPath, commitHash, 'packages', 'find-widget-worker', 'dist'),
+  { recursive: true },
+)
 
 const patchFile = async (path: string, occurrence: string, replacement: string): Promise<void> => {
   const content = await readFile(path, 'utf8')
@@ -201,11 +213,18 @@ const content = await readFile(rendererWorkerPath, 'utf8')
 const workerPath = join(root, '.tmp/dist/dist/editorWorkerMain.js')
 const remoteUrl = getRemoteUrl(workerPath)
 
+let newContent = content
 if (content.includes('// const editorWorkerUrl = ')) {
   const occurrence = `// const editorWorkerUrl = \`\${assetDir}/packages/editor-worker/dist/editorWorkerMain.js\`
 const editorWorkerUrl = \`${remoteUrl}\``
   const replacement = `const editorWorkerUrl = \`\${assetDir}/packages/editor-worker/dist/editorWorkerMain.js\``
-  const newContent = content.replace(occurrence, replacement)
+  newContent = newContent.replace(occurrence, replacement)
+}
+newContent = newContent.replace(
+  `const editorWorkerUrl = \`${remoteUrl}\``,
+  'const editorWorkerUrl = `${assetDir}/packages/editor-worker/dist/editorWorkerMain.js`',
+)
+if (newContent !== content) {
   await writeFile(rendererWorkerPath, newContent)
 }
 

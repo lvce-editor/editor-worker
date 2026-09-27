@@ -79,6 +79,28 @@ test('editorCopy', async () => {
   expect(state.writeTextSpy).toHaveBeenCalledWith('line 1\nline 2\nline 3')
 })
 
+test('editorCopy - reversed single-line selection', async () => {
+  state.writeTextSpy = jest.fn()
+  const editor = {
+    lines: ['alpha beta'],
+    selections: new Uint32Array([0, 10, 0, 6]),
+  }
+
+  expect(await EditorCopy.copy(editor)).toBe(editor)
+  expect(state.writeTextSpy).toHaveBeenCalledWith('beta')
+})
+
+test('editorCopy - reversed multi-line selection', async () => {
+  state.writeTextSpy = jest.fn()
+  const editor = {
+    lines: ['alpha beta', 'gamma delta', 'epsilon'],
+    selections: new Uint32Array([2, 3, 0, 2]),
+  }
+
+  expect(await EditorCopy.copy(editor)).toBe(editor)
+  expect(state.writeTextSpy).toHaveBeenCalledWith('pha beta\ngamma delta\neps')
+})
+
 test.skip('editorCopy - error from clipboard - document is not focused', async () => {
   state.writeTextSpy = jest.fn().mockImplementation(() => {
     throw new DOMException('Document is not focused.')

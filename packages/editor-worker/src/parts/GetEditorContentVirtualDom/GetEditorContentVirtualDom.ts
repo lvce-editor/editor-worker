@@ -6,39 +6,60 @@ import * as GetEditorScrollBarDiagnosticsVirtualDom from '../GetEditorScrollBarD
 import * as GetScrollBarVirtualDom from '../GetScrollBarVirtualDom/GetScrollBarVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
+const editorContentNode: VirtualDomNode = {
+  childCount: 5,
+  className: 'EditorContent',
+  onKeyUp: DomEventListenerFunctions.HandleKeyUp,
+  onMouseMove: DomEventListenerFunctions.HandleMouseMove,
+  onWheel: DomEventListenerFunctions.HandleWheel,
+  type: VirtualDomElements.Div,
+}
+
 interface EditorContentVirtualDomOptions {
+  readonly bracketMatchInfos?: readonly any[]
+  readonly breadcrumbsEnabled?: boolean
   readonly cursorInfos?: readonly any[]
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
   readonly differences: readonly number[]
+  readonly endOfLineDecorations?: readonly { readonly rowIndex: number; readonly text: string }[]
   readonly finalDeltaY?: number
+  readonly focused?: boolean
   readonly height?: number
   readonly highlightedLine?: number
   readonly lineNumbers?: boolean
+  readonly problemsHighlightedRow?: number
+  readonly roundedSelection?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
   readonly selectionInfos?: readonly any[]
   readonly textInfos: readonly any[]
+  readonly visibleLineIndices?: readonly number[]
+  readonly visibleViewLineIndices?: readonly number[]
 }
 
 export const getEditorContentVirtualDom = ({
+  bracketMatchInfos = [],
+  breadcrumbsEnabled = false,
   cursorInfos = [],
   diagnostics = [],
   differences,
+  endOfLineDecorations = [],
+  focused = true,
   highlightedLine = -1,
   lineNumbers = true,
+  problemsHighlightedRow = -1,
+  roundedSelection = false,
   scrollBarDiagnostics = [],
   selectionInfos = [],
   textInfos,
+  visibleLineIndices = [],
+  visibleViewLineIndices = [],
 }: EditorContentVirtualDomOptions): readonly VirtualDomNode[] => {
   return [
     {
-      childCount: 5,
-      className: 'EditorContent',
-      onKeyUp: DomEventListenerFunctions.HandleKeyUp,
-      onMouseMove: DomEventListenerFunctions.HandleMouseMove,
-      onWheel: DomEventListenerFunctions.HandleWheel,
-      type: VirtualDomElements.Div,
+      ...editorContentNode,
+      className: breadcrumbsEnabled ? 'EditorContent EditorBreadcrumbsOffset' : 'EditorContent',
     },
     ...GetEditorInputVirtualDom.getEditorInputVirtualDom(),
     ...GetEditorLayersVirtualDom.getEditorLayersVirtualDom(
@@ -49,6 +70,13 @@ export const getEditorContentVirtualDom = ({
       highlightedLine,
       cursorInfos,
       diagnostics,
+      visibleLineIndices,
+      endOfLineDecorations,
+      bracketMatchInfos,
+      focused,
+      visibleViewLineIndices,
+      problemsHighlightedRow,
+      roundedSelection,
     ),
     ...GetEditorScrollBarDiagnosticsVirtualDom.getEditorScrollBarDiagnosticsVirtualDom(scrollBarDiagnostics),
     ...GetScrollBarVirtualDom.getScrollBarVirtualDom(),

@@ -4,6 +4,7 @@ import type { EditorState } from '../src/parts/State/State.ts'
 const getEditorPreferences = jest.fn<() => Promise<any>>()
 const measureCharacterWidth = jest.fn<(fontWeight: number, fontSize: number, fontFamily: string, letterSpacing: number) => Promise<number>>()
 const getPreference = jest.fn<(key: string) => Promise<any>>()
+const getEditorGutterDecorations = jest.fn<(editor: EditorState) => Promise<readonly any[]>>()
 
 jest.unstable_mockModule('../src/parts/GetEditorPreferences/GetEditorPreferences.ts', () => ({
   getEditorPreferences,
@@ -17,6 +18,10 @@ jest.unstable_mockModule('../src/parts/Preferences/Preferences.ts', () => ({
   get: getPreference,
 }))
 
+jest.unstable_mockModule('../src/parts/GetEditorGutterDecorations/GetEditorGutterDecorations.ts', () => ({
+  getEditorGutterDecorations,
+}))
+
 const { handleSettingsChanged } = await import('../src/parts/HandleSettingsChanged/HandleSettingsChanged.ts')
 
 test('handleSettingsChanged reloads editor preferences and geometry', async () => {
@@ -26,6 +31,8 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
     fontFamily: 'Fira Code',
     fontSize: 16,
     fontWeight: 500,
+    highlightActiveLineNumber: false,
+    hoverEnabled: true,
     isAutoClosingBracketsEnabled: true,
     isAutoClosingQuotesEnabled: true,
     isAutoClosingTagsEnabled: true,
@@ -37,6 +44,7 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
   })
   measureCharacterWidth.mockResolvedValue(10)
   getPreference.mockResolvedValue(true)
+  getEditorGutterDecorations.mockResolvedValue([{ rowIndex: 1, type: 'modified' }])
   const state = {
     columnWidth: 9,
     deltaY: 40,
@@ -65,15 +73,56 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
       fontFamily: 'Fira Code',
       fontSize: 16,
       fontWeight: 500,
+      gutterDecorations: [{ rowIndex: 1, type: 'modified' }],
+      highlightActiveLineNumber: false,
+      hoverEnabled: true,
       isMonospaceFont: true,
       itemHeight: 24,
       letterSpacing: 1,
       lineNumbers: false,
-      maxLineY: 3,
+      maxLineY: 4,
       minLineY: 1,
       rowHeight: 24,
       tabSize: 4,
       visualDecorations: [],
     }),
   )
+  expect(getEditorGutterDecorations).toHaveBeenCalledWith(expect.objectContaining({ fontFamily: 'Fira Code', rowHeight: 24 }))
+})
+
+test('settings changes cannot reenable large file language services', async () => {
+  getEditorPreferences.mockResolvedValue({
+    breadcrumbsEnabled: true,
+    diagnosticsEnabled: true,
+    formatOnSave: true,
+    hoverEnabled: true,
+    minimapEnabled: true,
+    rowHeight: 20,
+  })
+  measureCharacterWidth.mockResolvedValue(8)
+  getPreference.mockResolvedValue(true)
+  const state = {
+    columnWidth: 8,
+    deltaY: 0,
+    diagnostics: [],
+    height: 200,
+    itemHeight: 20,
+    largeFile: true,
+    lines: ['text'],
+    minimumSliderSize: 20,
+    rowHeight: 20,
+    width: 800,
+    x: 0,
+    y: 0,
+  } as unknown as EditorState
+  const result = await handleSettingsChanged(state)
+  expect(result).toMatchObject({
+    breadcrumbsEnabled: false,
+    completionsOnType: false,
+    diagnosticsEnabled: false,
+    formatOnSave: false,
+    hoverEnabled: false,
+    largeFile: true,
+    minimapEnabled: false,
+  })
 })

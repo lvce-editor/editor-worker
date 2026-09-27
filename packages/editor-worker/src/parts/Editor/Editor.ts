@@ -90,6 +90,14 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   const newLines = TextDocument.applyEdits(editor, changes)
   const partialNewEditor = updateLines(editor, newLines)
   const newSelections = selectionChanges || EditorSelection.applyEdit(partialNewEditor, changes)
+  const selectionHistory = {
+    after: newSelections,
+    before: editor.selections,
+  }
+  Object.defineProperty(changes, 'selectionHistory', {
+    configurable: true,
+    value: selectionHistory,
+  })
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
   // invalidStartIndex, lineCache, etc. just for testing editorType
@@ -99,16 +107,35 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   // then clear old undostack from indexeddb after 3 days
   // TODO should push to undostack after rendering
   const autoClosingRanges = applyAutoClosingRangesEdit(editor, changes)
+  const change = changes[0]
+  const canCoalesceTyping =
+    changes.length === 1 &&
+    change.origin === EditOrigin.EditorType &&
+    change.deleted[0] === '' &&
+    change.inserted[0].length > 0 &&
+    change.inserted.length === 1 &&
+    change.start.rowIndex === change.end.rowIndex &&
+    change.start.columnIndex === change.end.columnIndex
+  const previous = editor.undoStack.at(-1)?.[0]
+  const shouldCoalesce =
+    editor.canCoalesceTyping &&
+    canCoalesceTyping &&
+    change.start.rowIndex === previous.start.rowIndex &&
+    change.start.columnIndex === previous.start.columnIndex + previous.inserted[0].length
+  const undoStack = shouldCoalesce
+    ? [...editor.undoStack.slice(0, -1), [{ ...previous, inserted: [previous.inserted[0] + change.inserted[0]] }]]
+    : [...editor.undoStack, changes]
 
   const newEditor = {
     ...partialNewEditor,
     autoClosingRanges,
+    canCoalesceTyping,
     invalidStartIndex,
     lines: newLines,
     modified: true,
     redoStack: [],
     selections: newSelections,
-    undoStack: [...editor.undoStack, changes],
+    undoStack,
   }
   // Update link decorations after text changes
   const linkDecorations = LinkDetection.detectAllLinksAsDecorations(newEditor)
@@ -120,7 +147,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
 
   // Notify main-area-worker about modified status change
   if (!editor.modified) {
-    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri, true)
+    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri, true, editor.applicationId)
   }
 
   // Notify registered listeners about editor changes
@@ -151,7 +178,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
 }
 // @ts-ignore
-export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes) => {
+export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes, selectionChanges = undefined) => {
   Assert.object(editor)
   Assert.array(changes)
   if (changes.length === 0) {
@@ -159,7 +186,7 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes)
   }
   const newLines = TextDocument.applyEdits(editor, changes)
   const partialNewEditor = updateLines(editor, newLines)
-  const newSelections = EditorSelection.applyEdit(partialNewEditor, changes)
+  const newSelections = selectionChanges || EditorSelection.applyEdit(partialNewEditor, changes)
   const invalidStartIndex = Math.min(editor.invalidStartIndex, changes[0].start.rowIndex)
   const newEditor = {
     ...partialNewEditor,

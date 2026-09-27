@@ -1,24 +1,21 @@
 // @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
-// @ts-ignore
-import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 
 // @ts-ignore
-const getSelectUpChanges = (lines, selections) => {
+const getSelectUpChanges = (selections) => {
   const newSelections = new Uint32Array(selections.length)
   for (let i = 0; i < selections.length; i += 4) {
-    const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
-    newSelections[i] = Math.max(selectionStartRow - 1, 0)
-    newSelections[i + 1] = selectionStartColumn
-    newSelections[i + 2] = selectionEndRow
-    newSelections[i + 3] = selectionEndColumn
+    newSelections[i] = selections[i]
+    newSelections[i + 1] = selections[i + 1]
+    newSelections[i + 2] = Math.max(selections[i + 2] - 1, 0)
+    newSelections[i + 3] = selections[i + 3]
   }
   return newSelections
 }
 
 // @ts-ignore
 export const selectUp = (editor) => {
-  const { lines, selections } = editor
-  const newSelections = getSelectUpChanges(lines, selections)
+  const { selections } = editor
+  const newSelections = getSelectUpChanges(selections)
   return Editor.scheduleSelections(editor, newSelections)
 }

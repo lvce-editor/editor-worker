@@ -3,7 +3,8 @@
   "name": "Alt Hover Definition Link",
   "description": "Definition provider for Alt-hover editor tests",
   "activation": ["onLanguage:definition-link-test", "onDefinition:definition-link-test"],
-  "browser": "main.js",
+  "browser": "dist/main.js",
+  "isolated": true,
   "languages": [
     {
       "id": "definition-link-test",

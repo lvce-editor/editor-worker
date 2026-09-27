@@ -1,14 +1,20 @@
+import type { ScrollBarDiagnostic } from '../ScrollbarDiagnostic/ScrollBarDiagnostic.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
-import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
-export const getEditorScrollBarDiagnosticsVirtualDom = (scrollBarDiagnostics: readonly any[]): readonly VirtualDomNode[] => {
+export const getEditorScrollBarDiagnosticsVirtualDom = (scrollBarDiagnostics: readonly ScrollBarDiagnostic[]): readonly VirtualDomNode[] => {
   return [
     {
       childCount: scrollBarDiagnostics.length,
-      className: 'EditorScrollBarDiagnostics',
+      className: 'ScrollBarDiagnostics',
       type: VirtualDomElements.Div,
     },
-    ...GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom([...scrollBarDiagnostics]),
+    ...scrollBarDiagnostics.map(({ height, top, type }) => ({
+      childCount: 0,
+      className: type === 'warning' ? 'ScrollBarDiagnostic ScrollBarDiagnosticWarning' : 'ScrollBarDiagnostic ScrollBarDiagnosticError',
+      height,
+      top,
+      type: VirtualDomElements.Div,
+    })),
   ]
 }

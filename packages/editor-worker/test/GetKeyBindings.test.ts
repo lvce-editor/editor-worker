@@ -1,5 +1,6 @@
 import { expect, test } from '@jest/globals'
 import { KeyCode, KeyModifier } from '@lvce-editor/constants'
+import * as FocusKey from '../src/parts/FocusKey/FocusKey.ts'
 import * as GetKeyBindings from '../src/parts/GetKeyBindings/GetKeyBindings.ts'
 import * as WhenExpression from '../src/parts/WhenExpression/WhenExpression.ts'
 
@@ -11,12 +12,94 @@ test('Escape closes the focused color picker', () => {
   })
 })
 
+test('source action keybindings use the editor source action widget commands', () => {
+  expect(GetKeyBindings.getKeyBindings()).toEqual(
+    expect.arrayContaining([
+      {
+        command: 'EditorSourceAction.focusNext',
+        key: KeyCode.DownArrow,
+        when: WhenExpression.FocusSourceActions,
+      },
+      {
+        command: 'EditorSourceAction.focusPrevious',
+        key: KeyCode.UpArrow,
+        when: WhenExpression.FocusSourceActions,
+      },
+      {
+        command: 'EditorSourceAction.focusFirst',
+        key: KeyCode.Home,
+        when: WhenExpression.FocusSourceActions,
+      },
+      {
+        command: 'EditorSourceAction.focusLast',
+        key: KeyCode.End,
+        when: WhenExpression.FocusSourceActions,
+      },
+      {
+        command: 'EditorSourceAction.selectCurrent',
+        key: KeyCode.Enter,
+        when: WhenExpression.FocusSourceActions,
+      },
+    ]),
+  )
+})
+
 test('Shift+Enter focuses the previous find match', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'FindWidget.focusPrevious',
     key: KeyModifier.Shift | KeyCode.Enter,
     when: WhenExpression.FocusFindWidget,
   })
+})
+
+test('Enter replaces the current find match from the replace input', () => {
+  const keyBindings = GetKeyBindings.getKeyBindings()
+  const replace = {
+    command: 'FindWidget.replace',
+    key: KeyCode.Enter,
+    when: WhenExpression.FocusFindWidgetReplace,
+  }
+  const focusNext = {
+    command: 'FindWidget.focusNext',
+    key: KeyCode.Enter,
+    when: WhenExpression.FocusFindWidget,
+  }
+  expect(keyBindings).toContainEqual(replace)
+  const replaceIndex = keyBindings.findIndex(
+    (keyBinding) => keyBinding.command === replace.command && keyBinding.key === replace.key && keyBinding.when === replace.when,
+  )
+  const focusNextIndex = keyBindings.findIndex(
+    (keyBinding) => keyBinding.command === focusNext.command && keyBinding.key === focusNext.key && keyBinding.when === focusNext.when,
+  )
+  expect(replaceIndex).toBeLessThan(focusNextIndex)
+})
+
+test('Tab and Shift+Tab traverse every find widget control', () => {
+  const keyBindings = GetKeyBindings.getKeyBindings()
+  const focusContexts = [
+    FocusKey.FindWidget,
+    FocusKey.FocusFindWidgetReplace,
+    FocusKey.FocusFindWidgetOptions,
+    FocusKey.FocusFindWidgetToggleReplace,
+    FocusKey.FocusFindWidgetPreviousMatchButton,
+    FocusKey.FocusFindWidgetNextMatchButton,
+    FocusKey.FocusFindWidgetCloseButton,
+    FocusKey.FocusFindWidgetReplaceButton,
+    FocusKey.FocusFindWidgetReplaceAllButton,
+  ]
+
+  for (const focusContext of focusContexts) {
+    expect(keyBindings).toContainEqual({
+      command: 'FindWidget.focusNextElement',
+      key: KeyCode.Tab,
+      when: focusContext,
+    })
+    expect(keyBindings).toContainEqual({
+      command: 'FindWidget.focusPreviousElement',
+      key: KeyModifier.Shift | KeyCode.Tab,
+      when: focusContext,
+    })
+  }
 })
 
 test('Ctrl/Cmd+Alt+Up adds a cursor above', () => {
@@ -33,6 +116,97 @@ test('Ctrl/Cmd+Alt+Down adds a cursor below', () => {
     key: KeyModifier.CtrlCmd | KeyModifier.Alt | KeyCode.DownArrow,
     when: WhenExpression.FocusEditorText,
   })
+})
+
+test('Ctrl/Cmd+Alt+I increments the selected value', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.incrementSelection',
+    key: KeyModifier.CtrlCmd | KeyModifier.Alt | KeyCode.KeyI,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Ctrl/Cmd+Alt+D decrements the selected value', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.decrementSelection',
+    key: KeyModifier.CtrlCmd | KeyModifier.Alt | KeyCode.KeyD,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Alt+Up moves lines up', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.moveLineUp',
+    key: KeyModifier.Alt | KeyCode.UpArrow,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Alt+Down moves lines down', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.moveLineDown',
+    key: KeyModifier.Alt | KeyCode.DownArrow,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Ctrl/Cmd+Shift+Z and Ctrl/Cmd+Y redo the last edit', () => {
+  expect(GetKeyBindings.getKeyBindings()).toEqual(
+    expect.arrayContaining([
+      {
+        command: 'Editor.redo',
+        key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.KeyZ,
+        when: WhenExpression.FocusEditorText,
+      },
+      {
+        command: 'Editor.redo',
+        key: KeyModifier.CtrlCmd | KeyCode.KeyY,
+        when: WhenExpression.FocusEditorText,
+      },
+    ]),
+  )
+})
+
+test('Ctrl/Cmd+U restores the last cursor operation', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.cursorUndo',
+    key: KeyModifier.CtrlCmd | KeyCode.KeyU,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Alt+Shift+Left and Alt+Shift+Right shrink and grow smart selection', () => {
+  expect(GetKeyBindings.getKeyBindings()).toEqual(
+    expect.arrayContaining([
+      {
+        command: 'Editor.selectionShrink',
+        key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.LeftArrow,
+        when: WhenExpression.FocusEditor,
+      },
+      {
+        command: 'Editor.selectionGrow',
+        key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.RightArrow,
+        when: WhenExpression.FocusEditor,
+      },
+    ]),
+  )
+})
+
+test('F8 and Shift+F8 navigate diagnostics while the editor is focused', () => {
+  expect(GetKeyBindings.getKeyBindings()).toEqual(
+    expect.arrayContaining([
+      {
+        command: 'Editor.nextDiagnostic',
+        key: KeyCode.F8,
+        when: WhenExpression.FocusEditorText,
+      },
+      {
+        command: 'Editor.previousDiagnostic',
+        key: KeyModifier.Shift | KeyCode.F8,
+        when: WhenExpression.FocusEditorText,
+      },
+    ]),
+  )
 })
 
 test('Ctrl/Cmd+Shift+K deletes the active line', () => {
@@ -76,10 +250,58 @@ test('F9 toggles a breakpoint', () => {
   })
 })
 
+test('F12 goes to definition', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.goToDefinition',
+    key: KeyCode.F12,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Shift+F12 finds all references', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.findAllReferences',
+    key: KeyModifier.Shift | KeyCode.F12,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Ctrl/Cmd+Shift+Space shows signature help', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.showSignatureHelp',
+    key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.Space,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Ctrl/Cmd+H shows hover', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.showHover',
+    key: KeyModifier.CtrlCmd | KeyCode.KeyH,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('Shift+Alt+Right grows the selection', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.selectionGrow',
+    key: KeyModifier.Shift | KeyModifier.Alt | KeyCode.RightArrow,
+    when: WhenExpression.FocusEditor,
+  })
+})
+
 test('PageDown advances the editor viewport', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.cursorPageDown',
     key: KeyCode.PageDown,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
+test('PageUp moves the editor cursor to the start of the document', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.cursorDocumentStart',
+    key: KeyCode.PageUp,
     when: WhenExpression.FocusEditorText,
   })
 })
@@ -101,10 +323,26 @@ test('Ctrl/Cmd+Shift+brackets fold and unfold', () => {
   )
 })
 
+test('Ctrl/Cmd+Shift+Backslash goes to the matching bracket', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.goToBracket',
+    key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.Backslash,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
 test('Escape closes focused editor completions', () => {
   expect(GetKeyBindings.getKeyBindings()).toContainEqual({
     command: 'Editor.closeCompletion',
     key: KeyCode.Escape,
     when: WhenExpression.FocusEditorCompletions,
+  })
+})
+
+test('Escape dismisses the editor hover', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.cancelSelection',
+    key: KeyCode.Escape,
+    when: FocusKey.FocusEditorHover,
   })
 })

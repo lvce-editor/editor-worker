@@ -1,11 +1,7 @@
 import { expect, test } from '@jest/globals'
-import { ExtensionHost } from '@lvce-editor/rpc-registry'
 import { handleUriChange } from '../src/parts/EditorCommand/EditorCommandHandleUriChange.ts'
 
-test('handleUriChange retargets the editor and extension host document without changing content', async () => {
-  using mockRpc = ExtensionHost.registerMockRpc({
-    'ExtensionHostTextDocument.syncFull'() {},
-  })
+test('handleUriChange retargets the editor without changing content', async () => {
   const editor = {
     id: 42,
     languageId: 'plaintext',
@@ -20,5 +16,4 @@ test('handleUriChange retargets the editor and extension host document without c
     ...editor,
     uri: '/test/renamed.txt',
   })
-  expect(mockRpc.invocations).toEqual([['ExtensionHostTextDocument.syncFull', '/test/renamed.txt', 42, 'plaintext', 'hello\nworld']])
 })

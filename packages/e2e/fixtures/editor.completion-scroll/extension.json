@@ -3,7 +3,14 @@
   "name": "Completion Scroll",
   "description": "Test Scroll",
   "activation": ["onLanguage:xyz", "onCompletion:xyz"],
-  "browser": "main.js",
+  "browser": "dist/main.js",
+  "isolated": true,
+  "completionProviders": [
+    {
+      "id": "xyz-completion",
+      "languageId": "xyz"
+    }
+  ],
   "languages": [
     {
       "id": "xyz",

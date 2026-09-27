@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { ExtensionHost, ExtensionManagementWorker, RendererWorker } from '@lvce-editor/rpc-registry'
+import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 
 const ExtensionHostDiagnostic = await import('../src/parts/ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts')
 
@@ -23,15 +23,7 @@ test('executeDiagnosticProvider returns isolated diagnostics first', async () =>
       return diagnostics
     },
   })
-  const extensionHostRpc = MockRpc.create({
-    commandMap: {},
-    invoke: async () => {
-      throw new Error('should not call legacy extension host')
-    },
-  })
   ExtensionManagementWorker.set(extensionManagementRpc)
-  ExtensionHost.set(extensionHostRpc)
-  RendererWorker.set(extensionHostRpc)
 
   const editor = {
     id: 1,
@@ -55,33 +47,12 @@ test('executeDiagnosticProvider returns isolated diagnostics first', async () =>
   ])
 })
 
-test('executeDiagnosticProvider falls back to legacy extension host when isolated diagnostics are empty', async () => {
+test('executeDiagnosticProvider returns empty isolated diagnostics', async () => {
   const extensionManagementRpc = MockRpc.create({
     commandMap: {},
     invoke: async () => [],
   })
-  const diagnostics = [
-    {
-      columnIndex: 0,
-      endColumnIndex: 5,
-      endRowIndex: 0,
-      message: 'legacy',
-      rowIndex: 0,
-      type: 'warning',
-    },
-  ]
-  const extensionHostRpc = MockRpc.create({
-    commandMap: {},
-    invoke: async () => diagnostics,
-  })
   ExtensionManagementWorker.set(extensionManagementRpc)
-  ExtensionHost.set(extensionHostRpc)
-  RendererWorker.set(
-    MockRpc.create({
-      commandMap: {},
-      invoke: async () => undefined,
-    }),
-  )
 
   const editor = {
     assetDir: '',
@@ -93,5 +64,5 @@ test('executeDiagnosticProvider falls back to legacy extension host when isolate
     uri: '/test.js',
   }
 
-  await expect(ExtensionHostDiagnostic.executeDiagnosticProvider(editor)).resolves.toBe(diagnostics)
+  await expect(ExtensionHostDiagnostic.executeDiagnosticProvider(editor)).resolves.toEqual([])
 })

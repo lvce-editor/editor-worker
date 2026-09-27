@@ -43,15 +43,18 @@ export const goTo = async ({ editor, getErrorMessage, getLocation, getNoLocation
     return editor
   } catch (error) {
     // TODO if editor is already disposed at this point, do nothing
+    if (error === null || error === undefined) {
+      const info = EditorGetWordAt.getWordAt(editor, rowIndex, columnIndex)
+      const message = getNoLocationFoundMessage(info)
+      return EditorShowMessage.editorShowMessage(editor, rowIndex, columnIndex, message, false)
+    }
     if (isNoProviderFoundError(error)) {
       const displayErrorMessage = getErrorMessage(error)
-      await EditorShowMessage.editorShowMessage(editor, rowIndex, columnIndex, displayErrorMessage, false)
-      return editor
+      return EditorShowMessage.editorShowMessage(editor, rowIndex, columnIndex, displayErrorMessage, false)
     }
     // @ts-ignore
     // ErrorHandling.handleError(error, false)
     const displayErrorMessage = getErrorMessage(error)
-    await EditorShowMessage.editorShowMessage(editor, rowIndex, columnIndex, displayErrorMessage, true)
-    return editor
+    return EditorShowMessage.editorShowMessage(editor, rowIndex, columnIndex, displayErrorMessage, true)
   }
 }

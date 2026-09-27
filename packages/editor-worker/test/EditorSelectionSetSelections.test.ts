@@ -24,6 +24,16 @@ test('reveals a selection below the viewport', () => {
   })
 })
 
+test('reveals the active end of a selection below the viewport', () => {
+  const selections = new Uint32Array([0, 0, 2, 0])
+  expect(setSelections(createEditor(), selections)).toMatchObject({
+    deltaY: 20,
+    maxLineY: 3,
+    minLineY: 1,
+    selections,
+  })
+})
+
 test('reveals a selection above the viewport', () => {
   const selections = new Uint32Array([0, 0, 0, 0])
   expect(
@@ -62,8 +72,8 @@ test('skips hidden rows when moving into a folded range', () => {
   })
 })
 
-test('rebuilds visible row indices when revealing a selection without folds', () => {
-  const selections = new Uint32Array([4, 0, 4, 0])
+test('rebuilds visible row indices when revealing the active selection end without folds', () => {
+  const selections = new Uint32Array([0, 0, 4, 0])
   expect(
     setSelections(
       {

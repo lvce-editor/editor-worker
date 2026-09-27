@@ -1,6 +1,7 @@
 import { expect, test } from '@jest/globals'
 import type { OffsetBasedEdit } from '../src/parts/OffsetBasedEdit/OffsetBasedEdit.ts'
 import * as GetDocumentEdits from '../src/parts/GetDocumentEdits/GetDocumentEdits.ts'
+import * as TextDocument from '../src/parts/TextDocument/TextDocument.ts'
 
 test('multiple edits', () => {
   const edits: readonly OffsetBasedEdit[] = [
@@ -63,5 +64,34 @@ test('multiple edits', () => {
         rowIndex: 7,
       },
     },
+  ])
+})
+
+test('multiple insertions use offsets from the original document', () => {
+  const editor = {
+    lines: ['module Format exposing (main)', 'import Html exposing (Html,text)', 'main:Html msg', 'main=Html.div [] [text "Hello"]'],
+  }
+  const edits: readonly OffsetBasedEdit[] = [
+    { endOffset: 30, inserted: '\n', startOffset: 30 },
+    { endOffset: 57, inserted: ' ', startOffset: 57 },
+    { endOffset: 62, inserted: '\n\n', startOffset: 62 },
+    { endOffset: 67, inserted: ' ', startOffset: 67 },
+    { endOffset: 68, inserted: ' ', startOffset: 68 },
+    { endOffset: 81, inserted: ' ', startOffset: 81 },
+    { endOffset: 82, inserted: '\n    ', startOffset: 82 },
+    { endOffset: 95, inserted: ' ', startOffset: 95 },
+    { endOffset: 107, inserted: ' ', startOffset: 107 },
+  ]
+
+  const documentEdits = GetDocumentEdits.getDocumentEdits(editor, edits)
+  expect(TextDocument.applyEdits(editor, documentEdits)).toEqual([
+    'module Format exposing (main)',
+    '',
+    'import Html exposing (Html, text)',
+    '',
+    '',
+    'main : Html msg',
+    'main =',
+    '    Html.div [] [ text "Hello" ]',
   ])
 })

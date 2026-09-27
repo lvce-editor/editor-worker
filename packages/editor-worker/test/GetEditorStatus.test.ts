@@ -1,0 +1,76 @@
+import { expect, test } from '@jest/globals'
+import { getEditorStatus } from '../src/parts/GetEditorStatus/GetEditorStatus.ts'
+
+test('returns one-based position, indentation, encoding, and language id', () => {
+  const editor = {
+    endOfLine: 'lf',
+    insertSpaces: true,
+    languageId: 'typescript',
+    lines: ['first', 'second', 'third', 'fourth', 'fifth'],
+    primarySelectionIndex: 4,
+    selections: new Uint32Array([0, 0, 0, 0, 2, 3, 4, 5]),
+    tabSize: 2,
+  }
+
+  expect(getEditorStatus(editor as any)).toEqual({
+    column: 6,
+    encoding: 'utf8',
+    endOfLine: 'lf',
+    insertSpaces: true,
+    languageId: 'typescript',
+    line: 5,
+    selectedChars: 15,
+    tabSize: 2,
+  })
+})
+
+test('uses the first position while the editor has no selection', () => {
+  const editor = {
+    endOfLine: 'crlf',
+    insertSpaces: false,
+    languageId: 'plaintext',
+    lines: [''],
+    primarySelectionIndex: 0,
+    selections: new Uint32Array(),
+    tabSize: 4,
+  }
+
+  expect(getEditorStatus(editor as any)).toEqual({
+    column: 1,
+    encoding: 'utf8',
+    endOfLine: 'crlf',
+    insertSpaces: false,
+    languageId: 'plaintext',
+    line: 1,
+    selectedChars: 0,
+    tabSize: 4,
+  })
+})
+
+test('counts forward, backward, multiline, unicode, and multiple selections', () => {
+  const editor = {
+    endOfLine: 'lf',
+    insertSpaces: true,
+    languageId: 'plaintext',
+    lines: ['a😀b', 'cd', 'ef'],
+    primarySelectionIndex: 0,
+    selections: new Uint32Array([0, 1, 1, 1, 2, 2, 1, 0, 2, 0, 2, 2]),
+    tabSize: 4,
+  }
+
+  expect(getEditorStatus(editor as any).selectedChars).toBe(12)
+})
+
+test('counts CRLF line endings as two characters', () => {
+  const editor = {
+    endOfLine: 'crlf',
+    insertSpaces: true,
+    languageId: 'plaintext',
+    lines: ['ab\r', 'cd'],
+    primarySelectionIndex: 0,
+    selections: new Uint32Array([0, 2, 1, 1]),
+    tabSize: 4,
+  }
+
+  expect(getEditorStatus(editor as any).selectedChars).toBe(3)
+})

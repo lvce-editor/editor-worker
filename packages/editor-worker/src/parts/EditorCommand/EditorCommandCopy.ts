@@ -1,5 +1,6 @@
 import * as Clipboard from '../ClipBoard/ClipBoard.ts'
 import * as Editor from '../Editor/Editor.ts'
+import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as JoinLines from '../JoinLines/JoinLines.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
@@ -42,10 +43,10 @@ export const copy = async (editor) => {
     return editor
   }
   const { lines, selections } = editor
-  const selectionStartRowIndex = selections[0]
-  const selectionStartColumnIndex = selections[1]
-  const selectionEndRowIndex = selections[2]
-  const selectionEndColumnIndex = selections[3]
+  const [selectionStartRowIndex, selectionStartColumnIndex, selectionEndRowIndex, selectionEndColumnIndex] = GetSelectionPairs.getSelectionPairs(
+    selections,
+    0,
+  )
   const copyFullLine = shouldCopyFullLine(selectionStartRowIndex, selectionStartColumnIndex, selectionEndRowIndex, selectionEndColumnIndex)
   const range = getSelectionRange(
     lines,

@@ -1,4 +1,5 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
+import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
 
 const getVisibleTextMock: any = jest.fn()
 const getVisibleSelectionsMock: any = jest.fn()
@@ -149,4 +150,139 @@ test('updateDerivedState rebuilds visible row indices after multiline edits', as
 
   expect(result.visibleLineIndices).toEqual([0])
   expect(getVisibleTextMock).toHaveBeenCalledWith(expect.objectContaining({ visibleLineIndices: [0] }), false)
+})
+
+test('updateDerivedState repositions diagnostics after scrolling', async () => {
+  const diagnostics = [
+    {
+      columnIndex: 0,
+      endColumnIndex: 1,
+      rowIndex: 1,
+      type: 'warning',
+    },
+  ]
+  const oldState: any = {
+    charWidth: 8,
+    cursorWidth: 2,
+    diagnostics,
+    differences: [],
+    focused: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    letterSpacing: 0,
+    lines: ['first', 'second'],
+    maxLineY: 2,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [['first'], ['second']],
+    visualDecorations: [{ height: 20, type: 'warning', width: 8, x: 0, y: 20 }],
+    width: 100,
+  }
+  const newState: any = {
+    ...oldState,
+    differences: [],
+    maxLineY: 3,
+    minLineY: 1,
+    textInfos: [['second']],
+  }
+  getVisibleSelectionsMock.mockResolvedValue({
+    cursorInfos: [],
+    selectionInfos: [],
+  })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(result.visualDecorations).toEqual([{ height: 20, type: 'warning', width: 8, x: 0, y: 0 }])
+})
+
+test('updateDerivedState shows a lightbulb when the cursor moves onto a fixable diagnostic', async () => {
+  using _rpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeCodeActionProviders'() {
+      return [{ kind: 'quickfix', name: "Fix 'semi' problem" }]
+    },
+  })
+  const diagnostic = {
+    code: 'semi',
+    columnIndex: 10,
+    endColumnIndex: 10,
+    endRowIndex: 0,
+    message: 'Missing semicolon',
+    rowIndex: 0,
+    source: 'eslint',
+    type: 'error',
+    uri: 'file:///test.ts',
+  }
+  const oldState: any = {
+    cursorWidth: 2,
+    diagnostics: [diagnostic],
+    differences: [],
+    focused: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    languageId: 'typescript',
+    letterSpacing: 0,
+    lightBulbRowIndex: -1,
+    lines: ['const x=1'],
+    maxLineY: 1,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [['const x=1']],
+    uid: 1,
+    uri: 'file:///test.ts',
+    width: 100,
+  }
+  const newState = {
+    ...oldState,
+    selections: new Uint32Array([0, 10, 0, 10]),
+  }
+  getVisibleSelectionsMock.mockResolvedValue({ cursorInfos: [], selectionInfos: [] })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(result.lightBulbRowIndex).toBe(0)
+})
+
+test('updateDerivedState refreshes gutter decorations after document text changes', async () => {
+  using _rpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeProvidersByEvent': () => [[{ rowIndex: 0, type: 'modified' }]],
+  })
+  const oldState: any = {
+    cursorWidth: 2,
+    differences: [],
+    focused: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    gutterDecorations: [],
+    isMonospaceFont: true,
+    languageId: 'plaintext',
+    letterSpacing: 0,
+    lines: ['before'],
+    maxLineY: 1,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [['before']],
+    uri: 'file:///workspace/file.txt',
+    width: 100,
+  }
+  const newState: any = {
+    ...oldState,
+    lines: ['after'],
+  }
+  getVisibleTextMock.mockResolvedValue({ differences: [], textInfos: [['after']] })
+  getVisibleSelectionsMock.mockResolvedValue({ cursorInfos: [], selectionInfos: [] })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(result.gutterDecorations).toEqual([{ rowIndex: 0, type: 'modified' }])
 })

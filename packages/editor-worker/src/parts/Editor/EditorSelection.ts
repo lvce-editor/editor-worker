@@ -2,6 +2,7 @@ import * as Assert from '../Assert/Assert.ts'
 import * as Clamp from '../Clamp/Clamp.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
+import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 const getSelectionFromChange = (change: any) => {
@@ -32,6 +33,8 @@ const getSelectionFromChange = (change: any) => {
 export const setSelections = (editor: any, selections: any) => {
   Assert.object(editor)
   const { foldingRanges = [] } = editor
+  const primarySelectionIndex = editor.primarySelectionIndex || 0
+  const activeRowIndex = selections[primarySelectionIndex + 2]
   if ('foldingRanges' in editor) {
     const normalizedSelections =
       foldingRanges.length === 0
@@ -46,8 +49,11 @@ export const setSelections = (editor: any, selections: any) => {
               result[index + 3] = endColumn
             },
           )
-    const rowIndex = normalizedSelections[editor.primarySelectionIndex || 0]
-    const visualRow = EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges)
+    const previousActiveRowIndex = editor.selections[primarySelectionIndex + 2] ?? activeRowIndex
+    const rowIndex = EditorFolding.getUnhiddenRow(activeRowIndex, previousActiveRowIndex, editor.lines.length, foldingRanges)
+    const visualRow = editor.viewLineIndices
+      ? EditorViewRows.getVisualRowForDocumentRow(rowIndex, editor.viewLineIndices)
+      : EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges)
     const startVisualRow = Math.floor(editor.deltaY / editor.itemHeight)
     const endVisualRow = startVisualRow + editor.numberOfVisibleLines
     if (visualRow >= startVisualRow && visualRow < endVisualRow) {
@@ -71,10 +77,10 @@ export const setSelections = (editor: any, selections: any) => {
     selections,
   }
   const { maxLineY, minLineY, numberOfVisibleLines } = editor
-  if (maxLineY === undefined || minLineY === undefined || numberOfVisibleLines <= 0) {
+  if (maxLineY === undefined || minLineY === undefined || numberOfVisibleLines === undefined || numberOfVisibleLines <= 0) {
     return newEditor
   }
-  const rowIndex = selections[editor.primarySelectionIndex || 0]
+  const rowIndex = activeRowIndex
   if (rowIndex === undefined) {
     return newEditor
   }

@@ -1,5 +1,7 @@
 {
-  "browser": "main.js",
+  "id": "test.editor-rename-provider",
+  "browser": "dist/main.js",
+  "isolated": true,
   "activation": ["onRename:rename-test", "onRename"],
   "languages": [
     {

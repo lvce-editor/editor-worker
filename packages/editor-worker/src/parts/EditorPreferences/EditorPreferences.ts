@@ -7,13 +7,13 @@ const kLetterSpacing = 'editor.letterSpacing'
 const kLinks = 'editor.links'
 const kTabSize = 'editor.tabSize'
 const kLineNumbers = 'editor.lineNumbers'
-const kFormatOnSave = 'editor.formatOnSave'
-const kDiagnostics = 'editor.diagnostics'
+const kHighlightActiveLineNumber = 'editor.highlightActiveLineNumber'
 const kQuickSuggestions = 'editor.quickSuggestions'
 const kAutoClosingQuotes = 'editor.autoClosingQuotes'
-const kAutoClosingBrackets = 'editor.autoclosingBrackets'
+const kAutoClosingBrackets = 'editor.autoClosingBrackets'
 const kFontWeight = 'editor.fontWeight'
-const kHover = 'editor.hover'
+const kMinimapEnabled = 'editor.minimap.enabled'
+const kMergeConflictActions = 'editor.mergeConflictActions'
 
 export const isAutoClosingBracketsEnabled = async () => {
   return Boolean(await Preferences.get(kAutoClosingBrackets))
@@ -39,10 +39,6 @@ export const getFontSize = async () => {
   return (await Preferences.get(kFontSize)) || 15 // TODO find out if it is possible to use all numeric values for settings for efficiency, maybe settings could be an array
 }
 
-export const getHoverEnabled = async () => {
-  return (await Preferences.get(kHover)) ?? false
-}
-
 export const getFontFamily = async () => {
   return (await Preferences.get(kFontFamily)) || 'Fira Code'
 }
@@ -66,18 +62,22 @@ export const getLineNumbers = async () => {
   return (await Preferences.get(kLineNumbers)) ?? false
 }
 
+export const getHighlightActiveLineNumber = async () => {
+  return (await Preferences.get(kHighlightActiveLineNumber)) ?? true
+}
+
 export const getCompletionTriggerCharacters = async () => {
   return ['.', '/']
 }
 
-export const getFormatOnSave = async () => {
-  return (await Preferences.get(kFormatOnSave)) ?? false
-}
-
-export const diagnosticsEnabled = async () => {
-  return (await Preferences.get(kDiagnostics)) ?? false
-}
-
 export const getFontWeight = async () => {
   return (await Preferences.get(kFontWeight)) ?? 400
+}
+
+export const getMinimapEnabled = async () => {
+  return (await Preferences.get(kMinimapEnabled)) ?? false
+}
+
+export const getMergeConflictActionsEnabled = async () => {
+  return (await Preferences.get(kMergeConflictActions)) ?? false
 }

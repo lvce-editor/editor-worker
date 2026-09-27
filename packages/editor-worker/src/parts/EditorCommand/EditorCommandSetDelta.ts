@@ -4,14 +4,12 @@ import * as Clamp from '../Clamp/Clamp.ts'
 // @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
 
-// @ts-ignore
-export const setDeltaY = (editor, deltaY) => {
-  return Editor.setDeltaY(editor, deltaY)
-}
+export { setDeltaY, setDeltaYFixedValue } from '../Editor/Editor.ts'
 
 // @ts-ignore
-export const setDeltaYFixedValue = (editor, deltaY) => {
-  return Editor.setDeltaYFixedValue(editor, deltaY)
+export const scrollByLines = (editor, lineCount) => {
+  Assert.number(lineCount)
+  return Editor.setDeltaY(editor, lineCount * editor.itemHeight)
 }
 
 // @ts-ignore
@@ -22,11 +20,11 @@ export const setDelta = (editor, deltaMode, eventDeltaX, eventDeltaY) => {
   // @ts-ignore
   const { deltaX } = editor
   if (eventDeltaX === 0) {
-    return setDeltaY(editor, eventDeltaY)
+    return Editor.setDeltaY(editor, eventDeltaY)
   }
   const newDeltaX = Clamp.clamp(deltaX + eventDeltaX, 0, Infinity)
   return {
-    ...setDeltaY(editor, eventDeltaY),
+    ...Editor.setDeltaY(editor, eventDeltaY),
     deltaX: newDeltaX,
   }
 }

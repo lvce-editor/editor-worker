@@ -3,7 +3,8 @@
   "name": "Source Actions Open",
   "description": "Test Empty",
   "activation": ["onLanguage:xyz", "onCompletion:xyz"],
-  "browser": "main.js",
+  "browser": "dist/main.js",
+  "isolated": true,
   "languages": [
     {
       "id": "xyz",

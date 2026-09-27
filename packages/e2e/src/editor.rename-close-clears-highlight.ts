@@ -17,6 +17,7 @@ export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator
 
   // act
   await KeyBoard.press('Escape')
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
   // assert
   await expect(renameWidget).toBeHidden()

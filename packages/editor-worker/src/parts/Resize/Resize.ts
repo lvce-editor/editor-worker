@@ -1,4 +1,6 @@
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
+import * as EditorMinimapConstants from '../EditorMinimapConstants/EditorMinimapConstants.ts'
+import * as EditorViewport from '../EditorViewport/EditorViewport.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 interface Dimensions {
@@ -9,13 +11,17 @@ interface Dimensions {
 }
 
 interface ResizeState {
+  readonly breadcrumbsEnabled?: boolean
   readonly columnWidth: number
   readonly deltaY: number
   readonly height: number
   readonly itemHeight: number
   readonly lines: readonly string[]
+  readonly minimapEnabled?: boolean
   readonly minimumSliderSize: number
   readonly minLineY: number
+  readonly outerHeight?: number
+  readonly outerWidth?: number
   readonly rowHeight: number
   readonly width: number
   readonly x: number
@@ -25,16 +31,18 @@ interface ResizeState {
 export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, columnWidth: number = state.columnWidth): T => {
   const x = dimensions.x ?? state.x
   const y = dimensions.y ?? state.y
-  const width = dimensions.width ?? state.width
-  const height = dimensions.height ?? state.height
+  const outerWidth = dimensions.width ?? state.outerWidth ?? state.width
+  const outerHeight = dimensions.height ?? state.outerHeight ?? state.height
+  const width = Math.max(outerWidth - (state.minimapEnabled ? EditorMinimapConstants.width : 0), 0)
+  const height = Math.max(outerHeight - (state.breadcrumbsEnabled ? 22 : 0), 0)
   const numberOfVisibleLines = Math.floor(height / state.itemHeight)
   if (!('foldingRanges' in state)) {
     const total = state.lines.length
     const finalY = Math.max(total - numberOfVisibleLines, 0)
-    const finalDeltaY = finalY * state.itemHeight
+    const finalDeltaY = Math.max(total * state.itemHeight - height, 0)
     const deltaY = Math.min(state.deltaY, finalDeltaY)
     const minLineY = Math.floor(deltaY / state.itemHeight)
-    const maxLineY = Math.min(minLineY + numberOfVisibleLines, total)
+    const maxLineY = Math.min(minLineY + EditorViewport.getRenderedLineCount(height, state.itemHeight, deltaY), total)
     const contentHeight = total * state.rowHeight
     const scrollBarHeight = ScrollBarFunctions.getScrollBarSize(height, contentHeight, state.minimumSliderSize)
     return {
@@ -47,6 +55,8 @@ export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, 
       maxLineY,
       minLineY,
       numberOfVisibleLines,
+      ...('outerWidth' in state && { outerWidth }),
+      ...('outerHeight' in state && { outerHeight }),
       scrollBarHeight,
       width,
       x,
@@ -58,6 +68,8 @@ export const resize = <T extends ResizeState>(state: T, dimensions: Dimensions, 
     columnWidth,
     height,
     numberOfVisibleLines,
+    ...('outerWidth' in state && { outerWidth }),
+    ...('outerHeight' in state && { outerHeight }),
     width,
     x,
     y,

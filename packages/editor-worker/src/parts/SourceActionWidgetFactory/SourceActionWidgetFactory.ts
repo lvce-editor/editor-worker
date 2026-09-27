@@ -8,6 +8,7 @@ export const create = (): SourceActionWidget => {
     id: WidgetId.SourceAction,
     newState: {
       commands: [],
+      editorUid: 0,
       focusedIndex: 0,
       height: 0,
       maxHeight: 0,
@@ -19,6 +20,7 @@ export const create = (): SourceActionWidget => {
     },
     oldState: {
       commands: [],
+      editorUid: 0,
       focusedIndex: 0,
       height: 0,
       maxHeight: 0,

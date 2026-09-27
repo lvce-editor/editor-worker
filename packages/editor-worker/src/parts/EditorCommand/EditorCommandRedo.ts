@@ -7,10 +7,11 @@ export const redo = (state: EditorState): EditorState | Promise<EditorState> => 
     return state
   }
   const last = redoStack.at(-1)
+  const selectionChanges = last.selectionHistory?.after
   const newState = {
     ...state,
     redoStack: redoStack.slice(0, -1),
     undoStack: [...state.undoStack, last],
   }
-  return Editor.scheduleDocumentAndCursorsSelectionIsUndo(newState, last)
+  return Editor.scheduleDocumentAndCursorsSelectionIsUndo(newState, last, selectionChanges)
 }

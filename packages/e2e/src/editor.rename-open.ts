@@ -9,6 +9,7 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Wo
   await FileSystem.writeFile(uri, 'const alpha = alpha\n')
   await Workspace.setPath(tmpDir)
   await Main.openUri(uri)
+  await new Promise((resolve) => setTimeout(resolve, 100))
   await Editor.setCursor(0, 8)
 
   // act

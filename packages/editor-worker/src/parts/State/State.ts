@@ -1,14 +1,29 @@
+import type { BracketMatchInfo } from '../BracketMatchInfo/BracketMatchInfo.ts'
+import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
+import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGutterDecoration.ts'
+import type { EditorLifecycle } from '../EditorLifecycle/EditorLifecycle.ts'
+import type { EditorLineDecoration } from '../EditorLineDecoration/EditorLineDecoration.ts'
+import type { EndOfLine } from '../EndOfLine/EndOfLine.ts'
+import type { MergeConflict } from '../MergeConflict/MergeConflict.ts'
+
 export interface EditorState {
   readonly additionalFocus: number
+  readonly applicationId?: string
   readonly assetDir: string
+  readonly bracketMatchInfos: readonly BracketMatchInfo[]
+  readonly breadcrumbsEnabled?: boolean
   readonly breakPoints: readonly number[]
+  readonly canCoalesceTyping?: boolean
   readonly charWidth: number
   readonly columnWidth: number
+  readonly combineWhitespaceTokens?: boolean
   readonly completionsOnType?: boolean
   readonly completionState: string
   readonly completionTriggerCharacters: readonly string[]
   readonly completionUid: number
+  readonly completionWidgetDismissedOnBlur?: boolean
   readonly cursorInfos: readonly any[]
+  readonly cursorUndoStack?: readonly Uint32Array[]
   readonly cursorWidth: number
   readonly debugEnabled: boolean
   readonly decorations: any // Text-level decorations (flat array) for CSS classes like Link, Type, etc.
@@ -18,7 +33,12 @@ export interface EditorState {
   readonly diagnosticsEnabled: boolean
   // TODO should be immutable
   differences: any[]
+  readonly documentSymbols?: readonly DocumentSymbol[]
+  readonly dragAndDropEnabled: boolean
   readonly embeds: any
+  readonly endOfLine: EndOfLine
+  readonly endOfLineDecorations: readonly EditorLineDecoration[]
+  readonly explicitLanguageId?: string
   readonly finalDeltaY: number
   readonly finalY: number
   readonly focus: number
@@ -28,14 +48,21 @@ export interface EditorState {
   readonly fontFamily: string
   readonly fontSize: number
   readonly fontWeight: number
+  readonly formatOnSave?: boolean
+  readonly gutterDecorations: readonly EditorGutterDecoration[]
+  readonly gutterWidth: number
   readonly handleOffset: number
   readonly handleOffsetX: number
   readonly hasListener: boolean
   readonly height: number
+  readonly highlightActiveLineNumber: boolean
   readonly highlightedLine: number
+  readonly hoverDelay?: number
+  readonly hoverEnabled: boolean
   readonly id: number
   readonly incrementalEdits: readonly any[]
   readonly initial: boolean
+  readonly insertSpaces: boolean
   readonly invalidStartIndex: number
   readonly isAutoClosingBracketsEnabled: boolean
   readonly isAutoClosingQuotesEnabled: boolean
@@ -45,31 +72,46 @@ export interface EditorState {
   readonly isSelecting: boolean
   readonly itemHeight: number
   readonly languageId: string
+  readonly largeFile?: boolean
   readonly letterSpacing: number
+  readonly lifecycle?: EditorLifecycle
+  readonly lightBulbRowIndex: number
   readonly lineCache: readonly any[]
   readonly lineNumbers: boolean
   readonly lines: readonly string[]
   readonly loadError?: string
   readonly longestLineWidth: number
   readonly maxLineY: number
+  readonly mergeConflictActionsEnabled: boolean
+  readonly mergeConflicts: readonly MergeConflict[]
+  readonly minimapEnabled: boolean
+  readonly minimapLines: readonly (readonly (number | string)[])[]
+  readonly minimapRevision: number
   readonly minimumSliderSize: number
   readonly minLineY: number
   readonly modified: boolean
   readonly numberOfLines: number
   readonly numberOfVisibleLines: number
+  readonly outerHeight?: number
+  readonly outerWidth: number
   readonly platform: number
   readonly primarySelectionIndex: number
+  readonly problemNavigationDiagnostic?: any
+  readonly problemsHighlightedRow: number
   readonly redoStack: readonly any[]
+  readonly roundedSelection: boolean
   readonly rowHeight: number
   readonly savedSelections: readonly any[]
   readonly scrollBarHeight: number
   readonly scrollBarWidth: number
   readonly scrollBarY?: number
   readonly selectionAnchorPosition: { readonly rowIndex: number; readonly columnIndex: number }
-  readonly selectionAutoMovePosition: { readonly rowIndex: number; readonly columnIndex: number }
+  readonly selectionAutoMovePosition: { readonly x: number; readonly y: number }
   readonly selectionInfos: readonly any[]
   readonly selections: Uint32Array
   readonly tabSize: number
+  readonly textDragDropPosition: { readonly rowIndex: number; readonly columnIndex: number }
+  readonly textDragId: number
   readonly textInfos: readonly any[]
   readonly tokenizerId: any
   readonly uid: number
@@ -77,10 +119,14 @@ export interface EditorState {
   readonly uri: string
   readonly useFunctionalRendering?: boolean
   readonly validLines: readonly number[]
+  readonly viewLineIndices: readonly number[]
   readonly visibleLineIndices: readonly number[]
+  readonly visibleViewLineIndices: readonly number[]
   readonly visualDecorations?: any // Visual decorations (objects) for diagnostic squiggly underlines
+  readonly widgetRevision: number
   readonly widgets: readonly any[]
   readonly width: number
+  readonly workspaceUri?: string
   readonly x: number
   readonly y: number
 }

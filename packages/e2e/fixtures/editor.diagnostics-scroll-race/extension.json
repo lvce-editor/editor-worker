@@ -1,0 +1,46 @@
+{
+  "browser": "dist/main.js",
+  "isolated": true,
+  "diagnosticProviders": [
+    {
+      "id": "diagnostics-scroll-race",
+      "languageId": "diagnostics-scroll-race"
+    }
+  ],
+  "activation": [
+    "onDiagnostic:diagnostics-scroll-race",
+    "onCommand:diagnosticsScroll.pendingCount",
+    "onCommand:diagnosticsScroll.resolveEmpty",
+    "onCommand:diagnosticsScroll.resolveMany",
+    "onCommand:diagnosticsScroll.resolvedCount",
+    "onCommand:diagnosticsScroll.resolveSingle"
+  ],
+  "commands": [
+    {
+      "id": "diagnosticsScroll.pendingCount",
+      "label": "Get Pending Diagnostics Count"
+    },
+    {
+      "id": "diagnosticsScroll.resolveEmpty",
+      "label": "Resolve Empty Diagnostics"
+    },
+    {
+      "id": "diagnosticsScroll.resolveMany",
+      "label": "Resolve Many Diagnostics"
+    },
+    {
+      "id": "diagnosticsScroll.resolvedCount",
+      "label": "Get Resolved Diagnostics Count"
+    },
+    {
+      "id": "diagnosticsScroll.resolveSingle",
+      "label": "Resolve Single Diagnostic"
+    }
+  ],
+  "languages": [
+    {
+      "id": "diagnostics-scroll-race",
+      "extensions": [".diagnostics-scroll"]
+    }
+  ]
+}

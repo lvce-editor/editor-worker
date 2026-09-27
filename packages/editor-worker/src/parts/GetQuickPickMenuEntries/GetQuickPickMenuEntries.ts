@@ -4,6 +4,18 @@ import * as EditorStrings from '../EditorStrings/EditorStrings.ts'
 export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
   return [
     {
+      id: 'Editor.undo',
+      label: EditorStrings.undo(),
+    },
+    {
+      id: 'Editor.redo',
+      label: EditorStrings.redo(),
+    },
+    {
+      id: 'Editor.cursorUndo',
+      label: EditorStrings.cursorUndo(),
+    },
+    {
       id: 'Editor.fold',
       label: EditorStrings.fold(),
     },
@@ -14,6 +26,14 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
     {
       id: 'Editor.deleteLine',
       label: EditorStrings.deleteLine(),
+    },
+    {
+      id: 'Editor.incrementSelection',
+      label: EditorStrings.editorIncrementSelection(),
+    },
+    {
+      id: 'Editor.decrementSelection',
+      label: EditorStrings.editorDecrementSelection(),
     },
     {
       id: 'Editor.format',
@@ -40,12 +60,20 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       label: EditorStrings.editorGoToDefinition(),
     },
     {
+      id: 'Editor.goToBracket',
+      label: EditorStrings.goToBracket(),
+    },
+    {
       id: 'Editor.goToTypeDefinition',
       label: EditorStrings.editorGoToTypeDefinition(),
     },
     {
       id: 'Editor.selectInsideString',
       label: EditorStrings.editorSelectInsideString(),
+    },
+    {
+      id: 'Editor.selectToBracket',
+      label: EditorStrings.selectToBracket(),
     },
     {
       aliases: ['Indent More', 'DeIndent'],
@@ -108,6 +136,14 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
     {
       id: 'Editor.showSourceActions2',
       label: EditorStrings.sourceAction(),
+    },
+    {
+      id: 'Editor.toggleMinimap',
+      label: EditorStrings.viewToggleMinimap(),
+    },
+    {
+      id: 'Editor.toggleCompletion',
+      label: EditorStrings.editorToggleSuggestWidget(),
     },
   ]
 }

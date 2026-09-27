@@ -1,10 +1,11 @@
+import type { EditorState } from '../State/State.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 
 export const editorDiagnosticEffect = {
   // TODO set effects delay / diagnostic delay
-  async apply(editor: any) {
-    await UpdateDiagnostics.updateDiagnostics(editor)
+  apply(editor: any) {
+    return UpdateDiagnostics.updateDiagnostics(editor)
   },
-  // TODO avoid slow comparison
-  isActive: (oldEditor: any, newEditor: any) => newEditor.diagnosticsEnabled && JSON.stringify(oldEditor.lines) !== JSON.stringify(newEditor.lines),
+  isActive: (oldEditor: EditorState, newEditor: EditorState) =>
+    !oldEditor.initial && newEditor.diagnosticsEnabled && (oldEditor.lines !== newEditor.lines || oldEditor.languageId !== newEditor.languageId),
 }

@@ -8,7 +8,6 @@ import * as RenderRename from '../RenderRename/RenderRename.ts'
 const commandsToForward = [
   RenderMethod.SetDom2,
   RenderMethod.SetCss,
-  RenderMethod.AppendToBody,
   RenderMethod.SetBounds2,
   RenderMethod.RegisterEventListeners,
   RenderMethod.SetSelectionByName,
@@ -37,7 +36,7 @@ export const add = (widget: RenameWidget) => {
 }
 
 export const remove = (widget: RenameWidget) => {
-  return [['Viewlet.dispose', widget.newState.uid]]
+  return []
 }
 
 export const { accept, close, handleInput } = createFns(['handleInput', 'close', 'accept'], 'Rename', WidgetId.Rename)

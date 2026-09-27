@@ -1,6 +1,11 @@
-import { expect, test } from '@jest/globals'
+import { beforeEach, expect, test } from '@jest/globals'
 import { WhenExpression, WidgetId } from '@lvce-editor/constants'
 import * as EditorCommandCloseFind from '../src/parts/EditorCommand/EditorCommandCloseFind.ts'
+import * as WidgetRevision from '../src/parts/WidgetRevision/WidgetRevision.ts'
+
+beforeEach(() => {
+  WidgetRevision.reset()
+})
 
 test('closeFind removes the widget and restores editor focus', () => {
   const editor = {
@@ -14,6 +19,7 @@ test('closeFind removes the widget and restores editor focus', () => {
     additionalFocus: 0,
     focus: WhenExpression.FocusEditorText,
     focused: true,
+    widgetRevision: 1,
     widgets: [],
   })
 })

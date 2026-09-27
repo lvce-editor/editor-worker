@@ -1,6 +1,7 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
+import * as GetDiagnosticHoverDetail from '../GetDiagnosticHoverDetail/GetDiagnosticHoverDetail.ts'
 import * as GetLineInfosVirtualDom from '../GetLineInfosVirtualDom/GetLineInfosVirtualDom.ts'
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
@@ -18,27 +19,45 @@ const hoverProblemDetail: VirtualDomNode = {
   type: VirtualDomElements.Span,
 }
 
+const hoverDocumentationNode: VirtualDomNode = {
+  childCount: 1,
+  className: ClassNames.HoverDocumentation,
+  type: VirtualDomElements.Div,
+}
+
+const hoverSashNode: VirtualDomNode = {
+  childCount: 0,
+  className: MergeClassNames.mergeClassNames('Sash', 'SashVertical', 'SashResize'),
+  onPointerDown: DomEventListenerFunctions.HandleSashPointerDown,
+  type: VirtualDomElements.Div,
+}
+
 const getChildCount = (lineInfos: any, documentation: any, diagnostics: any): number => {
   const documentationCount = documentation ? 1 : 0
   const diagnosticsCount = diagnostics && diagnostics.length > 0 ? 1 : 0
   return lineInfos.length + documentationCount + diagnosticsCount
 }
 
+const getEditorHoverClassName = (lineInfos: any, documentation: any, diagnostics: any): string => {
+  const isDiagnosticOnly = diagnostics?.length === 1 && lineInfos.length === 0 && !documentation
+  return MergeClassNames.mergeClassNames('Viewlet', 'EditorHover', isDiagnosticOnly ? ClassNames.EditorHoverDiagnosticOnly : '')
+}
+
 export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnostics: any): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = []
   dom.push({
     childCount: getChildCount(lineInfos, documentation, diagnostics) + 1,
-    className: MergeClassNames.mergeClassNames('Viewlet', 'EditorHover'),
+    className: getEditorHoverClassName(lineInfos, documentation, diagnostics),
     type: VirtualDomElements.Div,
   })
   if (diagnostics && diagnostics.length > 0) {
     dom.push({
       childCount: diagnostics.length * 2,
-      className: MergeClassNames.mergeClassNames(ClassNames.HoverDisplayString, ClassNames.HoverProblem),
+      className: ClassNames.HoverProblem,
       type: VirtualDomElements.Div,
     })
     for (const diagnostic of diagnostics) {
-      dom.push(hoverProblemMessage, text(diagnostic.message), hoverProblemDetail, text(`${diagnostic.source} (${diagnostic.code})`))
+      dom.push(hoverProblemMessage, text(diagnostic.message), hoverProblemDetail, text(GetDiagnosticHoverDetail.getDiagnosticHoverDetail(diagnostic)))
     }
   }
 
@@ -55,22 +74,10 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
   }
 
   if (documentation) {
-    dom.push(
-      {
-        childCount: 1,
-        className: ClassNames.HoverDocumentation,
-        type: VirtualDomElements.Div,
-      },
-      text(documentation),
-    )
+    dom.push(hoverDocumentationNode, text(documentation))
   }
 
-  dom.push({
-    childCount: 0,
-    className: MergeClassNames.mergeClassNames('Sash', 'SashVertical', 'SashResize'),
-    onPointerDown: DomEventListenerFunctions.HandleSashPointerDown,
-    type: VirtualDomElements.Div,
-  })
+  dom.push(hoverSashNode)
 
   return dom
 }

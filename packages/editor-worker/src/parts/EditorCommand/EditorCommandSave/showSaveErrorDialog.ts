@@ -1,4 +1,4 @@
-import { RendererWorker } from '@lvce-editor/rpc-registry'
+import { DialogWorker } from '@lvce-editor/rpc-registry'
 
 const isPermissionDeniedError = (error: Error): boolean => {
   const errorCode = 'code' in error ? error.code : undefined
@@ -7,7 +7,7 @@ const isPermissionDeniedError = (error: Error): boolean => {
 
 export const showSaveErrorDialog = async (error: Error): Promise<void> => {
   if (isPermissionDeniedError(error)) {
-    await RendererWorker.invoke('ElectronDialog.showMessageBox', {
+    await DialogWorker.invoke('ElectronDialog.showMessageBox', {
       buttons: ['OK'],
       defaultId: 0,
       message: "You don't have permission to save changes to this file.",
@@ -16,7 +16,7 @@ export const showSaveErrorDialog = async (error: Error): Promise<void> => {
     })
     return
   }
-  await RendererWorker.invoke('ElectronDialog.showMessageBox', {
+  await DialogWorker.invoke('ElectronDialog.showMessageBox', {
     buttons: ['OK'],
     defaultId: 0,
     detail: error.message,
