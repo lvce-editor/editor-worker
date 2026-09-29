@@ -1,7 +1,6 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-line-height-min-font-size'
-export const skip = 1
 const rowHeight30 = /^(?:-?\d+(?:\.\d+)?px )?30px$/ as unknown as string
 
 export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator, Main, Settings, Workspace }) => {
