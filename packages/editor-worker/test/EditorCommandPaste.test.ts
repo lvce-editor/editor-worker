@@ -15,12 +15,17 @@ jest.unstable_mockModule('../src/parts/ApplicationRpc/ApplicationRpc.ts', () => 
   invoke: jest.fn(),
 }))
 
+jest.unstable_mockModule('../src/parts/EditorStates/EditorStates.ts', () => ({
+  get: jest.fn(),
+}))
+
 jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandPasteText.ts', () => ({
   pasteText: jest.fn(),
 }))
 
 const { RendererWorker } = await import('@lvce-editor/rpc-registry')
 const ApplicationRpc = await import('../src/parts/ApplicationRpc/ApplicationRpc.ts')
+const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
 const EditorPasteText = await import('../src/parts/EditorCommand/EditorCommandPasteText.ts')
 const EditorPaste = await import('../src/parts/EditorCommand/EditorCommandPaste.ts')
 
@@ -35,6 +40,8 @@ test('paste image into markdown document', async () => {
     languageId: 'markdown',
     uri: 'file:///workspace/notes.md',
   }
+  // @ts-ignore
+  EditorStates.get.mockReturnValue({ newState: editor })
   const binaryContent = '\u{0}\u{FF}*'
 
   await EditorPaste.paste(editor)
@@ -64,6 +71,8 @@ test('paste image chooses another filename when the first one exists', async () 
     languageId: 'markdown',
     uri: '/workspace/notes.md',
   }
+  // @ts-ignore
+  EditorStates.get.mockReturnValue({ newState: editor })
 
   await EditorPaste.paste(editor)
 
@@ -127,5 +136,25 @@ test('paste removes the reserved file and does not insert a broken reference whe
 
   await expect(EditorPaste.paste(editor)).rejects.toThrow('Failed to save the clipboard image beside the Markdown document.')
   expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(3, undefined, 'FileSystem.remove', '/workspace/image.png')
+  expect(EditorPasteText.pasteText).not.toHaveBeenCalled()
+})
+
+test('paste removes the image when the document changes during clipboard work', async () => {
+  const image = new Blob(['image'], { type: 'image/png' })
+  // @ts-ignore
+  RendererWorker.invoke.mockResolvedValue(image)
+  // @ts-ignore
+  ApplicationRpc.invoke.mockResolvedValue(undefined)
+  // @ts-ignore
+  EditorStates.get.mockReturnValue({ newState: { languageId: 'markdown', uri: 'file:///workspace/other.md' } })
+  const editor = {
+    applicationId: undefined,
+    languageId: 'markdown',
+    uid: 1,
+    uri: 'file:///workspace/notes.md',
+  }
+
+  await expect(EditorPaste.paste(editor)).rejects.toThrow('The Markdown document changed while saving the clipboard image.')
+  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(3, undefined, 'FileSystem.remove', 'file:///workspace/image.png')
   expect(EditorPasteText.pasteText).not.toHaveBeenCalled()
 })
