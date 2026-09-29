@@ -16,7 +16,7 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   await Command.execute('Editor.handleMouseMove', 0, 0, false)
 
   // assert
-  await expect(hover).toHaveText('first')
+  await expect(hover).toHaveText('first\n')
 
   // act
   await Command.execute('Editor.handleMouseMove', 1000, 10, false)
@@ -30,7 +30,7 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   await Command.execute('Editor.showHover', { columnIndex: 11, rowIndex: 0 })
 
   // assert
-  await expect(hover).toHaveText('def')
+  await expect(hover).toHaveText('def\n')
 
   // act
   await Main.closeAllEditors()

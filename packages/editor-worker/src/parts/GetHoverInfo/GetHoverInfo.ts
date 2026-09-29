@@ -4,6 +4,7 @@ import * as GetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
 import * as EditorPosition from '../EditorCommand/EditorCommandPosition.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as Hover from '../Hover/Hover.ts'
+import * as Markdown from '../Markdown/Markdown.ts'
 import * as MeasureTextHeight from '../MeasureTextHeight/MeasureTextHeight.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as TokenizeCodeBlock from '../TokenizeCodeBlock/TokenizeCodeBlock.ts'
@@ -50,6 +51,7 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   const lineInfos = displayString
     ? await TokenizeCodeBlock.tokenizeCodeBlock(displayString, displayStringLanguageId || fallbackDisplayStringLanguageId, tokenizerPath)
     : []
+  const documentationVirtualDom = documentation ? await Markdown.getVirtualDomFromMarkdown(documentation) : []
   const wordPart = GetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   const wordStart = columnIndex - wordPart.length
   const documentationHeight = documentation
@@ -83,6 +85,7 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   const y = rowBottom + height <= editor.y + editor.height ? rowBottom : Math.max(editor.y, rowBottom - editor.rowHeight - height)
   return {
     documentation,
+    documentationVirtualDom,
     height,
     lineInfos,
     matchingDiagnostics,

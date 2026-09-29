@@ -7,6 +7,7 @@ test('render creates hover DOM for locally loaded hover content', () => {
     content: '',
     diagnostics: [],
     documentation: '',
+    documentationVirtualDom: [],
     editorUid: 1,
     height: 0,
     lineInfos: [],
@@ -18,6 +19,10 @@ test('render creates hover DOM for locally loaded hover content', () => {
   const newState = {
     ...oldState,
     documentation: 'documentation',
+    documentationVirtualDom: [
+      { childCount: 1, type: 4 },
+      { childCount: 0, text: 'documentation', type: 12 },
+    ],
     height: 100,
     lineInfos: [['const', 'TokenKeyword']],
     width: 300,
