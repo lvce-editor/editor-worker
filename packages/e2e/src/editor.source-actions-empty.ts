@@ -5,8 +5,8 @@ export const name = 'editor.source-actions-empty'
 export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
-  await FileSystem.writeFile(`${tmpDir}/src/test.xyz`, 'globalThis.AbortSignal.abort()')
-  await Main.openUri(`${tmpDir}/src/test.xyz`)
+  await FileSystem.writeFile(`${tmpDir}/src/test.js`, 'globalThis.AbortSignal.abort()')
+  await Main.openUri(`${tmpDir}/src/test.js`)
   await Editor.setCursor(0, 11)
 
   // act
