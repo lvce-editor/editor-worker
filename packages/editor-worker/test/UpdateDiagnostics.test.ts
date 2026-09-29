@@ -1,6 +1,7 @@
 import { afterEach, expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
 import { ExtensionManagementWorker, registerMockRpc, remove, RendererWorker, RpcId, TextMeasurementWorker } from '@lvce-editor/rpc-registry'
+import { editorDiagnosticEffect } from '../src/parts/EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { updateDiagnostics, updateDiagnosticsAll } from '../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts'
 
@@ -212,6 +213,88 @@ test('updateDiagnostics ignores stale results after the editor text changes', as
   await expect(pendingUpdate).resolves.toBe(editor)
   expect(EditorStates.get(1)?.newState).toBe(edited)
 })
+
+test.each(['stale response finishes first', 'fresh response finishes first'])(
+  'updateDiagnostics refreshes edited text when the %s',
+  async (completionOrder) => {
+    const requested = [Promise.withResolvers<void>(), Promise.withResolvers<void>()]
+    const results = [Promise.withResolvers<readonly any[]>(), Promise.withResolvers<readonly any[]>()]
+    let requestIndex = 0
+    using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
+      'Extensions.executeDiagnosticProvider': async () => {
+        const index = requestIndex++
+        requested[index].resolve()
+        return results[index].promise
+      },
+    })
+    using rendererWorkerRpc = RendererWorker.registerMockRpc({
+      'Editor.renderPending': async () => undefined,
+      'Layout.handleDiagnosticsChange': async () => undefined,
+    })
+    const editor = {
+      diagnostics: [],
+      diagnosticsEnabled: true,
+      id: 1,
+      languageId: 'typescript',
+      lines: ['const value = 1'],
+      uri: '/test.ts',
+    }
+    const edited = { ...editor, lines: ['const value = 2'] }
+    const staleDiagnostics = [{ message: 'stale diagnostic', uri: editor.uri }]
+    const currentDiagnostics = [{ message: 'current diagnostic', uri: editor.uri }]
+    EditorStates.set(1, editor as any, editor as any)
+
+    const staleUpdate = updateDiagnostics(editor)
+    await requested[0].promise
+    EditorStates.set(1, editor as any, edited as any)
+    const currentUpdate = editorDiagnosticEffect.apply(edited as any)
+    await requested[1].promise
+
+    expect(extensionManagementWorkerRpc.invocations).toEqual([
+      [
+        'Extensions.executeDiagnosticProvider',
+        {
+          documentId: 1,
+          languageId: 'typescript',
+          text: 'const value = 1',
+          uri: '/test.ts',
+        },
+      ],
+      [
+        'Extensions.executeDiagnosticProvider',
+        {
+          documentId: 1,
+          languageId: 'typescript',
+          text: 'const value = 2',
+          uri: '/test.ts',
+        },
+      ],
+    ])
+
+    let diagnosticsAfterStaleResponse
+    if (completionOrder === 'stale response finishes first') {
+      results[0].resolve(staleDiagnostics)
+      await staleUpdate
+      diagnosticsAfterStaleResponse = EditorStates.get(1)?.newState.diagnostics
+      results[1].resolve(currentDiagnostics)
+      await currentUpdate
+    } else {
+      results[1].resolve(currentDiagnostics)
+      await currentUpdate
+      results[0].resolve(staleDiagnostics)
+      await staleUpdate
+      diagnosticsAfterStaleResponse = EditorStates.get(1)?.newState.diagnostics
+    }
+
+    const expectedDiagnosticsAfterStaleResponse = completionOrder === 'stale response finishes first' ? edited.diagnostics : currentDiagnostics
+    expect(diagnosticsAfterStaleResponse).toBe(expectedDiagnosticsAfterStaleResponse)
+    expect(EditorStates.get(1)?.newState.diagnostics).toEqual(currentDiagnostics)
+    expect(rendererWorkerRpc.invocations).toEqual([
+      ['Editor.renderPending', 1],
+      ['Layout.handleDiagnosticsChange', '/test.ts'],
+    ])
+  },
+)
 
 test('updateDiagnostics ignores results after loading the document fails', async () => {
   const diagnosticsRequested = Promise.withResolvers<void>()
