@@ -32,7 +32,11 @@ export const isAutoClosingTagsEnabled = async () => {
 }
 
 export const getRowHeight = async () => {
-  return (await Preferences.get(kLineHeight)) || 20
+  const [lineHeight, fontSize] = await Promise.all([Preferences.get(kLineHeight), getFontSize()])
+  if (typeof lineHeight !== 'number' || !Number.isFinite(lineHeight) || lineHeight < fontSize) {
+    return fontSize
+  }
+  return lineHeight
 }
 
 export const getFontSize = async () => {
