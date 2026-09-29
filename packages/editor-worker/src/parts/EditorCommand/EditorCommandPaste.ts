@@ -49,6 +49,9 @@ const writeClipboardImage = async (editor: any, blob: Blob): Promise<{ fileName:
   for (let index = 0; index < 1000; index++) {
     const fileName = index === 0 ? `image.${extension}` : `image-${index}.${extension}`
     const uri = getImageUri(editor.uri, fileName)
+    if (await ApplicationRpc.invoke(editor.applicationId, 'FileSystem.exists', uri)) {
+      continue
+    }
     try {
       await ApplicationRpc.invoke(editor.applicationId, 'FileSystem.createFile', uri)
     } catch (error) {
