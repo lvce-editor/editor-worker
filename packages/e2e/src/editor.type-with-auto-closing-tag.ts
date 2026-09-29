@@ -27,10 +27,10 @@ export const test: Test = async ({ Command, Editor, Extension, FileSystem, Main,
   const voidElementPath = `${tmpDir}/void.html`
   await FileSystem.writeFile(voidElementPath, '<div><br><')
   await Main.openUri(voidElementPath)
-  await Editor.setSelections(new Uint32Array([0, 9, 0, 9]))
+  await Editor.setSelections(new Uint32Array([0, 10, 0, 10]))
   await Command.execute('Editor.handleBeforeInput', 'insertText', '/')
   await Editor.shouldHaveText('<div><br></div>')
-  await Editor.shouldHaveSelections(new Uint32Array([0, 14, 0, 14]))
+  await Editor.shouldHaveSelections(new Uint32Array([0, 15, 0, 15]))
 
   const unmatchedPath = `${tmpDir}/unmatched.html`
   await FileSystem.writeFile(unmatchedPath, '<')
