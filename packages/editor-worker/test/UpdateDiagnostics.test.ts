@@ -7,7 +7,7 @@ import { updateDiagnostics, updateDiagnosticsAll } from '../src/parts/UpdateDiag
 
 const registerExtensionManagementWorkerMockRpc = (commandMap: any): any => {
   const rpc = ExtensionManagementWorker.registerMockRpc(commandMap)
-  const invocations = (rpc as any).invocations
+  const { invocations } = rpc as any
   ;(rpc as any).invokeAndTransfer = (method: string, ...params: readonly unknown[]) => (rpc as any).invoke(method, ...params)
   Object.defineProperty(rpc, 'invocations', {
     get: () => invocations.map(([method, ...params]: readonly unknown[]) => [method, ...params.filter((param) => !(param instanceof MessagePort))]),

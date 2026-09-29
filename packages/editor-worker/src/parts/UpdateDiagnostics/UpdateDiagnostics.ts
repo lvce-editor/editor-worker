@@ -30,6 +30,7 @@ interface PreviousProviderResults {
 }
 
 const requestGenerations = new Map<number, number>()
+const requestDiagnosticSnapshots = new Map<number, readonly Diagnostic[]>()
 const previousProviderResults = new Map<number, PreviousProviderResults>()
 
 const getDiagnostics = async (editor: any, resultPort: MessagePort): Promise<unknown> => {
@@ -112,6 +113,7 @@ const diagnosticLayoutEqual = (left: any, right: any): boolean =>
 const isApplicable = (latest: any, editor: any, generation: number): boolean =>
   latest &&
   requestGenerations.get(editor.id) === generation &&
+  latest.newState.diagnostics === requestDiagnosticSnapshots.get(editor.id) &&
   latest.newState.diagnosticsEnabled &&
   !latest.newState.loadError &&
   latest.newState.languageId === editor.languageId &&
@@ -152,6 +154,7 @@ const commitDiagnostics = async (editor: any, generation: number, diagnostics: r
       }
       const newEditor = mergeDiagnostics(latest.newState, editorWithDiagnostics)
       EditorState.set(editor.id, latest.oldState, newEditor)
+      requestDiagnosticSnapshots.set(editor.id, diagnostics)
       await RendererWorker.invoke('Editor.renderPending', newEditor.id)
       await notifyDiagnosticsChange(newEditor.uri, newEditor.applicationId)
       return newEditor
@@ -160,7 +163,9 @@ const commitDiagnostics = async (editor: any, generation: number, diagnostics: r
 }
 
 const flattenProviderDiagnostics = (providers: ReadonlyMap<string, ProviderDiagnostics>): readonly Diagnostic[] => {
-  return [...providers.values()]
+  return providers
+    .values()
+    .toArray()
     .toSorted((left, right) => left.providerIndex - right.providerIndex)
     .flatMap(({ diagnostics }) => diagnostics)
 }
@@ -171,6 +176,7 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
   }
   const generation = (requestGenerations.get(editor.id) ?? 0) + 1
   requestGenerations.set(editor.id, generation)
+  requestDiagnosticSnapshots.set(editor.id, EditorState.get(editor.id)?.newState.diagnostics ?? editor.diagnostics)
   const providers = new Map<string, ProviderDiagnostics>()
   const previous = previousProviderResults.get(editor.id)
   if (previous && previous.languageId === editor.languageId && previous.lines === editor.lines && previous.uri === editor.uri) {
@@ -183,58 +189,62 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
   let commitQueue = Promise.resolve()
   let providerCount = -1
   port1.onmessage = (event: MessageEvent<DiagnosticProviderMessage>): void => {
-    commitQueue = commitQueue.then(async () => {
-      const message = event.data
-      if (requestGenerations.get(editor.id) !== generation) {
+    const previousCommit = commitQueue
+    commitQueue = (async () => {
+      await previousCommit
+      try {
+        const message = event.data
+        if (requestGenerations.get(editor.id) !== generation) {
+          if (message.type === 'done') {
+            port1.close()
+            completed.resolve()
+          }
+          return
+        }
+        if (message.type === 'providers') {
+          providerCount = message.providerCount ?? 0
+          const providerIds = message.providerIds ?? []
+          for (const providerId of providers.keys()) {
+            if (providerIds.includes(providerId)) {
+              const previousResult = providers.get(providerId)!
+              providers.set(providerId, {
+                ...previousResult,
+                providerIndex: providerIds.indexOf(providerId),
+              })
+            } else {
+              providers.delete(providerId)
+            }
+          }
+          return
+        }
+        if (message.type === 'result' && message.providerId !== undefined) {
+          providers.set(message.providerId, {
+            diagnostics: message.diagnostics ?? [],
+            providerIndex: message.providerIndex ?? providers.size,
+          })
+          await commitDiagnostics(editor, generation, flattenProviderDiagnostics(providers))
+          return
+        }
         if (message.type === 'done') {
+          if (providerCount === 0) {
+            providers.clear()
+            await commitDiagnostics(editor, generation, [])
+          }
+          previousProviderResults.set(editor.id, {
+            languageId: editor.languageId,
+            lines: editor.lines,
+            providers: new Map(providers),
+            uri: editor.uri,
+          })
           port1.close()
           completed.resolve()
         }
-        return
-      }
-      if (message.type === 'providers') {
-        providerCount = message.providerCount ?? 0
-        const activeProviderIds = new Set(message.providerIds ?? [])
-        for (const providerId of providers.keys()) {
-          if (!activeProviderIds.has(providerId)) {
-            providers.delete(providerId)
-          } else {
-            const previousResult = providers.get(providerId)!
-            providers.set(providerId, {
-              ...previousResult,
-              providerIndex: message.providerIds!.indexOf(providerId),
-            })
-          }
-        }
-        return
-      }
-      if (message.type === 'result' && message.providerId !== undefined) {
-        providers.set(message.providerId, {
-          diagnostics: message.diagnostics ?? [],
-          providerIndex: message.providerIndex ?? providers.size,
-        })
-        await commitDiagnostics(editor, generation, flattenProviderDiagnostics(providers))
-        return
-      }
-      if (message.type === 'done') {
-        if (providerCount === 0) {
-          providers.clear()
-          await commitDiagnostics(editor, generation, [])
-        }
-        previousProviderResults.set(editor.id, {
-          languageId: editor.languageId,
-          lines: editor.lines,
-          providers: new Map(providers),
-          uri: editor.uri,
-        })
+      } catch (error) {
         port1.close()
         completed.resolve()
+        await handleError(error, editor)
       }
-    }).catch(async (error: unknown) => {
-      port1.close()
-      completed.resolve()
-      await handleError(error, editor)
-    })
+    })()
   }
   port1.start()
   try {
@@ -270,6 +280,7 @@ export const requestDiagnostics = (editor: any): any => {
 
 export const clearDiagnosticRequestState = (editorId: number): void => {
   requestGenerations.delete(editorId)
+  requestDiagnosticSnapshots.delete(editorId)
   previousProviderResults.delete(editorId)
 }
 

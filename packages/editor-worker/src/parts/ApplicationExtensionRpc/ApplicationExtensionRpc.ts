@@ -6,11 +6,7 @@ export const invoke = async (applicationId: string | undefined, method: string, 
     : ExtensionManagementWorker.invoke('Extensions.invokeForApplication', applicationId, method, ...args)
 }
 
-export const invokeAndTransfer = async (
-  applicationId: string | undefined,
-  method: string,
-  ...args: readonly unknown[]
-): Promise<any> => {
+export const invokeAndTransfer = async (applicationId: string | undefined, method: string, ...args: readonly unknown[]): Promise<any> => {
   return applicationId === undefined
     ? ExtensionManagementWorker.invokeAndTransfer(method, ...args)
     : ExtensionManagementWorker.invokeAndTransfer('Extensions.invokeForApplication', applicationId, method, ...args)
