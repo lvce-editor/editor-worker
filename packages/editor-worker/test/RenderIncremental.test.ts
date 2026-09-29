@@ -1,5 +1,6 @@
 import { beforeEach, expect, test } from '@jest/globals'
 import { ViewletCommand } from '@lvce-editor/constants'
+import * as DiffItems from '../src/parts/DiffItems/DiffItems.ts'
 import * as RenderedDoms from '../src/parts/RenderedDoms/RenderedDoms.ts'
 import * as RenderIncremental from '../src/parts/RenderIncremental/RenderIncremental.ts'
 
@@ -237,4 +238,33 @@ test('renderIncremental renders end of line decorations', () => {
     ]),
     type: 6,
   })
+})
+
+test('renderIncremental removes and restores scrollbar thumbs when their sizes cross zero', () => {
+  const hiddenState = {
+    ...createState(0, [['x', 'Token Identifier']]),
+    height: 100,
+    initial: false,
+    longestLineWidth: 100,
+    minimumSliderSize: 14,
+    scrollBarHeight: 0,
+    uid: 2,
+    width: 100,
+  }
+  const visibleState = {
+    ...hiddenState,
+    longestLineWidth: 200,
+    scrollBarHeight: 20,
+  }
+
+  RenderIncremental.renderIncremental({ ...hiddenState, initial: true }, hiddenState)
+  expect(DiffItems.isEqual(hiddenState, visibleState)).toBe(false)
+
+  const addThumbs = RenderIncremental.renderIncremental(hiddenState, visibleState)
+  expect(addThumbs[0]).toBe(ViewletCommand.SetPatches)
+  expect(addThumbs[2]).not.toEqual([])
+
+  const removeThumbs = RenderIncremental.renderIncremental(visibleState, hiddenState)
+  expect(removeThumbs[0]).toBe(ViewletCommand.SetPatches)
+  expect(removeThumbs[2]).not.toEqual([])
 })

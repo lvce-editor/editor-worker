@@ -21,6 +21,10 @@ export const isEqual = (oldState: EditorState, newState: EditorState): boolean =
     oldState.visibleViewLineIndices === newState.visibleViewLineIndices &&
     oldState.differences === newState.differences &&
     oldState.initial === newState.initial &&
+    oldState.scrollBarHeight === newState.scrollBarHeight &&
+    oldState.width === newState.width &&
+    oldState.longestLineWidth === newState.longestLineWidth &&
+    oldState.minimumSliderSize === newState.minimumSliderSize &&
     oldState.selectionInfos === newState.selectionInfos &&
     oldState.selections === newState.selections &&
     oldState.workspaceUri === newState.workspaceUri
