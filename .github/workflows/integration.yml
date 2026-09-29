@@ -35,6 +35,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Prepare owned integration tests
         run: node packages/e2e-integration/prepare.mjs .tmp/lvce-integration
+      - name: Check editor cursor uses effective row height
+        run: node packages/e2e-integration/check-editor-cursor-css.mjs .tmp/lvce-integration
       - name: Run owned integration tests
         shell: bash
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
