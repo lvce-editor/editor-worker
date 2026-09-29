@@ -58,6 +58,7 @@ interface EditorVirtualDomOptions {
   readonly roundedSelection?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
+  readonly scrollBarWidth?: number
   readonly selectionInfos?: readonly any[]
   readonly selections?: any
   readonly textInfos: readonly any[]
@@ -117,6 +118,8 @@ export const getEditorVirtualDom = ({
   problemsHighlightedRow = -1,
   roundedSelection = false,
   scrollBarDiagnostics = [],
+  scrollBarHeight = 0,
+  scrollBarWidth = 0,
   selectionInfos = [],
   selections = new Uint32Array(),
   textInfos,
@@ -188,6 +191,8 @@ export const getEditorVirtualDom = ({
       problemsHighlightedRow,
       roundedSelection,
       scrollBarDiagnostics,
+      scrollBarHeight,
+      scrollBarWidth,
       selectionInfos,
       textInfos: combineWhitespaceTokens ? textInfos.map(combineTokens) : textInfos,
       visibleLineIndices: visibleLineIndices || [],

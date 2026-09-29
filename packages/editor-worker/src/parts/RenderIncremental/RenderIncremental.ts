@@ -4,9 +4,10 @@ import type { EditorState } from '../State/State.ts'
 import { getEditorVirtualDom } from '../GetEditorVirtualDom/GetEditorVirtualDom.ts'
 import { getScrollBarDiagnostics } from '../GetScrollBarDiagnostics/GetScrollBarDiagnostics.ts'
 import * as RenderedDoms from '../RenderedDoms/RenderedDoms.ts'
+import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 const getDom = (state: EditorState): readonly VirtualDomNode[] => {
-  const { diagnostics = [], initial, textInfos, visualDecorations = [] } = state
+  const { diagnostics = [], initial, longestLineWidth, minimumSliderSize, textInfos, visualDecorations = [], width } = state
   if (initial && textInfos.length === 0) {
     return []
   }
@@ -15,6 +16,7 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
     ...state,
     diagnostics: visualDecorations,
     scrollBarDiagnostics: getScrollBarDiagnostics(state, diagnostics),
+    scrollBarWidth: ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize),
   })
 }
 

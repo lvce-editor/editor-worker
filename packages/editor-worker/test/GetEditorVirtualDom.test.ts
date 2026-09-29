@@ -57,6 +57,7 @@ test('getEditorVirtualDom', () => {
     height: 40,
     scrollBarDiagnostics: [{ height: 3, top: 6, type: 'error' }],
     scrollBarHeight: 24,
+    scrollBarWidth: 24,
     selectionInfos: [1, 2, 3, 4],
     textInfos: [['#', 'Token Comment']],
     uid: 42,
