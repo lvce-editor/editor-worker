@@ -122,7 +122,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['packages/e2e/**/*.ts'],
+    files: ['packages/{e2e,e2e-integration}/**/*.ts'],
     rules: {
       'e2e/no-timeouts': 'off',
       'e2e/prefer-filesystem-set-files': 'off',
@@ -131,6 +131,11 @@ export default defineConfig([
   {
     // The application runtime has its own Node version in the pinned checkout.
     files: ['.github/workflows/integration.yml'],
-    rules: { 'github-actions/node-version-file': 'off' },
+    rules: { 'github-actions/node-version-file': 'off', 'github-actions/on': 'off' },
+  },
+  {
+    // Preserve real DOM input events covered by the migrated application scenarios.
+    files: ['packages/e2e-integration/src/viewlet.editor-breadcrumbs-json-icons.ts'],
+    rules: { '@typescript-eslint/no-deprecated': 'off' },
   },
 ])
