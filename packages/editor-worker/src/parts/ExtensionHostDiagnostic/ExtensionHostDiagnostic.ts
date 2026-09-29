@@ -16,6 +16,15 @@ const executeIsolatedDiagnosticProvider = async (editor: any): Promise<readonly 
   return ApplicationExtensionRpc.invoke(editor.applicationId, 'Extensions.executeDiagnosticProvider', textDocument)
 }
 
+const streamIsolatedDiagnosticProvider = async (editor: any, resultPort: MessagePort): Promise<unknown> => {
+  const textDocument = getTextDocument(editor)
+  return ApplicationExtensionRpc.invokeAndTransfer(editor.applicationId, 'Extensions.streamDiagnosticProvider', textDocument, resultPort)
+}
+
 export const executeDiagnosticProvider = async (editor: any): Promise<readonly Diagnostic[]> => {
   return executeIsolatedDiagnosticProvider(editor)
+}
+
+export const streamDiagnosticProvider = async (editor: any, resultPort: MessagePort): Promise<unknown> => {
+  return streamIsolatedDiagnosticProvider(editor, resultPort)
 }

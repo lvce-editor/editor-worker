@@ -16,6 +16,10 @@ const { commitHash } = await sharedProcess.exportStatic({
   testPath: 'packages/e2e',
 })
 
+const extensionManagementWorkerPath = dirname(fileURLToPath(import.meta.resolve('@lvce-editor/extension-management-worker')))
+await cp(extensionManagementWorkerPath, join(root, 'dist', commitHash, 'packages', 'extension-management-worker', 'dist'), { recursive: true })
+await cp(extensionManagementWorkerPath, join(staticServerPath, commitHash, 'packages', 'extension-management-worker', 'dist'), { recursive: true })
+
 await cp(
   dirname(fileURLToPath(import.meta.resolve('@lvce-editor/find-widget-worker'))),
   join(root, 'dist', commitHash, 'packages', 'find-widget-worker', 'dist'),

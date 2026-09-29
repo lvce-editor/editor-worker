@@ -11,6 +11,12 @@ jest.unstable_mockModule('../src/parts/UpdateDerivedState/UpdateDerivedState.ts'
 const { wrapCommand } = await import('../src/parts/WrapCommands/WrapCommands.ts')
 const { updateDiagnostics } = await import('../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts')
 
+const registerExtensionManagementWorkerMockRpc = (commandMap: any): any => {
+  const rpc = ExtensionManagementWorker.registerMockRpc(commandMap)
+  ;(rpc as any).invokeAndTransfer = (method: string, ...params: readonly unknown[]) => (rpc as any).invoke(method, ...params)
+  return rpc
+}
+
 beforeEach(() => {
   updateDerivedState.mockImplementation(async (_oldState: any, newState: any) => newState)
 })
@@ -28,8 +34,8 @@ test('diagnostics completing during a layout command are not overwritten by its 
     return newState
   })
   const diagnostic = { message: 'delayed diagnostic', uri: 'file:///main.ts' }
-  using _extensionRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': async () => [diagnostic],
+  using _extensionRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async () => [diagnostic],
   })
   using _rendererRpc = RendererWorker.registerMockRpc({
     'Editor.renderPending': async () => undefined,
@@ -62,8 +68,8 @@ test('diagnostics completing during a layout command are not overwritten by its 
 test('waiting for a diagnostics provider does not block editor commands', async () => {
   const requested = Promise.withResolvers<void>()
   const provider = Promise.withResolvers<readonly any[]>()
-  using _extensionRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': async () => {
+  using _extensionRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async () => {
       requested.resolve()
       return provider.promise
     },
@@ -96,8 +102,8 @@ test('a queued provider result does not overwrite diagnostics set by a newer com
     await finishCommand.promise
     return newState
   })
-  using _extensionRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': async () => [],
+  using _extensionRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async () => [],
   })
   using _rendererRpc = RendererWorker.registerMockRpc({
     'Editor.renderPending': async () => undefined,
@@ -128,8 +134,8 @@ test('a queued provider result does not overwrite diagnostics set by a newer com
 test('editing a shared document refreshes diagnostics in every editor showing it', async () => {
   const diagnostic = { message: 'Unknown word: retu', uri: 'untitled:shared.ts' }
   const checkedTexts: string[] = []
-  using _extensionRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': async (document: any) => {
+  using _extensionRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async (document: any) => {
       checkedTexts.push(document.text)
       return []
     },

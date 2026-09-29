@@ -5,6 +5,16 @@ import { editorDiagnosticEffect } from '../src/parts/EditorDiagnosticEffect/Edit
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { updateDiagnostics, updateDiagnosticsAll } from '../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts'
 
+const registerExtensionManagementWorkerMockRpc = (commandMap: any): any => {
+  const rpc = ExtensionManagementWorker.registerMockRpc(commandMap)
+  const { invocations } = rpc as any
+  ;(rpc as any).invokeAndTransfer = (method: string, ...params: readonly unknown[]) => (rpc as any).invoke(method, ...params)
+  Object.defineProperty(rpc, 'invocations', {
+    get: () => invocations.map(([method, ...params]: readonly unknown[]) => [method, ...params.filter((param) => !(param instanceof MessagePort))]),
+  })
+  return rpc
+}
+
 afterEach(() => {
   for (const key of EditorStates.getKeys()) {
     EditorStates.dispose(Number(key))
@@ -14,8 +24,8 @@ afterEach(() => {
 })
 
 test('updateDiagnosticsAll refreshes every open editor', async () => {
-  using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': async (document: any) => [
+  using extensionManagementWorkerRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async (document: any) => [
       {
         message: `diagnostic for ${document.uri}`,
         uri: document.uri,
@@ -47,7 +57,7 @@ test('updateDiagnosticsAll refreshes every open editor', async () => {
 
   expect(extensionManagementWorkerRpc.invocations).toEqual([
     [
-      'Extensions.executeDiagnosticProvider',
+      'Extensions.streamDiagnosticProvider',
       {
         documentId: 1,
         languageId: 'javascript',
@@ -56,7 +66,7 @@ test('updateDiagnosticsAll refreshes every open editor', async () => {
       },
     ],
     [
-      'Extensions.executeDiagnosticProvider',
+      'Extensions.streamDiagnosticProvider',
       {
         documentId: 2,
         languageId: 'typescript',
@@ -85,6 +95,90 @@ test('updateDiagnosticsAll refreshes every open editor', async () => {
   ])
 })
 
+test('updateDiagnostics applies a completed provider before slower providers finish and preserves both results', async () => {
+  const fastDiagnostic = {
+    columnIndex: 0,
+    endColumnIndex: 1,
+    endRowIndex: 0,
+    message: 'fast provider',
+    rowIndex: 0,
+    type: 'error',
+    uri: '/test.ts',
+  }
+  const slowDiagnostic = {
+    columnIndex: 1,
+    endColumnIndex: 2,
+    endRowIndex: 0,
+    message: 'slow provider',
+    rowIndex: 0,
+    type: 'warning',
+    uri: '/test.ts',
+  }
+  const firstRender = Promise.withResolvers<void>()
+  let resolveSlowProvider: (() => void) | undefined
+  using extensionManagementWorkerRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async (_document: any, resultPort: MessagePort) => {
+      resultPort.postMessage({ providerCount: 2, providerIds: ['fast-provider', 'slow-provider'], type: 'providers' })
+      resultPort.postMessage({ diagnostics: [fastDiagnostic], providerId: 'fast-provider', providerIndex: 0, type: 'result' })
+      return new Promise<void>((resolve) => {
+        resolveSlowProvider = () => {
+          resultPort.postMessage({ diagnostics: [slowDiagnostic], providerId: 'slow-provider', providerIndex: 1, type: 'result' })
+          resultPort.postMessage({ type: 'done' })
+          resolve()
+        }
+      })
+    },
+  })
+  using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => firstRender.resolve(),
+    'Layout.handleDiagnosticsChange': async () => undefined,
+  })
+  using textMeasurementWorkerRpc = TextMeasurementWorker.registerMockRpc({
+    'TextMeasurement.measureTextWidth': async () => 8,
+  })
+  const editor = {
+    charWidth: 8,
+    decorations: [],
+    diagnostics: [],
+    diagnosticsEnabled: true,
+    fontFamily: 'sans-serif',
+    fontSize: 14,
+    fontWeight: 400,
+    id: 1,
+    isMonospaceFont: false,
+    itemHeight: 20,
+    languageId: 'typescript',
+    letterSpacing: 0,
+    lines: ['const value: string = 1'],
+    minLineY: 0,
+    rowHeight: 20,
+    tabSize: 2,
+    uri: '/test.ts',
+    viewLineIndices: [],
+    width: 800,
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  const pendingUpdate = updateDiagnostics(editor)
+  await firstRender.promise
+
+  expect(EditorStates.get(1)?.newState.diagnostics).toEqual([fastDiagnostic])
+  expect(resolveSlowProvider).toBeDefined()
+
+  resolveSlowProvider!()
+  await pendingUpdate
+
+  expect(EditorStates.get(1)?.newState.diagnostics).toEqual([fastDiagnostic, slowDiagnostic])
+  expect(extensionManagementWorkerRpc.invocations).toHaveLength(1)
+  expect(rendererWorkerRpc.invocations).toEqual([
+    ['Editor.renderPending', 1],
+    ['Layout.handleDiagnosticsChange', '/test.ts'],
+    ['Editor.renderPending', 1],
+    ['Layout.handleDiagnosticsChange', '/test.ts'],
+  ])
+  expect(textMeasurementWorkerRpc.invocations.length).toBeGreaterThan(0)
+})
+
 test('updateDiagnostics reports failures through the error worker', async () => {
   const error = new Error('diagnostics failed')
   const prettyError = {
@@ -92,8 +186,8 @@ test('updateDiagnostics reports failures through the error worker', async () => 
     message: 'diagnostics failed',
     stack: error.stack,
   }
-  using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': async () => {
+  using extensionManagementWorkerRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async () => {
       throw error
     },
   })
@@ -113,7 +207,7 @@ test('updateDiagnostics reports failures through the error worker', async () => 
   await expect(updateDiagnostics(editor)).resolves.toBe(editor)
   expect(extensionManagementWorkerRpc.invocations).toEqual([
     [
-      'Extensions.executeDiagnosticProvider',
+      'Extensions.streamDiagnosticProvider',
       {
         documentId: 1,
         languageId: 'typescript',
@@ -153,13 +247,15 @@ test('updateDiagnostics skips editor content that failed to load', async () => {
 test('updateDiagnostics ignores results after the editor is closed', async () => {
   const diagnosticsRequested = Promise.withResolvers<void>()
   const diagnosticsResult = Promise.withResolvers<readonly any[]>()
+  const invoke = async () => {
+    diagnosticsRequested.resolve()
+    return diagnosticsResult.promise
+  }
   ExtensionManagementWorker.set(
     MockRpc.create({
       commandMap: {},
-      invoke: async () => {
-        diagnosticsRequested.resolve()
-        return diagnosticsResult.promise
-      },
+      invoke,
+      invokeAndTransfer: invoke,
     }),
   )
   const editor = {
@@ -183,13 +279,15 @@ test('updateDiagnostics ignores results after the editor is closed', async () =>
 test('updateDiagnostics ignores stale results after the editor text changes', async () => {
   const diagnosticsRequested = Promise.withResolvers<void>()
   const diagnosticsResult = Promise.withResolvers<readonly any[]>()
+  const invoke = async () => {
+    diagnosticsRequested.resolve()
+    return diagnosticsResult.promise
+  }
   ExtensionManagementWorker.set(
     MockRpc.create({
       commandMap: {},
-      invoke: async () => {
-        diagnosticsRequested.resolve()
-        return diagnosticsResult.promise
-      },
+      invoke,
+      invokeAndTransfer: invoke,
     }),
   )
   const editor = {
@@ -220,8 +318,8 @@ test.each(['stale response finishes first', 'fresh response finishes first'])(
     const requested = [Promise.withResolvers<void>(), Promise.withResolvers<void>()]
     const results = [Promise.withResolvers<readonly any[]>(), Promise.withResolvers<readonly any[]>()]
     let requestIndex = 0
-    using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
-      'Extensions.executeDiagnosticProvider': async () => {
+    using extensionManagementWorkerRpc = registerExtensionManagementWorkerMockRpc({
+      'Extensions.streamDiagnosticProvider': async () => {
         const index = requestIndex++
         requested[index].resolve()
         return results[index].promise
@@ -252,7 +350,7 @@ test.each(['stale response finishes first', 'fresh response finishes first'])(
 
     expect(extensionManagementWorkerRpc.invocations).toEqual([
       [
-        'Extensions.executeDiagnosticProvider',
+        'Extensions.streamDiagnosticProvider',
         {
           documentId: 1,
           languageId: 'typescript',
@@ -261,7 +359,7 @@ test.each(['stale response finishes first', 'fresh response finishes first'])(
         },
       ],
       [
-        'Extensions.executeDiagnosticProvider',
+        'Extensions.streamDiagnosticProvider',
         {
           documentId: 1,
           languageId: 'typescript',
@@ -299,8 +397,8 @@ test.each(['stale response finishes first', 'fresh response finishes first'])(
 test('updateDiagnostics ignores results after loading the document fails', async () => {
   const diagnosticsRequested = Promise.withResolvers<void>()
   const diagnosticsResult = Promise.withResolvers<readonly any[]>()
-  using _extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': async () => {
+  using _extensionManagementWorkerRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async () => {
       diagnosticsRequested.resolve()
       return diagnosticsResult.promise
     },
@@ -328,8 +426,8 @@ test('updateDiagnostics ignores results after loading the document fails', async
 test('updateDiagnostics preserves scrolling and skips rendering for unchanged empty diagnostics', async () => {
   const diagnosticsRequested = Promise.withResolvers<void>()
   const diagnosticsResult = Promise.withResolvers<readonly any[]>()
-  using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': async () => {
+  using extensionManagementWorkerRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async () => {
       diagnosticsRequested.resolve()
       return diagnosticsResult.promise
     },
@@ -366,8 +464,8 @@ test('updateDiagnostics preserves scrolling and skips rendering for unchanged em
 test('updateDiagnostics preserves scrolling while diagnostic decorations are calculated', async () => {
   const measurementRequested = Promise.withResolvers<void>()
   const measurementResult = Promise.withResolvers<number>()
-  using extensionManagementWorkerRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': async () => [
+  using extensionManagementWorkerRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async () => [
       {
         code: 1,
         columnIndex: 1,
@@ -437,8 +535,8 @@ test('updateDiagnostics preserves scrolling while diagnostic decorations are cal
 test('updateDiagnostics ignores a result for the previous language mode', async () => {
   const requested = Promise.withResolvers<void>()
   const result = Promise.withResolvers<readonly any[]>()
-  using _extensionRpc = ExtensionManagementWorker.registerMockRpc({
-    'Extensions.executeDiagnosticProvider': async () => {
+  using _extensionRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async () => {
       requested.resolve()
       return result.promise
     },

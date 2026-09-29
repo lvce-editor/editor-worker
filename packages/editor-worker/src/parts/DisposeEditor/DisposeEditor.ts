@@ -10,6 +10,7 @@ import * as RenderedDoms from '../RenderedDoms/RenderedDoms.ts'
 import * as RenderWidgets from '../RenderWidgets/RenderWidgets.ts'
 import * as SyntaxHighlightingState from '../SyntaxHighlightingState/SyntaxHighlightingState.ts'
 import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
+import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 export const disposeEditor = async (editorUid: number): Promise<readonly any[]> => {
@@ -22,6 +23,7 @@ export const disposeEditor = async (editorUid: number): Promise<readonly any[]> 
     delete editor.lifecycle.sentLines
   }
   // Invalidate the registry before awaiting widget or worker cleanup.
+  UpdateDiagnostics.clearDiagnosticRequestState(editorUid)
   EditorStates.dispose(editorUid)
   try {
     await ApplicationRpc.invoke(editor.applicationId, 'Layout.handleDiagnosticsChange', editor.uri)
