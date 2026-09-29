@@ -1,6 +1,7 @@
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 import * as Assert from '../Assert/Assert.ts'
+import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as EditorPasteText from './EditorCommandPasteText.ts'
 
 const getImageExtension = (type: string): string => {
@@ -43,7 +44,7 @@ const isFileExistsError = (error: unknown): boolean => {
   return /already exists|EEXIST/i.test(error.message) || (cause !== undefined && isFileExistsError(cause))
 }
 
-const writeClipboardImage = async (editor: any, blob: Blob): Promise<string> => {
+const writeClipboardImage = async (editor: any, blob: Blob): Promise<{ fileName: string; uri: string }> => {
   const extension = getImageExtension(blob.type)
   for (let index = 0; index < 1000; index++) {
     const fileName = index === 0 ? `image.${extension}` : `image-${index}.${extension}`
@@ -58,7 +59,7 @@ const writeClipboardImage = async (editor: any, blob: Blob): Promise<string> => 
     }
     try {
       await ApplicationRpc.invoke(editor.applicationId, 'FileSystem.writeFile', uri, await toBinaryString(blob), 'binary')
-      return fileName
+      return { fileName, uri }
     } catch (error) {
       try {
         await ApplicationRpc.invoke(editor.applicationId, 'FileSystem.remove', uri)
@@ -79,13 +80,20 @@ export const paste = async (editor: any, pastedText?: string) => {
       imageReadError = error
     }
     if (image instanceof Blob) {
-      let fileName: string
+      let savedImage: { fileName: string; uri: string }
       try {
-        fileName = await writeClipboardImage(editor, image)
+        savedImage = await writeClipboardImage(editor, image)
       } catch (error) {
         throw new Error('Failed to save the clipboard image beside the Markdown document.', { cause: error })
       }
-      return EditorPasteText.pasteText(editor, `![image](${fileName})`)
+      const currentEditor = EditorStates.get(editor.uid)?.newState
+      if (!currentEditor || currentEditor.uri !== editor.uri || currentEditor.languageId !== 'markdown') {
+        try {
+          await ApplicationRpc.invoke(editor.applicationId, 'FileSystem.remove', savedImage.uri)
+        } catch {}
+        throw new Error('The Markdown document changed while saving the clipboard image. Paste the image again.')
+      }
+      return EditorPasteText.pasteText(currentEditor, `![image](${savedImage.fileName})`)
     }
   }
   const text = pastedText ?? (await RendererWorker.readClipBoardText())
