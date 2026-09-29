@@ -2,13 +2,11 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.source-actions-empty'
 
-export const skip = 1
-
 export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
-  await FileSystem.writeFile(`${tmpDir}/src/test.xyz`, 'globalThis.AbortSignal.abort()')
-  await Main.openUri(`${tmpDir}/src/test.xyz`)
+  await FileSystem.writeFile(`${tmpDir}/src/test.js`, 'globalThis.AbortSignal.abort()')
+  await Main.openUri(`${tmpDir}/src/test.js`)
   await Editor.setCursor(0, 11)
 
   // act
@@ -18,4 +16,5 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main }) 
   const emptyMessage = Locator('.EditorMessageText')
   await expect(emptyMessage).toBeVisible()
   await expect(emptyMessage).toHaveText('No code actions available')
+  await expect(emptyMessage).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
 }
