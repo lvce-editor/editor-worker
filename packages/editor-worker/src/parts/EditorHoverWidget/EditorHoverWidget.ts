@@ -27,7 +27,7 @@ export const render = (widget: HoverWidget) => {
           [
             RenderMethod.SetDom2,
             newState.uid,
-            GetHoverVirtualDom.getHoverVirtualDom(newState.lineInfos, newState.documentation, newState.diagnostics),
+            GetHoverVirtualDom.getHoverVirtualDom(newState.lineInfos, newState.documentationVirtualDom, newState.diagnostics),
           ],
           [RenderMethod.SetBounds2, newState.uid, newState.x, newState.y, newState.width, newState.height],
         ]

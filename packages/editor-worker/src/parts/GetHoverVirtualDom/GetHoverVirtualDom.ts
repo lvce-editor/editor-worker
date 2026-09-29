@@ -32,22 +32,26 @@ const hoverSashNode: VirtualDomNode = {
   type: VirtualDomElements.Div,
 }
 
-const getChildCount = (lineInfos: any, documentation: any, diagnostics: any): number => {
-  const documentationCount = documentation ? 1 : 0
+const getChildCount = (lineInfos: any, documentationVirtualDom: readonly VirtualDomNode[], diagnostics: any): number => {
+  const documentationCount = documentationVirtualDom.length > 0 ? 1 : 0
   const diagnosticsCount = diagnostics && diagnostics.length > 0 ? 1 : 0
-  return lineInfos.length + documentationCount + diagnosticsCount
+  return (lineInfos.length > 0 ? 1 : 0) + documentationCount + diagnosticsCount
 }
 
-const getEditorHoverClassName = (lineInfos: any, documentation: any, diagnostics: any): string => {
-  const isDiagnosticOnly = diagnostics?.length === 1 && lineInfos.length === 0 && !documentation
+const getEditorHoverClassName = (lineInfos: any, documentationVirtualDom: readonly VirtualDomNode[], diagnostics: any): string => {
+  const isDiagnosticOnly = diagnostics?.length === 1 && lineInfos.length === 0 && documentationVirtualDom.length === 0
   return MergeClassNames.mergeClassNames('Viewlet', 'EditorHover', isDiagnosticOnly ? ClassNames.EditorHoverDiagnosticOnly : '')
 }
 
-export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnostics: any): readonly VirtualDomNode[] => {
+export const getHoverVirtualDom = (
+  lineInfos: any,
+  documentationVirtualDom: readonly VirtualDomNode[],
+  diagnostics: any,
+): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = []
   dom.push({
-    childCount: getChildCount(lineInfos, documentation, diagnostics) + 1,
-    className: getEditorHoverClassName(lineInfos, documentation, diagnostics),
+    childCount: getChildCount(lineInfos, documentationVirtualDom, diagnostics) + 1,
+    className: getEditorHoverClassName(lineInfos, documentationVirtualDom, diagnostics),
     type: VirtualDomElements.Div,
   })
   if (diagnostics && diagnostics.length > 0) {
@@ -73,8 +77,8 @@ export const getHoverVirtualDom = (lineInfos: any, documentation: any, diagnosti
     )
   }
 
-  if (documentation) {
-    dom.push(hoverDocumentationNode, text(documentation))
+  if (documentationVirtualDom.length > 0) {
+    dom.push(hoverDocumentationNode, ...documentationVirtualDom)
   }
 
   dom.push(hoverSashNode)

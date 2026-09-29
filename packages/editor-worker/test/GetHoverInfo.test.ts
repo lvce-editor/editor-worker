@@ -17,6 +17,9 @@ jest.unstable_mockModule('../src/parts/TokenizeCodeBlock/TokenizeCodeBlock.ts', 
   tokenizeCodeBlock,
 }))
 
+const getVirtualDomFromMarkdown = jest.fn<(...args: any[]) => Promise<any[]>>(async () => [])
+jest.unstable_mockModule('../src/parts/Markdown/Markdown.ts', () => ({ getVirtualDomFromMarkdown }))
+
 const GetHoverInfo = await import('../src/parts/GetHoverInfo/GetHoverInfo.ts')
 
 const diagnostic = {
@@ -49,6 +52,7 @@ const editor = {
 afterEach(() => {
   Editors.dispose(editor.uid)
   getHover.mockReset()
+  getVirtualDomFromMarkdown.mockClear()
   measureTextBlockHeight.mockClear()
   tokenizeCodeBlock.mockClear()
 })
@@ -64,6 +68,7 @@ test('returns diagnostic hover info when no language hover provider exists', asy
 
   expect(result).toEqual({
     documentation: '',
+    documentationVirtualDom: [],
     height: 30,
     lineInfos: [],
     matchingDiagnostics: [diagnostic],
@@ -235,4 +240,18 @@ test('clamps the hover width and horizontal position to the editor', async () =>
   })
 
   expect(result).toEqual(expect.objectContaining({ x: 200 }))
+})
+
+test('converts documentation while preserving signatures and matching diagnostics', async () => {
+  const documentation = 'Read [API](https://example.com).\n\n```ts\nconst answer = 42\n```'
+  const documentationVirtualDom = [{ childCount: 0, className: 'Markdown', type: 4 }]
+  getVirtualDomFromMarkdown.mockResolvedValueOnce(documentationVirtualDom)
+  getHover.mockResolvedValue({ displayString: 'signature', documentation })
+  tokenizeCodeBlock.mockResolvedValueOnce([['signature']])
+  Editors.set(editor.uid, editor as any, editor as any)
+  const result = await GetHoverInfo.getEditorHoverInfo(editor.uid, { columnIndex: 8, rowIndex: 0 })
+  expect(getVirtualDomFromMarkdown).toHaveBeenCalledWith(documentation)
+  expect(result).toEqual(
+    expect.objectContaining({ documentation, documentationVirtualDom, lineInfos: [['signature']], matchingDiagnostics: [diagnostic] }),
+  )
 })

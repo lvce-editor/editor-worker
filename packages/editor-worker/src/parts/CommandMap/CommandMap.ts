@@ -178,6 +178,7 @@ import { hotReload } from '../HotReload/HotReload.ts'
 import { configure as configureIds } from '../Id/Id.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import { loadContent } from '../LoadContent/LoadContent.ts'
+import * as Markdown from '../Markdown/Markdown.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RefreshGutterDecorations from '../RefreshGutterDecorations/RefreshGutterDecorations.ts'
@@ -509,6 +510,7 @@ export const commandMap = {
   'Listener.register': RegisterListener.registerListener,
   'Listener.registerListener': RegisterListener.registerListener,
   'Listener.unregister': UnregisterListener.unregisterListener,
+  'Markdown.getVirtualDomFromMarkdown': Markdown.getVirtualDomFromMarkdown,
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker': sendDeprecatedExtensionHostPortToExtensionManagementWorker,
   'SendMessagePortToExtensionManagementWorker.sendMessagePortToExtensionManagementWorker': sendMessagePortToExtensionManagementWorker,
 }
