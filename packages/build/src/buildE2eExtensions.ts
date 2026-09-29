@@ -1,5 +1,6 @@
 import { build } from 'esbuild'
 import { join } from 'node:path'
+import { downloadHtmlExtension } from './downloadHtmlExtension.ts'
 import { root } from './root.ts'
 
 const extensionNames = [
@@ -39,5 +40,5 @@ const buildE2eExtension = async (extensionName: string): Promise<void> => {
 }
 
 export const buildE2eExtensions = async (): Promise<void> => {
-  await Promise.all(extensionNames.map(buildE2eExtension))
+  await Promise.all([...extensionNames.map(buildE2eExtension), downloadHtmlExtension()])
 }
