@@ -22,6 +22,7 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
 second line`,
   )
   await Workspace.setPath(tmpDir)
+  await Extension.addWebExtension(import.meta.resolve('../fixtures/sample.diagnostic-provider-fast'))
   await Extension.addWebExtension(import.meta.resolve(`../fixtures/${name}`))
   await Settings.update({ 'editor.diagnostics': true })
 
@@ -31,7 +32,8 @@ second line`,
   await expect(editorRow).toBeVisible()
 
   const diagnostic = Locator('.Diagnostic')
-  await expect(diagnostic).toBeHidden()
+  await expect(diagnostic).toBeVisible()
+  await expect(diagnostic).toHaveText('Fast diagnostic for ' + uri)
 
   await expectUnblocked(Editor.cursorDown(), 'Cursor movement')
   await Editor.shouldHaveSelections(new Uint32Array([1, 0, 1, 0]))
@@ -42,6 +44,14 @@ second line`,
   await Command.executeExtensionCommand('pendingDiagnostics.resolve')
 
   const expectedDiagnostics = [
+    {
+      columnIndex: 0,
+      endColumnIndex: 4,
+      endRowIndex: 0,
+      message: `Fast diagnostic for ${uri}`,
+      rowIndex: 0,
+      type: 'warning',
+    },
     {
       columnIndex: 0,
       endColumnIndex: 7,
