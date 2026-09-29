@@ -44,3 +44,30 @@ test('reads the documented auto-closing brackets setting', async () => {
   await expect(EditorPreferences.isAutoClosingBracketsEnabled()).resolves.toBe(true)
   expect(getPreference).toHaveBeenCalledWith('editor.autoClosingBrackets')
 })
+
+test('line height is at least the font size', async () => {
+  getPreference.mockImplementation(async (key: string) => {
+    if (key === 'editor.fontSize') {
+      return 18
+    }
+    if (key === 'editor.lineHeight') {
+      return 10
+    }
+    return undefined
+  })
+
+  await expect(EditorPreferences.getRowHeight()).resolves.toBe(18)
+})
+
+test('line height retains valid values at or above the font size', async () => {
+  getPreference.mockImplementation(async (key: string) => (key === 'editor.fontSize' ? 18 : 24))
+  await expect(EditorPreferences.getRowHeight()).resolves.toBe(24)
+
+  getPreference.mockImplementation(async (key: string) => (key === 'editor.fontSize' ? 18 : 18))
+  await expect(EditorPreferences.getRowHeight()).resolves.toBe(18)
+})
+
+test.each([0, -1, '10', 'invalid', null, NaN, Infinity])('invalid line height %s falls back to the font size', async (lineHeight) => {
+  getPreference.mockImplementation(async (key: string) => (key === 'editor.fontSize' ? 18 : lineHeight))
+  await expect(EditorPreferences.getRowHeight()).resolves.toBe(18)
+})
