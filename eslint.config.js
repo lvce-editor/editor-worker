@@ -128,4 +128,9 @@ export default defineConfig([
       'e2e/prefer-filesystem-set-files': 'off',
     },
   },
+  {
+    // The application runtime has its own Node version in the pinned checkout.
+    files: ['.github/workflows/integration.yml'],
+    rules: { 'github-actions/node-version-file': 'off' },
+  },
 ])
