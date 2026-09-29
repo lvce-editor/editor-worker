@@ -46,9 +46,10 @@ test('paste image into markdown document', async () => {
 
   await EditorPaste.paste(editor)
 
-  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(1, 'application-id', 'FileSystem.createFile', 'file:///workspace/image.png')
+  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(1, 'application-id', 'FileSystem.exists', 'file:///workspace/image.png')
+  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(2, 'application-id', 'FileSystem.createFile', 'file:///workspace/image.png')
   expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(
-    2,
+    3,
     'application-id',
     'FileSystem.writeFile',
     'file:///workspace/image.png',
@@ -63,7 +64,9 @@ test('paste image chooses another filename when the first one exists', async () 
   // @ts-ignore
   RendererWorker.invoke.mockResolvedValue(image)
   // @ts-ignore
-  ApplicationRpc.invoke.mockRejectedValueOnce(new Error('EEXIST'))
+  ApplicationRpc.invoke.mockResolvedValueOnce(true)
+  // @ts-ignore
+  ApplicationRpc.invoke.mockResolvedValueOnce(false)
   // @ts-ignore
   ApplicationRpc.invoke.mockResolvedValue(undefined)
   const editor = {
@@ -76,8 +79,10 @@ test('paste image chooses another filename when the first one exists', async () 
 
   await EditorPaste.paste(editor)
 
-  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(1, undefined, 'FileSystem.createFile', '/workspace/image.png')
-  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(2, undefined, 'FileSystem.createFile', '/workspace/image-1.png')
+  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(1, undefined, 'FileSystem.exists', '/workspace/image.png')
+  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(2, undefined, 'FileSystem.exists', '/workspace/image-1.png')
+  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(3, undefined, 'FileSystem.createFile', '/workspace/image-1.png')
+  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(4, undefined, 'FileSystem.writeFile', '/workspace/image-1.png', 'image', 'binary')
   expect(EditorPasteText.pasteText).toHaveBeenCalledWith(editor, '![image](image-1.png)')
 })
 
@@ -135,7 +140,7 @@ test('paste removes the reserved file and does not insert a broken reference whe
   }
 
   await expect(EditorPaste.paste(editor)).rejects.toThrow('Failed to save the clipboard image beside the Markdown document.')
-  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(3, undefined, 'FileSystem.remove', '/workspace/image.png')
+  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(4, undefined, 'FileSystem.remove', '/workspace/image.png')
   expect(EditorPasteText.pasteText).not.toHaveBeenCalled()
 })
 
@@ -155,6 +160,6 @@ test('paste removes the image when the document changes during clipboard work', 
   }
 
   await expect(EditorPaste.paste(editor)).rejects.toThrow('The Markdown document changed while saving the clipboard image.')
-  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(3, undefined, 'FileSystem.remove', 'file:///workspace/image.png')
+  expect(ApplicationRpc.invoke).toHaveBeenNthCalledWith(4, undefined, 'FileSystem.remove', 'file:///workspace/image.png')
   expect(EditorPasteText.pasteText).not.toHaveBeenCalled()
 })
