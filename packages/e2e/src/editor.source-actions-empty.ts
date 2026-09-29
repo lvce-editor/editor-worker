@@ -2,8 +2,6 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.source-actions-empty'
 
-export const skip = 1
-
 export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
@@ -18,4 +16,5 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main }) 
   const emptyMessage = Locator('.EditorMessageText')
   await expect(emptyMessage).toBeVisible()
   await expect(emptyMessage).toHaveText('No code actions available')
+  await expect(emptyMessage).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
 }
