@@ -2,6 +2,9 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-paste-image-markdown'
 
+// This app-facing regression is enabled after the renderer-process and editor-worker releases are integrated.
+export const skip = 1
+
 export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir({ scheme: 'file' })
   const markdownUri = `${tmpDir}/notes.md`
