@@ -819,7 +819,8 @@
     "heading": "Line Height",
     "id": "editor.lineHeight",
     "type": "number",
-    "value": "0"
+    "value": "0",
+    "maximum": 100
   },
   {
     "category": "text-editor",
