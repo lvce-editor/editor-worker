@@ -15,18 +15,21 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await Workspace.setUri(tmpDir)
   await Main.openUri(filePath)
 
+  const editorRow = Locator('.EditorRow').first()
   const cursor = Locator('.EditorCursor')
-  await expect(cursor).toHaveCSS('height', '200px')
+  await expect(editorRow).toHaveCSS('height', '100px')
+  await expect(cursor).toHaveCSS('height', '100px')
   await Editor.cursorDown()
-  await expect(cursor).toHaveCSS('translate', '0px 200px')
+  await expect(cursor).toHaveCSS('translate', '0px 100px')
 
   await updateLineHeight(20)
   await expect(cursor).toHaveCSS('height', '20px')
   await expect(cursor).toHaveCSS('translate', '0px 20px')
 
   await updateLineHeight(200)
-  await expect(cursor).toHaveCSS('height', '200px')
-  await expect(cursor).toHaveCSS('translate', '0px 200px')
+  await expect(editorRow).toHaveCSS('height', '100px')
+  await expect(cursor).toHaveCSS('height', '100px')
+  await expect(cursor).toHaveCSS('translate', '0px 100px')
 
   await updateLineHeight(20)
   await expect(cursor).toHaveCSS('height', '20px')
