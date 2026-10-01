@@ -12,6 +12,8 @@ const extensionNames = [
   'editor.completion-open-on-type',
   'editor.completion-scroll',
   'editor.diagnostics-scroll-race',
+  'editor.diagnostics-retained-fast',
+  'editor.diagnostics-retained-slow',
   'editor.format-on-save',
   'editor.gutter-decoration-provider',
   'editor.hover-show',
