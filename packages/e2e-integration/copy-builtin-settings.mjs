@@ -6,9 +6,7 @@ if (!process.argv[2]) throw new Error('Pass the path to a disposable LVCE checko
 const application = resolve(process.argv[2])
 const distribution = join(application, 'packages/build/.tmp/dist')
 const entries = await readdir(distribution, { withFileTypes: true })
-const settingsDirectories = entries
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => join(distribution, entry.name, 'builtin-settings'))
+const settingsDirectories = entries.filter((entry) => entry.isDirectory()).map((entry) => join(distribution, entry.name, 'builtin-settings'))
 const existingDirectories = []
 for (const path of settingsDirectories) {
   try {
