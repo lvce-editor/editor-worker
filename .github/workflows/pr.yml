@@ -41,20 +41,6 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
-      - name: trace hover dismissal
-        if: runner.os == 'Linux'
-        continue-on-error: true
-        working-directory: ./packages/e2e
-        run: npm run e2e:headless -- --filter=editor.hover-dismissal --trace-renderer-worker
-        env:
-          PLAYWRIGHT_BROWSERS_PATH: 0
-      - name: upload hover dismissal trace
-        if: always() && runner.os == 'Linux'
-        uses: actions/upload-artifact@v7
-        with:
-          name: hover-dismissal-trace
-          path: packages/e2e/renderer-worker-traces/
-          if-no-files-found: error
       - name: e2e
         working-directory: ./packages/e2e
         run: npm run e2e:headless
@@ -69,21 +55,6 @@ jobs:
         working-directory: ./packages/build
         run: npx playwright install chromium
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        env:
-          PLAYWRIGHT_BROWSERS_PATH: 0
-      - name: checkout memory baseline
-        if: runner.os == 'Linux'
-        uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-          path: .tmp/hover-baseline
-      - name: measure memory baseline
-        if: runner.os == 'Linux'
-        working-directory: .tmp/hover-baseline
-        run: |
-          ln -s ../../node_modules node_modules
-          npm run build
-          npm run measure --workspace=packages/build
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
       - name: native pointer hover regression
