@@ -30,11 +30,17 @@ jobs:
       - name: Install application dependencies
         working-directory: .tmp/lvce-integration
         run: npm ci
+      - name: Build application static assets
+        working-directory: .tmp/lvce-integration
+        run: npm run build:static
       - name: Install Chromium
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npx playwright install --with-deps chromium
       - name: Prepare owned integration tests
         run: node packages/e2e-integration/prepare.mjs .tmp/lvce-integration
+      - name: Rebuild prepared application static assets
+        working-directory: .tmp/lvce-integration
+        run: npm run build:static
       - name: Check editor cursor uses effective row height
         run: node packages/e2e-integration/check-editor-cursor-css.mjs .tmp/lvce-integration
       - name: Run owned integration tests
