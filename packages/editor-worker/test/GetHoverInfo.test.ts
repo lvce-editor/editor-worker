@@ -98,6 +98,23 @@ test('sizes a wrapped diagnostic hover to its measured content height', async ()
   )
 })
 
+test('sizes a wrapped language hover to its measured content height', async () => {
+  const displayString = '(alias) new OrbitControls<THREE.PerspectiveCamera>(object: THREE.PerspectiveCamera, domElement?: HTMLElement | SVGElement | null): OrbitControls<THREE.PerspectiveCamera>'
+  getHover.mockResolvedValue({ displayString, displayStringLanguageId: 'typescript' })
+  tokenizeCodeBlock.mockResolvedValueOnce([[displayString]])
+  measureTextBlockHeight.mockResolvedValueOnce(80)
+  const editorWithoutDiagnostics = { ...editor, diagnostics: [] }
+  Editors.set(editor.uid, editorWithoutDiagnostics as any, editorWithoutDiagnostics as any)
+
+  const result = await GetHoverInfo.getEditorHoverInfo(editor.uid, {
+    columnIndex: 8,
+    rowIndex: 0,
+  })
+
+  expect(result).toEqual(expect.objectContaining({ height: 92 }))
+  expect(measureTextBlockHeight).toHaveBeenCalledWith(displayString, 'Fira Code', 15, '20px', 582)
+})
+
 test('sizes a combined diagnostic and language hover to its content', async () => {
   getHover.mockResolvedValue({
     displayString: 'const unusedValue: 1',
@@ -113,7 +130,7 @@ test('sizes a combined diagnostic and language hover to its content', async () =
     rowIndex: 0,
   })
 
-  expect(result).toEqual(expect.objectContaining({ height: 62, lineInfos, y: 20 }))
+  expect(result).toEqual(expect.objectContaining({ height: 60, lineInfos, y: 20 }))
 })
 
 test('returns no hover info outside the diagnostic range when no language hover exists', async () => {

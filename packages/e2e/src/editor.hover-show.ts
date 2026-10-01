@@ -46,4 +46,19 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
 
   // assert
   await expect(hover).toBeHidden()
+
+  // arrange
+  const hoverFitContentUri = `${tmpDir}/src/hover-fit-content.xyz`
+  await FileSystem.writeFile(hoverFitContentUri, 'globalThis.AbortSignal.abort()')
+  await Main.openUri(hoverFitContentUri)
+
+  // act
+  await Editor.setCursor(0, 11)
+  await Command.execute('Editor.showHover', { columnIndex: 11, rowIndex: 0 })
+
+  // assert
+  await expect(hover).toContainText('OrbitControls<THREE.PerspectiveCamera>')
+  await expect(hover).toHaveCSS('height', '92px')
+  await expect(hover).toHaveJSProperty('clientHeight', 90)
+  await expect(hover).toHaveJSProperty('scrollHeight', 88)
 }
