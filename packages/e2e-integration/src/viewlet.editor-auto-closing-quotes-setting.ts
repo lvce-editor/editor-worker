@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-auto-closing-quotes-setting'
 
-export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator, Main, Settings, SettingsView }) => {
+export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard, Locator, Main, Settings, SettingsView }) => {
   const waitForAutoClosingQuotesPreference = async (expected: boolean): Promise<void> => {
     for (let attempt = 0; attempt < 20; attempt++) {
       const actual = await Command.execute('Preferences.get', 'editor.autoClosingQuotes')
@@ -43,7 +43,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await FileSystem.writeFile(disabledUri, '')
   await Main.closeActiveEditor()
   await Main.openUri(disabledUri)
-  await Locator('.EditorInput textarea').type('"')
+  await KeyBoard.press('"')
   await expect(Locator('.EditorRow')).toHaveText('"')
 
   await Main.closeActiveEditor()
@@ -60,7 +60,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   const enabledUri = `${tmpDir}/auto-closing-quotes-enabled.txt`
   await FileSystem.writeFile(enabledUri, '')
   await Main.openUri(enabledUri)
-  await Locator('.EditorInput textarea').type('"')
+  await KeyBoard.press('"')
   await expect(Locator('.EditorRow')).toHaveText('""')
 
   await Main.closeActiveEditor()
