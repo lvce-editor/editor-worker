@@ -23,6 +23,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard
     },
   ])
   const hover = Locator('.EditorHover')
+  const editorInput = Locator('.EditorInput textarea')
   await Editor.setCursor(0, 2)
   await Command.execute('Editor.showHover')
   await expect(hover).toBeVisible()
@@ -31,7 +32,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard
   await expect(hover).toHaveAttribute('tabindex', '0')
   await KeyBoard.press('Escape')
   await expect(hover).toBeHidden()
-  await expect(Locator('.EditorInput textarea')).toBeFocused()
+  await expect(editorInput).toBeFocused()
 
   await Editor.setCursor(0, 2)
   await Command.execute('Editor.showHover')
@@ -46,7 +47,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard
   // Leaving the hover dismisses it after a short delay.
   await hover.dispatchEvent('mouseout', { bubbles: true } as any)
   await expect(hover).toBeHidden()
-  await expect(Locator('.EditorInput textarea')).toBeFocused()
+  await expect(editorInput).toBeFocused()
 
   // Re-entering the editor while dismissal is pending keeps the hover available.
   await Locator('.Editor').dispatchEvent('mouseover', { bubbles: true } as any)

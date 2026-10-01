@@ -23,7 +23,7 @@ export const handleBlur = async (editor: EditorState): Promise<EditorState> => {
     focused: false,
     widgetRevision,
     widgets: hoverWidget
-      ? CloseWidgetsMaybe.closeWidgetsMaybe(editor.widgets || []).concat(hoverWidget)
+      ? [...CloseWidgetsMaybe.closeWidgetsMaybe(editor.widgets || []), hoverWidget]
       : CloseWidgetsMaybe.closeWidgetsMaybe(editor.widgets || []),
   }
   if (!editor.modified || isUntitledFile(editor.uri)) {

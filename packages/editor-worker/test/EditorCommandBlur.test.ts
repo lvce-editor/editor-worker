@@ -1,8 +1,8 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { WidgetId } from '@lvce-editor/constants'
+import type { EditorState } from '../src/parts/State/State.ts'
 import * as FocusKey from '../src/parts/FocusKey/FocusKey.ts'
 import * as WhenExpression from '../src/parts/WhenExpression/WhenExpression.ts'
-import type { EditorState } from '../src/parts/State/State.ts'
 
 const getPreferenceMock = jest.fn<(key: string) => Promise<string>>()
 const saveMock = jest.fn<(editor: EditorState) => Promise<EditorState>>()
