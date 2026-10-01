@@ -27,21 +27,21 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await Command.execute('Editor.showHover')
   await expect(hover).toBeVisible()
 
-  // Moving the pointer from the editor onto the hover keeps hover content interactive.
-  await Locator('.TitleBar').hover()
-  await hover.hover()
+  // Dispatch the DOM boundary events: Locator.hover only emits mouseenter.
+  await Locator('.Editor').dispatchEvent('mouseout', { bubbles: true } as any)
+  await hover.dispatchEvent('mouseover', { bubbles: true } as any)
   await expect(hover).toBeVisible()
 
-  // Leaving the hover with a real pointer event dismisses it after a short delay.
-  await Locator('.TitleBar').hover()
+  // Leaving the hover dismisses it after a short delay.
+  await hover.dispatchEvent('mouseout', { bubbles: true } as any)
   await expect(hover).toBeHidden()
 
   // Re-entering the editor while dismissal is pending keeps the hover available.
-  await Locator('.Editor').hover()
+  await Locator('.Editor').dispatchEvent('mouseover', { bubbles: true } as any)
   await Editor.setCursor(0, 2)
   await Command.execute('Editor.showHover')
   await expect(hover).toBeVisible()
-  await Locator('.TitleBar').hover()
-  await Locator('.Editor').hover()
+  await Locator('.Editor').dispatchEvent('mouseout', { bubbles: true } as any)
+  await Locator('.Editor').dispatchEvent('mouseover', { bubbles: true } as any)
   await expect(hover).toBeVisible()
 }
