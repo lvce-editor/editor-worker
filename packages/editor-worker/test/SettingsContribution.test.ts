@@ -18,3 +18,10 @@ test('word wrap and line number defaults match their select options', () => {
   expect(lineNumbers?.value).toBe('on')
   expect(lineNumbers?.options?.map((option) => option.id)).toEqual(['on', 'off'])
 })
+
+test('multi cursor modifier default matches its supported select options', () => {
+  const multiCursorModifier = settings.find((setting) => setting.id === 'editor.multiCursorModifier')
+
+  expect(multiCursorModifier?.value).toBe('alt')
+  expect(multiCursorModifier?.options?.map((option) => option.id)).toEqual(['alt', 'ctrlCmd'])
+})
