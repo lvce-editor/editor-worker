@@ -92,3 +92,10 @@ test('includes Toggle Suggest Widget', () => {
     label: 'Editor: Toggle Suggest Widget',
   })
 })
+
+test('includes Organize Imports', () => {
+  expect(getQuickPickMenuEntries()).toContainEqual({
+    id: 'Editor.organizeImports',
+    label: 'Editor: Organize Imports',
+  })
+})

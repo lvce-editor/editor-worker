@@ -40,6 +40,10 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       label: EditorStrings.formatDocument(),
     },
     {
+      id: 'Editor.organizeImports',
+      label: EditorStrings.editorOrganizeImports(),
+    },
+    {
       id: 'Editor.showHover',
       label: EditorStrings.editorShowHover(),
     },

@@ -49,6 +49,10 @@ export const organizeImports = () => {
   return I18nString.i18nString(UiStrings.OrganizeImports)
 }
 
+export const editorOrganizeImports = () => {
+  return I18nString.i18nString(UiStrings.EditorOrganizeImports)
+}
+
 export const sortImports = () => {
   return I18nString.i18nString(UiStrings.SortImports)
 }
