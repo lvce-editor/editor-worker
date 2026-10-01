@@ -19,9 +19,10 @@ let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined
 try {
   await Promise.race([
     once(server, 'message'),
-    once(server, 'exit').then(() => {
+    (async () => {
+      await once(server, 'exit')
       throw new Error('Hover pointer test server exited before readiness')
-    }),
+    })(),
   ])
   browser = await chromium.launch({ headless: true })
   const page = await browser.newPage()
