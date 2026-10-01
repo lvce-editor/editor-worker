@@ -1,0 +1,31 @@
+{
+  "browser": "dist/main.js",
+  "isolated": true,
+  "diagnosticProviders": [
+    {
+      "id": "retained-fast-diagnostics",
+      "languageId": "xyz"
+    },
+    {
+      "id": "retained-slow-diagnostics",
+      "languageId": "xyz"
+    }
+  ],
+  "activation": ["onDiagnostic:xyz", "onCommand:retainedDiagnostics.pendingCount", "onCommand:retainedDiagnostics.resolveSlow"],
+  "commands": [
+    {
+      "id": "retainedDiagnostics.pendingCount",
+      "label": "Get Pending Diagnostics Count"
+    },
+    {
+      "id": "retainedDiagnostics.resolveSlow",
+      "label": "Resolve Slow Diagnostics"
+    }
+  ],
+  "languages": [
+    {
+      "id": "xyz",
+      "extensions": [".xyz"]
+    }
+  ]
+}
