@@ -41,6 +41,18 @@ test('handleMouseLeave - an editor re-entry cancels the pending dismissal', asyn
   expect(Editors.get(editor.uid).newState.widgets).toHaveLength(1)
 })
 
+test('handleMouseLeave - a hover widget uses its editor uid from the event target', async () => {
+  jest.useFakeTimers()
+  Editors.set(editor.uid, editor as any, editor as any)
+  using _mockRpc = RendererWorker.registerMockRpc({ 'Editor.renderPending': jest.fn() })
+
+  // Functional hover viewlets dispatch their own uid first, then the editor uid from data-uid.
+  EditorCommandHandleMouseLeave.handleMouseLeave(100, String(editor.uid))
+  await jest.advanceTimersByTimeAsync(500)
+
+  expect(Editors.get(editor.uid).newState.widgets).toHaveLength(0)
+})
+
 test('handleMouseLeave - mouse re-entry cancels the pending dismissal', async () => {
   jest.useFakeTimers()
   Editors.set(editor.uid, editor as any, editor as any)

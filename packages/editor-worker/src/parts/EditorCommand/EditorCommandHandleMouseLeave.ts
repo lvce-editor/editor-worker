@@ -8,8 +8,9 @@ import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 const editorHoverDismissDelay = 500
 
-export const handleMouseLeave = (editorUidValue: number | string): void => {
-  const editorUid = Number(editorUidValue)
+export const handleMouseLeave = (viewletUid: number | string, editorUidValue?: number | string): void => {
+  const targetEditorUid = editorUidValue ?? viewletUid
+  const editorUid = Number(targetEditorUid)
   const instance = Editors.get(editorUid)
   if (!instance) {
     return
@@ -45,6 +46,7 @@ export const handleMouseLeave = (editorUidValue: number | string): void => {
   EditorHoverDismissalState.set(editorUid, { timeout })
 }
 
-export const handleMouseEnter = (editorUidValue: number | string): void => {
-  EditorHoverDismissalState.clear(Number(editorUidValue))
+export const handleMouseEnter = (viewletUid: number | string, editorUidValue?: number | string): void => {
+  const targetEditorUid = editorUidValue ?? viewletUid
+  EditorHoverDismissalState.clear(Number(targetEditorUid))
 }
