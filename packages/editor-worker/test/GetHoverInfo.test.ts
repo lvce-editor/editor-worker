@@ -99,7 +99,8 @@ test('sizes a wrapped diagnostic hover to its measured content height', async ()
 })
 
 test('sizes a wrapped language hover to its measured content height', async () => {
-  const displayString = '(alias) new OrbitControls<THREE.PerspectiveCamera>(object: THREE.PerspectiveCamera, domElement?: HTMLElement | SVGElement | null): OrbitControls<THREE.PerspectiveCamera>'
+  const displayString =
+    '(alias) new OrbitControls<THREE.PerspectiveCamera>(object: THREE.PerspectiveCamera, domElement?: HTMLElement | SVGElement | null): OrbitControls<THREE.PerspectiveCamera>'
   getHover.mockResolvedValue({ displayString, displayStringLanguageId: 'typescript' })
   tokenizeCodeBlock.mockResolvedValueOnce([[displayString]])
   measureTextBlockHeight.mockResolvedValueOnce(80)
