@@ -5,6 +5,7 @@ export const name = 'viewlet.settings-tab-completion-select'
 export const test: Test = async ({ Command, expect, Locator, Main, SettingsView }) => {
   await SettingsView.show()
   await SettingsView.selectTextEditor()
+  await expect(Locator('.SettingsContentHeading')).toHaveText('Text Editor')
   await SettingsView.handleInput('tab completion')
 
   const setting = Locator('.SettingsItem[name="editor.tabCompletion"]')
