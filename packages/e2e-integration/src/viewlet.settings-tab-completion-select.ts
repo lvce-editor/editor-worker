@@ -7,7 +7,7 @@ export const test: Test = async ({ Command, expect, Locator, Main, SettingsView 
   await SettingsView.selectTab('text-editor')
   await SettingsView.handleInput('tab completion')
 
-  const setting = Locator('.SettingsItem').filter({ hasText: 'Tab Completion' })
+  const setting = Locator('.SettingsItem[name="editor.tabCompletion"]')
   const tabCompletion = setting.locator('select[name="editor.tabCompletion"]')
 
   await expect(setting).toBeVisible()
@@ -23,5 +23,5 @@ export const test: Test = async ({ Command, expect, Locator, Main, SettingsView 
   await SettingsView.show()
   await SettingsView.selectTab('text-editor')
   await SettingsView.handleInput('tab completion')
-  await expect(Locator('.SettingsItem').filter({ hasText: 'Tab Completion' }).locator('select[name="editor.tabCompletion"]')).toHaveValue('off')
+  await expect(Locator('.SettingsItem[name="editor.tabCompletion"] select[name="editor.tabCompletion"]')).toHaveValue('off')
 }
