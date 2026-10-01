@@ -392,8 +392,8 @@
     "description": "Controls whether the editor should automatically close quotes after opening them",
     "heading": "Auto Closing Quotes",
     "id": "editor.autoClosingQuotes",
-    "type": "string",
-    "value": "always"
+    "type": "boolean",
+    "value": true
   },
   {
     "category": "text-editor",
