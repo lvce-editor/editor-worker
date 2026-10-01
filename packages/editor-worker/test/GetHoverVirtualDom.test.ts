@@ -1,4 +1,5 @@
 import { expect, test } from '@jest/globals'
+import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as GetHoverVirtualDom from '../src/parts/GetHoverVirtualDom/GetHoverVirtualDom.ts'
 
 test('marks a single diagnostic as a diagnostic-only hover', () => {
@@ -11,6 +12,18 @@ test('does not mark a hover with additional information as diagnostic-only', () 
   const dom = GetHoverVirtualDom.getHoverVirtualDom([['const value = 1']], [], [{ message: 'Use const instead' }])
 
   expect(dom[0].className).toBe('Viewlet EditorHover')
+})
+
+test('adds editor pointer listeners and the editor uid to the hover root', () => {
+  const dom = GetHoverVirtualDom.getHoverVirtualDom([], [], [], 42)
+
+  expect(dom[0]).toEqual(
+    expect.objectContaining({
+      'data-uid': 42,
+      onMouseOut: DomEventListenerFunctions.HandleMouseOut,
+      onMouseOver: DomEventListenerFunctions.HandleMouseOver,
+    }),
+  )
 })
 
 test('keeps nested Markdown, multiline signatures, diagnostics and the sash as siblings', () => {

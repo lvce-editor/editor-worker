@@ -57,6 +57,11 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: native pointer hover regression
+        run: npm run test:hover-pointer --workspace=packages/build
+        timeout-minutes: 2
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
       - name: measure
         working-directory: ./packages/build
         run: npm run measure

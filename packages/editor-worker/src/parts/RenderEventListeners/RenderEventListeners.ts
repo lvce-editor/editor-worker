@@ -30,6 +30,14 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
       params: ['handleMouseMove', EventExpression.ClientX, EventExpression.ClientY, EventExpression.AltKey],
     },
     {
+      name: DomEventListenerFunctions.HandleMouseOut,
+      params: ['handleMouseLeave', 'event.currentTarget.dataset.uid'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleMouseOver,
+      params: ['handleMouseEnter', 'event.currentTarget.dataset.uid'],
+    },
+    {
       name: DomEventListenerFunctions.HandleKeyUp,
       params: ['handleKeyUp', EventExpression.Key],
     },

@@ -3,6 +3,7 @@ import type { HoverWidget } from '../HoverWidget/HoverWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import { createFns } from '../CreateFns/CreateFns.ts'
 import * as GetHoverVirtualDom from '../GetHoverVirtualDom/GetHoverVirtualDom.ts'
+import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderRename from '../RenderRename/RenderRename.ts'
 
@@ -27,7 +28,7 @@ export const render = (widget: HoverWidget) => {
           [
             RenderMethod.SetDom2,
             newState.uid,
-            GetHoverVirtualDom.getHoverVirtualDom(newState.lineInfos, newState.documentationVirtualDom, newState.diagnostics),
+            GetHoverVirtualDom.getHoverVirtualDom(newState.lineInfos, newState.documentationVirtualDom, newState.diagnostics, newState.editorUid),
           ],
           [RenderMethod.SetBounds2, newState.uid, newState.x, newState.y, newState.width, newState.height],
         ]
@@ -40,6 +41,10 @@ export const render = (widget: HoverWidget) => {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
     }
   }
+  if (commands.every(([method]) => method !== RenderMethod.RegisterEventListeners)) {
+    wrappedCommands.unshift([RenderMethod.RegisterEventListeners, uid, RenderEventListeners.renderEventListeners()])
+  }
+  wrappedCommands.push([RenderMethod.SetUid, uid, newState.editorUid])
   return wrappedCommands
 }
 

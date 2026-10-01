@@ -173,6 +173,8 @@ export const getEditorVirtualDom = ({
       className: ClassNames.Editor,
       'data-uid': uid,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+      onMouseOut: DomEventListenerFunctions.HandleMouseOut,
+      onMouseOver: DomEventListenerFunctions.HandleMouseOver,
       role: AriaRoles.Code,
       type: VirtualDomElements.Div,
     },

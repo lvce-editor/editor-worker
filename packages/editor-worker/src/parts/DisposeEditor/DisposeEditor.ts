@@ -2,6 +2,7 @@ import { WidgetId } from '@lvce-editor/constants'
 import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
 import * as ColorPickerWorker from '../ColorPickerWorker/ColorPickerWorker.ts'
+import * as EditorHoverDismissalState from '../EditorHoverDismissalState/EditorHoverDismissalState.ts'
 import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import { notifyEditorStatusCleared } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
@@ -33,6 +34,7 @@ export const disposeEditor = async (editorUid: number): Promise<readonly any[]> 
   RenderedDoms.dispose(editorUid)
   AutoSave.dispose(editorUid)
   EditorHoverState.clear(editorUid)
+  EditorHoverDismissalState.clear(editorUid)
   WidgetRevision.dispose(editorUid)
   const pending: Promise<unknown>[] = []
   if (SyntaxHighlightingState.getEnabled()) {
