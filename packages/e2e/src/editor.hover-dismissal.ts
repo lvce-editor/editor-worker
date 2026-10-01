@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.hover-dismissal'
 
-export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator, Main, Settings, Workspace }) => {
+export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard, Locator, Main, Settings, Workspace }) => {
   await Settings.update({ 'editor.hover': true })
   const tmpDir = await FileSystem.getTmpDir()
   const uri = `${tmpDir}/hover-dismissal.txt`
@@ -15,7 +15,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
       columnIndex: 0,
       endColumnIndex: 8,
       endRowIndex: 0,
-      message: 'Hover dismissal diagnostic',
+      message: 'Hover copy payload with enough text to select and copy',
       rowIndex: 0,
       source: 'hover-dismissal-test',
       type: 'error',
@@ -23,6 +23,17 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
     },
   ])
   const hover = Locator('.EditorHover')
+  const editorInput = Locator('.EditorInput textarea')
+  await Editor.setCursor(0, 2)
+  await Command.execute('Editor.showHover')
+  await expect(hover).toBeVisible()
+
+  // The hover root can receive pointer and keyboard focus.
+  await expect(hover).toHaveAttribute('tabindex', '0')
+  await KeyBoard.press('Escape')
+  await expect(hover).toBeHidden()
+  await expect(editorInput).toBeFocused()
+
   await Editor.setCursor(0, 2)
   await Command.execute('Editor.showHover')
   await expect(hover).toBeVisible()
@@ -36,6 +47,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   // Leaving the hover dismisses it after a short delay.
   await hover.dispatchEvent('mouseout', { bubbles: true } as any)
   await expect(hover).toBeHidden()
+  await expect(editorInput).toBeFocused()
 
   // Re-entering the editor while dismissal is pending keeps the hover available.
   await Locator('.Editor').dispatchEvent('mouseover', { bubbles: true } as any)

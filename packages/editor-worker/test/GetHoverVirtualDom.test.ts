@@ -20,8 +20,10 @@ test('adds editor pointer listeners and the editor uid to the hover root', () =>
   expect(dom[0]).toEqual(
     expect.objectContaining({
       'data-uid': 42,
+      onMouseDown: DomEventListenerFunctions.HandleHoverMouseDown,
       onMouseOut: DomEventListenerFunctions.HandleMouseOut,
       onMouseOver: DomEventListenerFunctions.HandleMouseOver,
+      tabIndex: 0,
     }),
   )
 })
