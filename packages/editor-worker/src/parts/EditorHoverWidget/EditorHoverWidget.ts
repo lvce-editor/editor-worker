@@ -44,6 +44,7 @@ export const render = (widget: HoverWidget) => {
   if (commands.every(([method]) => method !== RenderMethod.RegisterEventListeners)) {
     wrappedCommands.unshift([RenderMethod.RegisterEventListeners, uid, RenderEventListeners.renderEventListeners()])
   }
+  wrappedCommands.push([RenderMethod.SetUid, uid, newState.editorUid])
   return wrappedCommands
 }
 

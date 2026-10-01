@@ -39,4 +39,5 @@ test('render creates hover DOM for locally loaded hover content', () => {
   expect(commands[0]).toEqual(['Viewlet.registerEventListeners', 2, expect.any(Array)])
   expect(commands[1]).toEqual(['Viewlet.setDom2', 2, expect.any(Array)])
   expect(commands[2]).toEqual(['Viewlet.setBounds', 2, 20, 40, 300, 100])
+  expect(commands[3]).toEqual(['Viewlet.setUid', 2, 1])
 })

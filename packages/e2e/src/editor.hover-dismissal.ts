@@ -30,6 +30,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   // Dispatch the DOM boundary events: Locator.hover only emits mouseenter.
   await Locator('.Editor').dispatchEvent('mouseout', { bubbles: true } as any)
   await hover.dispatchEvent('mouseover', { bubbles: true } as any)
+  await new Promise((resolve) => setTimeout(resolve, 750))
   await expect(hover).toBeVisible()
 
   // Leaving the hover dismisses it after a short delay.
@@ -43,5 +44,6 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await expect(hover).toBeVisible()
   await Locator('.Editor').dispatchEvent('mouseout', { bubbles: true } as any)
   await Locator('.Editor').dispatchEvent('mouseover', { bubbles: true } as any)
+  await new Promise((resolve) => setTimeout(resolve, 750))
   await expect(hover).toBeVisible()
 }
