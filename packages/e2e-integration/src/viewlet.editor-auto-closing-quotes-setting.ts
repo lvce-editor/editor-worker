@@ -43,7 +43,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await FileSystem.writeFile(disabledUri, '')
   await Main.closeActiveEditor()
   await Main.openUri(disabledUri)
-  await Command.execute('Editor.typeWithAutoClosing', '"')
+  await Locator('.EditorInput textarea').type('"')
   await expect(Locator('.EditorRow')).toHaveText('"')
 
   await Main.closeActiveEditor()
@@ -60,7 +60,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   const enabledUri = `${tmpDir}/auto-closing-quotes-enabled.txt`
   await FileSystem.writeFile(enabledUri, '')
   await Main.openUri(enabledUri)
-  await Command.execute('Editor.typeWithAutoClosing', '"')
+  await Locator('.EditorInput textarea').type('"')
   await expect(Locator('.EditorRow')).toHaveText('""')
 
   await Main.closeActiveEditor()
