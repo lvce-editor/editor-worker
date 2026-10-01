@@ -3,6 +3,18 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 export const name = 'viewlet.editor-auto-closing-quotes-setting'
 
 export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator, Main, Settings, SettingsView }) => {
+  const waitForAutoClosingQuotesPreference = async (expected: boolean): Promise<void> => {
+    for (let attempt = 0; attempt < 20; attempt++) {
+      const actual = await Command.execute('Preferences.get', 'editor.autoClosingQuotes')
+      if (actual === expected) {
+        return
+      }
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    }
+    const actual = await Command.execute('Preferences.get', 'editor.autoClosingQuotes')
+    throw new Error(`Expected Auto Closing Quotes preference to be ${expected}, got ${String(actual)} (${typeof actual})`)
+  }
+
   await Settings.update({
     'settings.useToggles': true,
   })
@@ -19,9 +31,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
 
   await label.click()
   await expect(input).toHaveJSProperty('checked', false)
-  if ((await Command.execute('Preferences.get', 'editor.autoClosingQuotes')) !== false) {
-    throw new Error('Disabling Auto Closing Quotes must persist a boolean false value')
-  }
+  await waitForAutoClosingQuotesPreference(false)
 
   await Main.closeActiveEditor()
   await SettingsView.show()
@@ -41,9 +51,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await SettingsView.handleInput('auto closing quotes')
   await Locator('.SettingsItem:has(input[name="editor.autoClosingQuotes"]) .Label').click()
   await expect(Locator('input[name="editor.autoClosingQuotes"]')).toHaveJSProperty('checked', true)
-  if ((await Command.execute('Preferences.get', 'editor.autoClosingQuotes')) !== true) {
-    throw new Error('Enabling Auto Closing Quotes must persist a boolean true value')
-  }
+  await waitForAutoClosingQuotesPreference(true)
 
   await Command.execute('Settings.handleSettingChecked', 'settings.useToggles', false)
   await expect(Locator('input[name="editor.autoClosingQuotes"]')).toHaveClass('CheckBox')
