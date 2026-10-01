@@ -1,6 +1,7 @@
 import { WidgetId } from '@lvce-editor/constants'
 import type { EditorState } from '../State/State.ts'
 import * as CloseWidgetsMaybe from '../CloseWidgetsMaybe/CloseWidgetsMaybe.ts'
+import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as HasWidget from '../HasWidget/HasWidget.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
@@ -12,14 +13,18 @@ export const handleBlur = async (editor: EditorState): Promise<EditorState> => {
     return editor
   }
   const widgetRevision = WidgetRevision.next(editor.uid)
+  const hoverWidget = editor.widgets?.find((widget) => widget.id === WidgetId.Hover)
   const completionWidgetDismissedOnBlur = HasWidget.hasWidget([...(editor.widgets || [])], WidgetId.Completion)
   const newEditor = {
     ...editor,
-    additionalFocus: 0,
+    additionalFocus: hoverWidget ? FocusKey.FocusEditorHover : 0,
     ...(completionWidgetDismissedOnBlur && { completionWidgetDismissedOnBlur: true }),
+    ...(hoverWidget && { focus: FocusKey.Empty }),
     focused: false,
     widgetRevision,
-    widgets: CloseWidgetsMaybe.closeWidgetsMaybe(editor.widgets || []),
+    widgets: hoverWidget
+      ? CloseWidgetsMaybe.closeWidgetsMaybe(editor.widgets || []).concat(hoverWidget)
+      : CloseWidgetsMaybe.closeWidgetsMaybe(editor.widgets || []),
   }
   if (!editor.modified || isUntitledFile(editor.uri)) {
     return newEditor

@@ -1,5 +1,7 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { WidgetId } from '@lvce-editor/constants'
+import * as FocusKey from '../src/parts/FocusKey/FocusKey.ts'
+import * as WhenExpression from '../src/parts/WhenExpression/WhenExpression.ts'
 import type { EditorState } from '../src/parts/State/State.ts'
 
 const getPreferenceMock = jest.fn<(key: string) => Promise<string>>()
@@ -75,6 +77,28 @@ test('handleBlur closes transient widgets and clears additional focus', async ()
     focused: false,
     widgetRevision: 1,
     widgets: [findWidget],
+  })
+})
+
+test('handleBlur preserves a focused hover and disables editor focus context', async () => {
+  const hoverWidget = { id: WidgetId.Hover }
+  const findWidget = { id: WidgetId.Find }
+  const editor = createEditor({
+    additionalFocus: 9,
+    focus: WhenExpression.FocusEditorText,
+    modified: false,
+    widgets: [hoverWidget, findWidget],
+  })
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toEqual({
+    ...editor,
+    additionalFocus: FocusKey.FocusEditorHover,
+    focus: FocusKey.Empty,
+    focused: false,
+    widgetRevision: 1,
+    widgets: [findWidget, hoverWidget],
   })
 })
 

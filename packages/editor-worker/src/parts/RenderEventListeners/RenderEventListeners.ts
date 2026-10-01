@@ -5,6 +5,11 @@ import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEven
 export const renderEventListeners = (): readonly DomEventListener[] => {
   return [
     {
+      name: DomEventListenerFunctions.HandleHoverMouseDown,
+      params: [],
+      stopPropagation: true,
+    },
+    {
       name: DomEventListenerFunctions.HandleLightBulbClick,
       params: ['showSourceActions3'],
       preventDefault: true,
