@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           repository: lvce-editor/lvce-editor
-          ref: a1361ebf6f8c6dd3b0cf7826cdfb587d28f532b8
+          ref: a870acc8628800f8b2bfd2bbbe151dd9ee0b2d30
           path: .tmp/lvce-integration
       - uses: actions/setup-node@v6
         with:
@@ -30,15 +30,18 @@ jobs:
       - name: Install application dependencies
         working-directory: .tmp/lvce-integration
         run: npm ci
+      - name: Build application static assets
+        working-directory: .tmp/lvce-integration
+        run: npm run build:static
       - name: Install Chromium
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npx playwright install --with-deps chromium
       - name: Prepare owned integration tests
         run: node packages/e2e-integration/prepare.mjs .tmp/lvce-integration
-      - name: Build prepared application static assets
+      - name: Rebuild prepared application static assets
         working-directory: .tmp/lvce-integration
         run: npm run build:static
-      - name: Copy built-in settings for the development server
+      - name: Prepare built-in settings for source server
         run: node packages/e2e-integration/copy-builtin-settings.mjs .tmp/lvce-integration
       - name: Check editor cursor uses effective row height
         run: node packages/e2e-integration/check-editor-cursor-css.mjs .tmp/lvce-integration
@@ -61,6 +64,10 @@ jobs:
       - name: Test live editor line height updates the cursor
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-line-height-live-cursor
+        shell: bash
+      - name: Test settings select defaults and persistence
+        working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
+        run: npm run e2e:headless -- --test-name-prefix=viewlet.settings-select-item
         shell: bash
       - name: Test bundled font loading
         if: matrix.os == 'ubuntu-24.04'

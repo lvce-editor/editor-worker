@@ -84,11 +84,11 @@
     "id": "editor.wordWrap",
     "options": [
       {
-        "id": "editor.on",
+        "id": "on",
         "label": "On"
       },
       {
-        "id": "editor.off",
+        "id": "off",
         "label": "off"
       }
     ],
@@ -102,11 +102,11 @@
     "id": "editor.lineNumbers",
     "options": [
       {
-        "id": "editor.on",
+        "id": "on",
         "label": "On"
       },
       {
-        "id": "editor.off",
+        "id": "off",
         "label": "off"
       }
     ],
