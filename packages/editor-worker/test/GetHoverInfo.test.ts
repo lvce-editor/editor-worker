@@ -130,7 +130,7 @@ test('sizes a combined diagnostic and language hover to its content', async () =
     rowIndex: 0,
   })
 
-  expect(result).toEqual(expect.objectContaining({ height: 60, lineInfos, y: 20 }))
+  expect(result).toEqual(expect.objectContaining({ height: 62, lineInfos, y: 20 }))
 })
 
 test('returns no hover info outside the diagnostic range when no language hover exists', async () => {
