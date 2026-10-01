@@ -50,7 +50,7 @@ jobs:
           PLAYWRIGHT_BROWSERS_PATH: 0
       - name: upload hover dismissal trace
         if: always() && runner.os == 'Linux'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: hover-dismissal-trace
           path: packages/e2e/renderer-worker-traces/
