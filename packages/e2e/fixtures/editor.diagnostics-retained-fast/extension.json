@@ -1,0 +1,17 @@
+{
+  "browser": "dist/main.js",
+  "isolated": true,
+  "diagnosticProviders": [
+    {
+      "id": "retained-fast-diagnostics",
+      "languageId": "retained-diagnostics"
+    }
+  ],
+  "activation": ["onDiagnostic:retained-diagnostics"],
+  "languages": [
+    {
+      "id": "retained-diagnostics",
+      "extensions": [".retained-diagnostics"]
+    }
+  ]
+}

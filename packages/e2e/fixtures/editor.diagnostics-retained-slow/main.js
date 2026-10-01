@@ -5,24 +5,8 @@ let slowRequestCount = 0
 
 await activateExtensionApi()
 registerDiagnosticProvider({
-  id: 'retained-fast-diagnostics',
-  languageId: 'xyz',
-  provideDiagnostics(textDocument) {
-    return [
-      {
-        columnIndex: 0,
-        endColumnIndex: textDocument.text.length,
-        endRowIndex: 0,
-        message: `Fast ${textDocument.text}`,
-        rowIndex: 0,
-        type: 'warning',
-      },
-    ]
-  },
-})
-registerDiagnosticProvider({
   id: 'retained-slow-diagnostics',
-  languageId: 'xyz',
+  languageId: 'retained-diagnostics',
   provideDiagnostics() {
     const result = Promise.withResolvers()
     pendingRequests.push({ index: ++slowRequestCount, result })
@@ -45,10 +29,10 @@ registerCommand({
     request.result.resolve([
       {
         columnIndex: 0,
-        endColumnIndex: 4,
-        endRowIndex: 0,
+        endColumnIndex: 6,
+        endRowIndex: 1,
         message: `Slow ${request.index}`,
-        rowIndex: 0,
+        rowIndex: 1,
         type: 'error',
       },
     ])

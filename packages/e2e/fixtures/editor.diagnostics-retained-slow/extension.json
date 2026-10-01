@@ -3,15 +3,11 @@
   "isolated": true,
   "diagnosticProviders": [
     {
-      "id": "retained-fast-diagnostics",
-      "languageId": "xyz"
-    },
-    {
       "id": "retained-slow-diagnostics",
-      "languageId": "xyz"
+      "languageId": "retained-diagnostics"
     }
   ],
-  "activation": ["onDiagnostic:xyz", "onCommand:retainedDiagnostics.pendingCount", "onCommand:retainedDiagnostics.resolveSlow"],
+  "activation": ["onDiagnostic:retained-diagnostics", "onCommand:retainedDiagnostics.pendingCount", "onCommand:retainedDiagnostics.resolveSlow"],
   "commands": [
     {
       "id": "retainedDiagnostics.pendingCount",
@@ -24,8 +20,8 @@
   ],
   "languages": [
     {
-      "id": "xyz",
-      "extensions": [".xyz"]
+      "id": "retained-diagnostics",
+      "extensions": [".retained-diagnostics"]
     }
   ]
 }
