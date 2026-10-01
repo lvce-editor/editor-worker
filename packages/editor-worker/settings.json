@@ -344,7 +344,17 @@
     "description": "Enables tab completions",
     "heading": "Tab Completion",
     "id": "editor.tabCompletion",
-    "type": "string",
+    "options": [
+      {
+        "id": "on",
+        "label": "On"
+      },
+      {
+        "id": "off",
+        "label": "off"
+      }
+    ],
+    "type": "enum",
     "value": "on"
   },
   {
