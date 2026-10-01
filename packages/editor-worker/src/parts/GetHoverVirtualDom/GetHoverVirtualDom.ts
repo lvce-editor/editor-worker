@@ -53,7 +53,7 @@ export const getHoverVirtualDom = (
   dom.push({
     childCount: getChildCount(lineInfos, documentationVirtualDom, diagnostics) + 1,
     className: getEditorHoverClassName(lineInfos, documentationVirtualDom, diagnostics),
-    'data-editor-uid': editorUid,
+    'data-editorUid': editorUid,
     onMouseOut: DomEventListenerFunctions.HandleMouseOut,
     onMouseOver: DomEventListenerFunctions.HandleMouseOver,
     type: VirtualDomElements.Div,
