@@ -4,7 +4,7 @@ export const name = 'viewlet.settings-tab-completion-select'
 
 export const test: Test = async ({ Command, expect, Locator, Main, SettingsView }) => {
   await SettingsView.show()
-  await SettingsView.selectTab('text-editor')
+  await SettingsView.selectTextEditor()
   await SettingsView.handleInput('tab completion')
 
   const setting = Locator('.SettingsItem[name="editor.tabCompletion"]')
@@ -21,7 +21,7 @@ export const test: Test = async ({ Command, expect, Locator, Main, SettingsView 
 
   await Main.closeActiveEditor()
   await SettingsView.show()
-  await SettingsView.selectTab('text-editor')
+  await SettingsView.selectTextEditor()
   await SettingsView.handleInput('tab completion')
   await expect(Locator('.SettingsItem[name="editor.tabCompletion"] select[name="editor.tabCompletion"]')).toHaveValue('off')
 }
