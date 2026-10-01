@@ -21,15 +21,11 @@ test('renderEventListeners - handles Alt key release', () => {
 test('renderEventListeners - dismisses editor hovers on pointer exit and cancels on re-entry', () => {
   expect(RenderEventListeners.renderEventListeners()).toContainEqual({
     name: DomEventListenerFunctions.HandleMouseOut,
-    params: [
-      'handleMouseLeave',
-      'Number(event.currentTarget.dataset.editorUid || event.currentTarget.dataset.uid)',
-      'event.relatedTarget && event.currentTarget.contains(event.relatedTarget)',
-    ],
+    params: ['handleMouseLeave', 'event.currentTarget.dataset.uid'],
   })
   expect(RenderEventListeners.renderEventListeners()).toContainEqual({
     name: DomEventListenerFunctions.HandleMouseOver,
-    params: ['handleMouseEnter', 'Number(event.currentTarget.dataset.editorUid || event.currentTarget.dataset.uid)'],
+    params: ['handleMouseEnter', 'event.currentTarget.dataset.uid'],
   })
 })
 

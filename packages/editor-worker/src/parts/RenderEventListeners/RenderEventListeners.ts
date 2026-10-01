@@ -31,15 +31,11 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     },
     {
       name: DomEventListenerFunctions.HandleMouseOut,
-      params: [
-        'handleMouseLeave',
-        'Number(event.currentTarget.dataset.editorUid || event.currentTarget.dataset.uid)',
-        'event.relatedTarget && event.currentTarget.contains(event.relatedTarget)',
-      ],
+      params: ['handleMouseLeave', 'event.currentTarget.dataset.uid'],
     },
     {
       name: DomEventListenerFunctions.HandleMouseOver,
-      params: ['handleMouseEnter', 'Number(event.currentTarget.dataset.editorUid || event.currentTarget.dataset.uid)'],
+      params: ['handleMouseEnter', 'event.currentTarget.dataset.uid'],
     },
     {
       name: DomEventListenerFunctions.HandleKeyUp,

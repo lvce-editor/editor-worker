@@ -22,7 +22,7 @@ test('handleMouseLeave - dismisses the current hover after a short delay', async
   Editors.set(editor.uid, editor as any, editor as any)
   using _mockRpc = RendererWorker.registerMockRpc({ 'Editor.renderPending': jest.fn() })
 
-  EditorCommandHandleMouseLeave.handleMouseLeave(editor.uid, false)
+  EditorCommandHandleMouseLeave.handleMouseLeave(String(editor.uid))
   await jest.advanceTimersByTimeAsync(499)
   expect(Editors.get(editor.uid).newState.widgets).toHaveLength(1)
 
@@ -33,7 +33,7 @@ test('handleMouseLeave - dismisses the current hover after a short delay', async
 test('handleMouseLeave - an editor re-entry cancels the pending dismissal', async () => {
   jest.useFakeTimers()
   Editors.set(editor.uid, editor as any, editor as any)
-  EditorCommandHandleMouseLeave.handleMouseLeave(editor.uid, false)
+  EditorCommandHandleMouseLeave.handleMouseLeave(editor.uid)
   EditorCommandHandleMouseLeave.handleMouseEnter(editor.uid)
 
   await jest.advanceTimersByTimeAsync(500)
@@ -41,10 +41,11 @@ test('handleMouseLeave - an editor re-entry cancels the pending dismissal', asyn
   expect(Editors.get(editor.uid).newState.widgets).toHaveLength(1)
 })
 
-test('handleMouseLeave - ignores mouse movement within the editor', async () => {
+test('handleMouseLeave - mouse re-entry cancels the pending dismissal', async () => {
   jest.useFakeTimers()
   Editors.set(editor.uid, editor as any, editor as any)
-  EditorCommandHandleMouseLeave.handleMouseLeave(editor.uid, true)
+  EditorCommandHandleMouseLeave.handleMouseLeave(editor.uid)
+  EditorCommandHandleMouseLeave.handleMouseEnter(editor.uid)
 
   await jest.advanceTimersByTimeAsync(500)
 
@@ -55,7 +56,7 @@ test('handleMouseLeave - does not remove a replacement hover', async () => {
   jest.useFakeTimers()
   Editors.set(editor.uid, editor as any, editor as any)
   using _mockRpc = RendererWorker.registerMockRpc({ 'Editor.renderPending': jest.fn() })
-  EditorCommandHandleMouseLeave.handleMouseLeave(editor.uid, false)
+  EditorCommandHandleMouseLeave.handleMouseLeave(editor.uid)
   const replacement = {
     ...editor,
     widgets: [{ id: WidgetId.Hover, newState: { uid: 101 } }],
