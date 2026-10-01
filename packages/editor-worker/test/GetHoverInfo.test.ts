@@ -98,7 +98,7 @@ test('sizes a wrapped diagnostic hover to its measured content height', async ()
   )
 })
 
-test('sizes a wrapped language hover to its measured content height', async () => {
+test('allows for a line of wrapping variance in language hover height', async () => {
   const displayString =
     '(alias) new OrbitControls<THREE.PerspectiveCamera>(object: THREE.PerspectiveCamera, domElement?: HTMLElement | SVGElement | null): OrbitControls<THREE.PerspectiveCamera>'
   getHover.mockResolvedValue({ displayString, displayStringLanguageId: 'typescript' })
@@ -112,7 +112,7 @@ test('sizes a wrapped language hover to its measured content height', async () =
     rowIndex: 0,
   })
 
-  expect(result).toEqual(expect.objectContaining({ height: 92 }))
+  expect(result).toEqual(expect.objectContaining({ height: 112 }))
   expect(measureTextBlockHeight).toHaveBeenCalledWith(displayString, 'Fira Code', 15, '20px', 582)
 })
 

@@ -63,14 +63,17 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
         hoverDocumentationWidth,
       )
     : 0
-  const displayStringHeight = displayString
-    ? (await MeasureTextHeight.measureTextBlockHeight(
+  const measuredDisplayStringHeight = displayString
+    ? await MeasureTextHeight.measureTextBlockHeight(
         displayString,
         editor.fontFamily,
         editor.fontSize,
         `${editor.rowHeight}px`,
         hoverDocumentationWidth,
-      )) + 12
+      )
+    : 0
+  const displayStringHeight = displayString
+    ? measuredDisplayStringHeight + (measuredDisplayStringHeight > editor.rowHeight ? editor.rowHeight : 0) + 12
     : 0
   let diagnosticText = ''
   for (const diagnostic of matchingDiagnostics) {

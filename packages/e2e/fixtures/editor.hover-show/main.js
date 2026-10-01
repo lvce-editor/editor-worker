@@ -9,7 +9,9 @@ const provider = {
     }
     if (textDocument.uri.endsWith('/hover-fit-content.xyz')) {
       return {
-        text: '(alias) new OrbitControls<THREE.PerspectiveCamera>(object: THREE.PerspectiveCamera, domElement?: HTMLElement | SVGElement | null): OrbitControls<THREE.PerspectiveCamera>',
+        displayString:
+          '(alias) new OrbitControls<THREE.PerspectiveCamera>(object: THREE.PerspectiveCamera, domElement?: HTMLElement | SVGElement | null): OrbitControls<THREE.PerspectiveCamera>',
+        displayStringLanguageId: 'typescript',
       }
     }
     return {

@@ -58,7 +58,7 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
 
   // assert
   await expect(hover).toContainText('OrbitControls<THREE.PerspectiveCamera>')
-  await expect(hover).toHaveCSS('height', '92px')
-  await expect(hover).toHaveJSProperty('clientHeight', 90)
-  await expect(hover).toHaveJSProperty('scrollHeight', 88)
+  await expect(hover).toHaveCSS('height', '98px')
+  await expect(hover).toHaveJSProperty('clientHeight', 96)
+  await expect(hover).toHaveJSProperty('scrollHeight', 96)
 }
