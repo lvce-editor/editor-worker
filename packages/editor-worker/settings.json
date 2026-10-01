@@ -456,7 +456,17 @@
     "description": "The modifier to be used to add multiple cursors with the mouse",
     "heading": "Multi Cursor Modifier",
     "id": "editor.multiCursorModifier",
-    "type": "string",
+    "options": [
+      {
+        "id": "alt",
+        "label": "Alt"
+      },
+      {
+        "id": "ctrlCmd",
+        "label": "Ctrl/Cmd"
+      }
+    ],
+    "type": "enum",
     "value": "alt"
   },
   {

@@ -31,4 +31,22 @@ export const test: Test = async ({ Command, expect, Locator, Main, SettingsView 
   await SettingsView.selectTab('text-editor')
   await SettingsView.handleInput('line numbers')
   await expect(lineNumbers).toHaveValue('off')
+
+  await SettingsView.handleInput('multi cursor modifier')
+
+  const multiCursorModifier = Locator('select[name="editor.multiCursorModifier"]')
+  await expect(multiCursorModifier).toBeVisible()
+  await expect(multiCursorModifier.locator('option')).toHaveCount(2)
+  await expect(multiCursorModifier.locator('option').nth(0)).toHaveText('Alt')
+  await expect(multiCursorModifier.locator('option').nth(1)).toHaveText('Ctrl/Cmd')
+  await expect(multiCursorModifier).toHaveValue('alt')
+  await multiCursorModifier.focus()
+  await multiCursorModifier.press('ArrowDown')
+  await expect(multiCursorModifier).toHaveValue('ctrlCmd')
+
+  await Main.closeActiveEditor()
+  await SettingsView.show()
+  await SettingsView.selectTab('text-editor')
+  await SettingsView.handleInput('multi cursor modifier')
+  await expect(multiCursorModifier).toHaveValue('ctrlCmd')
 }
