@@ -556,12 +556,15 @@ export const getVisible = async (editor: any, syncIncremental: boolean): Promise
   // editor.invalidStartIndex = changes[0].start.rowIndex
   // @ts-ignore
   const { charWidth, deltaX, lines, width } = editor
-  const visibleLineIndices =
-    editor.visibleLineIndices ||
+  const visibleLineIndices = (
+    editor.visibleLineIndices ??
     Array.from(
-      { length: Math.min(editor.maxLineY ?? editor.minLineY + editor.numberOfVisibleLines, lines.length) - editor.minLineY },
+      {
+        length: Math.max(0, Math.min(editor.maxLineY ?? editor.minLineY + editor.numberOfVisibleLines, lines.length) - editor.minLineY),
+      },
       (_, index) => editor.minLineY + index,
     )
+  ).filter((rowIndex: number) => rowIndex >= 0 && rowIndex < lines.length)
   if (visibleLineIndices.length === 0) {
     return {
       differences: [],
