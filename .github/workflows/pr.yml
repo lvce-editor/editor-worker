@@ -41,6 +41,20 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: trace hover dismissal
+        if: runner.os == 'Linux'
+        continue-on-error: true
+        working-directory: ./packages/e2e
+        run: npm run e2e:headless -- --filter=editor.hover-dismissal --trace-renderer-worker
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: upload hover dismissal trace
+        if: always() && runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: hover-dismissal-trace
+          path: packages/e2e/renderer-worker-traces/
+          if-no-files-found: error
       - name: e2e
         working-directory: ./packages/e2e
         run: npm run e2e:headless
