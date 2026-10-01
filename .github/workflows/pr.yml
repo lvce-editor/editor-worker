@@ -87,7 +87,7 @@ jobs:
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
       - name: native pointer hover regression
-        run: node packages/build/src/testHoverPointer.ts
+        run: npm run test:hover-pointer --workspace=packages/build
         timeout-minutes: 2
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
