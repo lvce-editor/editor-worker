@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.settings-select-item'
 
-export const test: Test = async ({ Command, expect, Locator, Main, SettingsView }) => {
+export const test: Test = async ({ Command, expect, KeyBoard, Locator, Main, SettingsView }) => {
   await SettingsView.show()
   await SettingsView.selectTab('text-editor')
   await SettingsView.handleInput('word wrap')
@@ -40,8 +40,9 @@ export const test: Test = async ({ Command, expect, Locator, Main, SettingsView 
   await expect(multiCursorModifier.locator('option').nth(0)).toHaveText('Alt')
   await expect(multiCursorModifier.locator('option').nth(1)).toHaveText('Ctrl/Cmd')
   await expect(multiCursorModifier).toHaveValue('alt')
-  await multiCursorModifier.focus()
-  await multiCursorModifier.press('ArrowDown')
+  await multiCursorModifier.click()
+  await KeyBoard.press('ArrowDown')
+  await KeyBoard.press('Enter')
   await expect(multiCursorModifier).toHaveValue('ctrlCmd')
 
   await Main.closeActiveEditor()
