@@ -53,6 +53,10 @@ jobs:
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-line-height-live-cursor
         shell: bash
+      - name: Test tab completion setting select and persistence
+        working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
+        run: npm run e2e:headless -- --test-name-prefix=viewlet.settings-tab-completion-select
+        shell: bash
       - name: Test bundled font loading
         if: matrix.os == 'ubuntu-24.04'
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
