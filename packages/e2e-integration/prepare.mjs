@@ -1,6 +1,6 @@
 import { cp, mkdir, readdir, readFile, realpath, rm } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const owner = resolve(here, '../..')
@@ -33,3 +33,19 @@ for (const [from, to] of config.artifacts) {
   })
   await cp(join(owner, from), target, { recursive: true })
 }
+
+// Build the built-in settings index from the overlaid worker settings, as the application build does.
+process.chdir(application)
+const workers = JSON.parse(await readFile(join(application, 'packages/renderer-worker/src/parts/Workers/Workers.json'), 'utf8'))
+const { bundleBuiltinSettings } = await import(
+  pathToFileURL(join(application, 'packages/build/src/parts/BundleBuiltinSettings/BundleBuiltinSettings.ts'))
+)
+await bundleBuiltinSettings({
+  toRoot: 'packages/renderer-worker/node_modules',
+  workers,
+})
+const builtinSettings = join(application, 'packages/renderer-worker/node_modules/builtin-settings')
+const settingsFiles = JSON.parse(await readFile(join(builtinSettings, 'index.json'), 'utf8'))
+if (!settingsFiles.includes('editor-worker.json')) throw new Error('Built-in editor worker settings were not bundled')
+const editorSettings = JSON.parse(await readFile(join(builtinSettings, 'editor-worker.json'), 'utf8'))
+if (!editorSettings.some((setting) => setting.id === 'editor.tabCompletion')) throw new Error('Tab Completion setting was not bundled')
