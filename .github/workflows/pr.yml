@@ -71,6 +71,26 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: checkout memory baseline
+        if: runner.os == 'Linux'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: .tmp/hover-baseline
+      - name: measure memory baseline
+        if: runner.os == 'Linux'
+        working-directory: .tmp/hover-baseline
+        run: |
+          ln -s ../../node_modules node_modules
+          npm run build
+          npm run measure --workspace=packages/build
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: native pointer hover regression
+        run: node packages/build/src/testHoverPointer.ts
+        timeout-minutes: 2
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
       - name: measure
         working-directory: ./packages/build
         run: npm run measure
