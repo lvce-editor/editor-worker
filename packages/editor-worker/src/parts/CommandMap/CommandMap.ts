@@ -450,6 +450,8 @@ export const commandMap = {
   'EditorCompletion.handleEditorClick': EditorCompletionWidget.handleEditorClick,
   'EditorCompletion.handleEditorDeleteLeft': EditorCompletionWidget.handleEditorDeleteLeft,
   'EditorCompletion.handleEditorType': EditorCompletionWidget.handleEditorType,
+  'EditorCompletion.handleMouseEnter': HandleMouseLeave.handleMouseEnter,
+  'EditorCompletion.handleMouseLeave': HandleMouseLeave.handleMouseLeave,
   'EditorCompletion.handlePointerDown': EditorCompletionWidget.handlePointerDown,
   'EditorCompletion.handleWheel': EditorCompletionWidget.handleWheel,
   'EditorCompletion.openDetails': EditorCompletionWidget.openDetails,
