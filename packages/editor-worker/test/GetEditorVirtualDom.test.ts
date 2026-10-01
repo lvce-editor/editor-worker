@@ -69,6 +69,8 @@ test('getEditorVirtualDom', () => {
       className: 'Viewlet Editor',
       'data-uid': 42,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+      onMouseOut: DomEventListenerFunctions.HandleMouseOut,
+      onMouseOver: DomEventListenerFunctions.HandleMouseOver,
       role: 'code',
       type: VirtualDomElements.Div,
     },

@@ -18,6 +18,21 @@ test('renderEventListeners - handles Alt key release', () => {
   })
 })
 
+test('renderEventListeners - dismisses editor hovers on pointer exit and cancels on re-entry', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleMouseOut,
+    params: [
+      'handleMouseLeave',
+      'Number(event.currentTarget.dataset.editorUid || event.currentTarget.dataset.uid)',
+      'event.relatedTarget && event.currentTarget.contains(event.relatedTarget)',
+    ],
+  })
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleMouseOver,
+    params: ['handleMouseEnter', 'Number(event.currentTarget.dataset.editorUid || event.currentTarget.dataset.uid)'],
+  })
+})
+
 test('renderEventListeners - captures the editor gutter width on pointer down', () => {
   expect(RenderEventListeners.renderEventListeners()).toContainEqual({
     name: DomEventListenerFunctions.HandlePointerDown,

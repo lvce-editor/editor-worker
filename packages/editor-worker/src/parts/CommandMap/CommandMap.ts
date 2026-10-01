@@ -68,6 +68,7 @@ import * as HandleDoubleClick from '../EditorCommand/EditorCommandHandleDoubleCl
 import * as HandleFocus from '../EditorCommand/EditorCommandHandleFocus.ts'
 import * as HandleKeyUp from '../EditorCommand/EditorCommandHandleKeyUp.ts'
 import * as HandleMouseDown from '../EditorCommand/EditorCommandHandleMouseDown.ts'
+import * as HandleMouseLeave from '../EditorCommand/EditorCommandHandleMouseLeave.ts'
 import * as HandleMouseMove from '../EditorCommand/EditorCommandHandleMouseMove.ts'
 import * as EditorCommandHandleMouseMoveWithAltKey from '../EditorCommand/EditorCommandHandleMouseMoveWithAltKey.ts'
 import * as EditorCommandHandleNativeBeforeInputFromContentEditable from '../EditorCommand/EditorCommandHandleNativeBeforeInputFromContentEditable.ts'
@@ -320,6 +321,8 @@ export const commandMap = {
   'Editor.handleKeyUp': wrapCommand(HandleKeyUp.handleKeyUp, true),
   'Editor.handleMergeConflictActionsMouseDown': wrapCommand(EditorCommandAcceptMergeConflict.handleMergeConflictActionsMouseDown),
   'Editor.handleMouseDown': wrapCommand(HandleMouseDown.handleMouseDown),
+  'Editor.handleMouseEnter': HandleMouseLeave.handleMouseEnter,
+  'Editor.handleMouseLeave': HandleMouseLeave.handleMouseLeave,
   'Editor.handleMouseMove': wrapCommand(HandleMouseMove.handleMouseMove),
   'Editor.handleMouseMoveWithAltKey': wrapCommand(EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey),
   'Editor.handleNativeSelectionChange': HandleNativeSelectionChange.editorHandleNativeSelectionChange,
@@ -466,9 +469,9 @@ export const commandMap = {
   'EditorSourceAction.selectCurrent': EditorSourceActionWidget.selectCurrent,
   'EditorSourceAction.selectIndex': EditorSourceActionWidget.selectIndex,
   'EditorSourceAction.selectItem': EditorSourceActionWidget.selectItem,
-
   'EditorSourceAction.toggleDetails': EditorSourceActionWidget.toggleDetails,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
+
   'FindWidget.close': EditorFindWidget.close,
   'FindWidget.focusCloseButton': EditorFindWidget.focusCloseButton,
   'FindWidget.focusFind': EditorFindWidget.focusFind,
@@ -500,6 +503,8 @@ export const commandMap = {
   'Font.ensure': Font.ensure,
   'HandleMessagePort.handleMessagePort': HandleMessagePort.handleMessagePort,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
+  'Hover.handleMouseEnter': HandleMouseLeave.handleMouseEnter,
+  'Hover.handleMouseLeave': HandleMouseLeave.handleMouseLeave,
   'Hover.handleSashPointerDown': EditorHover.handleSashPointerDown,
   'Hover.handleSashPointerMove': EditorHover.handleSashPointerMove,
   'Hover.handleSashPointerUp': EditorHover.handleSashPointerUp,
