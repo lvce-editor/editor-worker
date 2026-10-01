@@ -43,6 +43,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard
   await FileSystem.writeFile(disabledUri, '')
   await Main.closeActiveEditor()
   await Main.openUri(disabledUri)
+  await Editor.setCursor(0, 0)
   await KeyBoard.press('"')
   await expect(Locator('.EditorRow')).toHaveText('"')
 
@@ -60,6 +61,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard
   const enabledUri = `${tmpDir}/auto-closing-quotes-enabled.txt`
   await FileSystem.writeFile(enabledUri, '')
   await Main.openUri(enabledUri)
+  await Editor.setCursor(0, 0)
   await KeyBoard.press('"')
   await expect(Locator('.EditorRow')).toHaveText('""')
 
