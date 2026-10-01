@@ -3,6 +3,7 @@ import type { HoverWidget } from '../HoverWidget/HoverWidget.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import { createFns } from '../CreateFns/CreateFns.ts'
 import * as GetHoverVirtualDom from '../GetHoverVirtualDom/GetHoverVirtualDom.ts'
+import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as RenderRename from '../RenderRename/RenderRename.ts'
 
@@ -39,6 +40,9 @@ export const render = (widget: HoverWidget) => {
     } else {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
     }
+  }
+  if (commands.every(([method]) => method !== RenderMethod.RegisterEventListeners)) {
+    wrappedCommands.unshift([RenderMethod.RegisterEventListeners, uid, RenderEventListeners.renderEventListeners()])
   }
   return wrappedCommands
 }
