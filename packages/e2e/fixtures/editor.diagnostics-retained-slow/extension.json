@@ -1,4 +1,5 @@
 {
+  "id": "test.editor-diagnostics-retained-slow",
   "browser": "dist/main.js",
   "isolated": true,
   "diagnosticProviders": [
