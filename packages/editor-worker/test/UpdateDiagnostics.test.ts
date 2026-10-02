@@ -3,6 +3,7 @@ import { MockRpc } from '@lvce-editor/rpc'
 import { ExtensionManagementWorker, registerMockRpc, remove, RendererWorker, RpcId, TextMeasurementWorker } from '@lvce-editor/rpc-registry'
 import { editorDiagnosticEffect } from '../src/parts/EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
+import { getEditorRowsVirtualDom } from '../src/parts/GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
 import { updateDiagnostics, updateDiagnosticsAll } from '../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts'
 
 const registerExtensionManagementWorkerMockRpc = (commandMap: any): any => {
@@ -94,6 +95,63 @@ test('updateDiagnosticsAll refreshes every open editor', async () => {
     ['Layout.handleDiagnosticsChange', 'file:///first.js'],
     ['Editor.renderPending', 2],
     ['Layout.handleDiagnosticsChange', 'file:///second.ts'],
+  ])
+})
+
+test('updateDiagnostics preserves unnecessary tags from extension providers', async () => {
+  const diagnostic = {
+    columnIndex: 0,
+    endColumnIndex: 6,
+    endRowIndex: 0,
+    message: 'unused variable',
+    rowIndex: 0,
+    tags: [1],
+    type: 'warning',
+    uri: '/test.ts',
+  }
+  const { tags: _tags, ...previousDiagnostic } = diagnostic
+  using extensionManagementWorkerRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async () => [diagnostic],
+  })
+  using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => undefined,
+    'Layout.handleDiagnosticsChange': async () => undefined,
+  })
+  using _textMeasurementWorkerRpc = TextMeasurementWorker.registerMockRpc({
+    'TextMeasurement.measureTextWidth': async (text: string) => text.length * 8,
+  })
+  const editor = {
+    charWidth: 8,
+    deltaY: 0,
+    diagnostics: [previousDiagnostic],
+    diagnosticsEnabled: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    id: 1,
+    isMonospaceFont: true,
+    itemHeight: 20,
+    languageId: 'typescript',
+    letterSpacing: 0,
+    lines: ['unused'],
+    minLineY: 0,
+    rowHeight: 20,
+    tabSize: 2,
+    uri: '/test.ts',
+    viewLineIndices: [],
+    width: 800,
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  await updateDiagnostics(editor)
+
+  expect(extensionManagementWorkerRpc.invocations[0][0]).toBe('Extensions.streamDiagnosticProvider')
+  expect(EditorStates.get(1)?.newState.diagnostics).toEqual([diagnostic])
+  const rows = getEditorRowsVirtualDom([['unused', 'Token TokenVariable']], [0], true, -1, [], [], [], -1, EditorStates.get(1).newState.diagnostics)
+  expect(rows.some((node) => node.className === 'Token TokenVariable EditorTokenUnnecessary')).toBe(true)
+  expect(rendererWorkerRpc.invocations).toEqual([
+    ['Editor.renderPending', 1],
+    ['Layout.handleDiagnosticsChange', '/test.ts'],
   ])
 })
 

@@ -88,6 +88,9 @@ const diagnosticsEqual = (left: readonly Diagnostic[] | undefined, right: readon
       other.message === diagnostic.message &&
       other.rowIndex === diagnostic.rowIndex &&
       other.source === diagnostic.source &&
+      (other.tags === diagnostic.tags ||
+        ((other.tags?.length ?? 0) === (diagnostic.tags?.length ?? 0) &&
+          (other.tags ?? []).every((tag, index) => tag === diagnostic.tags?.[index]))) &&
       other.type === diagnostic.type &&
       other.uri === diagnostic.uri
     )

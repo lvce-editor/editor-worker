@@ -23,7 +23,7 @@ const renderLines = {
     if (incrementalEdits !== emptyIncrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
     }
-    const { differences, endOfLineDecorations, textInfos } = newState
+    const { diagnostics, differences, endOfLineDecorations, textInfos } = newState
     newState.differences = differences
     const { highlightedLine, visibleLineIndices, visibleViewLineIndices } = newState
     const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(
@@ -35,6 +35,7 @@ const renderLines = {
       endOfLineDecorations,
       visibleViewLineIndices,
       newState.problemsHighlightedRow,
+      diagnostics || [],
     )
     return [/* method */ 'setText', dom]
   },
