@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.unnecessary-diagnostic'
 
-export const test: Test = async ({ Extension, FileSystem, Locator, Main, Settings, Workspace, expect }) => {
+export const test: Test = async ({ expect, Extension, FileSystem, Locator, Main, Settings, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/test.xyz`, 'abcdefgh')
   await Workspace.setPath(tmpDir)
