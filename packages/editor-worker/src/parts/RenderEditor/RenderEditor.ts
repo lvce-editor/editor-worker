@@ -48,6 +48,7 @@ const renderLines = {
     oldState.decorations === newState.decorations &&
     oldState.embeds === newState.embeds &&
     oldState.endOfLineDecorations === newState.endOfLineDecorations &&
+    oldState.diagnostics === newState.diagnostics &&
     oldState.deltaX === newState.deltaX &&
     oldState.width === newState.width &&
     oldState.highlightedLine === newState.highlightedLine &&

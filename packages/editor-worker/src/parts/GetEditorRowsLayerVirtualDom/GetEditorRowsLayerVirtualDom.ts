@@ -12,6 +12,7 @@ export const getEditorRowsVirtualDom = (
   endOfLineDecorations: readonly { readonly rowIndex: number; readonly text: string }[] = [],
   visibleViewLineIndices: readonly number[] = [],
   problemsHighlightedRow = -1,
+  unnecessaryDiagnostics: readonly any[] = [],
 ): readonly VirtualDomNode[] => {
   const rowsDom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(
     textInfos,
@@ -22,6 +23,7 @@ export const getEditorRowsVirtualDom = (
     endOfLineDecorations,
     visibleViewLineIndices,
     problemsHighlightedRow,
+    unnecessaryDiagnostics,
   )
   return [
     {

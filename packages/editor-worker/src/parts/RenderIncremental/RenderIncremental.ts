@@ -18,6 +18,7 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
     diagnostics: visualDecorations,
     scrollBarDiagnostics: getScrollBarDiagnostics(state, diagnostics),
     scrollBarWidth: ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize),
+    unnecessaryDiagnostics: diagnostics,
   })
 }
 
