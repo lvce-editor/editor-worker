@@ -2,7 +2,7 @@ import { activate as activateExtensionApi, registerDiagnosticProvider } from '@l
 
 await activateExtensionApi()
 registerDiagnosticProvider({
-  id: 'unnecessary-diagnostic',
+  id: 'xyz-diagnostics',
   languageId: 'xyz',
   provideDiagnostics() {
     return [

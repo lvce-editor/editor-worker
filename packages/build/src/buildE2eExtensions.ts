@@ -20,6 +20,7 @@ const extensionNames = [
   'editor.rename-provider',
   'editor.source-actions-execute',
   'editor.source-actions-open',
+  'editor.unnecessary-diagnostic',
   'sample.diagnostic-provider',
   'sample.diagnostic-provider-empty',
   'sample.diagnostic-provider-error',

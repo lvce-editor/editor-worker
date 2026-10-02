@@ -3,7 +3,7 @@
   "isolated": true,
   "diagnosticProviders": [
     {
-      "id": "unnecessary-diagnostic",
+      "id": "xyz-diagnostics",
       "languageId": "xyz"
     }
   ],

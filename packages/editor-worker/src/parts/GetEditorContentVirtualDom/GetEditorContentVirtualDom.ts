@@ -35,6 +35,7 @@ interface EditorContentVirtualDomOptions {
   readonly scrollBarWidth?: number
   readonly selectionInfos?: readonly any[]
   readonly textInfos: readonly any[]
+  readonly unnecessaryDiagnostics?: readonly any[]
   readonly visibleLineIndices?: readonly number[]
   readonly visibleViewLineIndices?: readonly number[]
 }
@@ -56,6 +57,7 @@ export const getEditorContentVirtualDom = ({
   scrollBarWidth = 0,
   selectionInfos = [],
   textInfos,
+  unnecessaryDiagnostics = [],
   visibleLineIndices = [],
   visibleViewLineIndices = [],
 }: EditorContentVirtualDomOptions): readonly VirtualDomNode[] => {
@@ -80,6 +82,7 @@ export const getEditorContentVirtualDom = ({
       visibleViewLineIndices,
       problemsHighlightedRow,
       roundedSelection,
+      unnecessaryDiagnostics,
     ),
     ...GetEditorScrollBarDiagnosticsVirtualDom.getEditorScrollBarDiagnosticsVirtualDom(scrollBarDiagnostics),
     ...GetScrollBarVirtualDom.getScrollBarVirtualDom(scrollBarHeight, scrollBarWidth),
