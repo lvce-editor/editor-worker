@@ -31,3 +31,25 @@ test('renders merge conflict actions as a dedicated view row', () => {
   ])
   expect(dom.filter((node) => node.className === 'EditorRow')).toHaveLength(2)
 })
+
+test('dims only the unnecessary portion of a token while preserving its syntax class', () => {
+  const dom = getEditorRowsVirtualDom([['const unusedValue = 1', 'Token TokenVariable']], [0], true, -1, [], [], [], -1, [
+    { columnIndex: 6, endColumnIndex: 17, endRowIndex: 0, rowIndex: 0, tags: [1] },
+  ])
+
+  expect(dom[0].childCount).toBe(3)
+  expect(dom.filter((node) => node.type === VirtualDomElements.Span).map((node) => node.className)).toEqual([
+    'Token TokenVariable',
+    'Token TokenVariable EditorTokenUnnecessary',
+    'Token TokenVariable',
+  ])
+  expect(dom.filter((node) => node.text !== undefined).map((node) => node.text)).toEqual(['const ', 'unusedValue', ' = 1'])
+})
+
+test('keeps ordinary diagnostics and unrelated tags at normal token opacity', () => {
+  const dom = getEditorRowsVirtualDom([['warning', 'Token TokenString']], [0], true, -1, [], [], [], -1, [
+    { columnIndex: 0, endColumnIndex: 7, endRowIndex: 0, rowIndex: 0, tags: [2] },
+  ])
+
+  expect(dom.find((node) => node.type === VirtualDomElements.Span)?.className).toBe('Token TokenString')
+})
