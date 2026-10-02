@@ -439,6 +439,7 @@ export const commandMap = {
   'Editor.updateDebugInfo': UpdateDebugInfo.updateDebugInfo,
   'Editor.updateDiagnostics': wrapCommand(UpdateDiagnostics.requestDiagnostics),
   'Editor.updateDiagnosticsAll': UpdateDiagnostics.updateDiagnosticsAll,
+  'Editor.waitForDiagnostics': UpdateDiagnostics.waitForDiagnostics,
   'EditorCompletion.close': EditorCompletionWidget.close,
   'EditorCompletion.closeDetails': EditorCompletionWidget.closeDetails,
   'EditorCompletion.focusFirst': EditorCompletionWidget.focusFirst,
