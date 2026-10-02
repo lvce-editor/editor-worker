@@ -39,11 +39,7 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
         },
       })
       const lastInsertedLine = insertedLines.at(-1)
-      if (placeholderRow !== -1) {
-        const cursorRow = selectionStartRow + placeholderRow
-        const cursorColumn = placeholderRow === 0 ? selectionStartColumn - snippet.deleted + placeholderColumn : indent.length + placeholderColumn
-        selectionChanges.push(cursorRow, cursorColumn, cursorRow, cursorColumn)
-      } else {
+      if (placeholderRow === -1) {
         selectionChanges.push(
           selectionEndRow + insertedLines.length - deleted.length,
           // @ts-ignore
@@ -52,6 +48,10 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
           // @ts-ignore
           selectionEndColumn + lastInsertedLine.length,
         )
+      } else {
+        const cursorRow = selectionStartRow + placeholderRow
+        const cursorColumn = placeholderColumn + (placeholderRow === 0 ? selectionStartColumn - snippet.deleted : indent.length)
+        selectionChanges.push(cursorRow, cursorColumn, cursorRow, cursorColumn)
       }
     } else {
       const line = insertedLines[0]
