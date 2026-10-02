@@ -9,8 +9,8 @@ import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as UpdateDiagnosticsWithLinks from './UpdateDiagnosticsWithLinks.ts'
 
 interface DiagnosticProviderMessage {
-  readonly error?: string
   readonly diagnostics?: readonly Diagnostic[]
+  readonly error?: string
   readonly providerCount?: number
   readonly providerId?: string
   readonly providerIds?: readonly string[]

@@ -37,9 +37,10 @@ test('waits for a delayed empty provider result and completion', async () => {
     port.postMessage({ type: 'done' })
   })
   let completed = false
-  const waiting = waitForDiagnostics(1).then(() => {
+  const waiting = (async () => {
+    await waitForDiagnostics(1)
     completed = true
-  })
+  })()
   await started.promise
   await new Promise<void>((resolve) => setImmediate(resolve))
   expect(completed).toBe(false)
@@ -65,9 +66,10 @@ test('returns only after diagnostics are committed and rendered', async () => {
     'Layout.handleDiagnosticsChange': async () => undefined,
   })
   let completed = false
-  const waiting = waitForDiagnostics(1).then(() => {
+  const waiting = (async () => {
+    await waitForDiagnostics(1)
     completed = true
-  })
+  })()
   await rendering.promise
   expect(completed).toBe(false)
   release.resolve()
