@@ -4,11 +4,11 @@ export const name = 'editor.unnecessary-diagnostic'
 
 export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main, Settings, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
-  await FileSystem.writeFile(`${tmpDir}/test.xyz`, 'abcdefgh')
+  await FileSystem.writeFile(`${tmpDir}/test.unnecessary`, 'abcdefgh')
   await Workspace.setPath(tmpDir)
   await Extension.addWebExtension(import.meta.resolve(`../fixtures/${name}`))
   await Settings.update({ 'editor.diagnostics': true })
-  await Main.openUri(`${tmpDir}/test.xyz`)
+  await Main.openUri(`${tmpDir}/test.unnecessary`)
 
   for (let attempt = 0; attempt < 100; attempt++) {
     try {

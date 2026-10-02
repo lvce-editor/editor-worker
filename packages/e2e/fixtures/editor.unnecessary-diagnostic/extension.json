@@ -3,15 +3,15 @@
   "isolated": true,
   "diagnosticProviders": [
     {
-      "id": "xyz-diagnostics",
-      "languageId": "xyz"
+      "id": "unnecessary-diagnostics",
+      "languageId": "unnecessary-diagnostic"
     }
   ],
-  "activation": ["onDiagnostic:xyz"],
+  "activation": ["onDiagnostic:unnecessary-diagnostic"],
   "languages": [
     {
-      "id": "xyz",
-      "extensions": [".xyz"]
+      "id": "unnecessary-diagnostic",
+      "extensions": [".unnecessary"]
     }
   ]
 }
