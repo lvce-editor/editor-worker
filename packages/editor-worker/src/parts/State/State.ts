@@ -84,8 +84,8 @@ export interface EditorState {
   readonly longestLineWidth: number
   readonly maxLineY: number
   readonly mergeConflictActionsEnabled: boolean
-  readonly messageDelay?: number
   readonly mergeConflicts: readonly MergeConflict[]
+  readonly messageDelay?: number
   readonly minimapEnabled: boolean
   readonly minimapLines: readonly (readonly (number | string)[])[]
   readonly minimapRevision: number

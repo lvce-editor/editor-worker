@@ -22,8 +22,8 @@ test('boolean preferences retain their defaults and explicit values', async () =
     formatOnSave: false,
     hoverDelay: 200,
     hoverEnabled: false,
-    messageDelay: 3000,
     insertSpaces: true,
+    messageDelay: 3000,
     roundedSelection: false,
   })
   for (const value of [false, true]) {
@@ -67,7 +67,7 @@ test('normalizes the message delay and falls back for invalid values', async () 
   })
   expect((await getEditorPreferences()).messageDelay).toBe(4500)
 
-  for (const value of [-1, 10001, Number.NaN, Number.POSITIVE_INFINITY]) {
+  for (const value of [-1, 10_001, NaN, Infinity]) {
     getPreference.mockImplementation(async (key) => (key === 'editor.messageDelay' ? value : undefined))
     expect((await getEditorPreferences()).messageDelay).toBe(3000)
   }

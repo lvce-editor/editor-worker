@@ -1,10 +1,10 @@
-import * as Assert from '../Assert/Assert.ts'
-import * as Id from '../Id/Id.ts'
-import * as LocalWidgetId from '../WidgetId/WidgetId.ts'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
+import * as Assert from '../Assert/Assert.ts'
 import * as EditorMessageDismissalState from '../EditorMessageDismissalState/EditorMessageDismissalState.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
+import * as Id from '../Id/Id.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
+import * as LocalWidgetId from '../WidgetId/WidgetId.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
 

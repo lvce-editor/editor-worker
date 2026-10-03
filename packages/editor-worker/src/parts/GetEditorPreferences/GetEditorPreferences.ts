@@ -3,7 +3,7 @@ import * as Preferences from '../Preferences/Preferences.ts'
 
 const DEFAULT_HOVER_DELAY = 200
 const DEFAULT_MESSAGE_DELAY = 3000
-const MAX_MESSAGE_DELAY = 10000
+const MAX_MESSAGE_DELAY = 10_000
 
 const getHoverDelay = (value: unknown): number => {
   const delay = typeof value === 'number' ? value : Number(value)
