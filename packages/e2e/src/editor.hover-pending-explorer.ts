@@ -29,6 +29,8 @@ export const test: Test = async ({
   TitleBarMenuBar,
   Workspace,
 }) => {
+  // A prior test can leave the editor context menu open in the reused page.
+  await Command.execute('Menu.hide')
   await Settings.update({ 'editor.diagnostics': false, 'editor.hover': true })
   await Extension.addWebExtension(import.meta.resolve('../fixtures/editor.hover-pending'))
   const tmpDir = await FileSystem.getTmpDir()
@@ -45,9 +47,10 @@ export const test: Test = async ({
     await Command.executeExtensionCommand('pendingHover.wait')
     try {
       await expectResponsive(TitleBarMenuBar.toggleIndex(0))
-      const menu = Locator('[role=menu]')
+      const menu = Locator('div#Menu-0')
       await expect(menu).toBeVisible()
       await TitleBarMenuBar.closeMenu()
+      await expect(menu).toBeHidden()
       await expectResponsive(Explorer.reveal(otherUri))
       await expectResponsive(Explorer.clickCurrent())
       await Editor.shouldHaveText('other file')
