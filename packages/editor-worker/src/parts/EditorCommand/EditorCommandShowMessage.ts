@@ -1,7 +1,14 @@
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as Assert from '../Assert/Assert.ts'
+import * as EditorMessageDismissalState from '../EditorMessageDismissalState/EditorMessageDismissalState.ts'
+import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as Id from '../Id/Id.ts'
+import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 import * as LocalWidgetId from '../WidgetId/WidgetId.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
+
+const defaultMessageDelay = 3000
 
 /**
  *
@@ -13,12 +20,12 @@ import * as EditorPosition from './EditorCommandPosition.ts'
  * @returns
  */
 // @ts-ignore
-export const editorShowMessage = (editor, rowIndex, columnIndex, message, _isError) => {
+export const editorShowMessage = async (editor, rowIndex, columnIndex, message, _isError) => {
   Assert.object(editor)
   Assert.number(rowIndex)
   Assert.number(columnIndex)
   Assert.string(message)
-  const x = EditorPosition.x(editor, rowIndex, columnIndex)
+  const x = await EditorPosition.getCursorX(editor, rowIndex, columnIndex)
   const y = EditorPosition.y(editor, rowIndex)
   const existingWidget = editor.widgets.find((widget: any) => widget.id === LocalWidgetId.Message)
   const uid = existingWidget?.newState.uid ?? Id.create()
@@ -27,10 +34,33 @@ export const editorShowMessage = (editor, rowIndex, columnIndex, message, _isErr
     id: LocalWidgetId.Message,
     newState,
   }
-  return {
+  const newEditor = {
     ...editor,
     widgets: [...editor.widgets.filter((item: any) => item.id !== LocalWidgetId.Message), widget],
   }
+  if (typeof editor.uid === 'number') {
+    const timeout = setTimeout(async () => {
+      EditorMessageDismissalState.clear(editor.uid)
+      const latestInstance = EditorStates.get(editor.uid)
+      if (!latestInstance) {
+        return
+      }
+      const latestEditor = latestInstance.newState
+      const latestWidget = latestEditor.widgets.find((item: any) => item.id === LocalWidgetId.Message)
+      if (latestWidget?.newState.uid !== uid) {
+        return
+      }
+      const editorWithoutMessage = {
+        ...latestEditor,
+        widgetRevision: WidgetRevision.next(editor.uid),
+        widgets: RemoveEditorWidget.removeEditorWidget(latestEditor.widgets, LocalWidgetId.Message),
+      }
+      EditorStates.set(editor.uid, latestEditor, editorWithoutMessage)
+      await RendererWorker.invoke('Editor.renderPending', editor.uid)
+    }, editor.messageDelay ?? defaultMessageDelay)
+    EditorMessageDismissalState.set(editor.uid, { timeout })
+  }
+  return newEditor
 }
 
 /**
@@ -42,6 +72,6 @@ export const editorShowMessage = (editor, rowIndex, columnIndex, message, _isErr
  * @returns
  */
 // @ts-ignore
-export const showErrorMessage = (editor, rowIndex, columnIndex, message) => {
-  return editorShowMessage(editor, rowIndex, columnIndex, message, true)
+export const showErrorMessage = async (editor, rowIndex, columnIndex, message) => {
+  return await editorShowMessage(editor, rowIndex, columnIndex, message, true)
 }
