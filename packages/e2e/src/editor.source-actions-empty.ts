@@ -16,5 +16,6 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main }) 
   const emptyMessage = Locator('.EditorMessageText')
   await expect(emptyMessage).toBeVisible()
   await expect(emptyMessage).toHaveText('No code actions available')
-  await expect(emptyMessage).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+  // Assert the default hover surface directly: the test runner does not negate CSS checks.
+  await expect(emptyMessage).toHaveCSS('background-color', 'rgb(40, 46, 47)')
 }

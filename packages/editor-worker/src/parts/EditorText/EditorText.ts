@@ -547,6 +547,9 @@ const getLineInfosViewport = (
 }
 
 export const getVisible = async (editor: any, syncIncremental: boolean): Promise<{ differences: number[]; textInfos: string[][] }> => {
+  if (editor.lifecycle?.disposed) {
+    return { differences: [], textInfos: [] }
+  }
   if (editor.largeFile) {
     return getLargeFileVisible(editor)
   }
@@ -577,9 +580,15 @@ export const getVisible = async (editor: any, syncIncremental: boolean): Promise
   let { embeddedResults, tokenizersToLoad, tokens } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
   for (let i = 0; tokenizersToLoad.length > 0 && i < maxTokenizerLoadPasses; i++) {
     await LoadTokenizers.loadTokenizers(tokenizersToLoad)
+    if (editor.lifecycle?.disposed) {
+      return { differences: [], textInfos: [] }
+    }
     // @ts-ignore
     const refreshed = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
     ;({ embeddedResults, tokenizersToLoad, tokens } = refreshed)
+  }
+  if (editor.lifecycle?.disposed) {
+    return { differences: [], textInfos: [] }
   }
   const minLineOffset = await TextDocument.offsetAtSync(editor, minLineY, 0)
   const averageCharWidth = charWidth

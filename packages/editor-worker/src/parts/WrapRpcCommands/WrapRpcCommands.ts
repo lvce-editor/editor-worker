@@ -9,3 +9,7 @@ export const wrapCommand = (fn: Parameters<typeof WrapCommands.wrapCommand>[0], 
 export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Promise<EditorState>) => {
   return WrapCommands.wrapFocusCommand(fn, false)
 }
+
+export const wrapDeferredCommand = (fn: (editor: EditorState, ...args: any[]) => Promise<EditorState>) => {
+  return WrapCommands.wrapDeferredCommand(fn, false)
+}

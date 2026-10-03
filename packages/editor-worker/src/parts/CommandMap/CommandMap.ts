@@ -200,7 +200,7 @@ import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
-import { wrapCommand, wrapFocusCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
+import { wrapCommand, wrapDeferredCommand, wrapFocusCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
 
 const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
   return ExecuteViewletCommand.executeViewletCommand(commandMap, uid, commandId, ...args)
@@ -414,8 +414,8 @@ export const commandMap = {
   'Editor.setSelections': wrapCommand(SetSelections.setSelections),
   'Editor.setSelections2': ExternalGetPositionAtCursor.setSelections2,
   'Editor.setText': wrapCommand(SetText.setText),
-  'Editor.showHover': wrapCommand(EditorCommandShowHover.showHover),
-  'Editor.showHover2': wrapCommand(EditorCommandShowHover.showHover),
+  'Editor.showHover': wrapDeferredCommand(EditorCommandShowHover.showHover),
+  'Editor.showHover2': wrapDeferredCommand(EditorCommandShowHover.showHover),
   'Editor.showSignatureHelp': wrapCommand(EditorCommandShowSignatureHelp.showSignatureHelp),
   'Editor.showSourceActions': wrapCommand(EditorCommandShowSourceActions3.showSourceActions),
   'Editor.showSourceActions2': wrapCommand(EditorCommandShowSourceActions3.showSourceActions),
