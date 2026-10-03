@@ -2,11 +2,21 @@ import * as EditorPreferences from '../EditorPreferences/EditorPreferences.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 
 const DEFAULT_HOVER_DELAY = 200
+const DEFAULT_MESSAGE_DELAY = 3000
+const MAX_MESSAGE_DELAY = 10000
 
 const getHoverDelay = (value: unknown): number => {
   const delay = typeof value === 'number' ? value : Number(value)
   if (!Number.isFinite(delay) || delay < 0) {
     return DEFAULT_HOVER_DELAY
+  }
+  return delay
+}
+
+const getMessageDelay = (value: unknown): number => {
+  const delay = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(delay) || delay < 0 || delay > MAX_MESSAGE_DELAY) {
+    return DEFAULT_MESSAGE_DELAY
   }
   return delay
 }
@@ -20,6 +30,7 @@ export const getEditorPreferences = async () => {
     formatOnSave,
     hoverEnabled,
     hoverDelay,
+    messageDelay,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
@@ -45,6 +56,7 @@ export const getEditorPreferences = async () => {
     Preferences.get('editor.formatOnSave'),
     Preferences.get('editor.hover'),
     Preferences.get('editor.hoverDelay'),
+    Preferences.get('editor.messageDelay'),
     EditorPreferences.isAutoClosingBracketsEnabled(),
     EditorPreferences.isAutoClosingQuotesEnabled(),
     EditorPreferences.isAutoClosingTagsEnabled(),
@@ -84,6 +96,7 @@ export const getEditorPreferences = async () => {
     letterSpacing,
     lineNumbers,
     mergeConflictActionsEnabled,
+    messageDelay: getMessageDelay(messageDelay),
     minimapEnabled,
     roundedSelection: roundedSelection === true,
     rowHeight,
