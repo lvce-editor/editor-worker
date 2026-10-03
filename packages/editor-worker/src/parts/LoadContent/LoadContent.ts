@@ -78,7 +78,7 @@ const getSavedLanguageId = (savedState: unknown, languages: readonly any[]): str
   return explicitLanguageId
 }
 
-export const loadContent = async (state: EditorState, savedState: unknown, largeFile = false) => {
+export const loadContent = async (state: EditorState, savedState: unknown, largeFile = false, focus = true) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
     breadcrumbsEnabled,
@@ -166,7 +166,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
       ...newEditor1,
       differences: [],
       focus: WhenExpression.FocusEditorText,
-      focused: true,
+      focused: focus,
       initial: false,
       loadError: getErrorMessage(error),
       textInfos: [],
@@ -223,7 +223,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     ...newEditor3WithBreadcrumbs,
     differences,
     focus: WhenExpression.FocusEditorText,
-    focused: true,
+    focused: focus,
     textInfos,
   }
 
