@@ -16,7 +16,19 @@ const expectResponsive = async (operation: Promise<void>): Promise<void> => {
 
 export const name = 'editor.hover-pending-explorer'
 
-export const test: Test = async ({ Command, Editor, expect, Extension, FileSystem, Locator, Main, Settings, Workspace, Explorer, TitleBarMenuBar }) => {
+export const test: Test = async ({
+  Command,
+  Editor,
+  expect,
+  Explorer,
+  Extension,
+  FileSystem,
+  Locator,
+  Main,
+  Settings,
+  TitleBarMenuBar,
+  Workspace,
+}) => {
   await Settings.update({ 'editor.diagnostics': false, 'editor.hover': true })
   await Extension.addWebExtension(import.meta.resolve('../fixtures/editor.hover-pending'))
   const tmpDir = await FileSystem.getTmpDir()
