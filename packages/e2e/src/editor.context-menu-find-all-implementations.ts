@@ -2,8 +2,6 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.context-menu-find-all-implementations'
 
-export const skip = 1
-
 export const test: Test = async ({ ContextMenu, Editor, expect, FileSystem, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
@@ -18,5 +16,12 @@ export const test: Test = async ({ ContextMenu, Editor, expect, FileSystem, Loca
   // assert
   const sidebar = Locator('#SideBar')
   await expect(sidebar).toBeVisible()
+  await expect(sidebar).toContainText('No implementations found')
+
+  // act again
+  await Editor.openEditorContextMenu()
+  await ContextMenu.selectItem('Find All Implementations')
+
+  // assert again
   await expect(sidebar).toContainText('No implementations found')
 }
