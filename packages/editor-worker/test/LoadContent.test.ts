@@ -161,6 +161,15 @@ test('loadContent returns error state when reading file fails', async () => {
   expect(readFileMock).toHaveBeenCalledWith('file:///test.txt')
 })
 
+test('loadContent does not focus the editor when focus is false and reading file fails', async () => {
+  readFileMock.mockRejectedValue(new Error('Failed to read file'))
+
+  const result = await LoadContent.loadContent(createState(), undefined, false, false)
+
+  expect(result.loadError).toBe('Failed to read file')
+  expect(result.focused).toBe(false)
+})
+
 test('loads a separate document for the same uri in another application', async () => {
   const source = { ...createState(), applicationId: 'source', id: 2, initial: false, lines: ['unsaved source'], modified: true, uid: 2 }
   EditorStates.set(2, source, source)
@@ -215,6 +224,15 @@ test('loadContent returns loaded text without requesting diagnostics', async () 
   expect(result.hoverEnabled).toBe(true)
   expect(extensionHostInvoke).not.toHaveBeenCalled()
   expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
+})
+
+test('loadContent does not focus the editor when focus is false', async () => {
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), undefined, false, false)
+
+  expect(result.lines).toEqual(['test'])
+  expect(result.focused).toBe(false)
 })
 
 test('loadContent uses a tokenizer from a later contribution for the same language', async () => {
