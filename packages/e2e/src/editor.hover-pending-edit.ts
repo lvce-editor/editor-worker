@@ -23,9 +23,7 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   await Workspace.setPath(tmpDir)
   for (let cycle = 0; cycle < 3; cycle++) {
     const uri = `${tmpDir}/target-${Date.now()}-${cycle}.pending-hover`
-    const otherUri = `${tmpDir}/other-${cycle}.txt`
     await FileSystem.writeFile(uri, 'hover target')
-    await FileSystem.writeFile(otherUri, 'other file')
     await Main.closeAllEditors()
     await Main.openUri(uri)
     await Editor.setCursor(0, 0)
