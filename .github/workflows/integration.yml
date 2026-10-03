@@ -49,6 +49,9 @@ jobs:
         shell: bash
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-language-mode-persistence
+      - name: Test no-definition message lifecycle
+        working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
+        run: npm run e2e:headless -- --test-name-prefix=sample.no-definition-message-lifecycle
       - name: Test auto closing quotes setting
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-auto-closing-quotes-setting

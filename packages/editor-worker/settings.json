@@ -793,6 +793,16 @@
   },
   {
     "category": "text-editor",
+    "description": "Controls how long editor messages remain visible, in milliseconds",
+    "heading": "Message Display Duration",
+    "id": "editor.messageDelay",
+    "type": "number",
+    "value": 3000,
+    "minimum": 0,
+    "maximum": 10000
+  },
+  {
+    "category": "text-editor",
     "description": "Controls whether the editor should be in a diff editor",
     "heading": "In Diff Editor",
     "id": "editor.inDiffEditor",
