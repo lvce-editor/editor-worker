@@ -166,3 +166,20 @@ export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Prom
     return command(uid, widgetRevision)
   }
 }
+
+// Optional provider work must not hold the editing queue while another worker responds.
+export const wrapDeferredCommand = (fn: (editor: EditorState, ...args: any[]) => Promise<EditorState>, returnState = true) => {
+  const apply = wrapCommand(
+    (editor: EditorState, snapshot: EditorState, result: EditorState) => (editor === snapshot ? result : editor),
+    false,
+    returnState,
+  )
+  return async (uid: number, ...args: any[]) => {
+    const snapshot = await EditorCommandQueue.enqueue(uid, async () => Editors.get(uid)?.newState)
+    if (!snapshot) {
+      return undefined
+    }
+    const result = await fn(snapshot, ...args)
+    return apply(uid, snapshot, result)
+  }
+}

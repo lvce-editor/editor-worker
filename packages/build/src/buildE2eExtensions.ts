@@ -17,6 +17,7 @@ const extensionNames = [
   'editor.format-on-save',
   'editor.gutter-decoration-provider',
   'editor.hover-show',
+  'editor.hover-pending',
   'editor.rename-provider',
   'editor.source-actions-execute',
   'editor.source-actions-open',
