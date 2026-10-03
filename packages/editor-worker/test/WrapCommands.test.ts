@@ -677,11 +677,18 @@ test('deferred provider work does not block editing and cannot overwrite an inte
   })
   const pendingHover = hover(1)
   await started.promise
+  let timeout: ReturnType<typeof setTimeout> | undefined
   try {
     const edit = WrapCommands.wrapCommand((state: any) => ({ ...state, text: 'typed' }))
-    await edit(1)
+    await Promise.race([
+      edit(1),
+      new Promise<never>((_resolve, reject) => {
+        timeout = setTimeout(() => reject(new Error('Hover blocked editing')), 1000)
+      }),
+    ])
     expect((EditorStates.get(1).newState as any).text).toBe('typed')
   } finally {
+    clearTimeout(timeout)
     provider.resolve()
     await pendingHover
   }
