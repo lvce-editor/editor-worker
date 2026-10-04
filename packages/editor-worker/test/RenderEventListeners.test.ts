@@ -11,10 +11,29 @@ test('renders a lightbulb click listener that opens source actions', () => {
   })
 })
 
+test('stops hover mouse-down from reaching the editor focus handler', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleHoverMouseDown,
+    params: [],
+    stopPropagation: true,
+  })
+})
+
 test('renderEventListeners - handles Alt key release', () => {
   expect(RenderEventListeners.renderEventListeners()).toContainEqual({
     name: DomEventListenerFunctions.HandleKeyUp,
     params: ['handleKeyUp', EventExpression.Key],
+  })
+})
+
+test('renderEventListeners - dismisses editor hovers on pointer exit and cancels on re-entry', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleMouseOut,
+    params: ['handleMouseLeave', 'event.currentTarget.dataset.uid'],
+  })
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleMouseOver,
+    params: ['handleMouseEnter', 'event.currentTarget.dataset.uid'],
   })
 })
 

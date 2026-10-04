@@ -1,0 +1,14 @@
+{
+  "activation": ["onDiagnostic:pending-diagnostics"],
+  "browser": "dist/main.js",
+  "diagnosticProviders": [
+    {
+      "id": "fast-pending-diagnostics",
+      "languageId": "pending-diagnostics"
+    }
+  ],
+  "id": "sample.diagnostic-provider-fast",
+  "isolated": true,
+  "name": "Sample Fast Diagnostic Provider",
+  "version": "0.0.0"
+}

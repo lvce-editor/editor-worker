@@ -5,6 +5,11 @@ import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEven
 export const renderEventListeners = (): readonly DomEventListener[] => {
   return [
     {
+      name: DomEventListenerFunctions.HandleHoverMouseDown,
+      params: [],
+      stopPropagation: true,
+    },
+    {
       name: DomEventListenerFunctions.HandleLightBulbClick,
       params: ['showSourceActions3'],
       preventDefault: true,
@@ -28,6 +33,14 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     {
       name: DomEventListenerFunctions.HandleMouseMove,
       params: ['handleMouseMove', EventExpression.ClientX, EventExpression.ClientY, EventExpression.AltKey],
+    },
+    {
+      name: DomEventListenerFunctions.HandleMouseOut,
+      params: ['handleMouseLeave', 'event.currentTarget.dataset.uid'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleMouseOver,
+      params: ['handleMouseEnter', 'event.currentTarget.dataset.uid'],
     },
     {
       name: DomEventListenerFunctions.HandleKeyUp,

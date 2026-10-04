@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, expect, jest, test } from '@jest/globals'
+import { WhenExpression, WidgetId } from '@lvce-editor/constants'
 
 const updateDerivedStateMock = jest.fn()
 const editorDiagnosticEffectApplyMock: any = jest.fn()
@@ -43,6 +44,8 @@ jest.unstable_mockModule('../src/parts/EditorDiagnosticEffect/EditorDiagnosticEf
   },
 }))
 
+const { handleFocus } = await import('../src/parts/EditorCommand/EditorCommandHandleFocus.ts')
+const { handleBlur } = await import('../src/parts/EditorCommand/EditorCommandBlur.ts')
 const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
 const WrapCommands = await import('../src/parts/WrapCommands/WrapCommands.ts')
 
@@ -587,4 +590,160 @@ test('does not synchronize document state with another uri', async () => {
   await command(1)
 
   expect(EditorStates.get(2).newState).toBe(secondState)
+})
+
+test('ignores editor focus events queued while a rename widget is opening', async () => {
+  const editor = {
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+    modified: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    widgetRevision: 0,
+    widgets: [],
+  }
+  EditorStates.set(1, editor as any, editor as any)
+  const started = Promise.withResolvers<void>()
+  const finish = Promise.withResolvers<void>()
+  const renameWidget = { id: WidgetId.Rename }
+  const openRename = WrapCommands.wrapCommand(async (state: any) => {
+    started.resolve()
+    await finish.promise
+    return {
+      ...state,
+      focus: WhenExpression.FocusEditorRename,
+      focused: false,
+      widgetRevision: 1,
+      widgets: [renameWidget],
+    }
+  })
+  const opening = openRename(1)
+  await started.promise
+  const focusing = WrapCommands.wrapFocusCommand(handleFocus)(1)
+  const blurring = WrapCommands.wrapCommand(handleBlur)(1)
+  finish.resolve()
+  await Promise.all([opening, focusing, blurring])
+
+  expect(EditorStates.get(1).newState).toMatchObject({
+    focus: WhenExpression.FocusEditorRename,
+    focused: false,
+    widgets: [renameWidget],
+  })
+})
+
+test('applies a new editor focus event after a widget has opened', async () => {
+  const editor = {
+    focus: WhenExpression.FocusEditorRename,
+    focused: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    widgetRevision: 1,
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  await WrapCommands.wrapFocusCommand(handleFocus)(1)
+
+  expect(EditorStates.get(1).newState).toMatchObject({
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+  })
+})
+
+test('keeps a new editor focus event queued after a blur', async () => {
+  const editor = {
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+    modified: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    widgetRevision: 0,
+    widgets: [],
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  const blurring = WrapCommands.wrapCommand(handleBlur)(1)
+  const focusing = WrapCommands.wrapFocusCommand(handleFocus)(1)
+  await Promise.all([blurring, focusing])
+
+  expect(EditorStates.get(1).newState.focused).toBe(true)
+})
+
+test('deferred provider work does not block editing and cannot overwrite an intervening edit', async () => {
+  const started = Promise.withResolvers<void>()
+  const provider = Promise.withResolvers<void>()
+  const hover = WrapCommands.wrapDeferredCommand(async (state: any) => {
+    started.resolve()
+    await provider.promise
+    return { ...state, text: 'stale hover state' }
+  })
+  const pendingHover = hover(1)
+  await started.promise
+  let timeout: ReturnType<typeof setTimeout> | undefined
+  try {
+    const edit = WrapCommands.wrapCommand((state: any) => ({ ...state, text: 'typed' }))
+    await Promise.race([
+      edit(1),
+      new Promise<never>((_resolve, reject) => {
+        timeout = setTimeout(() => reject(new Error('Hover blocked editing')), 1000)
+      }),
+    ])
+    expect((EditorStates.get(1).newState as any).text).toBe('typed')
+  } finally {
+    clearTimeout(timeout)
+    provider.resolve()
+    await pendingHover
+  }
+  expect((EditorStates.get(1).newState as any).text).toBe('typed')
+})
+
+test('applies deferred results when the editor snapshot is still current', async () => {
+  const command = WrapCommands.wrapDeferredCommand(async (state: any) => ({ ...state, text: 'hover' }))
+  await command(1)
+  expect((EditorStates.get(1).newState as any).text).toBe('hover')
+})
+
+test('captures deferred state after earlier edits have committed', async () => {
+  const command = WrapCommands.wrapCommand((state: any) => ({ ...state, text: 'edit' }))
+  const seen: string[] = []
+  const hover = WrapCommands.wrapDeferredCommand(async (state: any) => {
+    seen.push(state.text)
+    return state
+  })
+  await Promise.all([command(1), hover(1)])
+  expect(seen).toEqual(['edit'])
+})
+
+test('deferred failures reject their caller without blocking later commands', async () => {
+  const command = WrapCommands.wrapDeferredCommand(async () => {
+    throw new Error('provider failed')
+  })
+  await expect(command(1)).rejects.toThrow('provider failed')
+  await WrapCommands.wrapCommand((state: any) => ({ ...state, text: 'still responsive' }))(1)
+  expect((EditorStates.get(1).newState as any).text).toBe('still responsive')
+})
+
+test.each([false, true])('does not apply deferred results after disposal (recreate: %s)', async (recreate) => {
+  const started = Promise.withResolvers<void>()
+  const provider = Promise.withResolvers<void>()
+  const command = WrapCommands.wrapDeferredCommand(async (state: any) => {
+    started.resolve()
+    await provider.promise
+    return { ...state, text: 'stale' }
+  })
+  const pending = command(1)
+  await started.promise
+  EditorStates.dispose(1)
+  if (recreate) {
+    const state = { text: 'recreated' } as any
+    EditorStates.set(1, state, state)
+  }
+  provider.resolve()
+  await pending
+  expect((EditorStates.get(1)?.newState as any)?.text).toBe(recreate ? 'recreated' : undefined)
+})
+
+test('does not invoke a deferred provider for an absent editor', async () => {
+  const provider = jest.fn<(state: any) => Promise<any>>()
+  EditorStates.dispose(1)
+  await WrapCommands.wrapDeferredCommand(provider)(1)
+  expect(provider).not.toHaveBeenCalled()
 })

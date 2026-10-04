@@ -17,8 +17,8 @@
       ]
     },
     "packages/e2e-status-bar": {
-      "entry": ["src/**/*.ts", "server/server.js"],
-      "project": ["src/**/*.ts", "server/**/*.js"]
+      "entry": ["src/**/*.ts"],
+      "project": ["src/**/*.ts"]
     },
     "packages/editor-worker": {
       "entry": ["src/editorWorkerMain.ts", "test/**/*.test.ts"],

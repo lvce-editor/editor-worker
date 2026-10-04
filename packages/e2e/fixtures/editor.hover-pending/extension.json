@@ -1,0 +1,29 @@
+{
+  "id": "test.editor-hover-pending",
+  "name": "Pending Hover",
+  "browser": "dist/main.js",
+  "isolated": true,
+  "activation": ["onHover:pending-hover", "onCommand:pendingHover.wait", "onCommand:pendingHover.resolve"],
+  "hoverProviders": [
+    {
+      "id": "pending-hover",
+      "languageId": "pending-hover"
+    }
+  ],
+  "languages": [
+    {
+      "id": "pending-hover",
+      "extensions": [".pending-hover"]
+    }
+  ],
+  "commands": [
+    {
+      "id": "pendingHover.wait",
+      "label": "Wait for hover request"
+    },
+    {
+      "id": "pendingHover.resolve",
+      "label": "Resolve hover request"
+    }
+  ]
+}

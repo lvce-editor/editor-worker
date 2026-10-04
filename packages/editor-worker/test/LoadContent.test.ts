@@ -11,6 +11,13 @@ const measureCharacterWidthMock: any = jest.fn()
 const readFileMock: any = jest.fn()
 const rendererInvokeMock: any = jest.fn()
 
+jest.unstable_mockModule('../src/parts/FileSystemWorker/FileSystemWorker.ts', () => ({
+  invoke: (method: string, ...args: any[]) =>
+    method === 'FileSystem.readFile'
+      ? readFileMock(...args)
+      : rendererInvokeMock('Application.execute', args[0], 'FileSystem.readFile', ...args.slice(2)),
+}))
+
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   ExtensionHost: {
     invoke: extensionHostInvoke,
@@ -154,6 +161,15 @@ test('loadContent returns error state when reading file fails', async () => {
   expect(readFileMock).toHaveBeenCalledWith('file:///test.txt')
 })
 
+test('loadContent does not focus the editor when focus is false and reading file fails', async () => {
+  readFileMock.mockRejectedValue(new Error('Failed to read file'))
+
+  const result = await LoadContent.loadContent(createState(), undefined, false, false)
+
+  expect(result.loadError).toBe('Failed to read file')
+  expect(result.focused).toBe(false)
+})
+
 test('loads a separate document for the same uri in another application', async () => {
   const source = { ...createState(), applicationId: 'source', id: 2, initial: false, lines: ['unsaved source'], modified: true, uid: 2 }
   EditorStates.set(2, source, source)
@@ -210,6 +226,15 @@ test('loadContent returns loaded text without requesting diagnostics', async () 
   expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
 })
 
+test('loadContent does not focus the editor when focus is false', async () => {
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), undefined, false, false)
+
+  expect(result.lines).toEqual(['test'])
+  expect(result.focused).toBe(false)
+})
+
 test('loadContent uses a tokenizer from a later contribution for the same language', async () => {
   getLanguagesMock.mockResolvedValue([
     { extensions: ['.txt'], id: 'plaintext' },
@@ -220,6 +245,29 @@ test('loadContent uses a tokenizer from a later contribution for the same langua
   await LoadContent.loadContent(createState(), undefined)
 
   expect(loadTokenizerMock).toHaveBeenCalledWith('plaintext', '/test/tokenizePlainText.js')
+})
+
+test('loadContent restores a valid explicitly selected language mode', async () => {
+  getLanguagesMock.mockResolvedValue([
+    { extensions: ['.txt'], id: 'plaintext', tokenize: '' },
+    { id: 'javascript', tokenize: '/test/tokenizeJavaScript.js' },
+  ])
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), { explicitLanguageId: 'javascript' })
+
+  expect(result.languageId).toBe('javascript')
+  expect(result.explicitLanguageId).toBe('javascript')
+  expect(loadTokenizerMock).toHaveBeenCalledWith('javascript', '/test/tokenizeJavaScript.js')
+})
+
+test('loadContent ignores a saved language mode that is not registered', async () => {
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), { explicitLanguageId: 'unknown' })
+
+  expect(result.languageId).toBe('plaintext')
+  expect(result.explicitLanguageId).toBeUndefined()
 })
 
 test('loadContent reuses unsaved content from another editor for the same uri', async () => {
@@ -283,4 +331,99 @@ test('loadContent ignores malformed saved history', async () => {
 
   expect(result.redoStack).toEqual([])
   expect(result.undoStack).toEqual([])
+})
+
+for (const formatOnSave of [true, false]) {
+  test(`loads formatOnSave=${formatOnSave} into the editor state`, async () => {
+    const preferences = await getEditorPreferencesMock()
+    getEditorPreferencesMock.mockResolvedValue({ ...preferences, formatOnSave })
+    readFileMock.mockResolvedValue('let x=1')
+    const result = await LoadContent.loadContent(createState(), undefined)
+    expect(result.formatOnSave).toBe(formatOnSave)
+  })
+}
+
+test('confirmed large files disable automatic services and tokenizer loading', async () => {
+  getEditorPreferencesMock.mockResolvedValue({
+    breadcrumbsEnabled: true,
+    diagnosticsEnabled: true,
+    formatOnSave: true,
+    hoverEnabled: true,
+    isQuickSuggestionsEnabled: true,
+    minimapEnabled: true,
+    rowHeight: 20,
+  })
+  readFileMock.mockResolvedValue('https://example.com\nconst x = 1')
+  const result = await LoadContent.loadContent(createState(), undefined, true)
+  expect(result).toMatchObject({
+    breadcrumbsEnabled: false,
+    completionsOnType: false,
+    decorations: [],
+    diagnosticsEnabled: false,
+    formatOnSave: false,
+    hoverEnabled: false,
+    isQuickSuggestionsEnabled: false,
+    largeFile: true,
+    minimapEnabled: false,
+  })
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+  expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
+})
+
+test('large files automatically disable services and tokenizer loading', async () => {
+  getEditorPreferencesMock.mockResolvedValue({
+    breadcrumbsEnabled: true,
+    diagnosticsEnabled: true,
+    formatOnSave: true,
+    hoverEnabled: true,
+    isQuickSuggestionsEnabled: true,
+    minimapEnabled: true,
+    rowHeight: 20,
+  })
+  readFileMock.mockResolvedValue('x'.repeat(10 * 1024 * 1024 + 1))
+  const result = await LoadContent.loadContent(createState(), undefined)
+  expect(result).toMatchObject({
+    breadcrumbsEnabled: false,
+    diagnosticsEnabled: false,
+    formatOnSave: false,
+    hoverEnabled: false,
+    isQuickSuggestionsEnabled: false,
+    largeFile: true,
+    minimapEnabled: false,
+  })
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+  expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
+})
+
+test('large file mode survives restoring saved state', async () => {
+  readFileMock.mockResolvedValue('text')
+  const result = await LoadContent.loadContent(createState(), { largeFile: true })
+  expect(result.largeFile).toBe(true)
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+})
+
+test('split editors inherit large file mode and unsaved content', async () => {
+  const source = { ...createState(), id: 2, initial: false, largeFile: true, lines: ['edited'], modified: true }
+  EditorStates.set(2, source, source)
+  const result = await LoadContent.loadContent(createState(), undefined)
+  expect(result).toMatchObject({ largeFile: true, lines: ['edited'], modified: true })
+  expect(readFileMock).not.toHaveBeenCalled()
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+})
+
+test('closing while a file read is pending does not create document lines or request tokenization', async () => {
+  const { promise, resolve } = Promise.withResolvers<string>()
+  const started = Promise.withResolvers<void>()
+  readFileMock.mockImplementation(() => {
+    started.resolve()
+    return promise
+  })
+  const state = { ...createState(), lifecycle: { disposed: false } }
+  const pending = LoadContent.loadContent(state, undefined)
+  await started.promise
+  state.lifecycle.disposed = true
+  resolve('large document contents')
+  expect(await pending).toBe(state)
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+  expect(getVisibleMock).not.toHaveBeenCalled()
 })

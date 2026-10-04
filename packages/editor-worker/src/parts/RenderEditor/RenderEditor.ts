@@ -23,7 +23,7 @@ const renderLines = {
     if (incrementalEdits !== emptyIncrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
     }
-    const { differences, endOfLineDecorations, textInfos } = newState
+    const { diagnostics, differences, endOfLineDecorations, textInfos } = newState
     newState.differences = differences
     const { highlightedLine, visibleLineIndices, visibleViewLineIndices } = newState
     const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(
@@ -34,6 +34,8 @@ const renderLines = {
       visibleLineIndices,
       endOfLineDecorations,
       visibleViewLineIndices,
+      newState.problemsHighlightedRow,
+      diagnostics || [],
     )
     return [/* method */ 'setText', dom]
   },
@@ -46,21 +48,26 @@ const renderLines = {
     oldState.decorations === newState.decorations &&
     oldState.embeds === newState.embeds &&
     oldState.endOfLineDecorations === newState.endOfLineDecorations &&
+    oldState.diagnostics === newState.diagnostics &&
     oldState.deltaX === newState.deltaX &&
     oldState.width === newState.width &&
     oldState.highlightedLine === newState.highlightedLine &&
+    oldState.problemsHighlightedRow === newState.problemsHighlightedRow &&
     oldState.debugEnabled === newState.debugEnabled,
 }
 
 const renderSelections = {
   apply: (oldState: any, newState: any) => {
     const { cursorInfos = [], selectionInfos = [] } = newState
-    const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos)
-    const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos, newState.focused)
+    const cursorsDom = newState.focused ? GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos) : []
+    const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos, newState.focused, newState.roundedSelection)
     return [/* method */ 'setSelections', cursorsDom, selectionsDom]
   },
   isEqual: (oldState: any, newState: any) =>
-    oldState.cursorInfos === newState.cursorInfos && oldState.selectionInfos === newState.selectionInfos && oldState.focused === newState.focused,
+    oldState.cursorInfos === newState.cursorInfos &&
+    oldState.selectionInfos === newState.selectionInfos &&
+    oldState.focused === newState.focused &&
+    oldState.roundedSelection === newState.roundedSelection,
 }
 
 const renderCss = {

@@ -68,6 +68,7 @@ import * as HandleDoubleClick from '../EditorCommand/EditorCommandHandleDoubleCl
 import * as HandleFocus from '../EditorCommand/EditorCommandHandleFocus.ts'
 import * as HandleKeyUp from '../EditorCommand/EditorCommandHandleKeyUp.ts'
 import * as HandleMouseDown from '../EditorCommand/EditorCommandHandleMouseDown.ts'
+import * as HandleMouseLeave from '../EditorCommand/EditorCommandHandleMouseLeave.ts'
 import * as HandleMouseMove from '../EditorCommand/EditorCommandHandleMouseMove.ts'
 import * as EditorCommandHandleMouseMoveWithAltKey from '../EditorCommand/EditorCommandHandleMouseMoveWithAltKey.ts'
 import * as EditorCommandHandleNativeBeforeInputFromContentEditable from '../EditorCommand/EditorCommandHandleNativeBeforeInputFromContentEditable.ts'
@@ -106,7 +107,6 @@ import * as EditorPaste from '../EditorCommand/EditorCommandPaste.ts'
 import * as PasteText from '../EditorCommand/EditorCommandPasteText.ts'
 import * as EditorRedo from '../EditorCommand/EditorCommandRedo.ts'
 import * as ReplaceRange from '../EditorCommand/EditorCommandReplaceRange.ts'
-import * as Save from '../EditorCommand/EditorCommandSave.ts'
 import * as SelectAll from '../EditorCommand/EditorCommandSelectAll.ts'
 import * as SelectAllLeft from '../EditorCommand/EditorCommandSelectAllLeft.ts'
 import * as SelectAllOccurrences from '../EditorCommand/EditorCommandSelectAllOccurrences.ts'
@@ -140,6 +140,7 @@ import * as EditorTabCompletion from '../EditorCommand/EditorCommandTabCompletio
 import * as EditorToggleBlockComment from '../EditorCommand/EditorCommandToggleBlockComment.ts'
 import { toggleBreakpoint } from '../EditorCommand/EditorCommandToggleBreakpoint.ts'
 import * as EditorToggleComment from '../EditorCommand/EditorCommandToggleComment.ts'
+import * as EditorCommandToggleCompletion from '../EditorCommand/EditorCommandToggleCompletion.ts'
 import * as EditorToggleLineComment from '../EditorCommand/EditorCommandToggleLineComment.ts'
 import * as EditorType from '../EditorCommand/EditorCommandType.ts'
 import * as EditorTypeWithAutoClosing from '../EditorCommand/EditorCommandTypeWithAutoClosing.ts'
@@ -177,6 +178,7 @@ import { hotReload } from '../HotReload/HotReload.ts'
 import { configure as configureIds } from '../Id/Id.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import { loadContent } from '../LoadContent/LoadContent.ts'
+import * as Markdown from '../Markdown/Markdown.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RefreshGutterDecorations from '../RefreshGutterDecorations/RefreshGutterDecorations.ts'
@@ -185,6 +187,8 @@ import { render2 } from '../Render2/Render2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
+import { revealProblem } from '../RevealProblem/RevealProblem.ts'
+import * as Save from '../SaveCommand/SaveCommand.ts'
 import { saveState } from '../SaveState/SaveState.ts'
 import {
   sendDeprecatedExtensionHostPortToExtensionManagementWorker,
@@ -196,10 +200,15 @@ import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
-import { wrapCommand } from '../WrapCommands/WrapCommands.ts'
+import { wrapCommand, wrapDeferredCommand, wrapFocusCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
 
 const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
   return ExecuteViewletCommand.executeViewletCommand(commandMap, uid, commandId, ...args)
+}
+
+const resize = async (editor: any, dimensions: any) => {
+  const resizedEditor = Resize.resize(editor, dimensions, editor.columnWidth)
+  return EditorFindWidget.resize(resizedEditor, dimensions)
 }
 
 export const commandMap = {
@@ -308,10 +317,12 @@ export const commandMap = {
   'Editor.handleClickAtPosition': wrapCommand(handleClickAtPosition),
   'Editor.handleContextMenu': wrapCommand(EditorCommandHandleContextMenu.handleContextMenu),
   'Editor.handleDoubleClick': wrapCommand(HandleDoubleClick.handleDoubleClick),
-  'Editor.handleFocus': wrapCommand(HandleFocus.handleFocus),
+  'Editor.handleFocus': wrapFocusCommand(HandleFocus.handleFocus),
   'Editor.handleKeyUp': wrapCommand(HandleKeyUp.handleKeyUp, true),
   'Editor.handleMergeConflictActionsMouseDown': wrapCommand(EditorCommandAcceptMergeConflict.handleMergeConflictActionsMouseDown),
   'Editor.handleMouseDown': wrapCommand(HandleMouseDown.handleMouseDown),
+  'Editor.handleMouseEnter': HandleMouseLeave.handleMouseEnter,
+  'Editor.handleMouseLeave': HandleMouseLeave.handleMouseLeave,
   'Editor.handleMouseMove': wrapCommand(HandleMouseMove.handleMouseMove),
   'Editor.handleMouseMoveWithAltKey': wrapCommand(EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey),
   'Editor.handleNativeSelectionChange': HandleNativeSelectionChange.editorHandleNativeSelectionChange,
@@ -369,8 +380,9 @@ export const commandMap = {
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
-  'Editor.resize': wrapCommand(Resize.resize),
-  'Editor.save': wrapCommand(Save.save),
+  'Editor.resize': wrapCommand(resize),
+  'Editor.revealProblem': wrapCommand(revealProblem),
+  'Editor.save': Save.save,
   'Editor.saveState': wrapGetter(saveState),
   'Editor.scrollByLines': wrapCommand(SetDelta.scrollByLines),
   'Editor.selectAll': wrapCommand(SelectAll.selectAll),
@@ -402,8 +414,8 @@ export const commandMap = {
   'Editor.setSelections': wrapCommand(SetSelections.setSelections),
   'Editor.setSelections2': ExternalGetPositionAtCursor.setSelections2,
   'Editor.setText': wrapCommand(SetText.setText),
-  'Editor.showHover': wrapCommand(EditorCommandShowHover.showHover),
-  'Editor.showHover2': wrapCommand(EditorCommandShowHover.showHover),
+  'Editor.showHover': wrapDeferredCommand(EditorCommandShowHover.showHover),
+  'Editor.showHover2': wrapDeferredCommand(EditorCommandShowHover.showHover),
   'Editor.showSignatureHelp': wrapCommand(EditorCommandShowSignatureHelp.showSignatureHelp),
   'Editor.showSourceActions': wrapCommand(EditorCommandShowSourceActions3.showSourceActions),
   'Editor.showSourceActions2': wrapCommand(EditorCommandShowSourceActions3.showSourceActions),
@@ -415,6 +427,7 @@ export const commandMap = {
   'Editor.toggleBlockComment': wrapCommand(EditorToggleBlockComment.toggleBlockComment),
   'Editor.toggleBreakpoint': wrapCommand(toggleBreakpoint),
   'Editor.toggleComment': wrapCommand(EditorToggleComment.toggleComment),
+  'Editor.toggleCompletion': wrapCommand(EditorCommandToggleCompletion.toggleCompletion),
   'Editor.toggleLineComment': wrapCommand(EditorToggleLineComment.editorToggleLineComment),
   'Editor.toggleMinimap': ToggleMinimap.toggleMinimap,
   'Editor.type': wrapCommand(EditorType.type, true),
@@ -426,6 +439,7 @@ export const commandMap = {
   'Editor.updateDebugInfo': UpdateDebugInfo.updateDebugInfo,
   'Editor.updateDiagnostics': wrapCommand(UpdateDiagnostics.requestDiagnostics),
   'Editor.updateDiagnosticsAll': UpdateDiagnostics.updateDiagnosticsAll,
+  'Editor.waitForDiagnostics': UpdateDiagnostics.waitForDiagnostics,
   'EditorCompletion.close': EditorCompletionWidget.close,
   'EditorCompletion.closeDetails': EditorCompletionWidget.closeDetails,
   'EditorCompletion.focusFirst': EditorCompletionWidget.focusFirst,
@@ -437,6 +451,8 @@ export const commandMap = {
   'EditorCompletion.handleEditorClick': EditorCompletionWidget.handleEditorClick,
   'EditorCompletion.handleEditorDeleteLeft': EditorCompletionWidget.handleEditorDeleteLeft,
   'EditorCompletion.handleEditorType': EditorCompletionWidget.handleEditorType,
+  'EditorCompletion.handleMouseEnter': HandleMouseLeave.handleMouseEnter,
+  'EditorCompletion.handleMouseLeave': HandleMouseLeave.handleMouseLeave,
   'EditorCompletion.handlePointerDown': EditorCompletionWidget.handlePointerDown,
   'EditorCompletion.handleWheel': EditorCompletionWidget.handleWheel,
   'EditorCompletion.openDetails': EditorCompletionWidget.openDetails,
@@ -456,9 +472,9 @@ export const commandMap = {
   'EditorSourceAction.selectCurrent': EditorSourceActionWidget.selectCurrent,
   'EditorSourceAction.selectIndex': EditorSourceActionWidget.selectIndex,
   'EditorSourceAction.selectItem': EditorSourceActionWidget.selectItem,
-
   'EditorSourceAction.toggleDetails': EditorSourceActionWidget.toggleDetails,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
+
   'FindWidget.close': EditorFindWidget.close,
   'FindWidget.focusCloseButton': EditorFindWidget.focusCloseButton,
   'FindWidget.focusFind': EditorFindWidget.focusFind,
@@ -490,6 +506,8 @@ export const commandMap = {
   'Font.ensure': Font.ensure,
   'HandleMessagePort.handleMessagePort': HandleMessagePort.handleMessagePort,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
+  'Hover.handleMouseEnter': HandleMouseLeave.handleMouseEnter,
+  'Hover.handleMouseLeave': HandleMouseLeave.handleMouseLeave,
   'Hover.handleSashPointerDown': EditorHover.handleSashPointerDown,
   'Hover.handleSashPointerMove': EditorHover.handleSashPointerMove,
   'Hover.handleSashPointerUp': EditorHover.handleSashPointerUp,
@@ -500,6 +518,7 @@ export const commandMap = {
   'Listener.register': RegisterListener.registerListener,
   'Listener.registerListener': RegisterListener.registerListener,
   'Listener.unregister': UnregisterListener.unregisterListener,
+  'Markdown.getVirtualDomFromMarkdown': Markdown.getVirtualDomFromMarkdown,
   'SendMessagePortToExtensionHostWorker.sendMessagePortToExtensionHostWorker': sendDeprecatedExtensionHostPortToExtensionManagementWorker,
   'SendMessagePortToExtensionManagementWorker.sendMessagePortToExtensionManagementWorker': sendMessagePortToExtensionManagementWorker,
 }

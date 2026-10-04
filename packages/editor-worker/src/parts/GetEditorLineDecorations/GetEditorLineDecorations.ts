@@ -30,6 +30,9 @@ const getProviderDecorations = (results: unknown, rowIndex: number): readonly Ed
 }
 
 export const getEditorLineDecorations = async (editor: EditorState, rowIndex: number): Promise<readonly EditorLineDecoration[]> => {
+  if (editor.largeFile) {
+    return []
+  }
   const textDocument = {
     languageId: editor.languageId,
     text: TextDocument.getText(editor),

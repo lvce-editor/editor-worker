@@ -2,13 +2,23 @@ import { expect, test } from '@jest/globals'
 import * as EditorCommandGoTo from '../src/parts/EditorCommand/EditorCommandGoTo.ts'
 
 const createEditor = () => ({
+  charWidth: 8,
   columnWidth: 8,
+  deltaX: 0,
+  fontFamily: 'Fira Code',
+  fontSize: 15,
+  fontWeight: 400,
+  gutterWidth: 0,
+  isMonospaceFont: true,
+  letterSpacing: 0,
   lines: ['missingDefinition'],
   rowHeight: 20,
   selections: new Uint32Array([0, 8, 0, 8]),
+  tabSize: 2,
   uid: 1,
   uri: 'file:///test.ts',
   widgets: [],
+  width: 300,
   x: 10,
   y: 30,
 })

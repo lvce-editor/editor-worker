@@ -2,6 +2,7 @@ import type { EditorState } from '../State/State.ts'
 
 export const isEqual = (oldState: EditorState, newState: EditorState): boolean => {
   return (
+    oldState.breadcrumbFileIcon === newState.breadcrumbFileIcon &&
     oldState.breadcrumbsEnabled === newState.breadcrumbsEnabled &&
     oldState.breakPoints === newState.breakPoints &&
     oldState.bracketMatchInfos === newState.bracketMatchInfos &&
@@ -13,12 +14,17 @@ export const isEqual = (oldState: EditorState, newState: EditorState): boolean =
     oldState.gutterDecorations === newState.gutterDecorations &&
     oldState.highlightActiveLineNumber === newState.highlightActiveLineNumber &&
     oldState.highlightedLine === newState.highlightedLine &&
+    oldState.problemsHighlightedRow === newState.problemsHighlightedRow &&
     oldState.lineNumbers === newState.lineNumbers &&
     oldState.loadError === newState.loadError &&
     oldState.textInfos === newState.textInfos &&
     oldState.visibleViewLineIndices === newState.visibleViewLineIndices &&
     oldState.differences === newState.differences &&
     oldState.initial === newState.initial &&
+    oldState.scrollBarHeight === newState.scrollBarHeight &&
+    oldState.width === newState.width &&
+    oldState.longestLineWidth === newState.longestLineWidth &&
+    oldState.minimumSliderSize === newState.minimumSliderSize &&
     oldState.selectionInfos === newState.selectionInfos &&
     oldState.selections === newState.selections &&
     oldState.workspaceUri === newState.workspaceUri

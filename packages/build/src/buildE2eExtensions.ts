@@ -1,5 +1,6 @@
 import { build } from 'esbuild'
 import { join } from 'node:path'
+import { downloadHtmlExtension } from './downloadHtmlExtension.ts'
 import { root } from './root.ts'
 
 const extensionNames = [
@@ -11,14 +12,20 @@ const extensionNames = [
   'editor.completion-open-on-type',
   'editor.completion-scroll',
   'editor.diagnostics-scroll-race',
+  'editor.diagnostics-retained-fast',
+  'editor.diagnostics-retained-slow',
+  'editor.format-on-save',
   'editor.gutter-decoration-provider',
   'editor.hover-show',
+  'editor.hover-pending',
   'editor.rename-provider',
   'editor.source-actions-execute',
   'editor.source-actions-open',
+  'editor.unnecessary-diagnostic',
   'sample.diagnostic-provider',
   'sample.diagnostic-provider-empty',
   'sample.diagnostic-provider-error',
+  'sample.diagnostic-provider-fast',
   'sample.diagnostic-provider-pending',
   'sample.diagnostic-provider-update-on-type',
   'write-file-error',
@@ -38,5 +45,5 @@ const buildE2eExtension = async (extensionName: string): Promise<void> => {
 }
 
 export const buildE2eExtensions = async (): Promise<void> => {
-  await Promise.all(extensionNames.map(buildE2eExtension))
+  await Promise.all([...extensionNames.map(buildE2eExtension), downloadHtmlExtension()])
 }

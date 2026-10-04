@@ -8,6 +8,13 @@ test('is inactive when diagnostics are disabled', () => {
   expect(editorDiagnosticEffect.isActive(oldEditor as any, newEditor as any)).toBe(false)
 })
 
+test('is inactive when loading the editor content failed', () => {
+  const oldEditor = { initial: false, lines: [] }
+  const newEditor = { diagnosticsEnabled: true, initial: false, lines: [], loadError: 'Failed to read file' }
+
+  expect(editorDiagnosticEffect.isActive(oldEditor as any, newEditor as any)).toBe(false)
+})
+
 test('is inactive when the lines reference is unchanged', () => {
   const lines = ['text']
   const oldEditor = { lines }
@@ -26,6 +33,13 @@ test('is inactive while the initial editor content is loading', () => {
 test('is active when the lines reference changes', () => {
   const oldEditor = { lines: ['text'] }
   const newEditor = { diagnosticsEnabled: true, lines: ['text'] }
+
+  expect(editorDiagnosticEffect.isActive(oldEditor as any, newEditor as any)).toBe(true)
+})
+
+test('is active when the language mode changes without a text edit', () => {
+  const oldEditor = { languageId: 'javascript', lines: ['const value: string = "text"'] }
+  const newEditor = { ...oldEditor, diagnosticsEnabled: true, languageId: 'typescript' }
 
   expect(editorDiagnosticEffect.isActive(oldEditor as any, newEditor as any)).toBe(true)
 })

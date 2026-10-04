@@ -40,6 +40,10 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       label: EditorStrings.formatDocument(),
     },
     {
+      id: 'Editor.organizeImports',
+      label: EditorStrings.editorOrganizeImports(),
+    },
+    {
       id: 'Editor.showHover',
       label: EditorStrings.editorShowHover(),
     },
@@ -140,6 +144,10 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
     {
       id: 'Editor.toggleMinimap',
       label: EditorStrings.viewToggleMinimap(),
+    },
+    {
+      id: 'Editor.toggleCompletion',
+      label: EditorStrings.editorToggleSuggestWidget(),
     },
   ]
 }

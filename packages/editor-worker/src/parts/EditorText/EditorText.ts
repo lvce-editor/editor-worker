@@ -1,4 +1,5 @@
 import * as GetDecorationClassName from '../GetDecorationClassName/GetDecorationClassName.ts'
+import { getLargeFileVisible } from '../GetLargeFileVisible/GetLargeFileVisible.ts'
 import * as GetTokensViewport2 from '../GetTokensViewport2/GetTokensViewport2.ts'
 import * as LoadTokenizers from '../LoadTokenizers/LoadTokenizers.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
@@ -546,15 +547,27 @@ const getLineInfosViewport = (
 }
 
 export const getVisible = async (editor: any, syncIncremental: boolean): Promise<{ differences: number[]; textInfos: string[][] }> => {
+  if (editor.lifecycle?.disposed) {
+    return { differences: [], textInfos: [] }
+  }
+  if (editor.largeFile) {
+    return getLargeFileVisible(editor)
+  }
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
   // invalidStartIndex, lineCache, etc. just for testing editorType
   // editor.invalidStartIndex = changes[0].start.rowIndex
   // @ts-ignore
   const { charWidth, deltaX, lines, width } = editor
-  const visibleLineIndices =
-    editor.visibleLineIndices ||
-    Array.from({ length: Math.min(editor.numberOfVisibleLines, lines.length - editor.minLineY) }, (_, index) => editor.minLineY + index)
+  const visibleLineIndices = (
+    editor.visibleLineIndices ??
+    Array.from(
+      {
+        length: Math.max(0, Math.min(editor.maxLineY ?? editor.minLineY + editor.numberOfVisibleLines, lines.length) - editor.minLineY),
+      },
+      (_, index) => editor.minLineY + index,
+    )
+  ).filter((rowIndex: number) => rowIndex >= 0 && rowIndex < lines.length)
   if (visibleLineIndices.length === 0) {
     return {
       differences: [],
@@ -567,9 +580,15 @@ export const getVisible = async (editor: any, syncIncremental: boolean): Promise
   let { embeddedResults, tokenizersToLoad, tokens } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
   for (let i = 0; tokenizersToLoad.length > 0 && i < maxTokenizerLoadPasses; i++) {
     await LoadTokenizers.loadTokenizers(tokenizersToLoad)
+    if (editor.lifecycle?.disposed) {
+      return { differences: [], textInfos: [] }
+    }
     // @ts-ignore
     const refreshed = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
     ;({ embeddedResults, tokenizersToLoad, tokens } = refreshed)
+  }
+  if (editor.lifecycle?.disposed) {
+    return { differences: [], textInfos: [] }
   }
   const minLineOffset = await TextDocument.offsetAtSync(editor, minLineY, 0)
   const averageCharWidth = charWidth

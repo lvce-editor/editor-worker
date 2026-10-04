@@ -4,9 +4,11 @@ import type { EditorState } from '../State/State.ts'
 import { getEditorVirtualDom } from '../GetEditorVirtualDom/GetEditorVirtualDom.ts'
 import { getScrollBarDiagnostics } from '../GetScrollBarDiagnostics/GetScrollBarDiagnostics.ts'
 import * as RenderedDoms from '../RenderedDoms/RenderedDoms.ts'
+import * as RenderPlainTextAppend from '../RenderPlainTextAppend/RenderPlainTextAppend.ts'
+import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 const getDom = (state: EditorState): readonly VirtualDomNode[] => {
-  const { diagnostics = [], initial, textInfos, visualDecorations = [] } = state
+  const { diagnostics = [], initial, longestLineWidth, minimumSliderSize, textInfos, visualDecorations = [], width } = state
   if (initial && textInfos.length === 0) {
     return []
   }
@@ -15,6 +17,8 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
     ...state,
     diagnostics: visualDecorations,
     scrollBarDiagnostics: getScrollBarDiagnostics(state, diagnostics),
+    scrollBarWidth: ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize),
+    unnecessaryDiagnostics: diagnostics,
   })
 }
 
@@ -31,13 +35,24 @@ const mergeConflictsEqual = (oldState: EditorState, newState: EditorState): bool
 }
 
 export const renderIncremental = (oldState: EditorState, newState: EditorState): any => {
+  const renderedDom = RenderedDoms.get(newState.uid)
+  const textAppendPaths = RenderedDoms.getTextAppendPaths(newState.uid)
+  if (renderedDom && textAppendPaths && RenderPlainTextAppend.canRenderPlainTextAppend(oldState, newState)) {
+    const newDom = RenderPlainTextAppend.updateTextAppendDom(renderedDom, newState, textAppendPaths)
+    RenderedDoms.set(newState.uid, newDom, textAppendPaths)
+    const patches = RenderPlainTextAppend.getTextAppendPatches(newState, textAppendPaths)
+    return [ViewletCommand.SetPatches, newState.uid, patches]
+  }
+
   const oldDom: readonly VirtualDomNode[] =
     oldState.initial || !mergeConflictsEqual(oldState, newState) ? getDom(oldState) : RenderedDoms.get(newState.uid) || getDom(oldState)
   const newDom: readonly VirtualDomNode[] = getDom(newState)
   const patches = diffTree(oldDom, newDom)
+  const newTextAppendPaths =
+    newState.languageId === 'plaintext' && newState.lines.length === 1 ? RenderPlainTextAppend.getTextAppendPaths(newDom) : undefined
+  RenderedDoms.set(newState.uid, newDom, newTextAppendPaths)
   if (patches.length === 0) {
     return []
   }
-  RenderedDoms.set(newState.uid, newDom)
   return [ViewletCommand.SetPatches, newState.uid, patches]
 }

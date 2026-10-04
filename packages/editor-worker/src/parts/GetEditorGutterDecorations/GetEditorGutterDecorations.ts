@@ -39,6 +39,9 @@ const getProviderDecorations = (results: unknown): readonly EditorGutterDecorati
 }
 
 export const getEditorGutterDecorations = async (editor: EditorState): Promise<readonly EditorGutterDecoration[]> => {
+  if (editor.largeFile) {
+    return []
+  }
   const textDocument = {
     languageId: editor.languageId,
     text: TextDocument.getText(editor),

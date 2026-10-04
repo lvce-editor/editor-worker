@@ -1,3 +1,4 @@
+import * as Logger from '../Logger/Logger.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 
 const kLineHeight = 'editor.lineHeight'
@@ -6,23 +7,25 @@ const kFontFamily = 'editor.fontFamily'
 const kLetterSpacing = 'editor.letterSpacing'
 const kLinks = 'editor.links'
 const kTabSize = 'editor.tabSize'
-const kInsertSpaces = 'editor.insertSpaces'
 const kLineNumbers = 'editor.lineNumbers'
 const kHighlightActiveLineNumber = 'editor.highlightActiveLineNumber'
-const kFormatOnSave = 'editor.formatOnSave'
-const kDiagnostics = 'editor.diagnostics'
 const kQuickSuggestions = 'editor.quickSuggestions'
 const kAutoClosingQuotes = 'editor.autoClosingQuotes'
 const kAutoClosingBrackets = 'editor.autoClosingBrackets'
 const kFontWeight = 'editor.fontWeight'
-const kHover = 'editor.hover'
 const kMinimapEnabled = 'editor.minimap.enabled'
 const kMergeConflictActions = 'editor.mergeConflictActions'
-const kBreadcrumbsEnabled = 'breadcrumbs.enabled'
-const kDragAndDropEnabled = 'editor.dragAndDrop'
+const kMinFontSize = 10
+const kMaxFontSize = 100
+const kMaxLineHeight = 100
+const lastWarnings = new Map<string, unknown>()
 
-export const getDragAndDropEnabled = async () => {
-  return (await Preferences.get(kDragAndDropEnabled)) ?? true
+const warnIfChanged = (setting: string, value: unknown, bound: number, direction: string) => {
+  if (Object.is(lastWarnings.get(setting), value)) {
+    return
+  }
+  lastWarnings.set(setting, value)
+  Logger.warn(`[editor-worker] ${setting} value ${value} is too ${direction}; using ${bound}`)
 }
 
 export const isAutoClosingBracketsEnabled = async () => {
@@ -42,15 +45,39 @@ export const isAutoClosingTagsEnabled = async () => {
 }
 
 export const getRowHeight = async () => {
-  return (await Preferences.get(kLineHeight)) || 20
+  const [lineHeight, fontSize] = await Promise.all([Preferences.get(kLineHeight), getFontSize()])
+  if (typeof lineHeight !== 'number' || !Number.isFinite(lineHeight) || lineHeight === 0) {
+    lastWarnings.delete(kLineHeight)
+    return fontSize
+  }
+  if (lineHeight > kMaxLineHeight) {
+    warnIfChanged(kLineHeight, lineHeight, kMaxLineHeight, 'large')
+    return kMaxLineHeight
+  }
+  if (lineHeight < fontSize) {
+    warnIfChanged(kLineHeight, lineHeight, fontSize, 'small')
+    return fontSize
+  }
+  lastWarnings.delete(kLineHeight)
+  return lineHeight
 }
 
 export const getFontSize = async () => {
-  return (await Preferences.get(kFontSize)) || 15 // TODO find out if it is possible to use all numeric values for settings for efficiency, maybe settings could be an array
-}
-
-export const getHoverEnabled = async () => {
-  return (await Preferences.get(kHover)) ?? true
+  const fontSize = await Preferences.get(kFontSize)
+  if (typeof fontSize !== 'number' || !Number.isFinite(fontSize)) {
+    lastWarnings.delete(kFontSize)
+    return 15
+  }
+  if (fontSize < kMinFontSize) {
+    warnIfChanged(kFontSize, fontSize, kMinFontSize, 'small')
+    return kMinFontSize
+  }
+  if (fontSize > kMaxFontSize) {
+    warnIfChanged(kFontSize, fontSize, kMaxFontSize, 'large')
+    return kMaxFontSize
+  }
+  lastWarnings.delete(kFontSize)
+  return fontSize
 }
 
 export const getFontFamily = async () => {
@@ -66,10 +93,6 @@ export const getLetterSpacing = async () => {
 
 export const getTabSize = async () => {
   return (await Preferences.get(kTabSize)) || 2
-}
-
-export const getInsertSpaces = async () => {
-  return (await Preferences.get(kInsertSpaces)) ?? true
 }
 
 export const getLinks = async () => {
@@ -88,14 +111,6 @@ export const getCompletionTriggerCharacters = async () => {
   return ['.', '/']
 }
 
-export const getFormatOnSave = async () => {
-  return (await Preferences.get(kFormatOnSave)) ?? false
-}
-
-export const diagnosticsEnabled = async () => {
-  return (await Preferences.get(kDiagnostics)) ?? false
-}
-
 export const getFontWeight = async () => {
   return (await Preferences.get(kFontWeight)) ?? 400
 }
@@ -106,8 +121,4 @@ export const getMinimapEnabled = async () => {
 
 export const getMergeConflictActionsEnabled = async () => {
   return (await Preferences.get(kMergeConflictActions)) ?? false
-}
-
-export const getBreadcrumbsEnabled = async () => {
-  return (await Preferences.get(kBreadcrumbsEnabled)) ?? false
 }

@@ -1,3 +1,5 @@
+import * as EditorViewport from '../EditorViewport/EditorViewport.ts'
+
 export const getCss = (
   uid: number,
   rowHeight: number,
@@ -5,22 +7,42 @@ export const getCss = (
   scrollBarTop: number,
   scrollBarWidth: number,
   scrollBarLeft: number,
+  deltaY = 0,
 ): string => {
   const editorSelector = `.Editor[data-uid="${uid}"]`
+  const scrollOffset = EditorViewport.getScrollOffset(deltaY, rowHeight)
+  const translate = scrollOffset === 0 ? 'none' : `0px -${scrollOffset}px`
   return `${editorSelector} {
+  --EditorRowContain: size style;
   --EditorRowHeight: ${rowHeight}px;
   --ScrollBarHeight: ${scrollBarHeight}px;
   --ScrollBarTop: ${scrollBarTop}px;
   --ScrollBarWidth: ${scrollBarWidth}px;
   --ScrollBarLeft: ${scrollBarLeft}px;
 }
-${editorSelector} .EditorRow {
-  height: var(--EditorRowHeight);
-  line-height: var(--EditorRowHeight);
+.EditorRow { contain: var(--EditorRowContain, strict); }
+${editorSelector} .SelectionTopLeft { border-top-left-radius: 3px; }
+${editorSelector} .SelectionTopRight { border-top-right-radius: 3px; }
+${editorSelector} .SelectionBottomRight { border-bottom-right-radius: 3px; }
+${editorSelector} .SelectionBottomLeft { border-bottom-left-radius: 3px; }
+${editorSelector} .EditorLayers {
+  height: calc(100% + var(--EditorRowHeight));
+  translate: ${translate};
+}
+${editorSelector} .GutterRows {
+  flex: none;
+  width: 100%;
+  translate: ${translate};
+}
+${editorSelector} .EditorRows,
+${editorSelector} .GutterRows {
+  display: flex;
+  flex-direction: column;
 }
 ${editorSelector} .MergeConflictActions,
 ${editorSelector} .MergeConflictActionsGutter {
   box-sizing: border-box;
+  flex: none;
   height: var(--EditorRowHeight);
   line-height: var(--EditorRowHeight);
 }
@@ -46,14 +68,16 @@ ${editorSelector} .MergeConflictAction:focus-visible {
   outline: none;
   text-decoration: underline;
 }
+${editorSelector} .EditorProblemsHighlightedRow {
+  background: var(--EditorRangeHighlightBackground, rgba(128, 128, 128, 0.18));
+  outline: 1px solid var(--EditorRangeHighlightBorder, rgba(128, 128, 128, 0.35));
+  outline-offset: -1px;
+}
 ${editorSelector} .EditorLineDecoration {
   color: var(--EditorInlineBlameForeground, rgba(255, 255, 255, 0.5));
   font-style: italic;
   margin-left: 2em;
   user-select: none;
-}
-${editorSelector} .LineNumber {
-  position: relative;
 }
 ${editorSelector} .EditorGutterDecoration {
   bottom: 0;

@@ -1,4 +1,25 @@
 import * as EditorPreferences from '../EditorPreferences/EditorPreferences.ts'
+import * as Preferences from '../Preferences/Preferences.ts'
+
+const DEFAULT_HOVER_DELAY = 200
+const DEFAULT_MESSAGE_DELAY = 3000
+const MAX_MESSAGE_DELAY = 10_000
+
+const getHoverDelay = (value: unknown): number => {
+  const delay = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(delay) || delay < 0) {
+    return DEFAULT_HOVER_DELAY
+  }
+  return delay
+}
+
+const getMessageDelay = (value: unknown): number => {
+  const delay = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(delay) || delay < 0 || delay > MAX_MESSAGE_DELAY) {
+    return DEFAULT_MESSAGE_DELAY
+  }
+  return delay
+}
 
 export const getEditorPreferences = async () => {
   const [
@@ -6,7 +27,10 @@ export const getEditorPreferences = async () => {
     fontFamily,
     fontSize,
     fontWeight,
+    formatOnSave,
     hoverEnabled,
+    hoverDelay,
+    messageDelay,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
@@ -22,12 +46,17 @@ export const getEditorPreferences = async () => {
     breadcrumbsEnabled,
     insertSpaces,
     dragAndDropEnabled,
+    roundedSelection,
+    combineWhitespaceTokens,
   ] = await Promise.all([
-    EditorPreferences.diagnosticsEnabled(),
+    Preferences.get('editor.diagnostics'),
     EditorPreferences.getFontFamily(),
     EditorPreferences.getFontSize(),
     EditorPreferences.getFontWeight(),
-    EditorPreferences.getHoverEnabled(),
+    Preferences.get('editor.formatOnSave'),
+    Preferences.get('editor.hover'),
+    Preferences.get('editor.hoverDelay'),
+    Preferences.get('editor.messageDelay'),
     EditorPreferences.isAutoClosingBracketsEnabled(),
     EditorPreferences.isAutoClosingQuotesEnabled(),
     EditorPreferences.isAutoClosingTagsEnabled(),
@@ -40,21 +69,26 @@ export const getEditorPreferences = async () => {
     EditorPreferences.getCompletionTriggerCharacters(),
     EditorPreferences.getMinimapEnabled(),
     EditorPreferences.getMergeConflictActionsEnabled(),
-    EditorPreferences.getBreadcrumbsEnabled(),
-    EditorPreferences.getInsertSpaces(),
-    EditorPreferences.getDragAndDropEnabled(),
+    Preferences.get('breadcrumbs.enabled'),
+    Preferences.get('editor.insertSpaces'),
+    Preferences.get('editor.dragAndDrop'),
+    Preferences.get('editor.roundedSelection'),
+    Preferences.get('editor.combineWhitespaceTokens'),
   ])
   return {
-    breadcrumbsEnabled,
+    breadcrumbsEnabled: breadcrumbsEnabled ?? false,
+    combineWhitespaceTokens: combineWhitespaceTokens ?? true,
     completionTriggerCharacters,
-    diagnosticsEnabled,
-    dragAndDropEnabled,
+    diagnosticsEnabled: diagnosticsEnabled ?? false,
+    dragAndDropEnabled: dragAndDropEnabled ?? true,
     fontFamily,
     fontSize,
     fontWeight,
+    formatOnSave: formatOnSave ?? false,
     highlightActiveLineNumber,
-    hoverEnabled,
-    insertSpaces,
+    hoverDelay: getHoverDelay(hoverDelay),
+    hoverEnabled: hoverEnabled ?? false,
+    insertSpaces: insertSpaces ?? true,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
@@ -62,7 +96,9 @@ export const getEditorPreferences = async () => {
     letterSpacing,
     lineNumbers,
     mergeConflictActionsEnabled,
+    messageDelay: getMessageDelay(messageDelay),
     minimapEnabled,
+    roundedSelection: roundedSelection === true,
     rowHeight,
     tabSize,
   }

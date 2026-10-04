@@ -1,5 +1,6 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
+import { DiagnosticTag } from '../Diagnostic/Diagnostic.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
@@ -18,6 +19,58 @@ const mergeConflictActions = [
   { action: 'incoming', label: 'Accept Incoming Change' },
   { action: 'both', label: 'Accept Both Changes' },
 ] as const
+
+const getUnnecessaryRanges = (
+  diagnostics: readonly any[],
+  rowIndex: number,
+  textLength: number,
+): readonly { readonly start: number; readonly end: number }[] => {
+  return diagnostics
+    .filter((diagnostic) => diagnostic.tags?.includes(DiagnosticTag.Unnecessary))
+    .flatMap((diagnostic) => {
+      if (rowIndex < diagnostic.rowIndex || rowIndex > diagnostic.endRowIndex) {
+        return []
+      }
+      const start = rowIndex === diagnostic.rowIndex ? diagnostic.columnIndex : 0
+      const end = rowIndex === diagnostic.endRowIndex ? diagnostic.endColumnIndex : textLength
+      return start < end ? [{ end, start }] : []
+    })
+    .toSorted((left, right) => left.start - right.start)
+}
+
+const getTokenParts = (
+  textInfos: any,
+  ranges: readonly { readonly start: number; readonly end: number }[],
+): readonly { readonly className: string; readonly text: string }[] => {
+  const parts: { className: string; text: string }[] = []
+  let offset = 0
+  for (let index = 0; index < textInfos.length; index += 2) {
+    const tokenText = textInfos[index]
+    const tokenClassName = textInfos[index + 1]
+    const tokenEnd = offset + tokenText.length
+    const boundaries = new Set([offset, tokenEnd])
+    for (const range of ranges) {
+      if (range.start > offset && range.start < tokenEnd) {
+        boundaries.add(range.start)
+      }
+      if (range.end > offset && range.end < tokenEnd) {
+        boundaries.add(range.end)
+      }
+    }
+    const sortedBoundaries = [...boundaries].toSorted((left, right) => left - right)
+    for (let boundaryIndex = 0; boundaryIndex < sortedBoundaries.length - 1; boundaryIndex++) {
+      const start = sortedBoundaries[boundaryIndex]
+      const end = sortedBoundaries[boundaryIndex + 1]
+      const unnecessary = ranges.some((range) => start >= range.start && end <= range.end)
+      parts.push({
+        className: unnecessary ? MergeClassNames.mergeClassNames(tokenClassName, 'EditorTokenUnnecessary') : tokenClassName,
+        text: tokenText.slice(start - offset, end - offset),
+      })
+    }
+    offset = tokenEnd
+  }
+  return parts
+}
 
 const addMergeConflictActions = (dom: VirtualDomNode[], rowIndex: number): void => {
   dom.push({
@@ -52,6 +105,8 @@ export const getEditorRowsVirtualDom = (
   visibleLineIndices: readonly number[] = [],
   endOfLineDecorations: readonly { readonly rowIndex: number; readonly text: string }[] = [],
   visibleViewLineIndices: readonly number[] = [],
+  problemsHighlightedRow = -1,
+  diagnostics: readonly any[] = [],
 ): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = []
   const actualViewRows =
@@ -68,19 +123,25 @@ export const getEditorRowsVirtualDom = (
     const difference = differences[textInfoIndex]
     const rowIndex = viewRow
     const rowDecorations = endOfLineDecorations.filter((decoration) => decoration.rowIndex === rowIndex)
+    let rowTextLength = 0
+    for (let index = 0; index < textInfo.length; index += 2) {
+      rowTextLength += textInfo[index].length
+    }
+    const tokenParts = getTokenParts(textInfo, getUnnecessaryRanges(diagnostics, rowIndex, rowTextLength))
     let className = ClassNames.EditorRow
     if (rowIndex === highlightedLine) {
       className = MergeClassNames.mergeClassNames(className, ClassNames.EditorRowHighlighted)
     }
+    if (rowIndex === problemsHighlightedRow) {
+      className = MergeClassNames.mergeClassNames(className, 'EditorProblemsHighlightedRow')
+    }
     dom.push({
-      childCount: textInfo.length / 2 + rowDecorations.length,
+      childCount: tokenParts.length + rowDecorations.length,
       className,
       translate: difference === 0 ? '' : Px.px(difference),
       type: VirtualDomElements.Div,
     })
-    for (let j = 0; j < textInfo.length; j += 2) {
-      const tokenText = textInfo[j]
-      const className = textInfo[j + 1]
+    for (const { className, text: tokenText } of tokenParts) {
       dom.push(
         {
           childCount: 1,

@@ -17,6 +17,7 @@ const editorContentNode: VirtualDomNode = {
 
 interface EditorContentVirtualDomOptions {
   readonly bracketMatchInfos?: readonly any[]
+  readonly breadcrumbsEnabled?: boolean
   readonly cursorInfos?: readonly any[]
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
@@ -27,16 +28,21 @@ interface EditorContentVirtualDomOptions {
   readonly height?: number
   readonly highlightedLine?: number
   readonly lineNumbers?: boolean
+  readonly problemsHighlightedRow?: number
+  readonly roundedSelection?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
+  readonly scrollBarWidth?: number
   readonly selectionInfos?: readonly any[]
   readonly textInfos: readonly any[]
+  readonly unnecessaryDiagnostics?: readonly any[]
   readonly visibleLineIndices?: readonly number[]
   readonly visibleViewLineIndices?: readonly number[]
 }
 
 export const getEditorContentVirtualDom = ({
   bracketMatchInfos = [],
+  breadcrumbsEnabled = false,
   cursorInfos = [],
   diagnostics = [],
   differences,
@@ -44,14 +50,22 @@ export const getEditorContentVirtualDom = ({
   focused = true,
   highlightedLine = -1,
   lineNumbers = true,
+  problemsHighlightedRow = -1,
+  roundedSelection = false,
   scrollBarDiagnostics = [],
+  scrollBarHeight = 0,
+  scrollBarWidth = 0,
   selectionInfos = [],
   textInfos,
+  unnecessaryDiagnostics = [],
   visibleLineIndices = [],
   visibleViewLineIndices = [],
 }: EditorContentVirtualDomOptions): readonly VirtualDomNode[] => {
   return [
-    editorContentNode,
+    {
+      ...editorContentNode,
+      className: breadcrumbsEnabled ? 'EditorContent EditorBreadcrumbsOffset' : 'EditorContent',
+    },
     ...GetEditorInputVirtualDom.getEditorInputVirtualDom(),
     ...GetEditorLayersVirtualDom.getEditorLayersVirtualDom(
       selectionInfos,
@@ -66,8 +80,11 @@ export const getEditorContentVirtualDom = ({
       bracketMatchInfos,
       focused,
       visibleViewLineIndices,
+      problemsHighlightedRow,
+      roundedSelection,
+      unnecessaryDiagnostics,
     ),
     ...GetEditorScrollBarDiagnosticsVirtualDom.getEditorScrollBarDiagnosticsVirtualDom(scrollBarDiagnostics),
-    ...GetScrollBarVirtualDom.getScrollBarVirtualDom(),
+    ...GetScrollBarVirtualDom.getScrollBarVirtualDom(scrollBarHeight, scrollBarWidth),
   ]
 }

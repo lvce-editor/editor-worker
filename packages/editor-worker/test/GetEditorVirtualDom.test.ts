@@ -25,6 +25,19 @@ test('getEditorVirtualDom marks selections as unfocused', () => {
   })
 })
 
+test('getEditorVirtualDom does not render cursors when unfocused', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    cursorInfos: ['1px 2px'],
+    differences: [],
+    focused: false,
+    lineNumbers: false,
+    textInfos: [],
+    uid: 42,
+  })
+
+  expect(dom).not.toContainEqual(expect.objectContaining({ className: 'EditorCursor' }))
+})
+
 test('getEditorVirtualDom', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     cursorInfos: ['144.962px 180px'],
@@ -44,6 +57,7 @@ test('getEditorVirtualDom', () => {
     height: 40,
     scrollBarDiagnostics: [{ height: 3, top: 6, type: 'error' }],
     scrollBarHeight: 24,
+    scrollBarWidth: 24,
     selectionInfos: [1, 2, 3, 4],
     textInfos: [['#', 'Token Comment']],
     uid: 42,
@@ -55,6 +69,8 @@ test('getEditorVirtualDom', () => {
       className: 'Viewlet Editor',
       'data-uid': 42,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+      onMouseOut: DomEventListenerFunctions.HandleMouseOut,
+      onMouseOver: DomEventListenerFunctions.HandleMouseOver,
       role: 'code',
       type: VirtualDomElements.Div,
     },
@@ -63,6 +79,7 @@ test('getEditorVirtualDom', () => {
       className: 'Gutter',
       type: VirtualDomElements.Div,
     },
+    { childCount: 1, className: 'GutterRows', type: VirtualDomElements.Div },
     {
       childCount: 1,
       className: 'LineNumber',
@@ -209,6 +226,21 @@ test('getEditorVirtualDom', () => {
   ])
 })
 
+test('getEditorVirtualDom adds a direct offset class to breadcrumb-aligned children', () => {
+  const dom = GetEditorVirtualDom.getEditorVirtualDom({
+    breadcrumbsEnabled: true,
+    differences: [],
+    gutterInfos: [1],
+    minimapEnabled: true,
+    textInfos: [],
+    uid: 42,
+  })
+
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'Gutter EditorBreadcrumbsOffset' }))
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'EditorContent EditorBreadcrumbsOffset' }))
+  expect(dom).toContainEqual(expect.objectContaining({ className: 'EditorMinimap EditorBreadcrumbsOffset' }))
+})
+
 test('getEditorVirtualDom - folded line numbers', () => {
   const dom = GetEditorVirtualDom.getEditorVirtualDom({
     differences: [],
@@ -293,6 +325,8 @@ test('getEditorVirtualDom - line numbers disabled', () => {
     className: 'Viewlet Editor',
     'data-uid': 42,
     onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+    onMouseOut: DomEventListenerFunctions.HandleMouseOut,
+    onMouseOver: DomEventListenerFunctions.HandleMouseOver,
     role: 'code',
     type: VirtualDomElements.Div,
   })
@@ -369,4 +403,16 @@ test('getEditorVirtualDom - load error', () => {
     },
     text('Failed to read file'),
   ])
+})
+
+test('combining whitespace reduces row children without changing original tokens', () => {
+  const textInfos = [['const', 'Token Keyword', ' ', 'Token Whitespace', 'x', 'Token Variable']]
+  const options = { differences: [0], lineNumbers: false, textInfos, uid: 42 }
+  const originalDom = GetEditorVirtualDom.getEditorVirtualDom(options)
+  const combinedDom = GetEditorVirtualDom.getEditorVirtualDom({ ...options, combineWhitespaceTokens: true })
+  expect(originalDom.find((node) => node.className === 'EditorRow')?.childCount).toBe(3)
+  expect(combinedDom.find((node) => node.className === 'EditorRow')?.childCount).toBe(2)
+  expect(combinedDom).toContainEqual(text('const '))
+  expect(combinedDom.some((node) => node.className === 'Token Whitespace')).toBe(false)
+  expect(GetEditorVirtualDom.getEditorVirtualDom(options)).toEqual(originalDom)
 })

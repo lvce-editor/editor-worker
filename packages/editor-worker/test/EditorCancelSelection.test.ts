@@ -1,5 +1,6 @@
 import { afterEach, expect, test } from '@jest/globals'
 import { WidgetId } from '@lvce-editor/constants'
+import { WhenExpression } from '@lvce-editor/constants'
 import * as EditorCancelSelection from '../src/parts/EditorCommand/EditorCommandCancelSelection.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 import * as FocusKey from '../src/parts/FocusKey/FocusKey.ts'
@@ -58,6 +59,7 @@ test('editorCancelSelection - closes an open hover before cancelling the selecti
   expect(result).toEqual({
     ...editor,
     additionalFocus: 0,
+    focus: WhenExpression.FocusEditorText,
     widgetRevision: 1,
     widgets: [],
   })

@@ -5,7 +5,6 @@ import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 import * as ColorPickerWidgetFactory from '../ColorPickerWidgetFactory/ColorPickerWidgetFactory.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetColorPickerBounds from '../GetColorPickerBounds/GetColorPickerBounds.ts'
-import * as GetColorPickerRange from '../GetColorPickerRange/GetColorPickerRange.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
@@ -18,7 +17,8 @@ const newStateGenerator = (state: ColorPickerState, parentUid: number): Promise<
 export const openColorPicker = async (editor: any) => {
   const fullFocus = true
   const bounds = GetColorPickerBounds.getColorPickerBounds(editor)
-  const range = GetColorPickerRange.getColorPickerRange(editor)
+  const { getColorPickerRange } = await import('../GetColorPickerRange/GetColorPickerRange.ts')
+  const range = await getColorPickerRange(editor)
   const createWidget = () => ColorPickerWidgetFactory.create(bounds, range, editor.undoStack.length)
   return AddWidgetToEditor.addWidgetToEditor(WidgetId.ColorPicker, FocusKey.ColorPicker, editor, createWidget, newStateGenerator, fullFocus)
 }

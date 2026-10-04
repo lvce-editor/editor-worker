@@ -17,3 +17,15 @@ test('handleUriChange retargets the editor without changing content', async () =
     uri: '/test/renamed.txt',
   })
 })
+
+test('handleUriChange clears an explicit language mode when changing files', async () => {
+  const editor = {
+    explicitLanguageId: 'javascript',
+    languageId: 'javascript',
+    uri: '/test/original.txt',
+  }
+
+  const result = await handleUriChange(editor as any, '/test/renamed.txt')
+
+  expect(result.explicitLanguageId).toBeUndefined()
+})

@@ -85,3 +85,17 @@ test('includes Toggle Minimap', () => {
     label: 'View: Toggle Minimap',
   })
 })
+
+test('includes Toggle Suggest Widget', () => {
+  expect(getQuickPickMenuEntries()).toContainEqual({
+    id: 'Editor.toggleCompletion',
+    label: 'Editor: Toggle Suggest Widget',
+  })
+})
+
+test('includes Organize Imports', () => {
+  expect(getQuickPickMenuEntries()).toContainEqual({
+    id: 'Editor.organizeImports',
+    label: 'Editor: Organize Imports',
+  })
+})

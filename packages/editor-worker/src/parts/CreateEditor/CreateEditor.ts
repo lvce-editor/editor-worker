@@ -2,6 +2,7 @@ import { WhenExpression } from '@lvce-editor/constants'
 import type { EditorCreateOptions } from '../EditorCreateOptions/EditorCreateOptions.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as Editor from '../Editor/Editor.ts'
+import * as EditorLifecycle from '../EditorLifecycle/EditorLifecycle.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as EditorState from '../EditorStates/EditorStates.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
@@ -30,6 +31,7 @@ export const createEditor = async ({
   formatOnSave,
   height,
   highlightActiveLineNumber = true,
+  hoverDelay = 200,
   hoverEnabled,
   id,
   isAutoClosingBracketsEnabled,
@@ -88,6 +90,7 @@ export const createEditor = async ({
     fontFamily,
     fontSize,
     fontWeight,
+    formatOnSave,
     gutterDecorations: [],
     gutterWidth: 0,
     handleOffset: 0,
@@ -95,6 +98,7 @@ export const createEditor = async ({
     hasListener: false,
     height,
     highlightActiveLineNumber,
+    hoverDelay,
     id,
     incrementalEdits: emptyIncrementalEdits,
     insertSpaces: true,
@@ -108,6 +112,7 @@ export const createEditor = async ({
     itemHeight: 20,
     languageId: computedlanguageId,
     letterSpacing,
+    lifecycle: EditorLifecycle.create(),
     lineCache: [],
     lineNumbers,
     lines: [],
@@ -123,6 +128,7 @@ export const createEditor = async ({
     platform,
     primarySelectionIndex: 0,
     redoStack: [],
+    roundedSelection: false,
     rowHeight,
     savedSelections,
     scrollBarHeight: 0,

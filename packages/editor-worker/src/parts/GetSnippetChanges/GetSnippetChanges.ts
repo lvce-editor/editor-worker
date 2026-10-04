@@ -11,9 +11,19 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
   for (let i = 0; i < selections.length; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
     if (insertedLines.length > 1) {
+      let placeholderRow = -1
+      let placeholderColumn = -1
+      const insertedLinesWithoutPlaceholder = insertedLines.map((line, rowIndex) => {
+        const index = line.indexOf('$0')
+        if (index !== -1 && placeholderRow === -1) {
+          placeholderRow = rowIndex
+          placeholderColumn = index
+        }
+        return line.replace('$0', '')
+      })
       const line = TextDocument.getLine({ lines }, selectionStartRow)
       const indent = TextDocument.getIndent(line)
-      const insertedLinesHere = [insertedLines[0], ...insertedLines.slice(1).map((line) => indent + line)]
+      const insertedLinesHere = [insertedLinesWithoutPlaceholder[0], ...insertedLinesWithoutPlaceholder.slice(1).map((line) => indent + line)]
       const deleted = ['']
       changes.push({
         deleted,
@@ -29,14 +39,20 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
         },
       })
       const lastInsertedLine = insertedLines.at(-1)
-      selectionChanges.push(
-        selectionEndRow + insertedLines.length - deleted.length,
-        // @ts-ignore
-        selectionEndColumn + lastInsertedLine.length,
-        selectionEndRow + insertedLines.length - deleted.length,
-        // @ts-ignore
-        selectionEndColumn + lastInsertedLine.length,
-      )
+      if (placeholderRow === -1) {
+        selectionChanges.push(
+          selectionEndRow + insertedLines.length - deleted.length,
+          // @ts-ignore
+          selectionEndColumn + lastInsertedLine.length,
+          selectionEndRow + insertedLines.length - deleted.length,
+          // @ts-ignore
+          selectionEndColumn + lastInsertedLine.length,
+        )
+      } else {
+        const cursorRow = selectionStartRow + placeholderRow
+        const cursorColumn = placeholderColumn + (placeholderRow === 0 ? selectionStartColumn - snippet.deleted : indent.length)
+        selectionChanges.push(cursorRow, cursorColumn, cursorRow, cursorColumn)
+      }
     } else {
       const line = insertedLines[0]
       const placeholderIndex = line.indexOf('$0')
@@ -60,7 +76,7 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
         })
       } else {
         const inserted = line.replace('$0', '')
-        const cursorColumnIndex = selectionEndColumn + 2
+        const cursorColumnIndex = selectionStartColumn - snippet.deleted + placeholderIndex
         selectionChanges.push(selectionStartRow, cursorColumnIndex, selectionStartRow, cursorColumnIndex)
         changes.push({
           deleted: [''],

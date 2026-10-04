@@ -1,6 +1,14 @@
 [
   {
     "category": "text-editor",
+    "description": "Combine space and tab tokens with the preceding token when rendering to reduce DOM nodes",
+    "heading": "Combine Whitespace Tokens",
+    "id": "editor.combineWhitespaceTokens",
+    "type": "boolean",
+    "value": true
+  },
+  {
+    "category": "text-editor",
     "description": "The font size of the editor",
     "heading": "Font Size",
     "id": "editor.fontSize",
@@ -16,6 +24,16 @@
     "id": "editor.fontFamily",
     "type": "string",
     "value": "Fira Code"
+  },
+  {
+    "category": "text-editor",
+    "description": "The font size of the find widget",
+    "heading": "Find Widget Font Size",
+    "id": "editor.findWidgetFontSize",
+    "type": "number",
+    "value": 0,
+    "minimum": 0,
+    "maximum": 100
   },
   {
     "category": "text-editor",
@@ -66,11 +84,11 @@
     "id": "editor.wordWrap",
     "options": [
       {
-        "id": "editor.on",
+        "id": "on",
         "label": "On"
       },
       {
-        "id": "editor.off",
+        "id": "off",
         "label": "off"
       }
     ],
@@ -84,11 +102,11 @@
     "id": "editor.lineNumbers",
     "options": [
       {
-        "id": "editor.on",
+        "id": "on",
         "label": "On"
       },
       {
-        "id": "editor.off",
+        "id": "off",
         "label": "off"
       }
     ],
@@ -374,8 +392,8 @@
     "description": "Controls whether the editor should automatically close quotes after opening them",
     "heading": "Auto Closing Quotes",
     "id": "editor.autoClosingQuotes",
-    "type": "string",
-    "value": "always"
+    "type": "boolean",
+    "value": true
   },
   {
     "category": "text-editor",
@@ -438,7 +456,17 @@
     "description": "The modifier to be used to add multiple cursors with the mouse",
     "heading": "Multi Cursor Modifier",
     "id": "editor.multiCursorModifier",
-    "type": "string",
+    "options": [
+      {
+        "id": "alt",
+        "label": "Alt"
+      },
+      {
+        "id": "ctrlCmd",
+        "label": "Ctrl/Cmd"
+      }
+    ],
+    "type": "enum",
     "value": "alt"
   },
   {
@@ -751,7 +779,27 @@
     "heading": "Hover",
     "id": "editor.hover",
     "type": "boolean",
-    "value": "true"
+    "value": false
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the delay in milliseconds after which hover information will show up",
+    "heading": "Hover Delay",
+    "id": "editor.hoverDelay",
+    "type": "number",
+    "value": 200,
+    "minimum": 0,
+    "maximum": 10000
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls how long editor messages remain visible, in milliseconds",
+    "heading": "Message Display Duration",
+    "id": "editor.messageDelay",
+    "type": "number",
+    "value": 3000,
+    "minimum": 0,
+    "maximum": 10000
   },
   {
     "category": "text-editor",
@@ -791,7 +839,8 @@
     "heading": "Line Height",
     "id": "editor.lineHeight",
     "type": "number",
-    "value": "0"
+    "value": "0",
+    "maximum": 100
   },
   {
     "category": "text-editor",
@@ -887,7 +936,7 @@
     "heading": "Rounded Selection",
     "id": "editor.roundedSelection",
     "type": "boolean",
-    "value": "true"
+    "value": "false"
   },
   {
     "category": "text-editor",
