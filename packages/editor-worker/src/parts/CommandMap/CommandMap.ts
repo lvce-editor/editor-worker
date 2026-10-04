@@ -107,7 +107,6 @@ import * as EditorPaste from '../EditorCommand/EditorCommandPaste.ts'
 import * as PasteText from '../EditorCommand/EditorCommandPasteText.ts'
 import * as EditorRedo from '../EditorCommand/EditorCommandRedo.ts'
 import * as ReplaceRange from '../EditorCommand/EditorCommandReplaceRange.ts'
-import * as Save from '../EditorCommand/EditorCommandSave.ts'
 import * as SelectAll from '../EditorCommand/EditorCommandSelectAll.ts'
 import * as SelectAllLeft from '../EditorCommand/EditorCommandSelectAllLeft.ts'
 import * as SelectAllOccurrences from '../EditorCommand/EditorCommandSelectAllOccurrences.ts'
@@ -189,6 +188,7 @@ import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
 import { revealProblem } from '../RevealProblem/RevealProblem.ts'
+import * as Save from '../SaveCommand/SaveCommand.ts'
 import { saveState } from '../SaveState/SaveState.ts'
 import {
   sendDeprecatedExtensionHostPortToExtensionManagementWorker,
@@ -382,7 +382,7 @@ export const commandMap = {
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
   'Editor.resize': wrapCommand(resize),
   'Editor.revealProblem': wrapCommand(revealProblem),
-  'Editor.save': wrapCommand(Save.save),
+  'Editor.save': Save.save,
   'Editor.saveState': wrapGetter(saveState),
   'Editor.scrollByLines': wrapCommand(SetDelta.scrollByLines),
   'Editor.selectAll': wrapCommand(SelectAll.selectAll),
