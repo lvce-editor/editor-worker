@@ -1,6 +1,6 @@
 import { afterEach, expect, jest, test } from '@jest/globals'
 import { PlatformType } from '@lvce-editor/constants'
-import { DialogWorker, ExtensionManagementWorker, RendererWorker } from '@lvce-editor/rpc-registry'
+import { DialogWorker, ExtensionManagementWorker, OpenerWorker, RendererWorker } from '@lvce-editor/rpc-registry'
 import * as EditorCommandSave from '../src/parts/EditorCommand/EditorCommandSave.ts'
 import * as TokenizePlainText from '../src/parts/TokenizePlainText/TokenizePlainText.ts'
 
@@ -135,6 +135,92 @@ test('save - clears the modified status after saving', async () => {
     ['FileSystem.writeFile', 'file:///tmp/example.txt', 'hello world', 'utf8', false],
     ['Main.handleModifiedStatusChange', 'file:///tmp/example.txt', false],
   ])
+})
+
+test('save - saves an untitled file and reuses the selected destination', async () => {
+  const uri = 'untitled:///1'
+  const destination = 'file:///tmp/new-file.txt'
+  using mockOpenerRpc = OpenerWorker.registerMockRpc({
+    'Open.showSaveDialog': async () => ({ canceled: false, filePath: destination }),
+  })
+  using mockRpc = RendererWorker.registerMockRpc({
+    'FileSystem.isReadonly': async () => false,
+    'FileSystem.writeFile': async () => {},
+    'Layout.handleWorkspaceRefresh': async () => {},
+    'Main.handleModifiedStatusChange': async () => {},
+    'Main.handleUriChange': async () => {},
+  })
+  const editor = {
+    lines: ['hello world'],
+    modified: true,
+    platform: PlatformType.Web,
+    uri,
+  }
+
+  const saved = await EditorCommandSave.save(editor)
+
+  expect(saved).toEqual({ ...editor, modified: false, uri: destination })
+  expect(mockOpenerRpc.invocations).toEqual([['Open.showSaveDialog', 'Save File', [], PlatformType.Web]])
+  expect(mockRpc.invocations).toEqual([
+    ['FileSystem.writeFile', destination, 'hello world'],
+    ['Layout.handleWorkspaceRefresh'],
+    ['Main.handleUriChange', uri, destination],
+    ['Main.handleModifiedStatusChange', uri, false],
+  ])
+
+  const edited = { ...saved, lines: ['updated content'], modified: true }
+  const savedAgain = await EditorCommandSave.save(edited)
+
+  expect(savedAgain).toEqual({ ...edited, modified: false })
+  expect(mockOpenerRpc.invocations).toHaveLength(1)
+  expect(mockRpc.invocations.slice(4)).toEqual([
+    ['FileSystem.isReadonly', destination],
+    ['FileSystem.writeFile', destination, 'updated content', 'utf8', false],
+    ['Main.handleModifiedStatusChange', destination, false],
+  ])
+})
+
+test('save - keeps an untitled document dirty when the save dialog is canceled', async () => {
+  using mockOpenerRpc = OpenerWorker.registerMockRpc({
+    'Open.showSaveDialog': async () => ({ canceled: true, filePath: '' }),
+  })
+  using mockRpc = RendererWorker.registerMockRpc({})
+  const editor = {
+    lines: ['unsaved content'],
+    modified: true,
+    platform: PlatformType.Web,
+    uri: 'untitled:///1',
+  }
+
+  const result = await EditorCommandSave.save(editor)
+
+  expect(result).toBe(editor)
+  expect(mockOpenerRpc.invocations).toHaveLength(1)
+  expect(mockRpc.invocations).toEqual([])
+})
+
+test('save - keeps an untitled document dirty when writing the selected file fails', async () => {
+  jest.spyOn(console, 'error').mockImplementation(() => {})
+  using mockOpenerRpc = OpenerWorker.registerMockRpc({
+    'Open.showSaveDialog': async () => ({ canceled: false, filePath: 'file:///tmp/new-file.txt' }),
+  })
+  using mockRpc = RendererWorker.registerMockRpc({
+    'FileSystem.writeFile': async () => {
+      throw new Error('Disk is full')
+    },
+  })
+  const editor = {
+    lines: ['unsaved content'],
+    modified: true,
+    platform: PlatformType.Web,
+    uri: 'untitled:///1',
+  }
+
+  const result = await EditorCommandSave.save(editor)
+
+  expect(result).toBe(editor)
+  expect(mockOpenerRpc.invocations).toHaveLength(1)
+  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/new-file.txt', 'unsaved content']])
 })
 
 for (const [formatOnSave, modified] of [
