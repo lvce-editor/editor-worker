@@ -7,7 +7,7 @@ export const getEditorGutterVirtualDom = (
   activeLineNumber = -1,
   breadcrumbsEnabled = false,
 ): readonly VirtualDomNode[] => {
-  const gutterDom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom([...gutterInfos], activeLineNumber)
+  const gutterDom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos, activeLineNumber)
   return [
     {
       childCount: gutterInfos.length === 0 ? 0 : 1,
