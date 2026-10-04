@@ -164,7 +164,6 @@ test('save - saves an untitled file and reuses the selected destination', async 
   expect(mockRpc.invocations).toEqual([
     ['FileSystem.writeFile', destination, 'hello world'],
     ['Layout.handleWorkspaceRefresh'],
-    ['Main.handleUriChange', uri, destination],
     ['Main.handleModifiedStatusChange', uri, false],
   ])
 
@@ -173,7 +172,7 @@ test('save - saves an untitled file and reuses the selected destination', async 
 
   expect(savedAgain).toEqual({ ...edited, modified: false })
   expect(mockOpenerRpc.invocations).toHaveLength(1)
-  expect(mockRpc.invocations.slice(4)).toEqual([
+  expect(mockRpc.invocations.slice(3)).toEqual([
     ['FileSystem.isReadonly', destination],
     ['FileSystem.writeFile', destination, 'updated content', 'utf8', false],
     ['Main.handleModifiedStatusChange', destination, false],
