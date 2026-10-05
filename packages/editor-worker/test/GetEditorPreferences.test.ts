@@ -13,6 +13,17 @@ test('whitespace token combining defaults to enabled and respects explicit prefe
   expect((await getEditorPreferences()).combineWhitespaceTokens).toBe(false)
 })
 
+test('selected text occurrence matching defaults to case-sensitive and ignores invalid values', async () => {
+  getPreference.mockResolvedValue(undefined)
+  expect((await getEditorPreferences()).selectedTextOccurrenceMatching).toBe('caseSensitive')
+
+  getPreference.mockImplementation(async (key) => (key === 'editor.selectedTextOccurrenceMatching' ? 'invalid' : undefined))
+  expect((await getEditorPreferences()).selectedTextOccurrenceMatching).toBe('caseSensitive')
+
+  getPreference.mockImplementation(async (key) => (key === 'editor.selectedTextOccurrenceMatching' ? 'caseInsensitive' : undefined))
+  expect((await getEditorPreferences()).selectedTextOccurrenceMatching).toBe('caseInsensitive')
+})
+
 test('boolean preferences retain their defaults and explicit values', async () => {
   getPreference.mockResolvedValue(undefined)
   expect(await getEditorPreferences()).toMatchObject({

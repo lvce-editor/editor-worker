@@ -4,6 +4,11 @@ import * as Preferences from '../Preferences/Preferences.ts'
 const DEFAULT_HOVER_DELAY = 200
 const DEFAULT_MESSAGE_DELAY = 3000
 const MAX_MESSAGE_DELAY = 10_000
+const DEFAULT_SELECTED_TEXT_OCCURRENCE_MATCHING = 'caseSensitive'
+
+const getSelectedTextOccurrenceMatching = (value: unknown): string => {
+  return value === 'caseInsensitive' ? value : DEFAULT_SELECTED_TEXT_OCCURRENCE_MATCHING
+}
 
 const getHoverDelay = (value: unknown): number => {
   const delay = typeof value === 'number' ? value : Number(value)
@@ -48,6 +53,7 @@ export const getEditorPreferences = async () => {
     dragAndDropEnabled,
     roundedSelection,
     combineWhitespaceTokens,
+    selectedTextOccurrenceMatching,
   ] = await Promise.all([
     Preferences.get('editor.diagnostics'),
     EditorPreferences.getFontFamily(),
@@ -74,6 +80,7 @@ export const getEditorPreferences = async () => {
     Preferences.get('editor.dragAndDrop'),
     Preferences.get('editor.roundedSelection'),
     Preferences.get('editor.combineWhitespaceTokens'),
+    Preferences.get('editor.selectedTextOccurrenceMatching'),
   ])
   return {
     breadcrumbsEnabled: breadcrumbsEnabled ?? false,
@@ -100,6 +107,7 @@ export const getEditorPreferences = async () => {
     minimapEnabled,
     roundedSelection: roundedSelection === true,
     rowHeight,
+    selectedTextOccurrenceMatching: getSelectedTextOccurrenceMatching(selectedTextOccurrenceMatching),
     tabSize,
   }
 }
