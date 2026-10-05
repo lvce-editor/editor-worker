@@ -16,6 +16,14 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       label: EditorStrings.cursorUndo(),
     },
     {
+      id: 'Editor.expandSelection',
+      label: EditorStrings.editorExpandSelection(),
+    },
+    {
+      id: 'Editor.shrinkSelection',
+      label: EditorStrings.editorShrinkSelection(),
+    },
+    {
       id: 'Editor.fold',
       label: EditorStrings.fold(),
     },

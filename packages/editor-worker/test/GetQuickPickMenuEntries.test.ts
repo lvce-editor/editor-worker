@@ -30,6 +30,21 @@ test('includes selected value commands', () => {
   )
 })
 
+test('includes selection expansion commands', () => {
+  expect(getQuickPickMenuEntries()).toEqual(
+    expect.arrayContaining([
+      {
+        id: 'Editor.expandSelection',
+        label: 'Editor: Expand Selection',
+      },
+      {
+        id: 'Editor.shrinkSelection',
+        label: 'Editor: Shrink Selection',
+      },
+    ]),
+  )
+})
+
 test('includes folding commands', () => {
   expect(getQuickPickMenuEntries()).toEqual(
     expect.arrayContaining([
