@@ -30,6 +30,21 @@ export const openRename = async (editor: any) => {
     return editor
   }
 
+  const editorState = Editors.get(editor.uid)
+  if (!editorState) {
+    return editor
+  }
+  const { newState } = editorState
+  const offsetAtCursor = GetOffsetAtCursor.getOffsetAtCursor(editor)
+  const prepareRenameResult = await RenameWorker.invoke('Rename.prepareRename', editor.uid, newState.languageId, offsetAtCursor)
+  if (!prepareRenameResult || typeof prepareRenameResult !== 'object') {
+    return editor
+  }
+  const latestEditor = Editors.get(editor.uid)?.newState
+  if (latestEditor !== editor) {
+    return latestEditor || editor
+  }
+
   const fullFocus = true
   let editorWithRenameWidget
   try {
