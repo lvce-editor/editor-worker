@@ -103,11 +103,11 @@ export interface EditorState {
   readonly redoStack: readonly any[]
   readonly roundedSelection: boolean
   readonly rowHeight: number
-  readonly selectedTextOccurrenceMatching?: string
   readonly savedSelections: readonly any[]
   readonly scrollBarHeight: number
   readonly scrollBarWidth: number
   readonly scrollBarY?: number
+  readonly selectedTextOccurrenceMatching?: string
   readonly selectionAnchorPosition: { readonly rowIndex: number; readonly columnIndex: number }
   readonly selectionAutoMovePosition: { readonly x: number; readonly y: number }
   readonly selectionInfos: readonly any[]
