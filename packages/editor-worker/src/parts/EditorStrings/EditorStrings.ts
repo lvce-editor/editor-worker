@@ -217,6 +217,14 @@ export const editorDecrementSelection = () => {
   return I18nString.i18nString(UiStrings.EditorDecrementSelection)
 }
 
+export const editorExpandSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorExpandSelection)
+}
+
+export const editorShrinkSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorShrinkSelection)
+}
+
 export const editorSelectUp = () => {
   return I18nString.i18nString(UiStrings.EditorSelectUp)
 }
