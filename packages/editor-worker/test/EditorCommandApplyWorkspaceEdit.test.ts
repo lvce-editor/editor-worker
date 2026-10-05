@@ -16,6 +16,10 @@ jest.unstable_mockModule('../src/parts/Editor/Editor.ts', () => ({
   scheduleDocumentAndCursorsSelections,
 }))
 
+jest.unstable_mockModule('../src/parts/WrapCommands/WrapCommands.ts', () => ({
+  wrapCommand: (fn: any) => (uid: number, changes: any) => fn(EditorStates.get(uid).newState, changes),
+}))
+
 const EditorCommandApplyWorkspaceEdit = await import('../src/parts/EditorCommand/EditorCommandApplyWorkspaceEdit.ts')
 const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
 
@@ -190,10 +194,10 @@ test('applyWorkspaceEdit updates another open editor without writing it to disk'
     },
   ])
   expect(readFile).not.toHaveBeenCalled()
-  expect(invoke).not.toHaveBeenCalled()
+  expect(invoke).toHaveBeenCalledWith('Editor.renderPending', otherEditor.uid)
 })
 
-test('applyWorkspaceEdit updates an editor in another group in the same workspace', async () => {
+test('applyWorkspaceEdit leaves editors in other applications untouched', async () => {
   const currentEditor = {
     applicationId: 'left-group',
     initial: false,
@@ -216,6 +220,7 @@ test('applyWorkspaceEdit updates an editor in another group in the same workspac
     lines: ['export const newName = 1'],
   })
 
+  readFile.mockResolvedValue('export const oldName = 1')
   const result = await EditorCommandApplyWorkspaceEdit.applyWorkspaceEdit(currentEditor, [
     {
       edits: [
@@ -230,21 +235,7 @@ test('applyWorkspaceEdit updates an editor in another group in the same workspac
   ])
 
   expect(result).toBe(currentEditor)
-  expect(scheduleDocumentAndCursorsSelections).toHaveBeenCalledWith(otherEditor, [
-    {
-      deleted: ['oldName'],
-      end: {
-        columnIndex: 20,
-        rowIndex: 0,
-      },
-      inserted: ['newName'],
-      origin: 'rename',
-      start: {
-        columnIndex: 13,
-        rowIndex: 0,
-      },
-    },
-  ])
-  expect(readFile).not.toHaveBeenCalled()
-  expect(invoke).not.toHaveBeenCalled()
+  expect(scheduleDocumentAndCursorsSelections).not.toHaveBeenCalled()
+  expect(invoke).not.toHaveBeenCalledWith('Editor.renderPending', otherEditor.uid)
+  expect(readFile).toHaveBeenCalledWith('ApplicationFileSystem.execute', 'left-group', 'readFile', otherEditor.uri)
 })

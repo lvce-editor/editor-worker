@@ -3,7 +3,9 @@ import * as Assert from '../Assert/Assert.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
+import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
 
 // TODO maybe use a separate worker for bulk edits and bulk edit history
 
@@ -56,14 +58,14 @@ const getOpenEditor = (currentEditor: any, uri: string): any => {
   }
   for (const key of EditorStates.getKeys()) {
     const editor = EditorStates.get(Number(key))?.newState
-    const sharesApplication = editor?.applicationId === currentEditor.applicationId
-    const sharesWorkspace = Boolean(currentEditor.workspaceUri && editor?.workspaceUri === currentEditor.workspaceUri)
-    if (editor && !editor.initial && editor.uri === uri && (sharesApplication || sharesWorkspace)) {
+    if (editor && !editor.initial && editor.uri === uri && editor.applicationId === currentEditor.applicationId) {
       return editor
     }
   }
   return undefined
 }
+
+const updateOpenEditor = WrapCommands.wrapCommand(Editor.scheduleDocumentAndCursorsSelections)
 
 export const applyWorkspaceEdit = async (editor: any, changes: readonly any[]): Promise<any> => {
   Assert.object(editor)
@@ -74,9 +76,11 @@ export const applyWorkspaceEdit = async (editor: any, changes: readonly any[]): 
     const openEditor = getOpenEditor(currentEditor, uri)
     if (openEditor) {
       const textChanges = getTextChanges(openEditor, edits)
-      const updatedEditor = await Editor.scheduleDocumentAndCursorsSelections(openEditor, textChanges)
       if (openEditor.uid === currentEditor.uid) {
-        currentEditor = updatedEditor
+        currentEditor = await Editor.scheduleDocumentAndCursorsSelections(openEditor, textChanges)
+      } else {
+        await updateOpenEditor(openEditor.uid, textChanges)
+        await RendererWorker.invoke('Editor.renderPending', openEditor.uid)
       }
       continue
     }
