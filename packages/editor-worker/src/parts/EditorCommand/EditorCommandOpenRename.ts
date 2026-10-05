@@ -2,6 +2,7 @@ import { WidgetId } from '@lvce-editor/constants'
 import type { RenameState } from '../RenameState/RenameState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
+import * as ExtensionManagementEditor from '../ExtensionManagementEditor/ExtensionManagementEditor.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
@@ -34,22 +35,18 @@ export const openRename = async (editor: any) => {
   if (!editorState) {
     return editor
   }
-  const { newState } = editorState
   const offsetAtCursor = GetOffsetAtCursor.getOffsetAtCursor(editor)
-  let prepareRenameResult
-  try {
-    prepareRenameResult = await RenameWorker.invoke('Rename.prepareRename', editor.uid, newState.languageId, offsetAtCursor)
-  } catch (error) {
-    await RenameWorker.dispose()
-    throw error
-  }
+  const prepareRenameResult = await ExtensionManagementEditor.execute({
+    args: [offsetAtCursor],
+    editor,
+    kind: 'rename',
+    method: 'prepareRename',
+  })
   if (!prepareRenameResult || typeof prepareRenameResult !== 'object') {
-    await RenameWorker.dispose()
     return editor
   }
   const latestEditor = Editors.get(editor.uid)?.newState
   if (latestEditor !== editor) {
-    await RenameWorker.dispose()
     return latestEditor || editor
   }
 
