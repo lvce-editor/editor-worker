@@ -64,6 +64,10 @@ jobs:
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-line-height-min-font-size
         shell: bash
+      - name: Test workspace edits update split editor groups
+        working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
+        run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-workspace-edit-split-groups
+        shell: bash
       - name: Test live editor line height updates the cursor
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-line-height-live-cursor

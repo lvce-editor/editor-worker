@@ -1,7 +1,7 @@
 import { afterEach, expect, jest, test } from '@jest/globals'
 
 const invoke = jest.fn<(...args: readonly unknown[]) => Promise<unknown>>()
-const readFile = jest.fn<(method: string, uri: string) => Promise<string>>()
+const readFile = jest.fn<(...args: readonly unknown[]) => Promise<string>>()
 const scheduleDocumentAndCursorsSelections = jest.fn<(editor: any, changes: readonly any[]) => Promise<any>>()
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
@@ -14,6 +14,10 @@ jest.unstable_mockModule('../src/parts/FileSystemWorker/FileSystemWorker.ts', ()
 
 jest.unstable_mockModule('../src/parts/Editor/Editor.ts', () => ({
   scheduleDocumentAndCursorsSelections,
+}))
+
+jest.unstable_mockModule('../src/parts/WrapCommands/WrapCommands.ts', () => ({
+  wrapCommand: (fn: any) => (uid: number, changes: any) => fn(EditorStates.get(uid).newState, changes),
 }))
 
 const EditorCommandApplyWorkspaceEdit = await import('../src/parts/EditorCommand/EditorCommandApplyWorkspaceEdit.ts')
@@ -190,5 +194,48 @@ test('applyWorkspaceEdit updates another open editor without writing it to disk'
     },
   ])
   expect(readFile).not.toHaveBeenCalled()
-  expect(invoke).not.toHaveBeenCalled()
+  expect(invoke).toHaveBeenCalledWith('Editor.renderPending', otherEditor.uid)
+})
+
+test('applyWorkspaceEdit leaves editors in other applications untouched', async () => {
+  const currentEditor = {
+    applicationId: 'left-group',
+    initial: false,
+    lines: ['oldName()'],
+    uid: 1,
+    uri: 'file:///workspace/src/importer.ts',
+    workspaceUri: 'file:///workspace',
+  }
+  const otherEditor = {
+    applicationId: 'right-group',
+    initial: false,
+    lines: ['export const oldName = 1'],
+    uid: 2,
+    uri: 'file:///workspace/src/exporter.ts',
+    workspaceUri: 'file:///workspace',
+  }
+  EditorStates.set(otherEditor.uid, otherEditor as any, otherEditor as any)
+  scheduleDocumentAndCursorsSelections.mockResolvedValue({
+    ...otherEditor,
+    lines: ['export const newName = 1'],
+  })
+
+  readFile.mockResolvedValue('export const oldName = 1')
+  const result = await EditorCommandApplyWorkspaceEdit.applyWorkspaceEdit(currentEditor, [
+    {
+      edits: [
+        {
+          deleted: 7,
+          inserted: 'newName',
+          offset: 13,
+        },
+      ],
+      uri: otherEditor.uri,
+    },
+  ])
+
+  expect(result).toBe(currentEditor)
+  expect(scheduleDocumentAndCursorsSelections).not.toHaveBeenCalled()
+  expect(invoke).not.toHaveBeenCalledWith('Editor.renderPending', otherEditor.uid)
+  expect(readFile).toHaveBeenCalledWith('ApplicationFileSystem.execute', 'left-group', 'readFile', otherEditor.uri)
 })
