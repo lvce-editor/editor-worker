@@ -78,7 +78,7 @@ const getSavedLanguageId = (savedState: unknown, languages: readonly any[]): str
   return explicitLanguageId
 }
 
-export const loadContent = async (state: EditorState, savedState: unknown, largeFile = false, focus = true) => {
+export const loadContent = async (state: EditorState, savedState: unknown, largeFile = false, focus = true, forceReload = false) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
     breadcrumbsEnabled,
@@ -145,11 +145,13 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     tokenizerId: state.tokenizerId,
   }
   let existingEditor: EditorState | undefined
-  for (const key of EditorStates.getKeys()) {
-    const editor = EditorStates.get(Number(key))?.newState
-    if (editor && editor.id !== id && !editor.initial && editor.uri === uri && editor.applicationId === state.applicationId) {
-      existingEditor = editor
-      break
+  if (!forceReload) {
+    for (const key of EditorStates.getKeys()) {
+      const editor = EditorStates.get(Number(key))?.newState
+      if (editor && editor.id !== id && !editor.initial && editor.uri === uri && editor.applicationId === state.applicationId) {
+        existingEditor = editor
+        break
+      }
     }
   }
   let content = existingEditor ? TextDocument.getText(existingEditor) : ''
