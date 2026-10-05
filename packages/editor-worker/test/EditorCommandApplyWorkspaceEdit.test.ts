@@ -1,7 +1,7 @@
 import { afterEach, expect, jest, test } from '@jest/globals'
 
 const invoke = jest.fn<(...args: readonly unknown[]) => Promise<unknown>>()
-const readFile = jest.fn<(method: string, uri: string) => Promise<string>>()
+const readFile = jest.fn<(...args: readonly unknown[]) => Promise<string>>()
 const scheduleDocumentAndCursorsSelections = jest.fn<(editor: any, changes: readonly any[]) => Promise<any>>()
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
