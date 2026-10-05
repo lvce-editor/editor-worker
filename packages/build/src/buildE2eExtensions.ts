@@ -19,6 +19,7 @@ const extensionNames = [
   'editor.hover-show',
   'editor.hover-pending',
   'editor.rename-provider',
+  'editor.rename-unavailable',
   'editor.source-actions-execute',
   'editor.source-actions-open',
   'editor.unnecessary-diagnostic',
