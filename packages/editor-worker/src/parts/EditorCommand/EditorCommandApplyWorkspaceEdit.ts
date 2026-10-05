@@ -56,7 +56,9 @@ const getOpenEditor = (currentEditor: any, uri: string): any => {
   }
   for (const key of EditorStates.getKeys()) {
     const editor = EditorStates.get(Number(key))?.newState
-    if (editor && !editor.initial && editor.uri === uri && editor.applicationId === currentEditor.applicationId) {
+    const sharesApplication = editor?.applicationId === currentEditor.applicationId
+    const sharesWorkspace = Boolean(currentEditor.workspaceUri && editor?.workspaceUri === currentEditor.workspaceUri)
+    if (editor && !editor.initial && editor.uri === uri && (sharesApplication || sharesWorkspace)) {
       return editor
     }
   }

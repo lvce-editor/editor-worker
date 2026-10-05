@@ -192,3 +192,59 @@ test('applyWorkspaceEdit updates another open editor without writing it to disk'
   expect(readFile).not.toHaveBeenCalled()
   expect(invoke).not.toHaveBeenCalled()
 })
+
+test('applyWorkspaceEdit updates an editor in another group in the same workspace', async () => {
+  const currentEditor = {
+    applicationId: 'left-group',
+    initial: false,
+    lines: ['oldName()'],
+    uid: 1,
+    uri: 'file:///workspace/src/importer.ts',
+    workspaceUri: 'file:///workspace',
+  }
+  const otherEditor = {
+    applicationId: 'right-group',
+    initial: false,
+    lines: ['export const oldName = 1'],
+    uid: 2,
+    uri: 'file:///workspace/src/exporter.ts',
+    workspaceUri: 'file:///workspace',
+  }
+  EditorStates.set(otherEditor.uid, otherEditor as any, otherEditor as any)
+  scheduleDocumentAndCursorsSelections.mockResolvedValue({
+    ...otherEditor,
+    lines: ['export const newName = 1'],
+  })
+
+  const result = await EditorCommandApplyWorkspaceEdit.applyWorkspaceEdit(currentEditor, [
+    {
+      edits: [
+        {
+          deleted: 7,
+          inserted: 'newName',
+          offset: 13,
+        },
+      ],
+      uri: otherEditor.uri,
+    },
+  ])
+
+  expect(result).toBe(currentEditor)
+  expect(scheduleDocumentAndCursorsSelections).toHaveBeenCalledWith(otherEditor, [
+    {
+      deleted: ['oldName'],
+      end: {
+        columnIndex: 20,
+        rowIndex: 0,
+      },
+      inserted: ['newName'],
+      origin: 'rename',
+      start: {
+        columnIndex: 13,
+        rowIndex: 0,
+      },
+    },
+  ])
+  expect(readFile).not.toHaveBeenCalled()
+  expect(invoke).not.toHaveBeenCalled()
+})
