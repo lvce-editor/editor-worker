@@ -36,12 +36,20 @@ export const openRename = async (editor: any) => {
   }
   const { newState } = editorState
   const offsetAtCursor = GetOffsetAtCursor.getOffsetAtCursor(editor)
-  const prepareRenameResult = await RenameWorker.invoke('Rename.prepareRename', editor.uid, newState.languageId, offsetAtCursor)
+  let prepareRenameResult
+  try {
+    prepareRenameResult = await RenameWorker.invoke('Rename.prepareRename', editor.uid, newState.languageId, offsetAtCursor)
+  } catch (error) {
+    await RenameWorker.dispose()
+    throw error
+  }
   if (!prepareRenameResult || typeof prepareRenameResult !== 'object') {
+    await RenameWorker.dispose()
     return editor
   }
   const latestEditor = Editors.get(editor.uid)?.newState
   if (latestEditor !== editor) {
+    await RenameWorker.dispose()
     return latestEditor || editor
   }
 
