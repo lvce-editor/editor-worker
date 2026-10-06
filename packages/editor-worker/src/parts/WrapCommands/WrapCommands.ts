@@ -89,7 +89,10 @@ export const wrapCommand =
         return returnState ? newEditor : undefined
       }
       const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
-      Editors.set(uid, state, newEditorWithDerivedState)
+      // Another command can commit before the renderer consumes this edit.
+      // Keep its last rendered baseline, including renders completed while we awaited derived state.
+      const renderedState = Editors.get(uid)?.oldState ?? oldInstance.oldState
+      Editors.set(uid, renderedState, newEditorWithDerivedState)
       await RenameWorker.dispose()
       if (editorDiagnosticEffect.isActive(state, newEditorWithDerivedState)) {
         void editorDiagnosticEffect.apply(newEditorWithDerivedState)

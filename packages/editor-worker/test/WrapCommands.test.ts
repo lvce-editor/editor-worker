@@ -747,3 +747,40 @@ test('does not invoke a deferred provider for an absent editor', async () => {
   await WrapCommands.wrapDeferredCommand(provider)(1)
   expect(provider).not.toHaveBeenCalled()
 })
+
+test('keeps pending text changes when focus commits before rendering', async () => {
+  const rendered = { focused: false, initial: false, lines: ['original'], selections: new Uint32Array(4), uid: 1, uri: 'memfs:///cursor.js' }
+  EditorStates.set(1, rendered as any, rendered as any)
+  const type = WrapCommands.wrapCommand((editor: any) => ({ ...editor, lines: ['edited'] }))
+  const focus = WrapCommands.wrapFocusCommand(handleFocus)
+
+  await type(1)
+  await focus(1)
+
+  expect(EditorStates.get(1).oldState).toBe(rendered)
+  expect(EditorStates.get(1).newState.lines).toEqual(['edited'])
+  expect(EditorStates.get(1).newState.focused).toBe(true)
+})
+
+test('uses the latest rendered baseline when a command awaits derived state', async () => {
+  const rendered = { initial: false, lines: ['original'], uid: 1, uri: 'memfs:///cursor.js' }
+  const pending = { ...rendered, lines: ['pending'] }
+  EditorStates.set(1, rendered as any, pending as any)
+  const started = Promise.withResolvers<void>()
+  const finish = Promise.withResolvers<void>()
+  updateDerivedStateMock.mockImplementation(async (_oldState, newState) => {
+    started.resolve()
+    await finish.promise
+    return newState
+  })
+  const type = WrapCommands.wrapCommand((editor: any) => ({ ...editor, lines: ['edited'] }))
+  const typing = type(1)
+  await started.promise
+  // render2 acknowledges the previous pending edit while this command is suspended.
+  EditorStates.set(1, pending as any, pending as any)
+  finish.resolve()
+  await typing
+
+  expect(EditorStates.get(1).oldState).toBe(pending)
+  expect(EditorStates.get(1).newState.lines).toEqual(['edited'])
+})
