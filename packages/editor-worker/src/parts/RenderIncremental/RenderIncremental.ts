@@ -13,13 +13,32 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
     return []
   }
 
-  return getEditorVirtualDom({
-    ...state,
-    diagnostics: visualDecorations,
-    scrollBarDiagnostics: getScrollBarDiagnostics(state, diagnostics),
-    scrollBarWidth: ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize),
-    unnecessaryDiagnostics: diagnostics,
-  })
+  try {
+    return getEditorVirtualDom({
+      ...state,
+      diagnostics: visualDecorations,
+      scrollBarDiagnostics: getScrollBarDiagnostics(state, diagnostics),
+      scrollBarWidth: ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize),
+      unnecessaryDiagnostics: diagnostics,
+    })
+  } catch (error) {
+    const { differences = [], lines = [], maxLineY, minLineY, uid, visibleLineIndices = [], visibleViewLineIndices = [] } = state
+    console.error(
+      '[DEBUG-cursor-hover]',
+      JSON.stringify({
+        differences: differences.slice(0, 50),
+        initial,
+        lineCount: lines.length,
+        maxLineY,
+        minLineY,
+        textRowLengths: textInfos.slice(0, 50).map((row) => row?.length),
+        uid,
+        visibleLineIndices: visibleLineIndices.slice(0, 50),
+        visibleViewLineIndices: visibleViewLineIndices.slice(0, 50),
+      }),
+    )
+    throw error
+  }
 }
 
 const mergeConflictsEqual = (oldState: EditorState, newState: EditorState): boolean => {
