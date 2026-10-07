@@ -118,7 +118,7 @@ const getStartDefaults = (tokens: any, minOffset: any) => {
     const tokenLength = tokens[i + 1]
     end += tokenLength
     start = end
-    if (start >= minOffset) {
+    if (start > minOffset) {
       start -= tokenLength
       end -= tokenLength
       startIndex = i
