@@ -43,6 +43,8 @@ jobs:
         run: npm run build:static
       - name: Prepare built-in settings for source server
         run: node packages/e2e-integration/copy-builtin-settings.mjs .tmp/lvce-integration
+      - name: Select Node source-server runtime
+        run: node packages/e2e-integration/prepare-source-runtime.mjs .tmp/lvce-integration
       - name: Check editor cursor uses effective row height
         run: node packages/e2e-integration/check-editor-cursor-css.mjs .tmp/lvce-integration
       - name: Run owned integration tests

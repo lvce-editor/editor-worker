@@ -19,7 +19,17 @@ export const test = async ({ page }) => {
   await drag(true)
   await expect(row).toContainText('0999!')
   await expect(row).not.toContainText('0000')
+  const previousTrackWidth = (await track.boundingBox()).width
   await page.setViewportSize({ width: 800, height: 600 })
+  // The browser resizes the track before the worker's new thumb CSS arrives.
+  // Wait for the complete rendered layout before targeting the thumb.
+  await expect
+    .poll(async () => {
+      const bounds = await track.boundingBox()
+      const slider = await thumb.boundingBox()
+      return !!bounds && !!slider && bounds.width < previousTrackWidth && slider.x + slider.width <= bounds.x + bounds.width + 1
+    })
+    .toBe(true)
   await drag(false)
   await expect(row).toContainText('0000')
   await expect(row).not.toContainText('0999!')
