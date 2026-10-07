@@ -5,6 +5,7 @@ const DEFAULT_HOVER_DELAY = 200
 const DEFAULT_MESSAGE_DELAY = 3000
 const MAX_MESSAGE_DELAY = 10_000
 const DEFAULT_SELECTED_TEXT_OCCURRENCE_MATCHING = 'caseSensitive'
+const DEFAULT_HORIZONTAL_VIRTUALIZATION_THRESHOLD = 500
 
 const getSelectedTextOccurrenceMatching = (value: unknown): string => {
   return value === 'caseInsensitive' ? value : DEFAULT_SELECTED_TEXT_OCCURRENCE_MATCHING
@@ -26,6 +27,14 @@ const getMessageDelay = (value: unknown): number => {
   return delay
 }
 
+const getHorizontalVirtualizationThreshold = (value: unknown): number => {
+  const threshold = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(threshold) || threshold < 0 || threshold > 100_000) {
+    return DEFAULT_HORIZONTAL_VIRTUALIZATION_THRESHOLD
+  }
+  return Math.floor(threshold)
+}
+
 export const getEditorPreferences = async () => {
   const [
     diagnosticsEnabled,
@@ -35,6 +44,7 @@ export const getEditorPreferences = async () => {
     formatOnSave,
     hoverEnabled,
     hoverDelay,
+    horizontalVirtualizationThreshold,
     messageDelay,
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
@@ -62,6 +72,7 @@ export const getEditorPreferences = async () => {
     Preferences.get('editor.formatOnSave'),
     Preferences.get('editor.hover'),
     Preferences.get('editor.hoverDelay'),
+    Preferences.get('editor.horizontalVirtualizationThreshold'),
     Preferences.get('editor.messageDelay'),
     EditorPreferences.isAutoClosingBracketsEnabled(),
     EditorPreferences.isAutoClosingQuotesEnabled(),
@@ -93,6 +104,7 @@ export const getEditorPreferences = async () => {
     fontWeight,
     formatOnSave: formatOnSave ?? false,
     highlightActiveLineNumber,
+    horizontalVirtualizationThreshold: getHorizontalVirtualizationThreshold(horizontalVirtualizationThreshold),
     hoverDelay: getHoverDelay(hoverDelay),
     hoverEnabled: hoverEnabled ?? false,
     insertSpaces: insertSpaces ?? true,

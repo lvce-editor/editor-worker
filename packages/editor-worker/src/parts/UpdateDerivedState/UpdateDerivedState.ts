@@ -10,6 +10,7 @@ import * as GetMinimapLines from '../GetMinimapLines/GetMinimapLines.ts'
 import * as GetVisibleBracketMatches from '../GetVisibleBracketMatches/GetVisibleBracketMatches.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
+import { updateHorizontalLayout } from '../UpdateHorizontalLayout/UpdateHorizontalLayout.ts'
 
 const shouldUpdateDiagnosticData = (oldState: EditorState, newState: EditorState): boolean => {
   return (
@@ -84,7 +85,7 @@ const shouldUpdateLightBulb = (oldState: EditorState, newState: EditorState): bo
   oldState.uri !== newState.uri
 
 const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorState): boolean => {
-  if (oldState.textInfos !== newState.textInfos || oldState.differences !== newState.differences) {
+  if (oldState.deltaX === newState.deltaX && (oldState.textInfos !== newState.textInfos || oldState.differences !== newState.differences)) {
     return false
   }
 
@@ -99,6 +100,14 @@ const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorStat
     oldState.embeds !== newState.embeds ||
     oldState.deltaX !== newState.deltaX ||
     oldState.width !== newState.width ||
+    oldState.charWidth !== newState.charWidth ||
+    oldState.tabSize !== newState.tabSize ||
+    oldState.horizontalVirtualizationThreshold !== newState.horizontalVirtualizationThreshold ||
+    oldState.fontFamily !== newState.fontFamily ||
+    oldState.fontSize !== newState.fontSize ||
+    oldState.fontWeight !== newState.fontWeight ||
+    oldState.letterSpacing !== newState.letterSpacing ||
+    oldState.isMonospaceFont !== newState.isMonospaceFont ||
     oldState.highlightedLine !== newState.highlightedLine ||
     oldState.foldingRanges !== newState.foldingRanges ||
     oldState.debugEnabled !== newState.debugEnabled
@@ -122,18 +131,37 @@ const mergeConflictsEqual = (oldState: EditorState, newState: EditorState): bool
 }
 
 export const updateDerivedState = async (oldState: EditorState, newState: EditorState): Promise<EditorState> => {
-  const layoutState = oldState.lines !== newState.lines && 'foldingRanges' in newState ? EditorFolding.updateLayout(newState, []) : newState
+  const horizontalState =
+    oldState.initial ||
+    oldState.lines !== newState.lines ||
+    oldState.width !== newState.width ||
+    oldState.charWidth !== newState.charWidth ||
+    oldState.fontFamily !== newState.fontFamily ||
+    oldState.fontSize !== newState.fontSize ||
+    oldState.fontWeight !== newState.fontWeight ||
+    oldState.isMonospaceFont !== newState.isMonospaceFont ||
+    oldState.letterSpacing !== newState.letterSpacing ||
+    oldState.tabSize !== newState.tabSize ||
+    oldState.lineNumbers !== newState.lineNumbers ||
+    oldState.breakPoints !== newState.breakPoints ||
+    oldState.gutterDecorations !== newState.gutterDecorations ||
+    oldState.lightBulbRowIndex !== newState.lightBulbRowIndex
+      ? await updateHorizontalLayout(newState)
+      : newState
+  const layoutState =
+    oldState.lines !== newState.lines && 'foldingRanges' in newState ? EditorFolding.updateLayout(horizontalState, []) : horizontalState
   const nextState = mergeConflictsEqual(oldState, layoutState) ? layoutState : { ...layoutState, incrementalEdits: emptyIncrementalEdits }
   let finalState = nextState
   if (nextState.breadcrumbsEnabled && oldState.lines !== nextState.lines && oldState.documentSymbols === nextState.documentSymbols) {
     finalState = { ...finalState, documentSymbols: await getDocumentSymbols(nextState) }
   }
-  if (shouldUpdateVisibleTextData(oldState, nextState)) {
+  if (newState.deltaX !== nextState.deltaX || newState.gutterWidth !== nextState.gutterWidth || shouldUpdateVisibleTextData(oldState, nextState)) {
     const syncIncremental = SyncIncremental.getEnabled()
-    const { differences, textInfos } = await EditorText.getVisible(nextState, syncIncremental)
+    const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(nextState, syncIncremental)
     finalState = {
       ...finalState,
       differences,
+      horizontalVisibleRanges,
       textInfos,
     }
   }

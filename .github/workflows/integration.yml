@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           repository: lvce-editor/lvce-editor
-          ref: a870acc8628800f8b2bfd2bbbe151dd9ee0b2d30
+          ref: 0b4e29e79faaaf9a3552c7862338c340ba3888b0
           path: .tmp/lvce-integration
       - uses: actions/setup-node@v6
         with:
@@ -74,7 +74,7 @@ jobs:
         shell: bash
       - name: Test editor horizontal virtualization
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
-        run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-horizontal-virtualization
+        run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-horizontal-virtualization --browser-test=scripts/test-horizontal-virtualization.mjs
         shell: bash
       - name: Test settings select defaults and persistence
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests

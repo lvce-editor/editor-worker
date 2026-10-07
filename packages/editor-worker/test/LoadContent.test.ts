@@ -38,7 +38,7 @@ jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
     set: jest.fn(),
   },
   TextMeasurementWorker: {
-    invoke: jest.fn(),
+    invoke: jest.fn<(method: string, text: string) => Promise<number>>().mockImplementation(async (_method, text) => text.length * 8),
     invokeAndTransfer: jest.fn(),
     set: jest.fn(),
   },
@@ -75,6 +75,7 @@ const createState = () =>
     columnWidth: 0,
     completionTriggerCharacters: [],
     cursorWidth: 2,
+    deltaX: 0,
     deltaY: 0,
     differences: [],
     embeds: [],

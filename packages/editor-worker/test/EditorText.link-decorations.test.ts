@@ -1,6 +1,9 @@
-import { expect, test } from '@jest/globals'
+import { expect, jest, test } from '@jest/globals'
 import * as DecorationType from '../src/parts/DecorationType/DecorationType.ts'
-import * as EditorText from '../src/parts/EditorText/EditorText.ts'
+jest.unstable_mockModule('../src/parts/MeasureTextWidthSlow/MeasureTextWidthSlow.ts', () => ({
+  measureTextWidthSlow: async (text: string) => text.length * 10,
+}))
+const EditorText = await import('../src/parts/EditorText/EditorText.ts')
 
 test('getVisible - link decorations split tokens correctly', async () => {
   const editor = {
@@ -142,6 +145,7 @@ test('getVisible - bounds a long multi-token line to the horizontal viewport', a
     fontSize: 14,
     fontWeight: 400,
     height: 600,
+    horizontalVirtualizationThreshold: 0,
     id: 1,
     invalidStartIndex: 0,
     isMonospaceFont: true,
@@ -185,6 +189,7 @@ test('getVisible - keeps Unicode characters intact at horizontal viewport edges'
     decorations: [],
     deltaX: 0,
     height: 100,
+    horizontalVirtualizationThreshold: 0,
     id: 1,
     invalidStartIndex: 0,
     languageId: 'plaintext',
@@ -214,6 +219,7 @@ test('getVisible - uses expanded tab width when choosing the horizontal render w
     decorations: [],
     deltaX: 30,
     height: 100,
+    horizontalVirtualizationThreshold: 0,
     id: 1,
     invalidStartIndex: 0,
     languageId: 'plaintext',

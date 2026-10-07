@@ -18,19 +18,31 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Wo
   await editor.dispatchEvent('wheel', {
     bubbles: true,
     deltaMode: 0,
-    deltaX: 400,
+    deltaX: 400.5,
     deltaY: 0,
   } as any)
   await expect(Locator('.EditorRow', { hasText: '0000' })).toHaveCount(0)
   await expect(Locator('.EditorRow', { hasText: '0999' })).toHaveCount(0)
 
   await Editor.setCursor(0, line.length)
+  await editor.dispatchEvent('wheel', {
+    bubbles: true,
+    deltaMode: 0,
+    deltaX: 100_000,
+    deltaY: 0,
+  } as any)
   await expect(row).toContainText('0999')
   await Editor.type('!')
   await expect(row).toContainText('0999!')
   await expect(Locator('.EditorRow', { hasText: '0000' })).toHaveCount(0)
 
   await Editor.setCursor(0, 0)
+  await editor.dispatchEvent('wheel', {
+    bubbles: true,
+    deltaMode: 0,
+    deltaX: -100_000,
+    deltaY: 0,
+  } as any)
   await expect(row).toContainText('0000')
   await expect(Locator('.EditorRow', { hasText: '0999!' })).toHaveCount(0)
 }

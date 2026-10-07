@@ -1,6 +1,8 @@
 import { expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { ExtensionHost, RendererWorker, SyntaxHighlightingWorker } from '@lvce-editor/rpc-registry'
+import { ExtensionHost, RendererWorker, SyntaxHighlightingWorker, TextMeasurementWorker } from '@lvce-editor/rpc-registry'
+
+TextMeasurementWorker.set(MockRpc.create({ commandMap: {}, invoke: async (_method: string, text: string) => text.length * 8 }))
 
 const mockRpc = MockRpc.create({
   commandMap: {},

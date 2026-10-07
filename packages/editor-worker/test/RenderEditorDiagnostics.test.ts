@@ -89,6 +89,7 @@ test('renderEditor keeps diagnostic columns absolute within horizontally clipped
     gutterDecorations: [],
     highlightActiveLineNumber: false,
     highlightedLine: -1,
+    horizontalVirtualizationThreshold: 0,
     incrementalEdits: emptyIncrementalEdits,
     lineNumbers: false,
     lines: ['abcdefghij'],
@@ -145,6 +146,7 @@ test('getEditorRowsVirtualDom maps diagnostic columns after expanded tabs', () =
     10,
     2,
     ['a\tbcdef'],
+    0,
   )
 
   expect(dom).toEqual(

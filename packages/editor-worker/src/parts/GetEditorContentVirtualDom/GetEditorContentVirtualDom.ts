@@ -27,13 +27,16 @@ interface EditorContentVirtualDomOptions {
   readonly focused?: boolean
   readonly height?: number
   readonly highlightedLine?: number
+  readonly horizontalVisibleRanges?: readonly { readonly end: number; readonly rowIndex: number; readonly start: number }[]
   readonly lineNumbers?: boolean
+  readonly lines?: readonly string[]
   readonly problemsHighlightedRow?: number
   readonly roundedSelection?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
   readonly scrollBarWidth?: number
   readonly selectionInfos?: readonly any[]
+  readonly tabSize?: number
   readonly textInfos: readonly any[]
   readonly unnecessaryDiagnostics?: readonly any[]
   readonly visibleLineIndices?: readonly number[]
@@ -49,13 +52,16 @@ export const getEditorContentVirtualDom = ({
   endOfLineDecorations = [],
   focused = true,
   highlightedLine = -1,
+  horizontalVisibleRanges = [],
   lineNumbers = true,
+  lines = [],
   problemsHighlightedRow = -1,
   roundedSelection = false,
   scrollBarDiagnostics = [],
   scrollBarHeight = 0,
   scrollBarWidth = 0,
   selectionInfos = [],
+  tabSize = 2,
   textInfos,
   unnecessaryDiagnostics = [],
   visibleLineIndices = [],
@@ -83,6 +89,9 @@ export const getEditorContentVirtualDom = ({
       problemsHighlightedRow,
       roundedSelection,
       unnecessaryDiagnostics,
+      horizontalVisibleRanges,
+      lines,
+      tabSize,
     ),
     ...GetEditorScrollBarDiagnosticsVirtualDom.getEditorScrollBarDiagnosticsVirtualDom(scrollBarDiagnostics),
     ...GetScrollBarVirtualDom.getScrollBarVirtualDom(scrollBarHeight, scrollBarWidth),

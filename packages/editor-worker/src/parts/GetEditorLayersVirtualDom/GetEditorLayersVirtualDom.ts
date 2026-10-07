@@ -27,6 +27,9 @@ export const getEditorLayersVirtualDom = (
   problemsHighlightedRow = -1,
   roundedSelection = false,
   unnecessaryDiagnostics: readonly any[] = [],
+  horizontalVisibleRanges: readonly { readonly end: number; readonly rowIndex: number; readonly start: number }[] = [],
+  lines: readonly string[] = [],
+  tabSize = 2,
 ): readonly VirtualDomNode[] => {
   return [
     editorLayersNode,
@@ -41,6 +44,9 @@ export const getEditorLayersVirtualDom = (
       visibleViewLineIndices,
       problemsHighlightedRow,
       unnecessaryDiagnostics,
+      horizontalVisibleRanges,
+      lines,
+      tabSize,
     ),
     ...GetEditorCursorsVirtualDom.getEditorCursorsVirtualDom(cursorInfos, focused),
     ...GetEditorDiagnosticsVirtualDom.getEditorDiagnosticsVirtualDom(diagnostics, bracketMatchInfos),

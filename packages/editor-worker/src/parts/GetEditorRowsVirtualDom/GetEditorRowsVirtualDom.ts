@@ -122,6 +122,8 @@ export const getEditorRowsVirtualDom = (
   charWidth = 1,
   tabSize = 2,
   lines: readonly string[] = [],
+  horizontalVirtualizationThreshold = 500,
+  horizontalVisibleRanges: readonly { readonly end: number; readonly rowIndex: number; readonly start: number }[] = [],
 ): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = []
   const actualViewRows =
@@ -138,7 +140,9 @@ export const getEditorRowsVirtualDom = (
     const difference = differences[textInfoIndex]
     const rowIndex = viewRow
     const line = lines[rowIndex] || ''
-    const visibleRange = GetHorizontalVisibleRange.getHorizontalVisibleRange(line, deltaX, width, charWidth, tabSize)
+    const visibleRange =
+      horizontalVisibleRanges.find((range) => range.rowIndex === rowIndex) ||
+      GetHorizontalVisibleRange.getHorizontalVisibleRange(line, deltaX, width, charWidth, tabSize, horizontalVirtualizationThreshold)
     const rowDecorations = endOfLineDecorations.filter(
       (decoration) => decoration.rowIndex === rowIndex && (!lines[rowIndex] || visibleRange.end >= line.length),
     )

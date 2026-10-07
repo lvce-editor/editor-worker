@@ -793,6 +793,16 @@
   },
   {
     "category": "text-editor",
+    "description": "Controls the minimum line length in characters before horizontal virtualization is enabled",
+    "heading": "Horizontal Virtualization Threshold",
+    "id": "editor.horizontalVirtualizationThreshold",
+    "type": "number",
+    "value": 500,
+    "minimum": 0,
+    "maximum": 100000
+  },
+  {
+    "category": "text-editor",
     "description": "Controls how long editor messages remain visible, in milliseconds",
     "heading": "Message Display Duration",
     "id": "editor.messageDelay",

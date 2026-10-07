@@ -1,8 +1,10 @@
 import * as GetDecorationClassName from '../GetDecorationClassName/GetDecorationClassName.ts'
+import { getHorizontalScrollDimensions } from '../GetHorizontalScrollDimensions/GetHorizontalScrollDimensions.ts'
 import * as GetHorizontalVisibleRange from '../GetHorizontalVisibleRange/GetHorizontalVisibleRange.ts'
 import { getLargeFileVisible } from '../GetLargeFileVisible/GetLargeFileVisible.ts'
 import * as GetTokensViewport2 from '../GetTokensViewport2/GetTokensViewport2.ts'
 import * as LoadTokenizers from '../LoadTokenizers/LoadTokenizers.ts'
+import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
@@ -430,8 +432,9 @@ const getLineInfo = (
   width: any,
   deltaX: any,
   averageCharWidth: any,
+  measuredRange: { readonly difference: number; readonly end: number; readonly start: number },
 ) => {
-  const { end: maxOffset, start: minOffset } = GetHorizontalVisibleRange.getHorizontalVisibleRange(line, deltaX, width, averageCharWidth, tabSize)
+  const { end: maxOffset, start: minOffset } = measuredRange
   if (embeddedResults.length > 0 && tokenResults.embeddedResultIndex !== undefined) {
     const embeddedResult = embeddedResults[tokenResults.embeddedResultIndex]
     if (embeddedResult?.isFull) {
@@ -487,7 +490,7 @@ const getLineInfo = (
 }
 
 // TODO need lots of tests for this
-const getLineInfosViewport = (
+const getLineInfosViewport = async (
   editor: any,
   tokens: any,
   embeddedResults: any,
@@ -497,16 +500,36 @@ const getLineInfosViewport = (
   width: any,
   deltaX: any,
   averageCharWidth: any,
+  horizontalVirtualizationThreshold: number,
 ) => {
   const result = []
   const differences = []
+  const horizontalVisibleRanges = []
   const { decorations, languageId, lines } = editor
   const tokenMap = TokenMaps.get(languageId)
   let offset = minLineOffset
-  const tabSize = 2
+  const tabSize = editor.tabSize ?? 2
   for (let i = minLineY; i < maxLineY; i++) {
     const line = lines[i]
     const normalize = NormalizeText.shouldNormalizeText(line)
+    const measuredRange = await GetHorizontalVisibleRange.getHorizontalVisibleRangeMeasured(
+      line,
+      deltaX,
+      width,
+      averageCharWidth,
+      tabSize,
+      horizontalVirtualizationThreshold,
+      (text) =>
+        MeasureTextWidth.measureTextWidth(
+          text,
+          editor.fontWeight,
+          editor.fontSize,
+          editor.fontFamily,
+          editor.letterSpacing,
+          editor.isMonospaceFont,
+          editor.charWidth,
+        ),
+    )
 
     // Use decorations that were pre-computed (includes links and diagnostics)
     // Filter decorations to only include those for this line
@@ -523,7 +546,7 @@ const getLineInfosViewport = (
       }
     }
 
-    const { difference, lineInfo } = getLineInfo(
+    const { lineInfo } = getLineInfo(
       line,
       tokens[i - minLineY],
       embeddedResults,
@@ -535,30 +558,45 @@ const getLineInfosViewport = (
       width,
       deltaX,
       averageCharWidth,
+      measuredRange,
     )
     result.push(lineInfo)
-    differences.push(difference)
+    differences.push(measuredRange.difference)
+    horizontalVisibleRanges.push({
+      end: measuredRange.end,
+      rowIndex: i,
+      start: measuredRange.start,
+    })
     offset += line.length + 1
   }
   return {
     differences,
+    horizontalVisibleRanges,
     result,
   }
 }
 
-export const getVisible = async (editor: any, syncIncremental: boolean): Promise<{ differences: number[]; textInfos: string[][] }> => {
+export const getVisible = async (
+  editor: any,
+  syncIncremental: boolean,
+): Promise<{
+  differences: number[]
+  horizontalVisibleRanges: { end: number; rowIndex: number; start: number }[]
+  textInfos: string[][]
+}> => {
   if (editor.lifecycle?.disposed) {
-    return { differences: [], textInfos: [] }
+    return { differences: [], horizontalVisibleRanges: [], textInfos: [] }
   }
   if (editor.largeFile) {
-    return getLargeFileVisible(editor)
+    return { ...(await getLargeFileVisible(editor)), horizontalVisibleRanges: [] }
   }
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
   // invalidStartIndex, lineCache, etc. just for testing editorType
   // editor.invalidStartIndex = changes[0].start.rowIndex
   // @ts-ignore
-  const { charWidth, deltaX, lines, width } = editor
+  const { charWidth, deltaX, horizontalVirtualizationThreshold = 500, lines } = editor
+  const { width } = getHorizontalScrollDimensions(editor)
   const visibleLineIndices = (
     editor.visibleLineIndices ??
     Array.from(
@@ -571,6 +609,7 @@ export const getVisible = async (editor: any, syncIncremental: boolean): Promise
   if (visibleLineIndices.length === 0) {
     return {
       differences: [],
+      horizontalVisibleRanges: [],
       textInfos: [],
     }
   }
@@ -581,18 +620,22 @@ export const getVisible = async (editor: any, syncIncremental: boolean): Promise
   for (let i = 0; tokenizersToLoad.length > 0 && i < maxTokenizerLoadPasses; i++) {
     await LoadTokenizers.loadTokenizers(tokenizersToLoad)
     if (editor.lifecycle?.disposed) {
-      return { differences: [], textInfos: [] }
+      return { differences: [], horizontalVisibleRanges: [], textInfos: [] }
     }
     // @ts-ignore
     const refreshed = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
     ;({ embeddedResults, tokenizersToLoad, tokens } = refreshed)
   }
   if (editor.lifecycle?.disposed) {
-    return { differences: [], textInfos: [] }
+    return { differences: [], horizontalVisibleRanges: [], textInfos: [] }
   }
   const minLineOffset = await TextDocument.offsetAtSync(editor, minLineY, 0)
   const averageCharWidth = charWidth
-  const { differences: allDifferences, result: allTextInfos } = getLineInfosViewport(
+  const {
+    differences: allDifferences,
+    horizontalVisibleRanges: allHorizontalVisibleRanges,
+    result: allTextInfos,
+  } = await getLineInfosViewport(
     editor,
     tokens,
     embeddedResults,
@@ -602,10 +645,14 @@ export const getVisible = async (editor: any, syncIncremental: boolean): Promise
     width,
     deltaX,
     averageCharWidth,
+    horizontalVirtualizationThreshold,
   )
   const relativeIndices = visibleLineIndices.map((rowIndex: number) => rowIndex - minLineY)
   return {
     differences: relativeIndices.map((index: number) => allDifferences[index]),
+    horizontalVisibleRanges: allHorizontalVisibleRanges.filter(({ rowIndex }: { readonly rowIndex: number }) =>
+      visibleLineIndices.includes(rowIndex),
+    ),
     textInfos: relativeIndices.map((index: number) => allTextInfos[index]),
   }
 }
