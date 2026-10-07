@@ -13,7 +13,7 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Wo
   const editor = Locator('.EditorContent')
   const row = Locator('.EditorRow').first()
   await expect(row).toContainText('0000')
-  await expect(row).not.toHaveText(line)
+  await expect(Locator('.EditorRow', { hasText: '0999' })).toHaveCount(0)
 
   await editor.dispatchEvent('wheel', {
     bubbles: true,
@@ -21,15 +21,16 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Wo
     deltaX: 400,
     deltaY: 0,
   } as any)
-  await expect(row).not.toContainText('0000')
-  await expect(row).not.toHaveText(line)
+  await expect(Locator('.EditorRow', { hasText: '0000' })).toHaveCount(0)
+  await expect(Locator('.EditorRow', { hasText: '0999' })).toHaveCount(0)
 
   await Editor.setCursor(0, line.length)
   await expect(row).toContainText('0999')
   await Editor.type('!')
   await expect(row).toContainText('0999!')
-  await expect(row).not.toHaveText(`${line}!`)
+  await expect(Locator('.EditorRow', { hasText: '0000' })).toHaveCount(0)
 
   await Editor.setCursor(0, 0)
   await expect(row).toContainText('0000')
+  await expect(Locator('.EditorRow', { hasText: '0999!' })).toHaveCount(0)
 }
