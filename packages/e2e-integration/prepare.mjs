@@ -1,4 +1,5 @@
-import { cp, mkdir, readdir, readFile, realpath, rm } from 'node:fs/promises'
+import { cp, mkdir, readdir, readFile, realpath, rm, writeFile } from 'node:fs/promises'
+import { stripTypeScriptTypes } from 'node:module'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -14,7 +15,17 @@ const tests = join(application, 'packages/extension-host-worker-tests')
 for (const name of await readdir(join(tests, 'src'))) {
   if (name !== '_all.js') await rm(join(tests, 'src', name), { recursive: true })
 }
-await cp(join(here, 'src'), join(tests, 'src'), { recursive: true })
+// The application test loader imports JavaScript modules; emit every owned scenario
+// while keeping the TypeScript source inventory available for type checking here.
+for (const name of await readdir(join(here, 'src'))) {
+  const source = join(here, 'src', name)
+  if (name.endsWith('.ts')) {
+    const code = stripTypeScriptTypes(await readFile(source, 'utf8'))
+    await writeFile(join(tests, 'src', `${name.slice(0, -3)}.js`), code)
+  } else {
+    await cp(source, join(tests, 'src', name), { recursive: true })
+  }
+}
 await rm(join(tests, 'fixtures'), { recursive: true, force: true })
 await mkdir(join(tests, 'fixtures'), { recursive: true })
 try {
