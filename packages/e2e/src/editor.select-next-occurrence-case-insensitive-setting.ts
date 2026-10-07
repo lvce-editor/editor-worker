@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-select-next-occurrence-case-insensitive-setting'
 
-export const test: Test = async ({ Command, Editor, FileSystem, KeyBoard, Main, Settings, Workspace }) => {
+export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard, Locator, Main, Settings, Workspace }) => {
   try {
     const tmpDir = await FileSystem.getTmpDir()
     const uri = `${tmpDir}/file1.txt`
@@ -14,6 +14,8 @@ export const test: Test = async ({ Command, Editor, FileSystem, KeyBoard, Main, 
     await Settings.update({ 'editor.selectedTextOccurrenceMatching': 'caseInsensitive' })
     await Command.execute('Editor.handleSettingsChanged')
     await KeyBoard.press('Control+d')
+    const renderedSelections = Locator('.EditorSelection')
+    await expect(renderedSelections).toHaveCount(2)
 
     await Editor.shouldHaveSelections(new Uint32Array([0, 0, 0, 3, 0, 4, 0, 7]))
   } finally {
