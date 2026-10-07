@@ -28,16 +28,13 @@ export const getX = async (
   Assert.number(averageCharWidth)
   Assert.number(difference)
   if (column === 0) {
-    return 0
+    return difference === 0 ? 0 : Math.min(width, difference)
   }
   // TODO support non-monospace font, emoji, tab character, zero width characters
-  if (column * averageCharWidth > width) {
-    return width
-  }
   const normalize = NormalizeText.shouldNormalizeText(line)
   const normalizedLine = NormalizeText.normalizeText(line, normalize, tabSize)
   const tabCount = GetTabCount.getTabCount(line.slice(0, column))
-  const partialText = normalizedLine.slice(0, column + tabCount)
+  const partialText = normalizedLine.slice(0, column + tabCount * (tabSize - 1))
   const textWidth = await MeasureTextWidth.measureTextWidth(
     partialText,
     fontWeight,
@@ -47,5 +44,5 @@ export const getX = async (
     isMonospaceFont,
     averageCharWidth,
   )
-  return textWidth - halfCursorWidth + difference
+  return Math.min(width, textWidth - halfCursorWidth + difference)
 }

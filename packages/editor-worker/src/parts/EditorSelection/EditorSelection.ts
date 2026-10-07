@@ -135,7 +135,6 @@ export const getVisible = async (editor: any) => {
     charWidth,
     cursorWidth,
     deltaY,
-    differences,
     focused,
     foldingRanges = [],
     fontFamily,
@@ -166,7 +165,7 @@ export const getVisible = async (editor: any) => {
   const startVisualRow = itemHeight ? Math.floor(deltaY / itemHeight) : getVisualRow(minLineY)
   const endVisualRow = startVisualRow + (visibleViewLineIndices?.length || actualVisibleLineIndices.length)
   const getRelativeRow = (rowIndex: number) => getVisualRow(rowIndex) - startVisualRow
-  const getDifference = (rowIndex: number): number => differences[actualVisibleLineIndices.indexOf(rowIndex)]
+  const horizontalOffset = -(editor.deltaX ?? 0)
   for (let i = 0; i < selections.length; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn, reversed] = GetSelectionPairs.getSelectionPairs(
       selections,
@@ -178,7 +177,7 @@ export const getVisible = async (editor: any) => {
       continue
     }
     const relativeEndLineRow = getRelativeRow(selectionEndRow)
-    const endLineDifference = getDifference(selectionEndRow)
+    const endLineDifference = horizontalOffset
     const endLine = lines[selectionEndRow]
     const endLineEndX = await GetX.getX(
       endLine,
@@ -201,7 +200,7 @@ export const getVisible = async (editor: any) => {
     }
     const startLineYRelative = getRelativeRow(selectionStartRow)
     const startLineY = startLineYRelative * rowHeight
-    const startLineDifference = getDifference(selectionStartRow)
+    const startLineDifference = horizontalOffset
     if (selectionStartRow === selectionEndRow) {
       const startX = await GetX.getX(
         endLine,
@@ -267,7 +266,7 @@ export const getVisible = async (editor: any) => {
         const currentLine = lines[rowIndex]
         const relativeLine = getRelativeRow(rowIndex)
         const currentLineY = relativeLine * rowHeight
-        const difference = getDifference(rowIndex)
+        const difference = horizontalOffset
         const selectionWidth = await GetX.getX(
           currentLine,
           currentLine.length,
