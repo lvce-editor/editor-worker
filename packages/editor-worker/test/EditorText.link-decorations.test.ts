@@ -128,7 +128,7 @@ test("getVisible - decorations that don't align with token boundaries", async ()
   expect(linkTokens[0].text).toBe('https://ex')
 })
 
-test('getVisible - keeps full multi-token line when editor width is narrow', async () => {
+test('getVisible - bounds a long multi-token line to the horizontal viewport', async () => {
   const line = '0123456789abcdefghijklmnopqrstuvwxyz'
   const editor = {
     averageCharWidth: 10,
@@ -168,7 +168,67 @@ test('getVisible - keeps full multi-token line when editor width is narrow', asy
   const { textInfos } = await EditorText.getVisible(editor, false)
   const visibleText = textInfos[0].filter((_: string, index: number) => index % 2 === 0).join('')
 
-  expect(visibleText).toBe(line)
+  expect(visibleText).toBe('012')
+  expect(visibleText.length).toBeLessThanOrEqual(3)
+
+  const scrolledEditor = { ...editor, deltaX: 100 }
+  const scrolled = await EditorText.getVisible(scrolledEditor, false)
+  const scrolledText = scrolled.textInfos[0].filter((_: string, index: number) => index % 2 === 0).join('')
+  expect(scrolledText).toBe('abc')
+})
+
+test('getVisible - keeps Unicode characters intact at horizontal viewport edges', async () => {
+  const line = '0🙂123456'
+  const editor = {
+    averageCharWidth: 10,
+    charWidth: 10,
+    decorations: [],
+    deltaX: 0,
+    height: 100,
+    id: 1,
+    invalidStartIndex: 0,
+    languageId: 'plaintext',
+    lineCache: [],
+    lines: [line],
+    minLineY: 0,
+    numberOfVisibleLines: 1,
+    tabSize: 2,
+    tokenizerId: 'builtin.plaintext',
+    width: 10,
+  }
+
+  const atStart = await EditorText.getVisible(editor, false)
+  const startText = atStart.textInfos[0].filter((_: string, index: number) => index % 2 === 0).join('')
+  expect(startText).toBe('0🙂')
+
+  const scrolled = await EditorText.getVisible({ ...editor, deltaX: 20 }, false)
+  const scrolledText = scrolled.textInfos[0].filter((_: string, index: number) => index % 2 === 0).join('')
+  expect(scrolledText.startsWith('🙂')).toBe(true)
+  expect(scrolledText.length).toBeLessThanOrEqual(3)
+})
+
+test('getVisible - uses expanded tab width when choosing the horizontal render window', async () => {
+  const editor = {
+    averageCharWidth: 10,
+    charWidth: 10,
+    decorations: [],
+    deltaX: 30,
+    height: 100,
+    id: 1,
+    invalidStartIndex: 0,
+    languageId: 'plaintext',
+    lineCache: [],
+    lines: ['a\tbcdefgh'],
+    minLineY: 0,
+    numberOfVisibleLines: 1,
+    tabSize: 2,
+    tokenizerId: 'builtin.plaintext',
+    width: 10,
+  }
+
+  const result = await EditorText.getVisible(editor, false)
+  const visibleText = result.textInfos[0].filter((_: string, index: number) => index % 2 === 0).join('')
+  expect(visibleText).toBe('bc')
 })
 
 test('getVisible - renders a definition link decoration with its dedicated class', async () => {

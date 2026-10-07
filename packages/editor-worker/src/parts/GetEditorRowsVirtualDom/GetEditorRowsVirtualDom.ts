@@ -3,6 +3,7 @@ import * as ClassNames from '../ClassNames/ClassNames.ts'
 import { DiagnosticTag } from '../Diagnostic/Diagnostic.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
+import * as GetHorizontalVisibleRange from '../GetHorizontalVisibleRange/GetHorizontalVisibleRange.ts'
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as Px from '../Px/Px.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
@@ -24,15 +25,24 @@ const getUnnecessaryRanges = (
   diagnostics: readonly any[],
   rowIndex: number,
   textLength: number,
+  visibleStartColumn: number,
+  line: string,
+  hasLine: boolean,
+  tabSize: number,
 ): readonly { readonly start: number; readonly end: number }[] => {
+  const visibleStart = hasLine ? GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, visibleStartColumn, tabSize) : visibleStartColumn
   return diagnostics
     .filter((diagnostic) => diagnostic.tags?.includes(DiagnosticTag.Unnecessary))
     .flatMap((diagnostic) => {
       if (rowIndex < diagnostic.rowIndex || rowIndex > diagnostic.endRowIndex) {
         return []
       }
-      const start = rowIndex === diagnostic.rowIndex ? diagnostic.columnIndex : 0
-      const end = rowIndex === diagnostic.endRowIndex ? diagnostic.endColumnIndex : textLength
+      const diagnosticStart = rowIndex === diagnostic.rowIndex ? diagnostic.columnIndex : 0
+      const diagnosticEnd = rowIndex === diagnostic.endRowIndex ? diagnostic.endColumnIndex : line.length
+      const startColumn = hasLine ? GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, diagnosticStart, tabSize) : diagnosticStart
+      const endColumn = hasLine ? GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, diagnosticEnd, tabSize) : diagnosticEnd
+      const start = Math.max(0, startColumn - visibleStart)
+      const end = Math.min(textLength, endColumn - visibleStart)
       return start < end ? [{ end, start }] : []
     })
     .toSorted((left, right) => left.start - right.start)
@@ -107,6 +117,11 @@ export const getEditorRowsVirtualDom = (
   visibleViewLineIndices: readonly number[] = [],
   problemsHighlightedRow = -1,
   diagnostics: readonly any[] = [],
+  deltaX = 0,
+  width = Infinity,
+  charWidth = 1,
+  tabSize = 2,
+  lines: readonly string[] = [],
 ): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = []
   const actualViewRows =
@@ -122,12 +137,19 @@ export const getEditorRowsVirtualDom = (
     const textInfo = textInfos[textInfoIndex]
     const difference = differences[textInfoIndex]
     const rowIndex = viewRow
-    const rowDecorations = endOfLineDecorations.filter((decoration) => decoration.rowIndex === rowIndex)
+    const line = lines[rowIndex] || ''
+    const visibleRange = GetHorizontalVisibleRange.getHorizontalVisibleRange(line, deltaX, width, charWidth, tabSize)
+    const rowDecorations = endOfLineDecorations.filter(
+      (decoration) => decoration.rowIndex === rowIndex && (!lines[rowIndex] || visibleRange.end >= line.length),
+    )
     let rowTextLength = 0
     for (let index = 0; index < textInfo.length; index += 2) {
       rowTextLength += textInfo[index].length
     }
-    const tokenParts = getTokenParts(textInfo, getUnnecessaryRanges(diagnostics, rowIndex, rowTextLength))
+    const tokenParts = getTokenParts(
+      textInfo,
+      getUnnecessaryRanges(diagnostics, rowIndex, rowTextLength, visibleRange.start, line, lines[rowIndex] !== undefined, tabSize),
+    )
     let className = ClassNames.EditorRow
     if (rowIndex === highlightedLine) {
       className = MergeClassNames.mergeClassNames(className, ClassNames.EditorRowHighlighted)

@@ -36,6 +36,11 @@ const renderLines = {
       visibleViewLineIndices,
       newState.problemsHighlightedRow,
       diagnostics || [],
+      newState.deltaX,
+      newState.width,
+      newState.charWidth,
+      newState.tabSize,
+      newState.lines,
     )
     return [/* method */ 'setText', dom]
   },
@@ -50,6 +55,7 @@ const renderLines = {
     oldState.endOfLineDecorations === newState.endOfLineDecorations &&
     oldState.diagnostics === newState.diagnostics &&
     oldState.deltaX === newState.deltaX &&
+    oldState.charWidth === newState.charWidth &&
     oldState.width === newState.width &&
     oldState.highlightedLine === newState.highlightedLine &&
     oldState.problemsHighlightedRow === newState.problemsHighlightedRow &&
