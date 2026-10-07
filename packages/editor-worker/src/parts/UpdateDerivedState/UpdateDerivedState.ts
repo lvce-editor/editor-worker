@@ -16,7 +16,8 @@ const shouldUpdateDiagnosticData = (oldState: EditorState, newState: EditorState
   return (
     oldState.diagnostics !== newState.diagnostics ||
     ((newState.diagnostics?.length ?? 0) > 0 &&
-      (oldState.minLineY !== newState.minLineY ||
+      (oldState.deltaX !== newState.deltaX ||
+        oldState.minLineY !== newState.minLineY ||
         oldState.charWidth !== newState.charWidth ||
         oldState.fontFamily !== newState.fontFamily ||
         oldState.fontSize !== newState.fontSize ||
@@ -34,6 +35,7 @@ const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState)
   return (
     oldState.selections !== newState.selections ||
     oldState.focused !== newState.focused ||
+    oldState.deltaX !== newState.deltaX ||
     oldState.minLineY !== newState.minLineY ||
     oldState.maxLineY !== newState.maxLineY ||
     oldState.visibleViewLineIndices !== newState.visibleViewLineIndices ||

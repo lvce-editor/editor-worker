@@ -7,6 +7,7 @@ export const getVisibleDiagnostics = async (editor: any, diagnostics: readonly D
   const visibleDiagnostics = []
   const {
     charWidth,
+    deltaX = 0,
     deltaY,
     fontFamily,
     fontSize,
@@ -18,12 +19,11 @@ export const getVisibleDiagnostics = async (editor: any, diagnostics: readonly D
     rowHeight,
     tabSize,
     viewLineIndices,
-    width,
   } = editor
   const startVisualRow = itemHeight ? Math.floor(deltaY / itemHeight) : editor.minLineY || 0
   for (const diagnostic of diagnostics) {
     const { columnIndex, endColumnIndex, rowIndex } = diagnostic
-    const endLineDifference = 0
+    const endLineDifference = -deltaX
     const halfCursorWidth = 0
     const x = await GetX.getX(
       lines[rowIndex],
@@ -35,7 +35,7 @@ export const getVisibleDiagnostics = async (editor: any, diagnostics: readonly D
       letterSpacing,
       tabSize,
       halfCursorWidth,
-      width,
+      Infinity,
       charWidth,
       endLineDifference,
     )
@@ -49,7 +49,7 @@ export const getVisibleDiagnostics = async (editor: any, diagnostics: readonly D
       letterSpacing,
       tabSize,
       halfCursorWidth,
-      width,
+      Infinity,
       charWidth,
       endLineDifference,
     )
