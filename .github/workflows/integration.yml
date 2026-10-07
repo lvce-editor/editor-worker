@@ -74,6 +74,10 @@ jobs:
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-line-height-live-cursor
         shell: bash
+      - name: Test highlighted editor horizontal virtualization
+        working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
+        run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-highlighted-horizontal-virtualization
+
       - name: Test editor horizontal virtualization
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-horizontal-virtualization --browser-test=scripts/test-horizontal-virtualization.mjs
