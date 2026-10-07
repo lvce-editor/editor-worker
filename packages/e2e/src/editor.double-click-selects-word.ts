@@ -8,7 +8,8 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
 
-  await Command.execute('Editor.handleMouseDown', 0, false, false, 64, 60, 2)
+  // Include the measured 30px gutter in the viewport coordinate of "line".
+  await Command.execute('Editor.handleMouseDown', 0, false, false, 94, 60, 2)
 
   await Editor.shouldHaveSelections(new Uint32Array([0, 7, 0, 11]))
 }
