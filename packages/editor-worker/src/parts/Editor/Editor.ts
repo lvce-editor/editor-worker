@@ -170,10 +170,11 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     return newEditor2
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(newEditor2, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(newEditor2, syncIncremental)
   return {
     ...newEditor2,
     differences,
+    horizontalVisibleRanges,
     textInfos,
   }
 }
@@ -208,10 +209,11 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes,
     return finalEditor
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
   return {
     ...finalEditor,
     differences,
+    horizontalVisibleRanges,
     textInfos,
   }
 }
@@ -250,10 +252,11 @@ export const scheduleDocument = async (editor, changes) => {
     return finalEditor
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
   return {
     ...finalEditor,
     differences,
+    horizontalVisibleRanges,
     textInfos,
   }
   // RendererProcess.send([

@@ -20,6 +20,7 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
+import { updateHorizontalLayout } from '../UpdateHorizontalLayout/UpdateHorizontalLayout.ts'
 
 const largeFileContentLength = 10 * 1024 * 1024
 const pendingFileReads = new Map<string | undefined, Map<string, Promise<string>>>()
@@ -126,6 +127,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     fontWeight,
     formatOnSave,
     highlightActiveLineNumber,
+    horizontalVirtualizationThreshold,
     hoverDelay,
     hoverEnabled,
     insertSpaces,
@@ -162,6 +164,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     fontWeight,
     formatOnSave,
     highlightActiveLineNumber,
+    horizontalVirtualizationThreshold,
     hoverDelay,
     hoverEnabled,
     insertSpaces,
@@ -233,7 +236,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds({ ...effectiveEditor, endOfLine }, x, y, width, height, 9)
   const newEditor2 = Editor.setText(newEditor1, content)
-  let newEditor3 = newEditor2
+  const newEditor3 = await updateHorizontalLayout(newEditor2)
 
   // Detect links and initialize decorations
   const linkDecorations = LinkDetection.detectAllLinksAsDecorations(newEditor3)
@@ -257,12 +260,13 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
   }
 
   const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(newEditor3WithBreadcrumbs, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(newEditor3WithBreadcrumbs, syncIncremental)
   const newEditor4 = {
     ...newEditor3WithBreadcrumbs,
     differences,
     focus: WhenExpression.FocusEditorText,
     focused: focus,
+    horizontalVisibleRanges,
     textInfos,
   }
 

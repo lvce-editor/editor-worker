@@ -1,4 +1,7 @@
 {
   "artifacts": [[".tmp/dist", "packages/renderer-worker/node_modules/@lvce-editor/editor-worker"]],
-  "scripts": ["packages/extension-host-worker-tests/scripts/test-font-loading.mjs"]
+  "scripts": [
+    "packages/extension-host-worker-tests/scripts/test-font-loading.mjs",
+    "packages/extension-host-worker-tests/scripts/test-horizontal-virtualization.mjs"
+  ]
 }

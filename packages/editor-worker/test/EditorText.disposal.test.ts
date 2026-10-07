@@ -26,7 +26,7 @@ const createEditor = () => ({
 test('does not render a disposed editor viewport', async () => {
   const editor = createEditor()
   editor.lifecycle.disposed = true
-  await expect(EditorText.getVisible(editor, false)).resolves.toEqual({ differences: [], textInfos: [] })
+  await expect(EditorText.getVisible(editor, false)).resolves.toEqual({ differences: [], horizontalVisibleRanges: [], textInfos: [] })
 })
 
 test('disposal while loading an embedded tokenizer cancels viewport rendering', async () => {
@@ -46,6 +46,6 @@ test('disposal while loading an embedded tokenizer cancels viewport rendering', 
   await started.promise
   editor.lifecycle.disposed = true
   pending.resolve()
-  await expect(rendering).resolves.toEqual({ differences: [], textInfos: [] })
+  await expect(rendering).resolves.toEqual({ differences: [], horizontalVisibleRanges: [], textInfos: [] })
   expect(loadTokenizers).toHaveBeenCalledTimes(1)
 })

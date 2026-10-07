@@ -37,11 +37,12 @@ export const setDeltaY = async (state: EditorState, value: number): Promise<Edit
   }
   const syncIncremental = SyncIncremental.getEnabled()
 
-  const { differences, textInfos } = await EditorText.getVisible(newEditor1, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(newEditor1, syncIncremental)
 
   const newEditor2 = {
     ...newEditor1,
     differences,
+    horizontalVisibleRanges,
     textInfos,
   }
   return newEditor2

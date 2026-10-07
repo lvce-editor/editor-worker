@@ -31,6 +31,7 @@ test('boolean preferences retain their defaults and explicit values', async () =
     diagnosticsEnabled: false,
     dragAndDropEnabled: true,
     formatOnSave: false,
+    horizontalVirtualizationThreshold: 500,
     hoverDelay: 200,
     hoverEnabled: false,
     insertSpaces: true,
@@ -48,6 +49,17 @@ test('boolean preferences retain their defaults and explicit values', async () =
       insertSpaces: value,
       roundedSelection: value,
     })
+  }
+})
+
+test('horizontal virtualization threshold defaults to 500 and normalizes valid values', async () => {
+  getPreference.mockResolvedValue(undefined)
+  expect((await getEditorPreferences()).horizontalVirtualizationThreshold).toBe(500)
+  getPreference.mockImplementation(async (key) => (key === 'editor.horizontalVirtualizationThreshold' ? '750' : undefined))
+  expect((await getEditorPreferences()).horizontalVirtualizationThreshold).toBe(750)
+  for (const value of [-1, 100_001, NaN, Infinity]) {
+    getPreference.mockImplementation(async (key) => (key === 'editor.horizontalVirtualizationThreshold' ? value : undefined))
+    expect((await getEditorPreferences()).horizontalVirtualizationThreshold).toBe(500)
   }
 })
 

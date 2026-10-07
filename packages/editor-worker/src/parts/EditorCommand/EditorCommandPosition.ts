@@ -37,7 +37,7 @@ export const at = async (editor: any, eventX: number, eventY: number) => {
   const rowIndex = viewLineIndices
     ? EditorViewRows.getDocumentRowForVisualRow(visualRowIndex, viewLineIndices)
     : EditorFolding.getDocumentRowForVisualRow(visualRowIndex, foldingRanges)
-  const relativeX = eventX - x - gutterWidth + deltaX
+  const relativeX = Math.max(0, eventX - x - gutterWidth + deltaX)
   const clampedRowIndex = Clamp.clamp(rowIndex, 0, lines.length - 1)
   const line = lines[clampedRowIndex]
   const columnIndex = await GetAccurateColumnIndex.getAccurateColumnIndex(

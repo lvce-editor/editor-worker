@@ -20,6 +20,10 @@ jest.unstable_mockModule('../src/parts/SyncIncremental/SyncIncremental.ts', () =
   getEnabled: getSyncIncrementalEnabledMock,
 }))
 
+jest.unstable_mockModule('../src/parts/UpdateHorizontalLayout/UpdateHorizontalLayout.ts', () => ({
+  updateHorizontalLayout: async (state: any) => state,
+}))
+
 const UpdateDerivedState = await import('../src/parts/UpdateDerivedState/UpdateDerivedState.ts')
 
 beforeEach(() => {
