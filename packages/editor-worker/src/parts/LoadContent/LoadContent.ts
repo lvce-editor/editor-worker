@@ -22,6 +22,41 @@ import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
 
 const largeFileContentLength = 10 * 1024 * 1024
+const pendingFileReads = new Map<string | undefined, Map<string, Promise<string>>>()
+
+const readFile = (applicationId: string | undefined, uri: string, forceReload: boolean): Promise<string> => {
+  if (forceReload) {
+    return ApplicationRpc.readFile(applicationId, uri)
+  }
+  let applicationReads = pendingFileReads.get(applicationId)
+  if (!applicationReads) {
+    applicationReads = new Map()
+    pendingFileReads.set(applicationId, applicationReads)
+  }
+  const pendingRead = applicationReads.get(uri)
+  if (pendingRead) {
+    return pendingRead
+  }
+  let fileRead: Promise<string>
+  const removePendingRead = () => {
+    if (applicationReads?.get(uri) !== fileRead) {
+      return
+    }
+    applicationReads.delete(uri)
+    if (applicationReads.size === 0) {
+      pendingFileReads.delete(applicationId)
+    }
+  }
+  fileRead = (async () => {
+    try {
+      return await ApplicationRpc.readFile(applicationId, uri)
+    } finally {
+      removePendingRead()
+    }
+  })()
+  applicationReads.set(uri, fileRead)
+  return fileRead
+}
 
 const getWorkspaceUri = async (applicationId?: string): Promise<string> => {
   try {
@@ -160,7 +195,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
   let endOfLine = existingEditor?.endOfLine || 'lf'
   try {
     if (!existingEditor) {
-      content = await ApplicationRpc.readFile(state.applicationId, uri)
+      content = await readFile(state.applicationId, uri, forceReload)
       endOfLine = getEndOfLine(content)
       content = normalizeLineEndings(content)
     }

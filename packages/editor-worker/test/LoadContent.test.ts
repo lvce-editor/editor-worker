@@ -170,6 +170,69 @@ test('loadContent does not focus the editor when focus is false and reading file
   expect(result.focused).toBe(false)
 })
 
+test('loadContent shares a pending file read for the same application and uri', async () => {
+  const { promise, resolve } = Promise.withResolvers<string>()
+  readFileMock.mockReturnValue(promise)
+  const firstLoad = LoadContent.loadContent(createState(), undefined)
+  const secondLoad = LoadContent.loadContent({ ...createState(), id: 2 }, undefined)
+
+  await new Promise((resolve) => setImmediate(resolve))
+  expect(readFileMock).toHaveBeenCalledTimes(1)
+  resolve('shared content')
+
+  const [firstResult, secondResult] = await Promise.all([firstLoad, secondLoad])
+  expect(firstResult.lines).toEqual(['shared content'])
+  expect(secondResult.lines).toEqual(['shared content'])
+})
+
+test('loadContent keeps pending file reads separate across applications', async () => {
+  rendererInvokeMock.mockImplementation(async (_method: string, applicationId: string) => `${applicationId} content`)
+  const firstLoad = LoadContent.loadContent({ ...createState(), applicationId: 'first' }, undefined)
+  const secondLoad = LoadContent.loadContent({ ...createState(), applicationId: 'second' }, undefined)
+
+  const [firstResult, secondResult] = await Promise.all([firstLoad, secondLoad])
+
+  expect(firstResult.lines).toEqual(['first content'])
+  expect(secondResult.lines).toEqual(['second content'])
+  expect(rendererInvokeMock).toHaveBeenCalledTimes(2)
+})
+
+test('loadContent removes failed pending reads so a later load retries', async () => {
+  readFileMock.mockRejectedValueOnce(new Error('Failed to read file')).mockResolvedValueOnce('retried content')
+
+  const firstResult = await LoadContent.loadContent(createState(), undefined)
+  const secondResult = await LoadContent.loadContent({ ...createState(), id: 2 }, undefined)
+
+  expect(firstResult.loadError).toBe('Failed to read file')
+  expect(secondResult.lines).toEqual(['retried content'])
+  expect(readFileMock).toHaveBeenCalledTimes(2)
+})
+
+test('loadContent forceReload bypasses a pending file read', async () => {
+  const { promise, resolve } = Promise.withResolvers<string>()
+  readFileMock.mockReturnValueOnce(promise).mockResolvedValueOnce('fresh content')
+  const pendingLoad = LoadContent.loadContent(createState(), undefined)
+
+  await new Promise((resolve) => setImmediate(resolve))
+  const reloaded = await LoadContent.loadContent({ ...createState(), id: 2 }, undefined, false, true, true)
+
+  expect(reloaded.lines).toEqual(['fresh content'])
+  expect(readFileMock).toHaveBeenCalledTimes(2)
+  resolve('stale content')
+  expect((await pendingLoad).lines).toEqual(['stale content'])
+})
+
+test('loadContent reads again after a previous read completes', async () => {
+  readFileMock.mockResolvedValueOnce('original content').mockResolvedValueOnce('changed externally')
+
+  const firstResult = await LoadContent.loadContent(createState(), undefined)
+  const secondResult = await LoadContent.loadContent({ ...createState(), id: 2 }, undefined)
+
+  expect(firstResult.lines).toEqual(['original content'])
+  expect(secondResult.lines).toEqual(['changed externally'])
+  expect(readFileMock).toHaveBeenCalledTimes(2)
+})
+
 test('loads a separate document for the same uri in another application', async () => {
   const source = { ...createState(), applicationId: 'source', id: 2, initial: false, lines: ['unsaved source'], modified: true, uid: 2 }
   EditorStates.set(2, source, source)
