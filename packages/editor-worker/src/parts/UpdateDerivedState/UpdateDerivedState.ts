@@ -132,7 +132,7 @@ const mergeConflictsEqual = (oldState: EditorState, newState: EditorState): bool
   })
 }
 
-export const updateDerivedState = async (oldState: EditorState, newState: EditorState): Promise<EditorState> => {
+export const updateDerivedState = async (oldState: EditorState, newState: EditorState, deferGutterDecorations = false): Promise<EditorState> => {
   const horizontalState =
     oldState.initial ||
     oldState.lines !== newState.lines ||
@@ -212,7 +212,7 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
     }
   }
 
-  if (oldState.lines !== nextState.lines || oldState.uri !== nextState.uri) {
+  if (!deferGutterDecorations && (oldState.lines !== nextState.lines || oldState.uri !== nextState.uri)) {
     finalState = {
       ...finalState,
       gutterDecorations: await getEditorGutterDecorations(finalState),

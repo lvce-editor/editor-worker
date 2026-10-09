@@ -2,6 +2,7 @@ import { afterEach, beforeEach, expect, jest, test } from '@jest/globals'
 import { WhenExpression, WidgetId } from '@lvce-editor/constants'
 
 const updateDerivedStateMock = jest.fn()
+const scheduleGutterMock = jest.fn()
 const editorDiagnosticEffectApplyMock: any = jest.fn()
 const editorDiagnosticEffectIsActiveMock: any = jest.fn()
 const autoSaveScheduleMock = jest.fn<(uid: number, save: (token: number) => Promise<void>) => void>()
@@ -44,12 +45,15 @@ jest.unstable_mockModule('../src/parts/EditorDiagnosticEffect/EditorDiagnosticEf
   },
 }))
 
+jest.unstable_mockModule('../src/parts/ScheduleGutterDecorations/ScheduleGutterDecorations.ts', () => ({ schedule: scheduleGutterMock }))
+
 const { handleFocus } = await import('../src/parts/EditorCommand/EditorCommandHandleFocus.ts')
 const { handleBlur } = await import('../src/parts/EditorCommand/EditorCommandBlur.ts')
 const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
 const WrapCommands = await import('../src/parts/WrapCommands/WrapCommands.ts')
 
 beforeEach(() => {
+  scheduleGutterMock.mockReset()
   const state = {
     text: '',
   }
@@ -783,4 +787,20 @@ test('uses the latest rendered baseline when a command awaits derived state', as
 
   expect(EditorStates.get(1).oldState).toBe(pending)
   expect(EditorStates.get(1).newState.lines).toEqual(['edited'])
+})
+
+test('defers gutter providers for an edit but retains synchronous refresh on initial load', async () => {
+  const editor: any = { focused: false, initial: false, lifecycle: { disposed: false }, lines: ['a'], uid: 1, uri: 'untitled:///1' }
+  EditorStates.set(1, editor, editor)
+  const command = WrapCommands.wrapCommand((state: any) => ({ ...state, lines: ['ab'] }))
+  const result = await command(1)
+  expect(updateDerivedStateMock).toHaveBeenCalledWith(editor, expect.objectContaining({ lines: ['ab'] }), true)
+  expect(scheduleGutterMock).toHaveBeenCalledWith(result)
+  scheduleGutterMock.mockClear()
+  updateDerivedStateMock.mockClear()
+  const initial = { ...editor, initial: true }
+  EditorStates.set(1, initial, initial)
+  await command(1)
+  expect(updateDerivedStateMock).toHaveBeenCalledWith(initial, expect.objectContaining({ lines: ['ab'] }), false)
+  expect(scheduleGutterMock).not.toHaveBeenCalled()
 })

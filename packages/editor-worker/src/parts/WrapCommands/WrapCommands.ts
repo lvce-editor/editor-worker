@@ -11,6 +11,7 @@ import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncremental
 import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
+import * as ScheduleGutterDecorations from '../ScheduleGutterDecorations/ScheduleGutterDecorations.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
 const cursorUndoLimit = 100
@@ -88,7 +89,8 @@ export const wrapCommand =
       if (state === newEditor) {
         return returnState ? newEditor : undefined
       }
-      const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
+      const deferGutterDecorations = !initial && uri === newEditor.uri && lines !== newEditor.lines && Boolean(newEditor.lifecycle)
+      const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor, deferGutterDecorations)
       // Another command can commit before the renderer consumes this edit.
       // Keep its last rendered baseline, including renders completed while we awaited derived state.
       const renderedState = Editors.get(uid)?.oldState ?? oldInstance.oldState
@@ -98,6 +100,9 @@ export const wrapCommand =
         void editorDiagnosticEffect.apply(newEditorWithDerivedState)
       }
       const finalEditor = newEditorWithDerivedState
+      if (deferGutterDecorations) {
+        ScheduleGutterDecorations.schedule(finalEditor)
+      }
       await notifyEditorStatusChange(state, finalEditor)
       if (
         !initial &&
@@ -123,21 +128,28 @@ export const wrapCommand =
           ) {
             continue
           }
-          const synchronizedEditor = await UpdateDerivedState.updateDerivedState(editor, {
-            ...editor,
-            decorations: finalEditor.decorations,
-            diagnostics: finalEditor.diagnostics,
-            endOfLine: finalEditor.endOfLine,
-            incrementalEdits: emptyIncrementalEdits,
-            insertSpaces: finalEditor.insertSpaces,
-            invalidStartIndex: Math.min(editor.invalidStartIndex, finalEditor.invalidStartIndex),
-            lines: finalEditor.lines,
-            modified: finalEditor.modified,
-            redoStack: finalEditor.redoStack,
-            undoStack: finalEditor.undoStack,
-            visualDecorations: finalEditor.visualDecorations,
-          })
+          const synchronizedEditor = await UpdateDerivedState.updateDerivedState(
+            editor,
+            {
+              ...editor,
+              decorations: finalEditor.decorations,
+              diagnostics: finalEditor.diagnostics,
+              endOfLine: finalEditor.endOfLine,
+              incrementalEdits: emptyIncrementalEdits,
+              insertSpaces: finalEditor.insertSpaces,
+              invalidStartIndex: Math.min(editor.invalidStartIndex, finalEditor.invalidStartIndex),
+              lines: finalEditor.lines,
+              modified: finalEditor.modified,
+              redoStack: finalEditor.redoStack,
+              undoStack: finalEditor.undoStack,
+              visualDecorations: finalEditor.visualDecorations,
+            },
+            deferGutterDecorations,
+          )
           Editors.set(otherUid, instance.oldState, synchronizedEditor)
+          if (deferGutterDecorations) {
+            ScheduleGutterDecorations.schedule(synchronizedEditor)
+          }
           if (editorDiagnosticEffect.isActive(editor, synchronizedEditor)) {
             void editorDiagnosticEffect.apply(synchronizedEditor)
           }
