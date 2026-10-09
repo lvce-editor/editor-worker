@@ -19,6 +19,21 @@ export const getPositionAtCursor = (editorUid: number): any => {
   return GetPositionAtCursor.getPositionAtCursor(editor)
 }
 
+export const getCompletionContext = (editorUid: number, includeLine = false): any => {
+  const editor = GetEditor.getEditor(editorUid)
+  const position = GetPositionAtCursor.getPositionAtCursor(editor)
+  if (!includeLine) {
+    return {
+      ...position,
+      wordBefore: EditorCommandGetWordAt.getWordBefore(editor, position.rowIndex, position.columnIndex),
+    }
+  }
+  return {
+    ...position,
+    line: editor.lines[position.rowIndex] || '',
+  }
+}
+
 export const getUri = (editorUid: number): string => {
   const editor = GetEditor.getEditor(editorUid)
   return editor.uri

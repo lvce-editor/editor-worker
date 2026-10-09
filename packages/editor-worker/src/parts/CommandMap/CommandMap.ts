@@ -283,6 +283,7 @@ export const commandMap = {
   'Editor.fold': wrapCommand(fold),
   'Editor.format': wrapCommand(EditorFormat.format),
   'Editor.getCommandIds': getCommandIds,
+  'Editor.getCompletionContext': ExternalGetPositionAtCursor.getCompletionContext,
   'Editor.getDiagnostics': ExternalGetPositionAtCursor.getDiagnostics,
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
   'Editor.getKeys': GetKeys.getKeys,
