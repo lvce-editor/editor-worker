@@ -1,3 +1,4 @@
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as Assert from '../Assert/Assert.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
@@ -37,9 +38,17 @@ const continueScrollingAndMovingSelection = async (editorUid: number): Promise<v
     return
   }
   EditorStates.set(editor.uid, editor, derivedEditor)
+  await RendererWorker.invoke('Editor.renderPending', editor.uid)
   if (derivedEditor.hasListener) {
     RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editorUid))
   }
+}
+
+const scheduleInitialSelectionAutoScroll = (editorUid: number): void => {
+  // Let the wrapped pointer-move command commit hasListener before the loop reads state.
+  RequestAnimationFrame.requestAnimationFrame(() => {
+    RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editorUid))
+  })
 }
 
 export const moveSelectionPx = async (editor: any, x: number, y: number) => {
@@ -54,7 +63,7 @@ export const moveSelectionPx = async (editor: any, x: number, y: number) => {
     return { ...newEditor, hasListener: false }
   }
   if (!editor.hasListener) {
-    RequestAnimationFrame.requestAnimationFrame(() => continueScrollingAndMovingSelection(editor.uid))
+    scheduleInitialSelectionAutoScroll(editor.uid)
   }
   return {
     ...newEditor,
