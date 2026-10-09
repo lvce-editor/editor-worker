@@ -14,12 +14,10 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await Command.execute('Editor.handleMouseDown', 0, false, false, 31, 30, 1)
   await Command.execute('Editor.handlePointerMove', 31, -100, false)
 
-  await new Promise((resolve) => setTimeout(resolve, 800))
-
   const line1 = Locator('.EditorRow').first()
   const cursor = Locator('.EditorCursor')
-  await Editor.shouldHaveSelections(new Uint32Array([16, 0, 0, 0]))
   await expect(line1).toHaveText('line 1')
+  await Editor.shouldHaveSelections(new Uint32Array([16, 0, 0, 0]))
   await expect(cursor).toBeVisible()
   await Command.execute('Editor.handlePointerUp')
 }
