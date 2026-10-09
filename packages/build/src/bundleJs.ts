@@ -15,6 +15,9 @@ const options: RollupOptions = {
     dir: join(root, '.tmp/dist/dist'),
     entryFileNames: 'editorWorkerMain.js',
     format: 'es',
+    manualChunks: {
+      textDocument: [join(root, 'packages/editor-worker/src/parts/TextDocument/TextDocument.ts')],
+    },
     freeze: false,
     generatedCode: {
       constBindings: true,
