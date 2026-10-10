@@ -1,26 +1,27 @@
 export interface HorizontalVisibleRange {
   readonly end: number
+  readonly segments?: readonly number[]
   readonly start: number
 }
 
 const defaultThreshold = 500
 
-const getSegments = (line: string): readonly { readonly index: number; readonly segment: string }[] => {
-  if ('Segmenter' in Intl) {
+const getSegments = (line: string): readonly number[] => {
+  if (typeof Intl.Segmenter === 'function') {
     // @ts-ignore
-    return [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(line)]
+    return [...Array.from(new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(line), ({ index }) => index), line.length]
   }
-  const segments: { index: number; segment: string }[] = []
+  const segments = [0]
   let index = 0
   for (const segment of line) {
-    segments.push({ index, segment })
     index += segment.length
+    segments.push(index)
   }
   return segments
 }
 
-const getCharacterWidth = (character: string, tabSize: number): number => {
-  if (character === '\t') {
+const getCharacterWidth = (line: string, start: number, end: number, tabSize: number): number => {
+  if (end - start === 1 && line.codePointAt(start) === 9) {
     return tabSize
   }
   // Grapheme clusters such as combining characters and ZWJ emoji are indivisible.
@@ -28,13 +29,20 @@ const getCharacterWidth = (character: string, tabSize: number): number => {
   return 1
 }
 
-export const getHorizontalDisplayColumn = (line: string, sourceColumn: number, tabSize: number): number => {
+export const getHorizontalDisplayColumn = (
+  line: string,
+  sourceColumn: number,
+  tabSize: number,
+  segments: readonly number[] = getSegments(line),
+): number => {
   let displayColumn = 0
-  for (const { index, segment } of getSegments(line)) {
-    if (index + segment.length > sourceColumn) {
+  for (let i = 0; i < segments.length - 1; i++) {
+    const start = segments[i]
+    const end = segments[i + 1]
+    if (end > sourceColumn) {
       break
     }
-    displayColumn += segment === '\t' ? tabSize : segment.length
+    displayColumn += end - start === 1 && line.codePointAt(start) === 9 ? tabSize : end - start
   }
   return displayColumn
 }
@@ -46,6 +54,7 @@ export const getHorizontalVisibleRange = (
   averageCharWidth: number,
   tabSize: number,
   threshold = defaultThreshold,
+  segments: readonly number[] = getSegments(line),
 ): HorizontalVisibleRange => {
   if (line.length <= threshold) {
     return { end: line.length, start: 0 }
@@ -59,12 +68,13 @@ export const getHorizontalVisibleRange = (
   let index = 0
   let start = 0
   let started = false
-  const segments = getSegments(line)
-  for (const { index: segmentIndex, segment } of segments) {
-    const nextColumn = column + getCharacterWidth(segment, tabSize)
+  for (let i = 0; i < segments.length - 1; i++) {
+    const segmentIndex = segments[i]
+    const segmentEnd = segments[i + 1]
+    const nextColumn = column + getCharacterWidth(line, segmentIndex, segmentEnd, tabSize)
     if (!started && nextColumn <= targetStart) {
       column = nextColumn
-      index = segmentIndex + segment.length
+      index = segmentEnd
       start = index
       continue
     }
@@ -72,7 +82,7 @@ export const getHorizontalVisibleRange = (
       start = segmentIndex
       started = true
     }
-    index = segmentIndex + segment.length
+    index = segmentEnd
     column = nextColumn
     if (column >= targetEnd) {
       break
@@ -83,9 +93,9 @@ export const getHorizontalVisibleRange = (
   }
   // Keep one extra complete grapheme to cover fractional offsets and avoid a blank edge.
   if (index < line.length) {
-    const nextSegment = segments.find(({ index: segmentIndex }) => segmentIndex >= index)
-    if (nextSegment) {
-      index = nextSegment.index + nextSegment.segment.length
+    const nextSegmentIndex = segments.findIndex((segmentIndex) => segmentIndex >= index)
+    if (nextSegmentIndex !== -1 && nextSegmentIndex < segments.length - 1) {
+      index = segments[nextSegmentIndex + 1]
     }
   }
   return {
@@ -113,6 +123,7 @@ interface MeasuredRangeRequest {
   readonly averageCharWidth: number
   readonly deltaX: number
   readonly line: string
+  readonly segments?: readonly number[]
   readonly tabSize: number
   readonly threshold: number
   readonly width: number
@@ -131,14 +142,23 @@ export const getHorizontalVisibleRangesMeasured = async (
   measureWidths: (texts: readonly string[]) => Promise<readonly number[]>,
 ): Promise<readonly { readonly difference: number; readonly end: number; readonly start: number }[]> => {
   const fallback = (request: MeasuredRangeRequest) => {
-    const range = getHorizontalVisibleRange(request.line, request.deltaX, request.width, request.averageCharWidth, request.tabSize, request.threshold)
+    const segments = request.segments || getSegments(request.line)
+    const range = getHorizontalVisibleRange(
+      request.line,
+      request.deltaX,
+      request.width,
+      request.averageCharWidth,
+      request.tabSize,
+      request.threshold,
+      segments,
+    )
     return {
       ...range,
-      difference: getHorizontalVisibleDifference(request.line, range.start, request.deltaX, request.averageCharWidth, request.tabSize),
+      difference: getHorizontalVisibleDifference(request.line, range.start, request.deltaX, request.averageCharWidth, request.tabSize, segments),
     }
   }
   const results = requests.map((request) => fallback(request))
-  const boundariesByLine: number[][] = []
+  const boundariesByLine: (readonly number[])[] = []
   const measurementsByLine: Map<number, number>[] = []
   const cursors: SearchCursor[] = []
   for (let lineIndex = 0; lineIndex < requests.length; lineIndex++) {
@@ -146,8 +166,7 @@ export const getHorizontalVisibleRangesMeasured = async (
     if (request.line.length <= request.threshold) {
       continue
     }
-    const segments = getSegments(request.line)
-    const boundaries = [0, ...segments.map(({ index, segment }) => index + segment.length)]
+    const boundaries = request.segments || getSegments(request.line)
     boundariesByLine[lineIndex] = boundaries
     measurementsByLine[lineIndex] = new Map([[0, 0]])
     const scrollOffset = Math.max(0, Number.isFinite(request.deltaX) ? request.deltaX : 0)
@@ -230,8 +249,15 @@ export const getHorizontalVisibleRangesMeasured = async (
   return results
 }
 
-export const getHorizontalVisibleDifference = (line: string, start: number, deltaX: number, averageCharWidth: number, tabSize: number): number => {
+export const getHorizontalVisibleDifference = (
+  line: string,
+  start: number,
+  deltaX: number,
+  averageCharWidth: number,
+  tabSize: number,
+  segments?: readonly number[],
+): number => {
   const charWidth = averageCharWidth > 0 ? averageCharWidth : 1
   const scrollOffset = Number.isFinite(deltaX) ? deltaX : 0
-  return getHorizontalDisplayColumn(line, start, tabSize) * charWidth - scrollOffset
+  return getHorizontalDisplayColumn(line, start, tabSize, segments) * charWidth - scrollOffset
 }

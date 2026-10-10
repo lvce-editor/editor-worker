@@ -1,3 +1,4 @@
+import { TextMeasurementWorker } from '@lvce-editor/rpc-registry'
 import * as GetDecorationClassName from '../GetDecorationClassName/GetDecorationClassName.ts'
 import { getHorizontalScrollDimensions } from '../GetHorizontalScrollDimensions/GetHorizontalScrollDimensions.ts'
 import * as GetHorizontalVisibleRange from '../GetHorizontalVisibleRange/GetHorizontalVisibleRange.ts'
@@ -10,6 +11,14 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 
 const maxTokenizerLoadPasses = 10
+
+const getGraphemeSegments = async (lines: readonly string[]) => {
+  try {
+    return await TextMeasurementWorker.invoke('TextMeasurement.getGraphemeSegments', lines)
+  } catch {
+    return undefined
+  }
+}
 
 // const getTokens = (editor) => {
 //   const tokens = []
@@ -509,11 +518,14 @@ const getLineInfosViewport = async (
   const tokenMap = TokenMaps.get(languageId)
   let offset = minLineOffset
   const tabSize = editor.tabSize ?? 2
+  const visibleLines = lines.slice(minLineY, maxLineY)
+  const graphemeSegments = await getGraphemeSegments(visibleLines)
   const measuredRanges = await GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured(
-    lines.slice(minLineY, maxLineY).map((line: string) => ({
+    visibleLines.map((line: string, index: number) => ({
       averageCharWidth,
       deltaX,
       line,
+      segments: graphemeSegments?.[index],
       tabSize,
       threshold: horizontalVirtualizationThreshold,
       width,
@@ -568,6 +580,7 @@ const getLineInfosViewport = async (
     horizontalVisibleRanges.push({
       end: measuredRange.end,
       rowIndex: i,
+      segments: graphemeSegments?.[i - minLineY],
       start: measuredRange.start,
     })
     offset += line.length + 1
@@ -584,7 +597,12 @@ export const getVisible = async (
   syncIncremental: boolean,
 ): Promise<{
   differences: number[]
-  horizontalVisibleRanges: { end: number; rowIndex: number; start: number }[]
+  horizontalVisibleRanges: {
+    end: number
+    rowIndex: number
+    segments?: readonly number[]
+    start: number
+  }[]
   textInfos: string[][]
 }> => {
   if (editor.lifecycle?.disposed) {

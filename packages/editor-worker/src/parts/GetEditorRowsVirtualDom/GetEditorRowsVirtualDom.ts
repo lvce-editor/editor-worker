@@ -29,8 +29,11 @@ const getUnnecessaryRanges = (
   line: string,
   hasLine: boolean,
   tabSize: number,
+  segments?: readonly number[],
 ): readonly { readonly start: number; readonly end: number }[] => {
-  const visibleStart = hasLine ? GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, visibleStartColumn, tabSize) : visibleStartColumn
+  const visibleStart = hasLine
+    ? GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, visibleStartColumn, tabSize, segments)
+    : visibleStartColumn
   return diagnostics
     .filter((diagnostic) => diagnostic.tags?.includes(DiagnosticTag.Unnecessary))
     .flatMap((diagnostic) => {
@@ -39,8 +42,8 @@ const getUnnecessaryRanges = (
       }
       const diagnosticStart = rowIndex === diagnostic.rowIndex ? diagnostic.columnIndex : 0
       const diagnosticEnd = rowIndex === diagnostic.endRowIndex ? diagnostic.endColumnIndex : line.length
-      const startColumn = hasLine ? GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, diagnosticStart, tabSize) : diagnosticStart
-      const endColumn = hasLine ? GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, diagnosticEnd, tabSize) : diagnosticEnd
+      const startColumn = hasLine ? GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, diagnosticStart, tabSize, segments) : diagnosticStart
+      const endColumn = hasLine ? GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, diagnosticEnd, tabSize, segments) : diagnosticEnd
       const start = Math.max(0, startColumn - visibleStart)
       const end = Math.min(textLength, endColumn - visibleStart)
       return start < end ? [{ end, start }] : []
@@ -123,7 +126,12 @@ export const getEditorRowsVirtualDom = (
   tabSize = 2,
   lines: readonly string[] = [],
   horizontalVirtualizationThreshold = 500,
-  horizontalVisibleRanges: readonly { readonly end: number; readonly rowIndex: number; readonly start: number }[] = [],
+  horizontalVisibleRanges: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[] = [],
 ): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = []
   const actualViewRows =
@@ -152,7 +160,16 @@ export const getEditorRowsVirtualDom = (
     }
     const tokenParts = getTokenParts(
       textInfo,
-      getUnnecessaryRanges(diagnostics, rowIndex, rowTextLength, visibleRange.start, line, lines[rowIndex] !== undefined, tabSize),
+      getUnnecessaryRanges(
+        diagnostics,
+        rowIndex,
+        rowTextLength,
+        visibleRange.start,
+        line,
+        lines[rowIndex] !== undefined,
+        tabSize,
+        visibleRange.segments,
+      ),
     )
     let className = ClassNames.EditorRow
     if (rowIndex === highlightedLine) {

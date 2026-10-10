@@ -21,12 +21,34 @@ test('never splits a combining sequence or a multi-code-point emoji', () => {
   expect(line.slice(start, end)).toBe('b👩‍💻')
 })
 
+test('uses supplied worker grapheme boundaries for display columns and ranges', () => {
+  const line = 'a\u{301}\u{1F469}\u{200D}\u{1F4BB}bcdef'
+  const segments = [0, 2, 7, 8, 9, 10, 11, 12]
+  expect(GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, 7, 2, segments)).toBe(7)
+  expect(GetHorizontalVisibleRange.getHorizontalVisibleRange(line, 2, 1, 1, 2, 5, segments)).toEqual({
+    end: 9,
+    start: 7,
+  })
+})
+
 test('uses measured prefix widths for proportional text and partial tokens', async () => {
   const line = 'abWXYZ'
   const characterWidths: Record<string, number> = { a: 1, b: 3, W: 4, X: 2, Y: 2, Z: 2 }
   const measureWidth = async (text: string) => [...text].reduce((total, character) => total + (characterWidths[character] || 0), 0)
   const range = await GetHorizontalVisibleRange.getHorizontalVisibleRangeMeasured(line, 4, 2, 1, 2, 2, measureWidth)
   expect(range).toEqual({ difference: 0, end: 4, start: 2 })
+})
+
+test('keeps worker grapheme boundaries when measuring long rows', async () => {
+  const line = 'a\u{301}\u{1F469}\u{200D}\u{1F4BB}bcdef'
+  const segments = [0, 2, 7, 8, 9, 10, 11, 12]
+  const [range] = await GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured(
+    [{ averageCharWidth: 1, deltaX: 2, line, segments, tabSize: 2, threshold: 5, width: 1 }],
+    async (texts) => texts.map((text) => [...text].length),
+  )
+  const boundaries = new Set(segments)
+  expect(boundaries.has(range.start)).toBe(true)
+  expect(boundaries.has(range.end)).toBe(true)
 })
 
 test('batches independent prefix searches across long rows', async () => {

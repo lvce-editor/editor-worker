@@ -45,7 +45,12 @@ interface EditorVirtualDomOptions {
   readonly height?: number
   readonly highlightActiveLineNumber?: boolean
   readonly highlightedLine?: number
-  readonly horizontalVisibleRanges?: readonly { readonly end: number; readonly rowIndex: number; readonly start: number }[]
+  readonly horizontalVisibleRanges?: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[]
   readonly lightBulbRowIndex?: number
   readonly lineNumbers?: boolean
   readonly lines?: readonly string[]

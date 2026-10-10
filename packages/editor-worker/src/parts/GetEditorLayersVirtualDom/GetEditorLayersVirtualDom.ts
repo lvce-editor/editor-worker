@@ -27,7 +27,12 @@ export const getEditorLayersVirtualDom = (
   problemsHighlightedRow = -1,
   roundedSelection = false,
   unnecessaryDiagnostics: readonly any[] = [],
-  horizontalVisibleRanges: readonly { readonly end: number; readonly rowIndex: number; readonly start: number }[] = [],
+  horizontalVisibleRanges: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[] = [],
   lines: readonly string[] = [],
   tabSize = 2,
 ): readonly VirtualDomNode[] => {
