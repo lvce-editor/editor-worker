@@ -121,6 +121,7 @@ beforeEach(() => {
   loadTokenizerMock.mockReset()
   measureCharacterWidthMock.mockReset()
   readFileMock.mockReset()
+  rendererInvokeMock.mockReset()
 
   getEditorPreferencesMock.mockResolvedValue({
     completionTriggerCharacters: [],
@@ -195,7 +196,11 @@ test('loadContent keeps pending file reads separate across applications', async 
 
   expect(firstResult.lines).toEqual(['first content'])
   expect(secondResult.lines).toEqual(['second content'])
-  expect(rendererInvokeMock).toHaveBeenCalledTimes(2)
+  expect(
+    rendererInvokeMock.mock.calls.filter(
+      ([method, , operation]: readonly unknown[]) => method === 'Application.execute' && operation === 'FileSystem.readFile',
+    ),
+  ).toHaveLength(2)
 })
 
 test('loadContent removes failed pending reads so a later load retries', async () => {
@@ -232,6 +237,86 @@ test('loadContent reads again after a previous read completes', async () => {
   expect(firstResult.lines).toEqual(['original content'])
   expect(secondResult.lines).toEqual(['changed externally'])
   expect(readFileMock).toHaveBeenCalledTimes(2)
+})
+
+test('loadContent uses a matching cached file after checking filesystem metadata', async () => {
+  rendererInvokeMock.mockImplementation(async (method: string) => {
+    if (method === 'FileSystem.statWithMetadata') {
+      return { mtimeMs: 123, size: 6, type: 7 }
+    }
+    if (method === 'CacheStorage.getEditorFileCache') {
+      return 'cached'
+    }
+    return undefined
+  })
+
+  const result = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true }, undefined)
+
+  expect(result.lines).toEqual(['cached'])
+  expect(readFileMock).not.toHaveBeenCalled()
+  expect(rendererInvokeMock).toHaveBeenCalledWith('CacheStorage.getEditorFileCache', '', 'file:///test.txt', '[7,6,123]')
+})
+
+test('loadContent writes a cacheable file asynchronously after a cache miss', async () => {
+  rendererInvokeMock.mockImplementation(async (method: string) => {
+    if (method === 'FileSystem.statWithMetadata') {
+      return { mtimeMs: 123, size: 4, type: 7 }
+    }
+    if (method === 'CacheStorage.getEditorFileCache') {
+      return null
+    }
+    return undefined
+  })
+  readFileMock.mockResolvedValue('text')
+
+  const result = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true }, undefined)
+  await new Promise((resolve) => setImmediate(resolve))
+
+  expect(result.lines).toEqual(['text'])
+  expect(rendererInvokeMock).toHaveBeenCalledWith('CacheStorage.setEditorFileCache', '', 'file:///test.txt', '[7,4,123]', 'text')
+})
+
+test('loadContent does not cache excluded files or files without reliable metadata', async () => {
+  readFileMock.mockResolvedValue('secret')
+  const excluded = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true, uri: 'file:///workspace/.env.local' }, undefined)
+  rendererInvokeMock.mockImplementation(async (method: string, _applicationId: string, operation: string) => {
+    if (method === 'Application.execute' && operation === 'FileSystem.statWithMetadata') {
+      return { size: 6, type: 7 }
+    }
+    if (method === 'Application.execute' && operation === 'FileSystem.readFile') {
+      return 'secret'
+    }
+    return undefined
+  })
+  const unsupportedStat = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true, id: 2 }, undefined)
+
+  expect(excluded.lines).toEqual(['secret'])
+  expect(unsupportedStat.lines).toEqual(['secret'])
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith('CacheStorage.getEditorFileCache', expect.anything(), expect.anything(), expect.anything())
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith(
+    'CacheStorage.setEditorFileCache',
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+  )
+})
+
+test('loadContent skips caching when the file exceeds 500 kB', async () => {
+  rendererInvokeMock.mockResolvedValue({ mtimeMs: 123, size: 500_001, type: 7 })
+  readFileMock.mockResolvedValue('large')
+
+  const result = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true }, undefined)
+
+  expect(result.lines).toEqual(['large'])
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith('CacheStorage.getEditorFileCache', expect.anything(), expect.anything(), expect.anything())
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith(
+    'CacheStorage.setEditorFileCache',
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+  )
 })
 
 test('loads a separate document for the same uri in another application', async () => {
