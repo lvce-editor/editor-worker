@@ -203,9 +203,12 @@ export const getHorizontalVisibleRangesMeasured = async (
         updateCursor(cursor)
       }
     }
-    for (const lineIndex of boundariesByLine.keys()) {
-      const request = requests[lineIndex]
+    for (let lineIndex = 0; lineIndex < boundariesByLine.length; lineIndex++) {
       const boundaries = boundariesByLine[lineIndex]
+      if (!boundaries) {
+        continue
+      }
+      const request = requests[lineIndex]
       const lineCursors = cursors.filter((cursor) => cursor.lineIndex === lineIndex)
       const startBoundary = Math.max(0, lineCursors[0].low - 1)
       const endBoundary = Math.min(boundaries.length - 1, lineCursors[1].low)

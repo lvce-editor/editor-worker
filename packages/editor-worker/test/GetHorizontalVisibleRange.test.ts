@@ -60,6 +60,20 @@ test('keeps short rows off the measurement worker and returns an empty result fo
   expect(measureWidths).not.toHaveBeenCalled()
 })
 
+test('batches long rows when short rows share the viewport', async () => {
+  const measureWidths = jest.fn(async (texts: readonly string[]) => texts.map((text) => text.length))
+  const ranges = await GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured(
+    [
+      { averageCharWidth: 1, deltaX: 0, line: 'short', tabSize: 2, threshold: 5, width: 10 },
+      { averageCharWidth: 1, deltaX: 4, line: '0123456789', tabSize: 2, threshold: 5, width: 3 },
+    ],
+    measureWidths,
+  )
+  expect(ranges[0]).toEqual({ difference: 0, end: 5, start: 0 })
+  expect(ranges[1].start).toBe(4)
+  expect(measureWidths).toHaveBeenCalled()
+})
+
 test('falls back to approximate ranges when a measurement batch fails', async () => {
   await expect(
     GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured(
