@@ -36,6 +36,7 @@ export interface EditorState {
   differences: any[]
   readonly documentSymbols?: readonly DocumentSymbol[]
   readonly dragAndDropEnabled: boolean
+  readonly editorFileCacheEnabled?: boolean
   readonly embeds: any
   readonly endOfLine: EndOfLine
   readonly endOfLineDecorations: readonly EditorLineDecoration[]
