@@ -509,27 +509,30 @@ const getLineInfosViewport = async (
   const tokenMap = TokenMaps.get(languageId)
   let offset = minLineOffset
   const tabSize = editor.tabSize ?? 2
+  const measuredRanges = await GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured(
+    lines.slice(minLineY, maxLineY).map((line: string) => ({
+      averageCharWidth,
+      deltaX,
+      line,
+      tabSize,
+      threshold: horizontalVirtualizationThreshold,
+      width,
+    })),
+    (texts) =>
+      MeasureTextWidth.measureTextWidths(
+        texts,
+        editor.fontWeight,
+        editor.fontSize,
+        editor.fontFamily,
+        editor.letterSpacing,
+        editor.isMonospaceFont,
+        editor.charWidth,
+      ),
+  )
   for (let i = minLineY; i < maxLineY; i++) {
     const line = lines[i]
     const normalize = NormalizeText.shouldNormalizeText(line)
-    const measuredRange = await GetHorizontalVisibleRange.getHorizontalVisibleRangeMeasured(
-      line,
-      deltaX,
-      width,
-      averageCharWidth,
-      tabSize,
-      horizontalVirtualizationThreshold,
-      (text) =>
-        MeasureTextWidth.measureTextWidth(
-          text,
-          editor.fontWeight,
-          editor.fontSize,
-          editor.fontFamily,
-          editor.letterSpacing,
-          editor.isMonospaceFont,
-          editor.charWidth,
-        ),
-    )
+    const measuredRange = measuredRanges[i - minLineY]
 
     // Use decorations that were pre-computed (includes links and diagnostics)
     // Filter decorations to only include those for this line

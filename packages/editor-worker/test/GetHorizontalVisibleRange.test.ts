@@ -1,4 +1,4 @@
-import { expect, test } from '@jest/globals'
+import { expect, jest, test } from '@jest/globals'
 import * as GetHorizontalVisibleRange from '../src/parts/GetHorizontalVisibleRange/GetHorizontalVisibleRange.ts'
 
 test('keeps lines at or below the configured threshold on the normal rendering path', () => {
@@ -27,4 +27,46 @@ test('uses measured prefix widths for proportional text and partial tokens', asy
   const measureWidth = async (text: string) => [...text].reduce((total, character) => total + (characterWidths[character] || 0), 0)
   const range = await GetHorizontalVisibleRange.getHorizontalVisibleRangeMeasured(line, 4, 2, 1, 2, 2, measureWidth)
   expect(range).toEqual({ difference: 0, end: 4, start: 2 })
+})
+
+test('batches independent prefix searches across long rows', async () => {
+  const lines = ['abWXYZ', 'aWbXYZ']
+  const characterWidths: Record<string, number> = { a: 1, b: 3, W: 4, X: 2, Y: 2, Z: 2 }
+  const batches: string[][] = []
+  const measureWidths = async (texts: readonly string[]) => {
+    batches.push([...texts])
+    return texts.map((text) => [...text].reduce((total, character) => total + (characterWidths[character] || 0), 0))
+  }
+  const ranges = await GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured(
+    lines.map((line) => ({ averageCharWidth: 1, deltaX: 4, line, tabSize: 2, threshold: 2, width: 2 })),
+    measureWidths,
+  )
+  expect(ranges).toEqual([
+    { difference: 0, end: 4, start: 2 },
+    { difference: -3, end: 4, start: 1 },
+  ])
+  expect(batches.some((batch) => batch.length > 1)).toBe(true)
+})
+
+test('keeps short rows off the measurement worker and returns an empty result for no rows', async () => {
+  const measureWidths = jest.fn(async (texts: readonly string[]) => texts.map((text) => text.length))
+  await expect(
+    GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured(
+      [{ averageCharWidth: 1, deltaX: 0, line: 'short', tabSize: 2, threshold: 5, width: 10 }],
+      measureWidths,
+    ),
+  ).resolves.toEqual([{ difference: 0, end: 5, start: 0 }])
+  await expect(GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured([], measureWidths)).resolves.toEqual([])
+  expect(measureWidths).not.toHaveBeenCalled()
+})
+
+test('falls back to approximate ranges when a measurement batch fails', async () => {
+  await expect(
+    GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured(
+      [{ averageCharWidth: 1, deltaX: 4, line: '0123456789', tabSize: 2, threshold: 5, width: 3 }],
+      async () => {
+        throw new Error('worker unavailable')
+      },
+    ),
+  ).resolves.toEqual([{ difference: 0, end: 8, start: 4 }])
 })

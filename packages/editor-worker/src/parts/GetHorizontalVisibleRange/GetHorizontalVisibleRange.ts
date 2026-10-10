@@ -103,73 +103,128 @@ export const getHorizontalVisibleRangeMeasured = async (
   threshold: number,
   measureWidth: (text: string) => Promise<number>,
 ): Promise<{ readonly difference: number; readonly end: number; readonly start: number }> => {
-  const fallback = (): { readonly difference: number; readonly end: number; readonly start: number } => {
-    const range = getHorizontalVisibleRange(line, deltaX, width, averageCharWidth, tabSize, threshold)
+  const [range] = await getHorizontalVisibleRangesMeasured([{ averageCharWidth, deltaX, line, tabSize, threshold, width }], async (texts) =>
+    Promise.all(texts.map(measureWidth)),
+  )
+  return range
+}
+
+interface MeasuredRangeRequest {
+  readonly averageCharWidth: number
+  readonly deltaX: number
+  readonly line: string
+  readonly tabSize: number
+  readonly threshold: number
+  readonly width: number
+}
+
+interface SearchCursor {
+  high: number
+  readonly isStart: boolean
+  readonly lineIndex: number
+  low: number
+  readonly target: number
+}
+
+export const getHorizontalVisibleRangesMeasured = async (
+  requests: readonly MeasuredRangeRequest[],
+  measureWidths: (texts: readonly string[]) => Promise<readonly number[]>,
+): Promise<readonly { readonly difference: number; readonly end: number; readonly start: number }[]> => {
+  const fallback = (request: MeasuredRangeRequest) => {
+    const range = getHorizontalVisibleRange(request.line, request.deltaX, request.width, request.averageCharWidth, request.tabSize, request.threshold)
     return {
       ...range,
-      difference: getHorizontalVisibleDifference(line, range.start, deltaX, averageCharWidth, tabSize),
+      difference: getHorizontalVisibleDifference(request.line, range.start, request.deltaX, request.averageCharWidth, request.tabSize),
     }
   }
-  if (line.length <= threshold) {
-    return fallback()
-  }
-  const scrollOffset = Math.max(0, Number.isFinite(deltaX) ? deltaX : 0)
-  const viewportWidth = Number.isFinite(width) ? Math.max(0, width) : Infinity
-  const segments = getSegments(line)
-  const boundaries = [0, ...segments.map(({ index, segment }) => index + segment.length)]
-  const measurements = new Map<number, number>([[0, 0]])
-  const measureBoundary = async (boundaryIndex: number): Promise<number> => {
-    const cached = measurements.get(boundaryIndex)
-    if (cached !== undefined) {
-      return cached
+  const results = requests.map((request) => fallback(request))
+  const boundariesByLine: number[][] = []
+  const measurementsByLine: Map<number, number>[] = []
+  const cursors: SearchCursor[] = []
+  for (let lineIndex = 0; lineIndex < requests.length; lineIndex++) {
+    const request = requests[lineIndex]
+    if (request.line.length <= request.threshold) {
+      continue
     }
-    const prefix = line.slice(0, boundaries[boundaryIndex]).replaceAll('\t', () => ' '.repeat(tabSize))
-    const measured = await measureWidth(prefix)
-    measurements.set(boundaryIndex, measured)
-    return measured
-  }
-  const findGreatestBoundaryAtMost = async (target: number): Promise<number> => {
-    let low = 0
-    let high = boundaries.length
-    while (low < high) {
-      const middle = Math.floor((low + high) / 2)
-      if ((await measureBoundary(middle)) <= target) {
-        low = middle + 1
-      } else {
-        high = middle
-      }
-    }
-    return Math.max(0, low - 1)
-  }
-  const findFirstBoundaryAtLeast = async (target: number): Promise<number> => {
-    let low = 0
-    let high = boundaries.length
-    while (low < high) {
-      const middle = Math.floor((low + high) / 2)
-      if ((await measureBoundary(middle)) < target) {
-        low = middle + 1
-      } else {
-        high = middle
-      }
-    }
-    return Math.min(boundaries.length - 1, low)
+    const segments = getSegments(request.line)
+    const boundaries = [0, ...segments.map(({ index, segment }) => index + segment.length)]
+    boundariesByLine[lineIndex] = boundaries
+    measurementsByLine[lineIndex] = new Map([[0, 0]])
+    const scrollOffset = Math.max(0, Number.isFinite(request.deltaX) ? request.deltaX : 0)
+    const viewportWidth = Number.isFinite(request.width) ? Math.max(0, request.width) : Infinity
+    cursors.push({ high: boundaries.length, isStart: true, lineIndex, low: 0, target: scrollOffset })
+    cursors.push({ high: boundaries.length, isStart: false, lineIndex, low: 0, target: scrollOffset + viewportWidth })
   }
   try {
-    const startBoundary = await findGreatestBoundaryAtMost(scrollOffset)
-    const endBoundary = await findFirstBoundaryAtLeast(scrollOffset + viewportWidth)
-    const start = boundaries[startBoundary]
-    let end = boundaries[endBoundary]
-    if (end < line.length) {
-      end = boundaries[Math.min(boundaries.length - 1, endBoundary + 1)]
+    const addPendingMeasurement = (cursor: SearchCursor, pending: Map<string, { lineIndex: number; boundaryIndex: number; text: string }>) => {
+      if (cursor.low >= cursor.high) {
+        return
+      }
+      const boundaryIndex = Math.floor((cursor.low + cursor.high) / 2)
+      if (measurementsByLine[cursor.lineIndex].has(boundaryIndex)) {
+        return
+      }
+      const request = requests[cursor.lineIndex]
+      const prefix = request.line.slice(0, boundariesByLine[cursor.lineIndex][boundaryIndex]).replaceAll('\t', () => ' '.repeat(request.tabSize))
+      pending.set(`${cursor.lineIndex}:${boundaryIndex}`, { boundaryIndex, lineIndex: cursor.lineIndex, text: prefix })
     }
-    return {
-      difference: (await measureBoundary(startBoundary)) - scrollOffset,
-      end,
-      start,
+    const updateCursor = (cursor: SearchCursor) => {
+      if (cursor.low >= cursor.high) {
+        return
+      }
+      const middle = Math.floor((cursor.low + cursor.high) / 2)
+      const measured = measurementsByLine[cursor.lineIndex].get(middle)
+      if (measured === undefined) {
+        return
+      }
+      if (cursor.isStart ? measured <= cursor.target : measured < cursor.target) {
+        cursor.low = middle + 1
+      } else {
+        cursor.high = middle
+      }
+    }
+    while (cursors.some(({ high, low }) => low < high)) {
+      const pending = new Map<string, { lineIndex: number; boundaryIndex: number; text: string }>()
+      for (const cursor of cursors) {
+        addPendingMeasurement(cursor, pending)
+      }
+      if (pending.size > 0) {
+        const entries = pending.values().toArray()
+        const measuredWidths = await measureWidths(entries.map(({ text }) => text))
+        if (measuredWidths.length !== entries.length) {
+          throw new Error('Text measurement returned an unexpected number of widths')
+        }
+        for (let i = 0; i < entries.length; i++) {
+          const { boundaryIndex, lineIndex } = entries[i]
+          measurementsByLine[lineIndex].set(boundaryIndex, measuredWidths[i])
+        }
+      }
+      for (const cursor of cursors) {
+        updateCursor(cursor)
+      }
+    }
+    for (const lineIndex of boundariesByLine.keys()) {
+      const request = requests[lineIndex]
+      const boundaries = boundariesByLine[lineIndex]
+      const lineCursors = cursors.filter((cursor) => cursor.lineIndex === lineIndex)
+      const startBoundary = Math.max(0, lineCursors[0].low - 1)
+      const endBoundary = Math.min(boundaries.length - 1, lineCursors[1].low)
+      const start = boundaries[startBoundary]
+      let end = boundaries[endBoundary]
+      if (end < request.line.length) {
+        end = boundaries[Math.min(boundaries.length - 1, endBoundary + 1)]
+      }
+      const scrollOffset = Math.max(0, Number.isFinite(request.deltaX) ? request.deltaX : 0)
+      results[lineIndex] = {
+        difference: (measurementsByLine[lineIndex].get(startBoundary) ?? 0) - scrollOffset,
+        end,
+        start,
+      }
     }
   } catch {
-    return fallback()
+    // Keep the existing approximate range fallback when worker measurement fails.
   }
+  return results
 }
 
 export const getHorizontalVisibleDifference = (line: string, start: number, deltaX: number, averageCharWidth: number, tabSize: number): number => {
