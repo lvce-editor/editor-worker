@@ -3,6 +3,9 @@ import * as DecorationType from '../src/parts/DecorationType/DecorationType.ts'
 jest.unstable_mockModule('../src/parts/MeasureTextWidthSlow/MeasureTextWidthSlow.ts', () => ({
   measureTextWidthSlow: async (text: string) => text.length * 10,
 }))
+jest.unstable_mockModule('../src/parts/MeasureTextWidthsSlow/MeasureTextWidthsSlow.ts', () => ({
+  measureTextWidthsSlow: async (texts: readonly string[]) => texts.map((text) => text.length * 10),
+}))
 const EditorText = await import('../src/parts/EditorText/EditorText.ts')
 
 test('getVisible - link decorations split tokens correctly', async () => {
