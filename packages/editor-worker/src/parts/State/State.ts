@@ -60,7 +60,12 @@ export interface EditorState {
   readonly highlightActiveLineNumber: boolean
   readonly highlightedLine: number
   readonly horizontalVirtualizationThreshold?: number
-  readonly horizontalVisibleRanges?: readonly { readonly end: number; readonly rowIndex: number; readonly start: number }[]
+  readonly horizontalVisibleRanges?: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[]
   readonly hoverDelay?: number
   readonly hoverEnabled: boolean
   readonly id: number

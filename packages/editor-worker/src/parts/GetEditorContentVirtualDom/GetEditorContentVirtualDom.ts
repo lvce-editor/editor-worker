@@ -27,7 +27,12 @@ interface EditorContentVirtualDomOptions {
   readonly focused?: boolean
   readonly height?: number
   readonly highlightedLine?: number
-  readonly horizontalVisibleRanges?: readonly { readonly end: number; readonly rowIndex: number; readonly start: number }[]
+  readonly horizontalVisibleRanges?: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[]
   readonly lineNumbers?: boolean
   readonly lines?: readonly string[]
   readonly problemsHighlightedRow?: number

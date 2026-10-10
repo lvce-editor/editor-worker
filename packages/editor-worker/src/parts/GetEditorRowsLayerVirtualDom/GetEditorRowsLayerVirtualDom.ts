@@ -13,7 +13,12 @@ export const getEditorRowsVirtualDom = (
   visibleViewLineIndices: readonly number[] = [],
   problemsHighlightedRow = -1,
   unnecessaryDiagnostics: readonly any[] = [],
-  horizontalVisibleRanges: readonly { readonly end: number; readonly rowIndex: number; readonly start: number }[] = [],
+  horizontalVisibleRanges: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[] = [],
   lines: readonly string[] = [],
   tabSize = 2,
 ): readonly VirtualDomNode[] => {
