@@ -70,6 +70,14 @@ test('renderEventListeners - forwards Shift for text dragging', () => {
   })
 })
 
+test('renderEventListeners - forwards clipboard text through the renderer event expression', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandlePaste,
+    params: ['paste', 'event.clipboardData.text'],
+    preventDefault: true,
+  })
+})
+
 test.skip('renderEventListeners', () => {
   const eventListeners = RenderEventListeners.renderEventListeners()
   expect(eventListeners).toEqual([
@@ -109,7 +117,7 @@ test.skip('renderEventListeners', () => {
     },
     {
       name: DomEventListenerFunctions.HandlePaste,
-      params: ['paste', 'event.clipboardData ? event.clipboardData.getData("text/plain") : ""'],
+      params: ['paste', 'event.clipboardData.text'],
       preventDefault: true,
     },
     // {
