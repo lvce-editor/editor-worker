@@ -187,6 +187,7 @@ import { render2 } from '../Render2/Render2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
+import * as RestorePersistentWidgets from '../RestorePersistentWidgets/RestorePersistentWidgets.ts'
 import { revealProblem } from '../RevealProblem/RevealProblem.ts'
 import * as Save from '../SaveCommand/SaveCommand.ts'
 import { saveState } from '../SaveState/SaveState.ts'
@@ -382,6 +383,7 @@ export const commandMap = {
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
   'Editor.resize': wrapCommand(resize),
+  'Editor.restorePersistentWidgets': wrapCommand(RestorePersistentWidgets.restorePersistentWidgets),
   'Editor.revealProblem': wrapCommand(revealProblem),
   'Editor.save': Save.save,
   'Editor.saveState': wrapGetter(saveState),
