@@ -6,7 +6,7 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   // arrange
   await Extension.addWebExtension(import.meta.resolve('../fixtures/editor.completion-diagnostic-refresh'))
   const tmpDir = await FileSystem.getTmpDir()
-  const uri = `${tmpDir}/file.xyz`
+  const uri = `${tmpDir}/file.cdr`
   await FileSystem.writeFile(uri, 'bad\nvalid')
   await Workspace.setPath(tmpDir)
   await Main.openUri(uri)

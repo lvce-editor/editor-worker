@@ -1,8 +1,8 @@
 import { activate as activateExtensionApi, registerCompletionProvider, registerDiagnosticProvider } from '@lvce-editor/api'
 
 const completionProvider = {
-  id: 'xyz-completion',
-  languageId: 'xyz',
+  id: 'completion-diagnostic-refresh-completion',
+  languageId: 'completiondiagnosticrefresh',
   provideCompletions() {
     return [
       {
@@ -14,8 +14,8 @@ const completionProvider = {
 }
 
 const diagnosticProvider = {
-  id: 'xyz-diagnostics',
-  languageId: 'xyz',
+  id: 'completion-diagnostic-refresh-diagnostics',
+  languageId: 'completiondiagnosticrefresh',
   provideDiagnostics(textDocument) {
     const diagnostics = [
       {
