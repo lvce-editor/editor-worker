@@ -2,17 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.completion-refreshes-diagnostics'
 
-export const test: Test = async ({
-  Command,
-  Editor,
-  expect,
-  Extension,
-  FileSystem,
-  KeyBoard,
-  Locator,
-  Main,
-  Workspace,
-}) => {
+export const test: Test = async ({ Command, Editor, expect, Extension, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
   // arrange
   await Extension.addWebExtension(import.meta.resolve('../fixtures/editor.completion-diagnostic-refresh'))
   const tmpDir = await FileSystem.getTmpDir()
