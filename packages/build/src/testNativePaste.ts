@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import assert from 'node:assert/strict'
 import { fork } from 'node:child_process'
 import { once } from 'node:events'
