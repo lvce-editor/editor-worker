@@ -43,7 +43,6 @@ export const test: Test = async ({
       message: 'Unrelated diagnostic',
       rowIndex: 1,
       type: 'error',
-      uri,
     },
   ])
 
