@@ -7,6 +7,7 @@ const extensionNames = [
   'editor.alt-hover-definition-link',
   'editor.completion-click',
   'editor.completion-close-on-type-space',
+  'editor.completion-diagnostic-refresh',
   'editor.completion-empty',
   'editor.completion-one-result',
   'editor.completion-open-on-type',

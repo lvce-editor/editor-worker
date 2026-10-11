@@ -1,0 +1,26 @@
+{
+  "id": "test.completion-diagnostic-refresh",
+  "name": "Completion Diagnostic Refresh",
+  "description": "",
+  "activation": ["onLanguage:xyz", "onCompletion:xyz", "onDiagnostic:xyz"],
+  "browser": "dist/main.js",
+  "isolated": true,
+  "completionProviders": [
+    {
+      "id": "xyz-completion",
+      "languageId": "xyz"
+    }
+  ],
+  "diagnosticProviders": [
+    {
+      "id": "xyz-diagnostics",
+      "languageId": "xyz"
+    }
+  ],
+  "languages": [
+    {
+      "id": "xyz",
+      "extensions": [".xyz"]
+    }
+  ]
+}
