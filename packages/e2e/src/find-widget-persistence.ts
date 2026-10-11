@@ -2,9 +2,10 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'find-widget-persistence'
 
+// The reload acceptance scenario needs the find-widget and editor-worker releases to be integrated by the app.
 export const skip = 1
 
-export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Command, Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(
@@ -29,26 +30,27 @@ content 3`,
   await expect(findWidgetInput).toHaveValue('content')
   await expect(findWidgetMatchCount).toHaveText('1 of 3')
 
-  // act - close the find widget
-  await FindWidget.close()
-
-  // assert - find widget should be hidden
   const findWidget = Locator('.FindWidget')
-  await expect(findWidget).toBeHidden()
+  // act - reload the application
+  await Command.execute('Window.reload')
 
-  // act - reopen the find widget
-  await Editor.openFind()
-
-  // assert - search value should be preserved
+  // assert - search state is restored after application reload
   await expect(findWidgetInput).toBeVisible()
   await expect(findWidgetInput).toHaveValue('content')
   await expect(findWidgetMatchCount).toHaveText('1 of 3')
 
-  // act - change the value and close/reopen again
-  await FindWidget.setValue('line')
-  await FindWidget.close()
-  await Editor.openFind()
+  // act - clear the query and reload again
+  await FindWidget.setValue('')
+  await Command.execute('Window.reload')
 
-  // assert - new value should be preserved
-  await expect(findWidgetInput).toHaveValue('line')
+  // assert - an intentionally empty query stays empty instead of selecting editor text
+  await expect(findWidget).toBeVisible()
+  await expect(findWidgetInput).toHaveValue('')
+
+  // act - close the find widget and reload once more
+  await FindWidget.close()
+  await Command.execute('Window.reload')
+
+  // assert - a closed find widget stays closed
+  await expect(findWidget).toBeHidden()
 }
