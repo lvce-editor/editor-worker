@@ -74,7 +74,7 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     },
     {
       name: DomEventListenerFunctions.HandlePaste,
-      params: ['paste', 'event.clipboardData ? event.clipboardData.getData("text/plain") : ""'],
+      params: ['paste', 'event.clipboardData.text'],
       preventDefault: true,
     },
     {
