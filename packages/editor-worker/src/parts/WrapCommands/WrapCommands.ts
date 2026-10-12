@@ -2,6 +2,7 @@ import { WhenExpression } from '@lvce-editor/constants'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
+import * as DeferredEditorState from '../DeferredEditorState/DeferredEditorState.ts'
 import * as EditorCommandSave from '../EditorCommand/EditorCommandSave.ts'
 import { isUntitledFile } from '../EditorCommand/EditorCommandSave/isUntitledFile.ts'
 import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
@@ -185,7 +186,7 @@ export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Prom
 // Optional provider work must not hold the editing queue while another worker responds.
 export const wrapDeferredCommand = (fn: (editor: EditorState, ...args: any[]) => Promise<EditorState>, returnState = true) => {
   const apply = wrapCommand(
-    (editor: EditorState, snapshot: EditorState, result: EditorState) => (editor === snapshot ? result : editor),
+    (editor: EditorState, snapshot: EditorState, result: EditorState) => DeferredEditorState.merge(editor, snapshot, result),
     false,
     returnState,
   )

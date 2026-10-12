@@ -3,6 +3,7 @@ import type { CompletionState } from '../CompletionState/CompletionState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
 import * as CompletionWidgetFactory from '../CompletionWidgetFactory/CompletionWidgetFactory.ts'
 import * as CompletionWorker from '../CompletionWorker/CompletionWorker.ts'
+import * as DeferredEditorState from '../DeferredEditorState/DeferredEditorState.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
@@ -45,7 +46,7 @@ export const openCompletion = async (editor: any, automatic = false) => {
   if (widget && (automatic || widget.newState.automatic)) {
     const { uid } = widget.newState
     await CompletionWorker.invoke('Completions.loadContent', uid, automatic)
-    if (Editors.get(editor.uid)?.newState !== editor) {
+    if (!DeferredEditorState.isCurrent(editor, Editors.get(editor.uid)?.newState)) {
       return Editors.get(editor.uid)?.newState || editor
     }
     if (automatic && !(await CompletionWorker.invoke('Completions.hasItems', uid))) {
@@ -87,7 +88,7 @@ export const openCompletion = async (editor: any, automatic = false) => {
   )
   const wasAdded = (result?.widgets || []).some((widget: any) => widget.id === WidgetId.Completion && widget.newState.uid === completionUid)
   const currentEditor = Editors.get(editor.uid)?.newState
-  if (created && (!wasAdded || currentEditor !== editor)) {
+  if (created && (!wasAdded || !DeferredEditorState.isCurrent(editor, currentEditor))) {
     await disposeCompletion(completionUid)
   }
   return result

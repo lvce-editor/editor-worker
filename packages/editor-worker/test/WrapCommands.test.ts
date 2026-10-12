@@ -804,3 +804,49 @@ test('defers gutter providers for an edit but retains synchronous refresh on ini
   expect(updateDerivedStateMock).toHaveBeenCalledWith(initial, expect.objectContaining({ lines: ['ab'] }), false)
   expect(scheduleGutterMock).not.toHaveBeenCalled()
 })
+
+test('applies deferred widgets across diagnostic commits while preserving the latest diagnostics', async () => {
+  const started = Promise.withResolvers<void>()
+  const ready = Promise.withResolvers<void>()
+  const initial = { decorations: [], diagnostics: [], lightBulbRowIndex: -1, text: 'unchanged', visualDecorations: [], widgets: [] }
+  EditorStates.set(1, initial as any, initial as any)
+  const widgets = [{ id: WidgetId.Completion }]
+  const completion = WrapCommands.wrapDeferredCommand(async (editor: any) => {
+    started.resolve()
+    await ready.promise
+    return { ...editor, widgets }
+  })
+  const pending = completion(1)
+  await started.promise
+  const current = {
+    ...initial,
+    decorations: [1, 2, 3, 4],
+    diagnostics: [{ message: 'fresh diagnostic' }],
+    lightBulbRowIndex: 2,
+    visualDecorations: [{ offset: 1 }],
+  }
+  EditorStates.set(1, initial as any, current as any)
+  ready.resolve()
+  await pending
+  expect(EditorStates.get(1).newState).toMatchObject({ ...current, widgets })
+})
+
+test('rejects a deferred widget if the editor lifecycle changes alongside diagnostics', async () => {
+  const started = Promise.withResolvers<void>()
+  const ready = Promise.withResolvers<void>()
+  const initial = { diagnostics: [], lifecycle: {}, widgets: [] }
+  EditorStates.set(1, initial as any, initial as any)
+  const completion = WrapCommands.wrapDeferredCommand(async (editor: any) => {
+    started.resolve()
+    await ready.promise
+    return { ...editor, widgets: [{ id: WidgetId.Completion }] }
+  })
+  const pending = completion(1)
+  await started.promise
+  EditorStates.dispose(1)
+  const recreated = { ...initial, diagnostics: [{ message: 'new instance' }], lifecycle: {} }
+  EditorStates.set(1, recreated as any, recreated as any)
+  ready.resolve()
+  await pending
+  expect(EditorStates.get(1).newState).toBe(recreated)
+})

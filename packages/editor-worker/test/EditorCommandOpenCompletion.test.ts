@@ -113,3 +113,26 @@ test('explicit request converts an automatic widget to explicit empty feedback',
   expect(invoke).toHaveBeenCalledWith('Completions.loadContent', 99, false)
   expect(invoke).not.toHaveBeenCalledWith('Completions.hasItems', 99)
 })
+
+test('keeps completion state when diagnostics arrive while results are pending', async () => {
+  const started = Promise.withResolvers<void>()
+  const loaded = Promise.withResolvers<void>()
+  invoke.mockClear()
+  invoke.mockImplementation(async (command: unknown) => {
+    if (command === 'Completions.loadContent') {
+      started.resolve()
+      await loaded.promise
+    }
+    return []
+  })
+  const editor = { ...emptyEditor, languageId: 'typescript', uid: 50, widgets: [] }
+  EditorStates.set(50, editor, editor)
+  const pending = openCompletion(editor)
+  await started.promise
+  const current = { ...editor, diagnostics: [{ message: 'fresh diagnostic' }] }
+  EditorStates.set(50, editor, current)
+  loaded.resolve()
+  const result = await pending
+  expect(result.widgets).toHaveLength(1)
+  expect(invoke).not.toHaveBeenCalledWith('Completions.dispose', 99)
+})
