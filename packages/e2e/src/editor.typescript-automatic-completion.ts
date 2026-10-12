@@ -1,8 +1,6 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.typescript-automatic-completion'
-// Enable after the server runtime includes completion-worker's automatic request API (PR 465).
-export const skip = 1
 
 export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main, Settings, Workspace }) => {
   await Settings.update({ 'editor.completionsOnType': false, 'editor.diagnostics': false, 'editor.quickSuggestions': true })
@@ -37,4 +35,24 @@ export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locato
   await Editor.closeCompletion()
   await expect(completions).toBeHidden()
   await Editor.shouldHaveText('obj.')
+
+  for (const [index, opening] of ['"', "'", '`', '//', '/*\n'].entries()) {
+    const contextUri = `${tmpDir}/context-${index}.quickts`
+    await FileSystem.writeFile(contextUri, '')
+    await Main.openUri(contextUri)
+    await Editor.type('v')
+    await expect(completions).toBeVisible()
+    await Editor.setCursor(0, 0)
+    await Editor.type(opening)
+    await expect(completions).toBeHidden()
+  }
+
+  const templateUri = `${tmpDir}/template.quickts`
+  const templatePrefix = 'const text = `template ${obj'
+  await FileSystem.writeFile(templateUri, templatePrefix)
+  await Main.openUri(templateUri)
+  await Editor.setCursor(0, templatePrefix.length)
+  await Editor.type('.')
+  await Editor.shouldHaveText(`${templatePrefix}.`)
+  await expect(items).toHaveText('member')
 }
