@@ -156,6 +156,7 @@ import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
 import { getCommandIds, wrapGetter } from '../EditorStates/EditorStates.ts'
+import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as ExecuteViewletCommand from '../ExecuteViewletCommand/ExecuteViewletCommand.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
@@ -177,6 +178,7 @@ import * as HandleTab from '../HandleTab/HandleTab.ts'
 import { hotReload } from '../HotReload/HotReload.ts'
 import { configure as configureIds } from '../Id/Id.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
+import * as InputEventType from '../InputEventType/InputEventType.ts'
 import { loadContent } from '../LoadContent/LoadContent.ts'
 import * as Markdown from '../Markdown/Markdown.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
@@ -211,6 +213,23 @@ const resize = async (editor: any, dimensions: any) => {
   const resizedEditor = Resize.resize(editor, dimensions, editor.columnWidth)
   return EditorFindWidget.resize(resizedEditor, dimensions)
 }
+
+const openCompletionDeferred = wrapDeferredCommand(EditorOpenCompletion.openCompletion)
+
+const wrapTypingCommand = (fn: (...args: any[]) => any, shouldOpenCompletion: (...args: any[]) => boolean) => {
+  const command = wrapCommand(fn, true)
+  return async (uid: number, ...args: any[]) => {
+    const editor = await command(uid, ...args)
+    if (editor?.completionsOnType && shouldOpenCompletion(...args)) {
+      void openCompletionDeferred(uid).catch((error) => ErrorHandling.handleError(error, 'Failed to open completion widget: '))
+    }
+    return editor
+  }
+}
+
+const typeCommand = wrapTypingCommand(EditorType.type, () => true)
+const typeWithAutoClosingCommand = wrapTypingCommand(EditorTypeWithAutoClosing.typeWithAutoClosing, () => true)
+const handleBeforeInputCommand = wrapTypingCommand(HandleBeforeInput.handleBeforeInput, (inputType) => inputType === InputEventType.InsertText)
 
 export const commandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
@@ -311,7 +330,7 @@ export const commandMap = {
   'Editor.goToBracket': wrapCommand(EditorGoToBracket.goToBracket),
   'Editor.goToDefinition': wrapCommand(EditorGoToDefinition.goToDefinition),
   'Editor.goToTypeDefinition': wrapCommand(EditorGoToTypeDefinition.goToTypeDefinition),
-  'Editor.handleBeforeInput': wrapCommand(HandleBeforeInput.handleBeforeInput, true),
+  'Editor.handleBeforeInput': handleBeforeInputCommand,
   'Editor.handleBeforeInputFromContentEditable': wrapCommand(
     EditorCommandHandleNativeBeforeInputFromContentEditable.handleBeforeInputFromContentEditable,
   ),
@@ -366,7 +385,7 @@ export const commandMap = {
   'Editor.offsetAt': TextDocument.offsetAt,
   'Editor.openCodeGenerator': wrapCommand(EditorCommandOpenCodeGenerator.openCodeGenerator),
   'Editor.openColorPicker': wrapCommand(EditorOpenColorPicker.openColorPicker),
-  'Editor.openCompletion': wrapCommand(EditorOpenCompletion.openCompletion),
+  'Editor.openCompletion': openCompletionDeferred,
   'Editor.openFind': wrapCommand(OpenFind.openFind),
   'Editor.openFind2': wrapCommand(OpenFind2.openFind2),
   'Editor.openRename': wrapCommand(EditorCommandOpenRename.openRename),
@@ -430,11 +449,11 @@ export const commandMap = {
   'Editor.toggleBlockComment': wrapCommand(EditorToggleBlockComment.toggleBlockComment),
   'Editor.toggleBreakpoint': wrapCommand(toggleBreakpoint),
   'Editor.toggleComment': wrapCommand(EditorToggleComment.toggleComment),
-  'Editor.toggleCompletion': wrapCommand(EditorCommandToggleCompletion.toggleCompletion),
+  'Editor.toggleCompletion': wrapDeferredCommand(EditorCommandToggleCompletion.toggleCompletion),
   'Editor.toggleLineComment': wrapCommand(EditorToggleLineComment.editorToggleLineComment),
   'Editor.toggleMinimap': ToggleMinimap.toggleMinimap,
-  'Editor.type': wrapCommand(EditorType.type, true),
-  'Editor.typeWithAutoClosing': wrapCommand(EditorTypeWithAutoClosing.typeWithAutoClosing, true),
+  'Editor.type': typeCommand,
+  'Editor.typeWithAutoClosing': typeWithAutoClosingCommand,
   'Editor.undo': wrapCommand(EditorUndo.undo),
   'Editor.unfold': wrapCommand(unfold),
   'Editor.unIndent': wrapCommand(Unindent.editorUnindent),
