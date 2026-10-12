@@ -6,11 +6,16 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   let stage = 'setup'
   try {
     // arrange
+    stage = 'settings update'
     await Settings.update({ 'editor.hover': true, 'editor.hoverDelay': 10 })
     const url = import.meta.resolve('../fixtures/editor.hover-show')
+    stage = 'extension registration'
     await Extension.addWebExtension(url)
+    stage = 'temporary directory'
     const tmpDir = await FileSystem.getTmpDir()
+    stage = 'write initial file'
     await FileSystem.writeFile(`${tmpDir}/src/test.xyz`, 'globalThis.AbortSignal.abort()')
+    stage = 'open initial editor'
     await Main.openUri(`${tmpDir}/src/test.xyz`)
     stage = 'initial mouse hover'
     const hover = Locator('.EditorHover')

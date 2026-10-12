@@ -1,3 +1,5 @@
+import { WidgetId } from '@lvce-editor/constants'
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 import { terminate } from '@lvce-editor/viewlet-registry'
 import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
 import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
@@ -7,6 +9,7 @@ import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import { createStandaloneEditor } from '../CreateStandaloneEditor/CreateStandaloneEditor.ts'
 import { diff2 } from '../Diff2/Diff2.ts'
 import * as DisposeEditor from '../DisposeEditor/DisposeEditor.ts'
+import { updateAutomaticCompletion } from '../EditorAutomaticCompletion/EditorAutomaticCompletion.ts'
 import * as EditorCommandAcceptMergeConflict from '../EditorCommand/EditorCommandAcceptMergeConflict.ts'
 import * as AddCursorAbove from '../EditorCommand/EditorCommandAddCursorAbove.ts'
 import * as AddCursorBelow from '../EditorCommand/EditorCommandAddCursorBelow.ts'
@@ -156,6 +159,7 @@ import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
 import { getCommandIds, wrapGetter } from '../EditorStates/EditorStates.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as ExecuteViewletCommand from '../ExecuteViewletCommand/ExecuteViewletCommand.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
@@ -198,6 +202,7 @@ import {
   sendMessagePortToExtensionManagementWorker,
 } from '../SendMessagePortToExtensionManagementWorker/SendMessagePortToExtensionManagementWorker.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
+import { shouldOpenAutomaticCompletion } from '../ShouldOpenAutomaticCompletion/ShouldOpenAutomaticCompletion.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
@@ -215,18 +220,26 @@ const resize = async (editor: any, dimensions: any) => {
 }
 
 const openCompletionDeferred = wrapDeferredCommand(EditorOpenCompletion.openCompletion)
+const updateAutomaticCompletionDeferred = wrapDeferredCommand(updateAutomaticCompletion)
 
 const wrapTypingCommand = (fn: (...args: any[]) => any, shouldOpenCompletion: (...args: any[]) => boolean) => {
   const command = wrapCommand(fn, true)
   return async (uid: number, ...args: any[]) => {
-    const editor = await command(uid, ...args)
-    if (editor?.completionsOnType && shouldOpenCompletion(...args)) {
-      void openCompletionDeferred(uid).catch((error) => ErrorHandling.handleError(error, 'Failed to open completion widget: '))
+    await command(uid, ...args)
+    const editor = Editors.get(uid)?.newState
+    if (
+      editor &&
+      ((shouldOpenCompletion(...args) && shouldOpenAutomaticCompletion(editor)) ||
+        editor.widgets?.some((widget: any) => widget.id === WidgetId.Completion && widget.newState.automatic))
+    ) {
+      void updateAutomaticCompletionDeferred(uid)
+        .then(() => RendererWorker.invoke('Editor.renderPending', uid))
+        .catch((error) => ErrorHandling.handleError(error, 'Failed to open completion widget: '))
     }
-    return editor
   }
 }
 
+const deleteLeftCommand = wrapTypingCommand(DeleteCharacterLeft.deleteCharacterLeft, () => false)
 const typeCommand = wrapTypingCommand(EditorType.type, () => true)
 const typeWithAutoClosingCommand = wrapTypingCommand(EditorTypeWithAutoClosing.typeWithAutoClosing, () => true)
 const handleBeforeInputCommand = wrapTypingCommand(HandleBeforeInput.handleBeforeInput, (inputType) => inputType === InputEventType.InsertText)
@@ -284,10 +297,10 @@ export const commandMap = {
   'Editor.deleteAll': wrapCommand(DeleteAll.deleteAll),
   'Editor.deleteAllLeft': wrapCommand(DeleteAllLeft.deleteAllLeft),
   'Editor.deleteAllRight': wrapCommand(DeleteAllRight.deleteAllRight),
-  'Editor.deleteCharacterLeft': wrapCommand(DeleteCharacterLeft.deleteCharacterLeft),
+  'Editor.deleteCharacterLeft': deleteLeftCommand,
   'Editor.deleteCharacterRight': wrapCommand(DeleteCharacterRight.deleteCharacterRight),
   'Editor.deleteHorizontalRight': wrapCommand(DeleteHorizontalRight.editorDeleteHorizontalRight),
-  'Editor.deleteLeft': wrapCommand(DeleteCharacterLeft.deleteCharacterLeft),
+  'Editor.deleteLeft': deleteLeftCommand,
   'Editor.deleteLine': wrapCommand(DeleteLine.deleteLine),
   'Editor.deleteRight': wrapCommand(DeleteCharacterRight.deleteCharacterRight),
   'Editor.deleteWordLeft': wrapCommand(DeleteWordLeft.deleteWordLeft),

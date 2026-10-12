@@ -32,6 +32,10 @@ await cp(
   { recursive: true },
 )
 
+const completionWorkerPath = dirname(fileURLToPath(import.meta.resolve('@lvce-editor/completion-worker')))
+await cp(completionWorkerPath, join(root, 'dist', commitHash, 'packages', 'completion-worker', 'dist'), { recursive: true })
+await cp(completionWorkerPath, join(staticServerPath, commitHash, 'packages', 'completion-worker', 'dist'), { recursive: true })
+
 const patchFile = async (path: string, occurrence: string, replacement: string): Promise<void> => {
   const content = await readFile(path, 'utf8')
   if (content.includes(occurrence)) {

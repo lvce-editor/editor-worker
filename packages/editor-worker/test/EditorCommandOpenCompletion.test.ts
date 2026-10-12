@@ -58,3 +58,58 @@ test('disposes completion state when loading its content fails', async () => {
 
   expect(invoke).toHaveBeenCalledWith('Completions.dispose', 99)
 })
+
+test('automatic empty results never attach or render a widget', async () => {
+  invoke.mockClear()
+  invoke.mockImplementation(async (command: unknown) => (command === 'Completions.hasItems' ? false : []))
+  const editor = { ...emptyEditor, languageId: 'typescript', uid: 46, widgets: [] }
+  EditorStates.set(46, editor, editor)
+  const result = await openCompletion(editor, true)
+  expect(result.widgets).toEqual([])
+  expect(invoke).toHaveBeenCalledWith('Completions.loadContent', 99, true)
+  expect(invoke).toHaveBeenCalledWith('Completions.dispose', 99)
+  expect(invoke).not.toHaveBeenCalledWith('Completions.render2', expect.anything(), expect.anything())
+})
+
+test('automatic nonempty results retain automatic intent and editor focus', async () => {
+  invoke.mockClear()
+  invoke.mockImplementation(async (command: unknown) => (command === 'Completions.hasItems' ? true : []))
+  const editor = { ...emptyEditor, languageId: 'typescript', uid: 47, widgets: [] }
+  EditorStates.set(47, editor, editor)
+  const result = await openCompletion(editor, true)
+  expect(result.widgets).toHaveLength(1)
+  expect(result.widgets[0].newState.automatic).toBe(true)
+  expect(result.focused).toBe(true)
+})
+
+test('automatic refresh removes an existing widget when results become empty', async () => {
+  invoke.mockClear()
+  invoke.mockImplementation(async (command: unknown) => (command === 'Completions.hasItems' ? false : []))
+  const editor = { ...emptyEditor, languageId: 'typescript', uid: 48, widgets: [] }
+  EditorStates.set(48, editor, editor)
+  invoke.mockImplementation(async (command: unknown) => (command === 'Completions.hasItems' ? true : []))
+  const opened = await openCompletion(editor, true)
+  EditorStates.set(48, editor, opened)
+  invoke.mockClear()
+  invoke.mockImplementation(async (command: unknown) => (command === 'Completions.hasItems' ? false : []))
+  const result = await openCompletion(opened, true)
+  expect(result.widgets).toEqual([])
+  expect(result.focused).toBe(true)
+  expect(invoke).not.toHaveBeenCalledWith('Completions.create', expect.anything())
+})
+
+test('explicit request converts an automatic widget to explicit empty feedback', async () => {
+  invoke.mockClear()
+  invoke.mockImplementation(async (command: unknown) => (command === 'Completions.hasItems' ? true : []))
+  const editor = { ...emptyEditor, languageId: 'typescript', uid: 49, widgets: [] }
+  EditorStates.set(49, editor, editor)
+  const opened = await openCompletion(editor, true)
+  EditorStates.set(49, editor, opened)
+  invoke.mockClear()
+  invoke.mockImplementation(async () => [])
+  const result = await openCompletion(opened)
+  expect(result.widgets).toHaveLength(1)
+  expect(result.widgets[0].newState.automatic).toBe(false)
+  expect(invoke).toHaveBeenCalledWith('Completions.loadContent', 99, false)
+  expect(invoke).not.toHaveBeenCalledWith('Completions.hasItems', 99)
+})

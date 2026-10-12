@@ -25,6 +25,7 @@ const extensionNames = [
   'editor.source-actions-execute',
   'editor.source-actions-open',
   'editor.unnecessary-diagnostic',
+  'editor.typescript-automatic-completion',
   'sample.diagnostic-provider',
   'sample.diagnostic-provider-empty',
   'sample.diagnostic-provider-error',
