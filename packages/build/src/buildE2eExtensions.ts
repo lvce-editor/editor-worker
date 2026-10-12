@@ -11,6 +11,7 @@ const extensionNames = [
   'editor.completion-empty',
   'editor.completion-one-result',
   'editor.completion-open-on-type',
+  'editor.completion-pending',
   'editor.completion-scroll',
   'editor.diagnostics-scroll-race',
   'editor.diagnostics-retained-fast',
