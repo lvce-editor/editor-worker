@@ -33,41 +33,37 @@ export const test: Test = async ({ Command, Editor, Extension, FileSystem, Main,
   const uri = `${tmpDir}/retained-diagnostics.retained-diagnostics`
   await FileSystem.writeFile(uri, 'visible before diagnostics\nsecond line')
   await Workspace.setPath(tmpDir)
-  await Extension.addWebExtension(import.meta.resolve('../fixtures/editor.diagnostics-retained-fast'))
   await Extension.addWebExtension(import.meta.resolve('../fixtures/editor.diagnostics-retained-slow'))
   await Settings.update({ 'editor.diagnostics': true })
   await Main.openUri(uri)
 
   await waitForPendingRequest(Command, 'initial')
-  await waitForDiagnostics(() =>
-    Editor.shouldHaveDiagnostics([
-      { columnIndex: 0, endColumnIndex: 26, endRowIndex: 0, message: 'Fast visible before diagnostics\nsecond line', rowIndex: 0, type: 'warning' },
-    ]),
-  )
+  await waitForDiagnostics(() => Editor.shouldHaveDiagnostics([]))
   await Command.executeExtensionCommand('retainedDiagnostics.resolveSlow')
   await waitForDiagnostics(() =>
-    Editor.shouldHaveDiagnostics([
-      { columnIndex: 0, endColumnIndex: 26, endRowIndex: 0, message: 'Fast visible before diagnostics\nsecond line', rowIndex: 0, type: 'warning' },
-      { columnIndex: 0, endColumnIndex: 6, endRowIndex: 1, message: 'Slow 1', rowIndex: 1, type: 'error' },
-    ]),
+    Editor.shouldHaveDiagnostics([{ columnIndex: 0, endColumnIndex: 6, endRowIndex: 1, message: 'Slow 1', rowIndex: 1, type: 'error' }]),
   )
 
   await Editor.setCursor(1, 0)
   await Editor.type('x')
   await Editor.shouldHaveText('visible before diagnostics\nxsecond line')
   await waitForPendingRequest(Command, 'edited')
+  await Editor.shouldHaveDiagnostics([{ columnIndex: 1, endColumnIndex: 7, endRowIndex: 1, message: 'Slow 1', rowIndex: 1, type: 'error' }])
   await waitForDiagnostics(() =>
-    Editor.shouldHaveDiagnostics([
-      { columnIndex: 0, endColumnIndex: 26, endRowIndex: 0, message: 'Fast visible before diagnostics\nxsecond line', rowIndex: 0, type: 'warning' },
-      { columnIndex: 0, endColumnIndex: 6, endRowIndex: 1, message: 'Slow 1', rowIndex: 1, type: 'error' },
-    ]),
+    Editor.shouldHaveDiagnostics([{ columnIndex: 1, endColumnIndex: 7, endRowIndex: 1, message: 'Slow 1', rowIndex: 1, type: 'error' }]),
   )
 
   await Command.executeExtensionCommand('retainedDiagnostics.resolveSlow')
   await waitForDiagnostics(() =>
-    Editor.shouldHaveDiagnostics([
-      { columnIndex: 0, endColumnIndex: 26, endRowIndex: 0, message: 'Fast visible before diagnostics\nxsecond line', rowIndex: 0, type: 'warning' },
-      { columnIndex: 0, endColumnIndex: 6, endRowIndex: 1, message: 'Slow 2', rowIndex: 1, type: 'error' },
-    ]),
+    Editor.shouldHaveDiagnostics([{ columnIndex: 1, endColumnIndex: 7, endRowIndex: 1, message: 'Slow 2', rowIndex: 1, type: 'error' }]),
+  )
+
+  await Editor.setCursor(1, 0)
+  await Editor.insertLineBreak()
+  await waitForPendingRequest(Command, 'newline edit')
+  await Editor.shouldHaveDiagnostics([{ columnIndex: 1, endColumnIndex: 7, endRowIndex: 2, message: 'Slow 2', rowIndex: 2, type: 'error' }])
+  await Command.executeExtensionCommand('retainedDiagnostics.resolveSlow')
+  await waitForDiagnostics(() =>
+    Editor.shouldHaveDiagnostics([{ columnIndex: 1, endColumnIndex: 7, endRowIndex: 2, message: 'Slow 3', rowIndex: 2, type: 'error' }]),
   )
 }
