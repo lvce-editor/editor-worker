@@ -19,6 +19,9 @@ jest.unstable_mockModule('../src/parts/FileSystemWorker/FileSystemWorker.ts', ()
 }))
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
+  ErrorWorker: {
+    invoke: jest.fn(),
+  },
   ExtensionHost: {
     invoke: extensionHostInvoke,
     invokeAndTransfer: jest.fn(),

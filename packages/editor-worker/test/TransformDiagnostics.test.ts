@@ -60,7 +60,7 @@ test('moves diagnostic positions across multiline insertions and batched edits',
         start: { columnIndex: 0, rowIndex: 1 },
       },
     ]),
-  ).toEqual([{ ...multiline, columnIndex: 5, endColumnIndex: 8, rowIndex: 2, endRowIndex: 2 }])
+  ).toEqual([{ ...multiline, columnIndex: 5, endColumnIndex: 8, endRowIndex: 2, rowIndex: 2 }])
 })
 
 test('drops diagnostics whose reported text is replaced', () => {

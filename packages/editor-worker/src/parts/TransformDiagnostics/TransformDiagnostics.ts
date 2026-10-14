@@ -23,14 +23,14 @@ const getInsertedEnd = (start: Position, inserted: readonly string[]): Position 
 const transformPosition = (position: Position, start: Position, end: Position, inserted: readonly string[], affinity: 'left' | 'right'): Position => {
   const startComparison = comparePositions(position, start)
   const endComparison = comparePositions(position, end)
-  const insertedEnd = getInsertedEnd(start, inserted)
 
   if (startComparison < 0 || (startComparison === 0 && affinity === 'left')) {
     return position
   }
   if (endComparison <= 0) {
-    return insertedEnd
+    return getInsertedEnd(start, inserted)
   }
+  const insertedEnd = getInsertedEnd(start, inserted)
   if (position.rowIndex === end.rowIndex) {
     return {
       columnIndex: insertedEnd.columnIndex + position.columnIndex - end.columnIndex,
@@ -68,7 +68,7 @@ const transformDiagnostic = (diagnostic: Diagnostic, changes: readonly any[]): D
     if (overlapsDeletedText(transformed, start, end)) {
       return undefined
     }
-    const inserted = change.inserted.length ? change.inserted : ['']
+    const inserted = change.inserted.length > 0 ? change.inserted : ['']
     const diagnosticStart = transformPosition({ columnIndex: transformed.columnIndex, rowIndex: transformed.rowIndex }, start, end, inserted, 'right')
     const diagnosticEnd = transformPosition(
       { columnIndex: transformed.endColumnIndex, rowIndex: transformed.endRowIndex },
