@@ -17,11 +17,11 @@ export const getIncrementalEdits = async (oldState: EditorState, newState: Edito
       const { rowIndex } = lastChange.start
       const { lines } = newState
       const oldLine = oldState.lines[rowIndex]
-      const newLine = lines[rowIndex]
       // Empty lines have no nonempty token to update; render the new token normally.
       if (oldLine.length === 0) {
         return emptyIncrementalEdits
       }
+      const newLine = lines[rowIndex]
       // Renderer edit offsets address full lines, so clipped rows need a fresh visible window.
       const threshold = newState.horizontalVirtualizationThreshold ?? 500
       if (newState.deltaX !== 0 || oldLine.length > threshold || newLine.length > threshold) {
