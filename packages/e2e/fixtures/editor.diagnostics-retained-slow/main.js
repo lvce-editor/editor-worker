@@ -7,9 +7,17 @@ await activateExtensionApi()
 registerDiagnosticProvider({
   id: 'retained-slow-diagnostics',
   languageId: 'retained-diagnostics',
-  provideDiagnostics() {
+  provideDiagnostics(textDocument) {
     const result = Promise.withResolvers()
-    pendingRequests.push({ index: ++slowRequestCount, result })
+    const lines = textDocument.text.split('\n')
+    const diagnosticRowIndex = lines.findIndex((line) => line.startsWith('x'))
+    const rowIndex = diagnosticRowIndex === -1 ? Math.min(1, lines.length - 1) : diagnosticRowIndex
+    pendingRequests.push({
+      columnIndex: lines[rowIndex].startsWith('x') ? 1 : 0,
+      index: ++slowRequestCount,
+      result,
+      rowIndex,
+    })
     return result.promise
   },
 })
@@ -28,11 +36,11 @@ registerCommand({
     }
     request.result.resolve([
       {
-        columnIndex: 0,
-        endColumnIndex: 6,
-        endRowIndex: 1,
+        columnIndex: request.columnIndex,
+        endColumnIndex: request.columnIndex + 6,
+        endRowIndex: request.rowIndex,
         message: `Slow ${request.index}`,
-        rowIndex: 1,
+        rowIndex: request.rowIndex,
         type: 'error',
       },
     ])

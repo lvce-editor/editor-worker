@@ -6,6 +6,7 @@ import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import * as TransformDiagnostics from '../TransformDiagnostics/TransformDiagnostics.ts'
 import * as UpdateDiagnosticsWithLinks from './UpdateDiagnosticsWithLinks.ts'
 
 interface DiagnosticProviderMessage {
@@ -336,6 +337,24 @@ export const clearDiagnosticRequestState = (editorId: number): void => {
   requestGenerations.delete(editorId)
   requestDiagnosticSnapshots.delete(editorId)
   previousProviderResults.delete(editorId)
+}
+
+export const transformCachedDiagnostics = (editorId: number, changes: readonly any[]): void => {
+  const previous = previousProviderResults.get(editorId)
+  if (!previous) {
+    return
+  }
+  const providers = new Map<string, ProviderDiagnostics>()
+  for (const [providerId, result] of previous.providers) {
+    providers.set(providerId, {
+      ...result,
+      diagnostics: TransformDiagnostics.transformDiagnostics(result.diagnostics, changes),
+    })
+  }
+  previousProviderResults.set(editorId, {
+    ...previous,
+    providers,
+  })
 }
 
 export const updateDiagnosticsAll = async (): Promise<void> => {
