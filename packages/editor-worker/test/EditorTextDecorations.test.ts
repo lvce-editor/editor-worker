@@ -89,7 +89,7 @@ test('clips horizontally scrolled underlines and excludes nonvisible rows', asyn
 test('incremental editor DOM includes underlines alongside diagnostics and bracket matches', async () => {
   const { getEditorDiagnosticsVirtualDom } = await import('../src/parts/GetEditorDiagnosticsVirtualDom/GetEditorDiagnosticsVirtualDom.ts')
   const customDom = await getTextDecorationsVirtualDom({ ...editor, textDecorations: [decoration] })
-  const dom = getEditorDiagnosticsVirtualDom([{ x: 0, y: 0, width: 8, height: 20, type: 'error' }], [{ x: 8, y: 0, width: 8, height: 20 }], customDom)
+  const dom = getEditorDiagnosticsVirtualDom([{ height: 20, type: 'error', width: 8, x: 0, y: 0 }], [{ height: 20, width: 8, x: 8, y: 0 }], customDom)
   expect(dom[0].childCount).toBe(4)
   expect(dom.some((node) => node.className === 'BracketMatch')).toBe(true)
   expect(dom.filter((node) => String(node.className).includes('EditorTextDecoration'))).toHaveLength(2)
