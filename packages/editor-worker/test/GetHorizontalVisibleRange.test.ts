@@ -106,3 +106,35 @@ test('falls back to approximate ranges when a measurement batch fails', async ()
     ),
   ).resolves.toEqual([{ difference: 0, end: 8, start: 4 }])
 })
+
+test('ASCII horizontal ranges do not initialize ICU grapheme segmentation', async () => {
+  const segmenter = jest.spyOn(Intl, 'Segmenter').mockImplementation(() => {
+    throw new Error('ASCII should not need ICU')
+  })
+  try {
+    expect(GetHorizontalVisibleRange.getHorizontalVisibleRange('hello world', 0, 80, 1, 4)).toEqual({ end: 11, start: 0 })
+    expect(GetHorizontalVisibleRange.getHorizontalDisplayColumn('a\tb', 2, 4)).toBe(5)
+    const [range] = await GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured(
+      [{ averageCharWidth: 1, deltaX: 0, line: 'hello world', tabSize: 4, threshold: 500, width: 80 }],
+      async () => {
+        throw new Error('Short lines should not need measurement')
+      },
+    )
+    expect(range).toEqual({ difference: 0, end: 11, start: 0 })
+  } finally {
+    segmenter.mockRestore()
+  }
+})
+
+test.each(['', '\t', 'hello world', Array.from({ length: 95 }, (_, index) => String.fromCodePoint(index + 32)).join(''), 'a\r\nb', 'a\u{301}👩‍💻'])(
+  'preserves grapheme display columns for %p',
+  (line) => {
+    const segments = Array.from(new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(line), ({ index }) => index)
+    segments.push(line.length)
+    for (let index = 0; index <= line.length; index++) {
+      expect(GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, index, 4)).toBe(
+        GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, index, 4, segments),
+      )
+    }
+  },
+)

@@ -5,8 +5,12 @@ export interface HorizontalVisibleRange {
 }
 
 const defaultThreshold = 500
+const simpleAscii = /^[\t -~]*$/
 
 const getSegments = (line: string): readonly number[] => {
+  if (simpleAscii.test(line)) {
+    return Array.from({ length: line.length + 1 }, (_, index) => index)
+  }
   if (typeof Intl.Segmenter === 'function') {
     // @ts-ignore
     return [...Array.from(new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(line), ({ index }) => index), line.length]
