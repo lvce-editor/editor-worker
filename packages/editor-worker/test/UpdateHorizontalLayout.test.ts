@@ -1,7 +1,7 @@
 import { expect, jest, test } from '@jest/globals'
 
-const measureWidth = jest.fn<(text: string, ...options: readonly any[]) => Promise<number>>()
-jest.unstable_mockModule('../src/parts/MeasureTextWidth/MeasureTextWidth.ts', () => ({ measureTextWidth: measureWidth }))
+const measureWidths = jest.fn<(texts: readonly string[], ...options: readonly any[]) => Promise<readonly number[]>>()
+jest.unstable_mockModule('../src/parts/MeasureTextWidth/MeasureTextWidth.ts', () => ({ measureTextWidths: measureWidths }))
 const { updateHorizontalLayout } = await import('../src/parts/UpdateHorizontalLayout/UpdateHorizontalLayout.ts')
 
 const createState = (): any => ({
@@ -19,30 +19,42 @@ const createState = (): any => ({
 })
 
 test('measures offscreen lines and expanded tabs, then clamps to the document extent', async () => {
-  measureWidth.mockImplementation(async (text) => (text.includes('👩‍💻') ? 40 : text.length))
+  measureWidths.mockImplementation(async (texts) => texts.map((text) => (text.includes('👩‍💻') ? 40 : text.length)))
   const state = createState()
   const result = await updateHorizontalLayout(state)
   expect(result).toMatchObject({ deltaX: 30, longestLineWidth: 40 })
-  expect(measureWidth).toHaveBeenCalledWith('    👩‍💻long', 400, 14, 'test', 0, false, 1)
+  expect(measureWidths).toHaveBeenCalledWith(['short', '    👩‍💻long'], 400, 14, 'test', 0, false, 1)
 })
 
 test('reuses unchanged line widths across edits and remeasures after font changes', async () => {
-  measureWidth.mockClear()
-  measureWidth.mockImplementation(async (text) => text.length * 2)
+  measureWidths.mockClear()
+  measureWidths.mockImplementation(async (texts) => texts.map((text) => text.length * 2))
   const state = createState()
   await updateHorizontalLayout(state)
-  expect(measureWidth).toHaveBeenCalledTimes(2)
+  expect(measureWidths).toHaveBeenCalledTimes(1)
   await updateHorizontalLayout({ ...state, lines: [...state.lines, 'new'] })
-  expect(measureWidth).toHaveBeenCalledTimes(3)
+  expect(measureWidths).toHaveBeenCalledTimes(2)
   const narrowed = await updateHorizontalLayout({ ...state, lines: ['short'], width: 100 })
   expect(narrowed).toMatchObject({ deltaX: 0, longestLineWidth: 10 })
-  expect(measureWidth).toHaveBeenCalledTimes(3)
+  expect(measureWidths).toHaveBeenCalledTimes(2)
   await updateHorizontalLayout({ ...state, fontSize: 20, lines: ['short'] })
-  expect(measureWidth).toHaveBeenCalledTimes(4)
+  expect(measureWidths).toHaveBeenCalledTimes(3)
 })
 
 test('reserves a measured gutter and clamps against the text viewport', async () => {
-  measureWidth.mockImplementation(async (text) => text.length * 10)
+  measureWidths.mockImplementation(async (texts) => texts.map((text) => text.length * 10))
   const state = { ...createState(), lineNumbers: true, lines: ['0123456789'], width: 80 }
   expect(await updateHorizontalLayout(state)).toMatchObject({ deltaX: 50, gutterWidth: 30, longestLineWidth: 100 })
+  expect(measureWidths).toHaveBeenCalledWith(['0123456789', '1'], 400, 14, 'test', 0, false, 1)
+})
+
+test('batches unique file lines and avoids requests for cached lines', async () => {
+  measureWidths.mockClear()
+  measureWidths.mockImplementation(async (texts) => texts.map((text) => text.length))
+  const state = { ...createState(), lineNumbers: true, lines: Array.from({ length: 100 }, (_, index) => `line ${index % 50}`) }
+  await updateHorizontalLayout(state)
+  expect(measureWidths).toHaveBeenCalledTimes(1)
+  expect(measureWidths.mock.calls[0][0]).toHaveLength(51)
+  await updateHorizontalLayout(state)
+  expect(measureWidths).toHaveBeenCalledTimes(1)
 })
