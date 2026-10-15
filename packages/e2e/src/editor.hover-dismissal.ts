@@ -90,4 +90,23 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard
   await Command.execute('Editor.handleBeforeInput', 'insertText', '(')
   await Editor.shouldHaveText('abx()cdefgh')
   await expect(hover).toBeHidden()
+
+  // Restore the initial fixture for the native pointer-boundary regression that reuses this test.
+  await Editor.setText('abcdefgh')
+  await Command.execute('Editor.setDiagnostics', [
+    {
+      code: 'hover-dismissal',
+      columnIndex: 0,
+      endColumnIndex: 8,
+      endRowIndex: 0,
+      message: 'Hover copy payload with enough text to select and copy',
+      rowIndex: 0,
+      source: 'hover-dismissal-test',
+      type: 'error',
+      uri,
+    },
+  ])
+  await Editor.setCursor(0, 2)
+  await Command.execute('Editor.showHover')
+  await expect(hover).toBeVisible()
 }
