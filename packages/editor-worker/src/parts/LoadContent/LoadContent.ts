@@ -214,7 +214,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     rowHeight,
     selectedTextOccurrenceMatching,
     tabSize,
-  } = await getEditorPreferences()
+  } = await getEditorPreferences(state.applicationId)
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
@@ -341,7 +341,10 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     textInfos,
   }
 
-  const completionsOnTypeRaw = await Preferences.get('editor.completionsOnType')
+  const completionsOnTypeRaw =
+    state.applicationId === undefined
+      ? await Preferences.get('editor.completionsOnType')
+      : await Preferences.get('editor.completionsOnType', state.applicationId)
   const completionsOnType = Boolean(completionsOnTypeRaw)
   const newEditor5: EditorState = {
     ...newEditor4,
