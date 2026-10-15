@@ -10,6 +10,9 @@ export const renderCss = (oldState: EditorState, newState: EditorState): readonl
   const scrollBarTop = ScrollBarFunctions.getScrollBarY(deltaY, finalDeltaY, height, scrollBarHeight)
   const scrollBarWidth = ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize)
   const scrollBarLeft = ScrollBarFunctions.getScrollBarOffset(deltaX, Math.max(0, longestLineWidth - width), width, scrollBarWidth)
-  const css = getCss(uid, rowHeight, scrollBarHeight, scrollBarTop, scrollBarWidth, scrollBarLeft, deltaY)
+  const decorationCss = (newState.textDecorations || [])
+    .map(({ color }, index) => `.Editor[data-uid="${uid}"] .EditorTextDecoration${index} { background-color: ${color}; }`)
+    .join('\n')
+  const css = decorationCss + getCss(uid, rowHeight, scrollBarHeight, scrollBarTop, scrollBarWidth, scrollBarLeft, deltaY)
   return [ViewletCommand.SetCss, uid, gutterWidth ? `${css}\n.Editor[data-uid="${uid}"] .Gutter { width: ${gutterWidth}px; }\n` : css]
 }

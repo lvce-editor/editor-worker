@@ -99,6 +99,10 @@ ${editorSelector} .EditorGutterDecorationDeleted {
   top: calc(50% - 1px);
 }
 ${editorSelector} .R{background-color:#add6ff40}
+${editorSelector} .EditorTextDecoration {
+  position: absolute;
+  pointer-events: none;
+}
 ${editorSelector} .BracketMatch {
   position: absolute;
   box-sizing: border-box;
