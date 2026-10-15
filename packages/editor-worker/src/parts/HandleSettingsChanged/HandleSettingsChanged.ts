@@ -37,11 +37,13 @@ const updateFindWidget = async (state: EditorState): Promise<EditorState> => {
 }
 
 export const handleSettingsChanged = async (state: EditorState): Promise<EditorState> => {
-  const editorPreferences = { ...(await getEditorPreferences()), ...(state.largeFile && getLargeFilePreferences()) }
+  const editorPreferences = { ...(await getEditorPreferences(state.applicationId)), ...(state.largeFile && getLargeFilePreferences()) }
   const { breadcrumbsEnabled, diagnosticsEnabled, fontFamily, fontSize, fontWeight, letterSpacing, minimapEnabled, rowHeight } = editorPreferences
   const [charWidth, completionsOnTypeRaw] = await Promise.all([
     MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing),
-    Preferences.get('editor.completionsOnType'),
+    state.applicationId === undefined
+      ? Preferences.get('editor.completionsOnType')
+      : Preferences.get('editor.completionsOnType', state.applicationId),
   ])
   const isMonospaceFont = fontFamily === 'Fira Code' || fontFamily === "'Fira Code'"
   const editorWithUpdatedSettings: EditorState = {

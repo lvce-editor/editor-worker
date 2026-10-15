@@ -346,7 +346,7 @@ test('reuses an unsaved document only within its application', async () => {
 
   expect(result.lines).toEqual(['unsaved source'])
   expect(result.modified).toBe(true)
-  expect(rendererInvokeMock).not.toHaveBeenCalled()
+  expect(rendererInvokeMock.mock.calls).toEqual([['Application.execute', 'source', 'Preferences.get', 'editor.completionsOnType']])
 })
 
 test('loadContent returns loaded text without requesting diagnostics', async () => {
