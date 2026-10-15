@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           repository: lvce-editor/lvce-editor
-          ref: 232903d4a0d694b2c3f6bae9d3d8921fd61af535
+          ref: 45f426ccb039e89a1d31fe17ae1b3a89102f1b26
           path: .tmp/lvce-integration
       - uses: actions/setup-node@v6
         with:
@@ -51,6 +51,9 @@ jobs:
         shell: bash
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-language-mode-persistence
+      - name: Test Bash syntax highlighting in YAML workflows
+        working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
+        run: npm run e2e:headless -- --test-name-prefix=editor.syntax-highlighting-yaml
       - name: Test Find widget persistence across application reload
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=find-widget-persistence --browser-test=scripts/test-find-widget-persistence.mjs
