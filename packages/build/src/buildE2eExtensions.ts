@@ -4,6 +4,7 @@ import { downloadHtmlExtension } from './downloadHtmlExtension.ts'
 import { root } from './root.ts'
 
 const extensionNames = [
+  'editor.alt-hover-backlog',
   'editor.alt-hover-definition-link',
   'editor.completion-click',
   'editor.completion-close-on-type-space',
