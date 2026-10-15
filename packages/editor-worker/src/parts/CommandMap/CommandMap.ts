@@ -166,6 +166,7 @@ import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetComm
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as Font from '../Font/Font.ts'
+import { refreshTextDecorations } from '../GetEditorTextDecorations/GetEditorTextDecorations.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
 import * as GetKeys from '../GetKeys/GetKeys.ts'
@@ -409,6 +410,7 @@ export const commandMap = {
   'Editor.redo': wrapCommand(EditorRedo.redo),
   'Editor.refreshGutterDecorations': wrapCommand(RefreshGutterDecorations.refreshGutterDecorations),
   'Editor.refreshGutterDecorationsAll': RefreshGutterDecorations.refreshGutterDecorationsAll,
+  'Editor.refreshTextDecorations': wrapCommand(refreshTextDecorations),
   'Editor.render': RenderEditor.renderEditor,
   'Editor.render2': render2,
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,

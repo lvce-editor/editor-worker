@@ -3,8 +3,10 @@ import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
 import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGutterDecoration.ts'
 import type { EditorLifecycle } from '../EditorLifecycle/EditorLifecycle.ts'
 import type { EditorLineDecoration } from '../EditorLineDecoration/EditorLineDecoration.ts'
+import type { EditorTextDecoration } from '../EditorTextDecoration/EditorTextDecoration.ts'
 import type { EndOfLine } from '../EndOfLine/EndOfLine.ts'
 import type { MergeConflict } from '../MergeConflict/MergeConflict.ts'
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
 export interface EditorState {
   readonly additionalFocus: number
@@ -121,6 +123,8 @@ export interface EditorState {
   readonly selectionInfos: readonly any[]
   readonly selections: Uint32Array
   readonly tabSize: number
+  readonly textDecorationDom?: readonly VirtualDomNode[]
+  readonly textDecorations?: readonly EditorTextDecoration[]
   readonly textDragDropPosition: { readonly rowIndex: number; readonly columnIndex: number }
   readonly textDragId: number
   readonly textInfos: readonly any[]

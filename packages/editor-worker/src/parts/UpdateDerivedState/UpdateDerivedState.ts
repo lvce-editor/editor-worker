@@ -5,8 +5,10 @@ import * as EditorText from '../EditorText/EditorText.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
 import { getEditorGutterDecorations } from '../GetEditorGutterDecorations/GetEditorGutterDecorations.ts'
+import { getEditorTextDecorations } from '../GetEditorTextDecorations/GetEditorTextDecorations.ts'
 import * as GetLightBulbRowIndex from '../GetLightBulbRowIndex/GetLightBulbRowIndex.ts'
 import * as GetMinimapLines from '../GetMinimapLines/GetMinimapLines.ts'
+import { getTextDecorationsVirtualDom } from '../GetTextDecorationsVirtualDom/GetTextDecorationsVirtualDom.ts'
 import * as GetVisibleBracketMatches from '../GetVisibleBracketMatches/GetVisibleBracketMatches.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
@@ -154,6 +156,9 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
     oldState.lines !== newState.lines && 'foldingRanges' in newState ? EditorFolding.updateLayout(horizontalState, []) : horizontalState
   const nextState = mergeConflictsEqual(oldState, layoutState) ? layoutState : { ...layoutState, incrementalEdits: emptyIncrementalEdits }
   let finalState = nextState
+  if (oldState.lines !== nextState.lines || oldState.uri !== nextState.uri) {
+    finalState = { ...finalState, textDecorations: await getEditorTextDecorations(nextState) }
+  }
   if (nextState.breadcrumbsEnabled && oldState.lines !== nextState.lines && oldState.documentSymbols === nextState.documentSymbols) {
     finalState = { ...finalState, documentSymbols: await getDocumentSymbols(nextState) }
   }
@@ -217,6 +222,10 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
       ...finalState,
       gutterDecorations: await getEditorGutterDecorations(finalState),
     }
+  }
+
+  if ((finalState.textDecorations?.length || 0) > 0 || (oldState.textDecorationDom?.length || 0) > 0) {
+    finalState = { ...finalState, textDecorationDom: await getTextDecorationsVirtualDom(finalState) }
   }
 
   if (!shouldUpdateSelectionData(oldState, nextState)) {

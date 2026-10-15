@@ -68,6 +68,7 @@ interface EditorVirtualDomOptions {
   readonly selectionInfos?: readonly any[]
   readonly selections?: any
   readonly tabSize?: number
+  readonly textDecorationDom?: readonly VirtualDomNode[]
   readonly textInfos: readonly any[]
   readonly uid: number
   readonly unnecessaryDiagnostics?: readonly any[]
@@ -132,6 +133,7 @@ export const getEditorVirtualDom = ({
   selectionInfos = [],
   selections = new Uint32Array(),
   tabSize = 2,
+  textDecorationDom = [],
   textInfos,
   uid,
   unnecessaryDiagnostics = [],
@@ -210,6 +212,7 @@ export const getEditorVirtualDom = ({
       scrollBarWidth,
       selectionInfos,
       tabSize,
+      textDecorationDom,
       textInfos: combineWhitespaceTokens ? textInfos.map(combineTokens) : textInfos,
       unnecessaryDiagnostics,
       visibleLineIndices: visibleLineIndices || [],
