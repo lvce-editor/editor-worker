@@ -191,6 +191,30 @@ export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Prom
   }
 }
 
+// Mouse positions are replaceable; edits and explicit navigation remain ordered.
+// Check before starting provider work and again before committing its result.
+export const wrapLatestCommand = (fn: (editor: EditorState, ...args: any[]) => Promise<EditorState>, returnState = true) => {
+  const latest = new Map<number, object>()
+  return async (uid: number, ...args: any[]) => {
+    const token = {}
+    latest.set(uid, token)
+    const command = wrapCommand(
+      async (editor: EditorState) => {
+        if (latest.get(uid) !== token) return editor
+        const result = await fn(editor, ...args)
+        return latest.get(uid) === token ? result : editor
+      },
+      false,
+      returnState,
+    )
+    try {
+      return await command(uid)
+    } finally {
+      if (latest.get(uid) === token) latest.delete(uid)
+    }
+  }
+}
+
 // Optional provider work must not hold the editing queue while another worker responds.
 export const wrapDeferredCommand = (fn: (editor: EditorState, ...args: any[]) => Promise<EditorState>, returnState = true) => {
   const apply = wrapCommand(

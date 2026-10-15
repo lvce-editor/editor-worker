@@ -98,6 +98,28 @@ test('serializes concurrent commands for the same editor', async () => {
   expect((EditorStates.get(1).newState as any).text).toBe('abc')
 })
 
+test('mouse moves skip superseded queued work and never commit an obsolete result', async () => {
+  const started = Promise.withResolvers<void>()
+  const active = Promise.withResolvers<void>()
+  const seen: number[] = []
+  const command = WrapCommands.wrapLatestCommand(async (state: any, offset: number) => {
+    seen.push(offset)
+    if (offset === 0) {
+      started.resolve()
+      await active.promise
+    }
+    return { ...state, text: String(offset) }
+  })
+  const first = command(1, 0)
+  await started.promise
+  const pending = Array.from({ length: 9 }, (_, index) => command(1, index + 1))
+  active.resolve()
+  await Promise.all([first, ...pending])
+  expect(seen).toEqual([0, 9])
+  expect(updateDerivedStateMock).toHaveBeenCalledTimes(1)
+  expect((EditorStates.get(1).newState as any).text).toBe('9')
+})
+
 test('does not queue or synchronize identical uris across applications', async () => {
   const source = {
     applicationId: 'source',
@@ -907,4 +929,27 @@ test('does not restore a split editor disposed while its synchronized derived st
   await WrapCommands.wrapCommand((state: any) => ({ ...state, lines: ['edited'] }))(1)
   expect(EditorStates.get(1).newState.lines).toEqual(['edited'])
   expect(EditorStates.get(2)).toBeUndefined()
+})
+
+test('latest mouse commands leave other editors and ordinary edits independent', async () => {
+  const state = { text: '' }
+  EditorStates.set(2, state as any, state as any)
+  const started = Promise.withResolvers<void>()
+  const active = Promise.withResolvers<void>()
+  const command = WrapCommands.wrapLatestCommand(async (editor: any, text: string) => {
+    if (text === 'old') {
+      started.resolve()
+      await active.promise
+    }
+    return { ...editor, text: editor.text + text }
+  })
+  const first = command(1, 'old')
+  await started.promise
+  await command(2, 'other')
+  const edit = WrapCommands.wrapCommand((editor: any) => ({ ...editor, text: editor.text + 'edit' }))(1)
+  const latest = command(1, 'latest')
+  active.resolve()
+  await Promise.all([first, edit, latest])
+  expect((EditorStates.get(1).newState as any).text).toBe('editlatest')
+  expect((EditorStates.get(2).newState as any).text).toBe('other')
 })

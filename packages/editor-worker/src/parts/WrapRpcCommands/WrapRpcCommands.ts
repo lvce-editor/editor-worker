@@ -13,3 +13,7 @@ export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Prom
 export const wrapDeferredCommand = (fn: (editor: EditorState, ...args: any[]) => Promise<EditorState>) => {
   return WrapCommands.wrapDeferredCommand(fn, false)
 }
+
+export const wrapLatestCommand = (fn: (editor: EditorState, ...args: any[]) => Promise<EditorState>) => {
+  return WrapCommands.wrapLatestCommand(fn, false)
+}

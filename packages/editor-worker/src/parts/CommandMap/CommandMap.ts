@@ -213,7 +213,7 @@ import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
-import { wrapCommand, wrapDeferredCommand, wrapFocusCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
+import { wrapCommand, wrapDeferredCommand, wrapFocusCommand, wrapLatestCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
 
 const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
   return ExecuteViewletCommand.executeViewletCommand(commandMap, uid, commandId, ...args)
@@ -402,8 +402,8 @@ export const commandMap = {
   'Editor.handleMouseDown': wrapCommand(HandleMouseDown.handleMouseDown),
   'Editor.handleMouseEnter': HandleMouseLeave.handleMouseEnter,
   'Editor.handleMouseLeave': HandleMouseLeave.handleMouseLeave,
-  'Editor.handleMouseMove': wrapCommand(HandleMouseMove.handleMouseMove),
-  'Editor.handleMouseMoveWithAltKey': wrapCommand(EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey),
+  'Editor.handleMouseMove': wrapLatestCommand(HandleMouseMove.handleMouseMove),
+  'Editor.handleMouseMoveWithAltKey': wrapLatestCommand(EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey),
   'Editor.handleNativeSelectionChange': HandleNativeSelectionChange.editorHandleNativeSelectionChange,
   'Editor.handlePointerCaptureLost': wrapCommand(HandlePointerCaptureLost.handlePointerCaptureLost),
   'Editor.handlePointerDown': wrapCommand(handlePointerDown),
