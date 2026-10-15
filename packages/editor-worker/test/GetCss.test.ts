@@ -89,6 +89,10 @@ test('getCss', () => {
   top: calc(50% - 1px);
 }
 .Editor[data-uid="42"] .R{background-color:#add6ff40}
+.Editor[data-uid="42"] .EditorTextDecoration {
+  position: absolute;
+  pointer-events: none;
+}
 .Editor[data-uid="42"] .BracketMatch {
   position: absolute;
   box-sizing: border-box;
