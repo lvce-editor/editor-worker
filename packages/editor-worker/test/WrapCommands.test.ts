@@ -850,3 +850,61 @@ test('rejects a deferred widget if the editor lifecycle changes alongside diagno
   await pending
   expect(EditorStates.get(1).newState).toBe(recreated)
 })
+
+test('does not restore an editor disposed while its command is awaiting work', async () => {
+  const command = WrapCommands.wrapCommand(async (state: any) => {
+    await Promise.resolve()
+    EditorStates.dispose(1)
+    return { ...state, text: 'stale' }
+  })
+  await command(1)
+  expect(EditorStates.get(1)).toBeUndefined()
+})
+
+test('does not restore an editor disposed while derived state is pending', async () => {
+  updateDerivedStateMock.mockImplementationOnce(async (_oldState, newState) => {
+    await Promise.resolve()
+    EditorStates.dispose(1)
+    return newState
+  })
+  const command = WrapCommands.wrapCommand((state: any) => ({ ...state, text: 'stale' }))
+  await command(1)
+  expect(EditorStates.get(1)).toBeUndefined()
+})
+
+test.each([false, true])('does not overwrite a replacement editor after pending work (derived: %s)', async (derived) => {
+  const original: any = { lifecycle: { disposed: false }, text: 'original' }
+  const replacement: any = { lifecycle: { disposed: false }, text: 'replacement' }
+  EditorStates.set(1, original, original)
+  const replaceEditor = async (state: any): Promise<any> => {
+    await Promise.resolve()
+    original.lifecycle.disposed = true
+    EditorStates.dispose(1)
+    EditorStates.set(1, replacement, replacement)
+    return { ...state, text: 'stale' }
+  }
+  if (derived) {
+    updateDerivedStateMock.mockImplementationOnce(async (_oldState, state) => replaceEditor(state))
+  }
+  const command = WrapCommands.wrapCommand(derived ? (state: any) => ({ ...state, text: 'pending' }) : replaceEditor)
+  await command(1)
+  expect(EditorStates.get(1).newState).toBe(replacement)
+})
+
+test('does not restore a split editor disposed while its synchronized derived state is pending', async () => {
+  const first: any = { lifecycle: { disposed: false }, lines: ['original'], uri: 'untitled:///shared' }
+  const second: any = { lifecycle: { disposed: false }, lines: first.lines, uri: first.uri }
+  EditorStates.set(1, first, first)
+  EditorStates.set(2, second, second)
+  updateDerivedStateMock.mockImplementation(async (oldState, newState) => {
+    await Promise.resolve()
+    if (oldState === second) {
+      second.lifecycle.disposed = true
+      EditorStates.dispose(2)
+    }
+    return newState
+  })
+  await WrapCommands.wrapCommand((state: any) => ({ ...state, lines: ['edited'] }))(1)
+  expect(EditorStates.get(1).newState.lines).toEqual(['edited'])
+  expect(EditorStates.get(2)).toBeUndefined()
+})

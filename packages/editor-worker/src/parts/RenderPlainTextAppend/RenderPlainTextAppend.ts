@@ -141,6 +141,8 @@ export const canRenderPlainTextAppend = (oldState: EditorState, newState: Editor
     newState.mergeConflicts.length > 0 ||
     !isEmpty(oldState.diagnostics) ||
     !isEmpty(newState.diagnostics) ||
+    !isEmpty(oldState.textDecorationDom) ||
+    !isEmpty(newState.textDecorationDom) ||
     !isEmpty(oldState.visualDecorations) ||
     !isEmpty(newState.visualDecorations) ||
     !isEmpty(oldState.bracketMatchInfos) ||
