@@ -1,4 +1,4 @@
-import { WidgetId } from '@lvce-editor/constants'
+import { WhenExpression, WidgetId } from '@lvce-editor/constants'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import { terminate } from '@lvce-editor/viewlet-registry'
 import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
@@ -153,7 +153,9 @@ import * as Unindent from '../EditorCommand/EditorCommandUnindent.ts'
 import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorCompletionWidget.ts'
 import * as EditorFindWidget from '../EditorFindWidget/EditorFindWidget.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
+import * as EditorHoverDismissalState from '../EditorHoverDismissalState/EditorHoverDismissalState.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
+import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
 import * as EditorRenameWidget from '../EditorRenameWidget/EditorRenameWidget.ts'
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
@@ -190,6 +192,7 @@ import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RefreshGutterDecorations from '../RefreshGutterDecorations/RefreshGutterDecorations.ts'
 import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
+import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 import { render2 } from '../Render2/Render2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
@@ -209,6 +212,7 @@ import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 import { wrapCommand, wrapDeferredCommand, wrapFocusCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
 
 const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
@@ -223,9 +227,37 @@ const resize = async (editor: any, dimensions: any) => {
 const openCompletionDeferred = wrapDeferredCommand(EditorOpenCompletion.openCompletion)
 const updateAutomaticCompletionDeferred = wrapDeferredCommand(updateAutomaticCompletion)
 
-const wrapTypingCommand = (fn: (...args: any[]) => any, shouldOpenCompletion: (...args: any[]) => boolean) => {
-  const command = wrapCommand(fn, true)
+const removeHoverFromEditor = (editor: any): any => {
+  if (!editor.widgets?.some((widget: any) => widget.id === WidgetId.Hover)) {
+    return editor
+  }
+  const newEditor = {
+    ...editor,
+    additionalFocus: 0,
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+    widgetRevision: WidgetRevision.next(editor.uid),
+    widgets: RemoveEditorWidget.removeEditorWidget(editor.widgets, WidgetId.Hover),
+  }
+  return newEditor
+}
+
+const wrapTypingCommand = (
+  fn: (...args: any[]) => any,
+  shouldOpenCompletion: (...args: any[]) => boolean,
+  shouldDismissHover: (...args: any[]) => boolean,
+  preservesTypingCoalescing = true,
+) => {
+  const command = wrapCommand(async (editor: any, ...args: any[]) => {
+    const newEditor = await fn(editor, ...args)
+    return shouldDismissHover(...args) ? removeHoverFromEditor(newEditor) : newEditor
+  }, preservesTypingCoalescing)
   return async (uid: number, ...args: any[]) => {
+    const dismissHover = shouldDismissHover(...args)
+    if (dismissHover) {
+      EditorHoverState.clear(uid)
+      EditorHoverDismissalState.clear(uid)
+    }
     await command(uid, ...args)
     const editor = Editors.get(uid)?.newState
     if (
@@ -240,10 +272,24 @@ const wrapTypingCommand = (fn: (...args: any[]) => any, shouldOpenCompletion: (.
   }
 }
 
-const deleteLeftCommand = wrapTypingCommand(DeleteCharacterLeft.deleteCharacterLeft, () => false)
-const typeCommand = wrapTypingCommand(EditorType.type, () => true)
-const typeWithAutoClosingCommand = wrapTypingCommand(EditorTypeWithAutoClosing.typeWithAutoClosing, () => true)
-const handleBeforeInputCommand = wrapTypingCommand(HandleBeforeInput.handleBeforeInput, (inputType) => inputType === InputEventType.InsertText)
+const deleteLeftCommand = wrapTypingCommand(
+  DeleteCharacterLeft.deleteCharacterLeft,
+  () => false,
+  () => false,
+)
+const typeCommand = wrapTypingCommand(EditorType.type, () => true, Boolean)
+const typeWithAutoClosingCommand = wrapTypingCommand(EditorTypeWithAutoClosing.typeWithAutoClosing, () => true, Boolean)
+const handleBeforeInputCommand = wrapTypingCommand(
+  HandleBeforeInput.handleBeforeInput,
+  (inputType) => inputType === InputEventType.InsertText,
+  (inputType, data) => inputType === InputEventType.InsertText && Boolean(data),
+)
+const handleBeforeInputFromContentEditableCommand = wrapTypingCommand(
+  EditorCommandHandleNativeBeforeInputFromContentEditable.handleBeforeInputFromContentEditable,
+  () => false,
+  (data, range) => Boolean(data) && Boolean(range),
+  false,
+)
 
 export const commandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
@@ -345,9 +391,7 @@ export const commandMap = {
   'Editor.goToDefinition': wrapCommand(EditorGoToDefinition.goToDefinition),
   'Editor.goToTypeDefinition': wrapCommand(EditorGoToTypeDefinition.goToTypeDefinition),
   'Editor.handleBeforeInput': handleBeforeInputCommand,
-  'Editor.handleBeforeInputFromContentEditable': wrapCommand(
-    EditorCommandHandleNativeBeforeInputFromContentEditable.handleBeforeInputFromContentEditable,
-  ),
+  'Editor.handleBeforeInputFromContentEditable': handleBeforeInputFromContentEditableCommand,
   'Editor.handleBlur': wrapCommand(EditorBlur.handleBlur),
   'Editor.handleClickAtPosition': wrapCommand(handleClickAtPosition),
   'Editor.handleContextMenu': wrapCommand(EditorCommandHandleContextMenu.handleContextMenu),

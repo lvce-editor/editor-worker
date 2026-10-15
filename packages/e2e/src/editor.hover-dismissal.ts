@@ -58,4 +58,55 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard
   await Locator('.Editor').dispatchEvent('mouseover', { bubbles: true } as any)
   await new Promise((resolve) => setTimeout(resolve, 750))
   await expect(hover).toBeVisible()
+
+  // Typing dismisses the visible hover and cancels a hover scheduled for the stationary pointer.
+  await Settings.update({ 'editor.hoverDelay': 100 })
+  await Command.execute('Editor.handleMouseMove', 0, 0, false)
+  await Editor.type('x')
+  await Editor.shouldHaveText('abxcdefgh')
+  await expect(hover).toBeHidden()
+  await new Promise((resolve) => setTimeout(resolve, 150))
+  await expect(hover).toBeHidden()
+
+  // A new mouse movement can show fresh hover content; beforeinput auto-closing typing dismisses it.
+  await Command.execute('Editor.setDiagnostics', [
+    {
+      code: 'hover-dismissal',
+      columnIndex: 0,
+      endColumnIndex: 9,
+      endRowIndex: 0,
+      message: 'Updated hover content after typing',
+      rowIndex: 0,
+      source: 'hover-dismissal-test',
+      type: 'error',
+      uri,
+    },
+  ])
+  await Command.execute('Editor.handleMouseMove', 0, 0, false)
+  await expect(hover).toBeVisible()
+  await expect(hover).toContainText('Updated hover content after typing')
+  await Editor.setCursor(0, 3)
+  await Command.execute('Editor.showHover')
+  await Command.execute('Editor.handleBeforeInput', 'insertText', '(')
+  await Editor.shouldHaveText('abx()cdefgh')
+  await expect(hover).toBeHidden()
+
+  // Restore the initial fixture for the native pointer-boundary regression that reuses this test.
+  await Editor.setText('abcdefgh')
+  await Command.execute('Editor.setDiagnostics', [
+    {
+      code: 'hover-dismissal',
+      columnIndex: 0,
+      endColumnIndex: 8,
+      endRowIndex: 0,
+      message: 'Hover copy payload with enough text to select and copy',
+      rowIndex: 0,
+      source: 'hover-dismissal-test',
+      type: 'error',
+      uri,
+    },
+  ])
+  await Editor.setCursor(0, 2)
+  await Command.execute('Editor.showHover')
+  await expect(hover).toBeVisible()
 }
