@@ -22,11 +22,20 @@ jest.unstable_mockModule('../src/parts/AddWidgetToEditor/AddWidgetToEditor.ts', 
 const { emptyEditor } = await import('../src/parts/EmptyEditor/EmptyEditor.ts')
 const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
 const { openRename } = await import('../src/parts/EditorCommand/EditorCommandOpenRename.ts')
-beforeEach(() => invoke.mockClear())
+beforeEach(() => {
+  invoke.mockClear()
+})
 
 for (const applicationId of ['preview', undefined]) {
   test(`rename widget inherits its editor application ${String(applicationId)}`, async () => {
-    const editor = { ...emptyEditor, applicationId, decorations: [], languageId: 'plaintext', uid: 42, widgets: [] }
+    const editor = {
+      ...emptyEditor,
+      ...(applicationId !== undefined && { applicationId }),
+      decorations: [],
+      languageId: 'plaintext',
+      uid: 42,
+      widgets: [],
+    }
     EditorStates.set(42, editor, editor)
     await openRename(editor)
     expect(invoke).toHaveBeenNthCalledWith(1, 'Rename.create', 99, 0, 0, 100, 20, 42, 'plaintext', applicationId)
