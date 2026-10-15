@@ -126,10 +126,10 @@ test('ASCII horizontal ranges do not initialize ICU grapheme segmentation', asyn
   }
 })
 
-test.each(['', '\t', 'hello world', Array.from({ length: 95 }, (_, index) => String.fromCharCode(index + 32)).join(''), 'a\r\nb', 'a\u0301👩‍💻'])(
+test.each(['', '\t', 'hello world', Array.from({ length: 95 }, (_, index) => String.fromCodePoint(index + 32)).join(''), 'a\r\nb', 'a\u{301}👩‍💻'])(
   'preserves grapheme display columns for %p',
   (line) => {
-    const segments = [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(line)].map(({ index }) => index)
+    const segments = Array.from(new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(line), ({ index }) => index)
     segments.push(line.length)
     for (let index = 0; index <= line.length; index++) {
       expect(GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, index, 4)).toBe(
