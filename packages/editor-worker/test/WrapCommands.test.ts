@@ -155,7 +155,7 @@ test('ignores a queued command when the editor is disposed', async () => {
   EditorStates.dispose(1)
   finishFirstCommand.resolve()
 
-  await expect(first).resolves.toBeDefined()
+  await expect(first).resolves.toBeUndefined()
   await expect(second).resolves.toBeUndefined()
 })
 
@@ -849,4 +849,79 @@ test('rejects a deferred widget if the editor lifecycle changes alongside diagno
   ready.resolve()
   await pending
   expect(EditorStates.get(1).newState).toBe(recreated)
+})
+
+test.each(['command', 'derived state'])('does not commit after disposal during %s', async (phase) => {
+  const editor = { initial: false, lifecycle: { disposed: false }, lines: ['other file'], uid: 1, uri: 'memfs:///other.txt' }
+  EditorStates.set(1, editor as any, editor as any)
+  const started = Promise.withResolvers<void>()
+  const resume = Promise.withResolvers<void>()
+  const suspend = async (state: any) => {
+    started.resolve()
+    await resume.promise
+    return { ...state, width: 900 }
+  }
+  if (phase === 'derived state') {
+    updateDerivedStateMock.mockImplementation(async (_oldState, newState) => suspend(newState))
+  }
+  const command = WrapCommands.wrapCommand(phase === 'command' ? suspend : (state: any) => ({ ...state, width: 800 }))
+  const pending = command(1)
+  await started.promise
+  editor.lifecycle.disposed = true
+  EditorStates.dispose(1)
+  resume.resolve()
+  await expect(pending).resolves.toBeUndefined()
+  expect(EditorStates.get(1)).toBeUndefined()
+  expect(scheduleGutterMock).not.toHaveBeenCalled()
+  expect(editorDiagnosticEffectApplyMock).not.toHaveBeenCalled()
+})
+
+test.each(['command', 'derived state'])('preserves a replacement editor created during %s', async (phase) => {
+  const editor = { initial: false, lifecycle: { disposed: false }, lines: ['old file'], uid: 1, uri: 'memfs:///other.txt' }
+  EditorStates.set(1, editor as any, editor as any)
+  const started = Promise.withResolvers<void>()
+  const resume = Promise.withResolvers<void>()
+  const suspend = async (state: any) => {
+    started.resolve()
+    await resume.promise
+    return { ...state, width: 900 }
+  }
+  if (phase === 'derived state') {
+    updateDerivedStateMock.mockImplementation(async (_oldState, newState) => suspend(newState))
+  }
+  const command = WrapCommands.wrapCommand(phase === 'command' ? suspend : (state: any) => ({ ...state, width: 800 }))
+  const pending = command(1)
+  await started.promise
+  EditorStates.dispose(1)
+  const replacement = { ...editor, lifecycle: { disposed: false }, lines: ['new file'] }
+  EditorStates.set(1, replacement as any, replacement as any)
+  resume.resolve()
+  await expect(pending).resolves.toBeUndefined()
+  expect(EditorStates.get(1).newState).toBe(replacement)
+})
+
+test('does not resurrect a split editor disposed during document synchronization', async () => {
+  const source = { initial: false, lifecycle: { disposed: false }, lines: ['old'], uid: 1, uri: 'memfs:///split.txt' }
+  const other = { ...source, lifecycle: { disposed: false }, uid: 2 }
+  EditorStates.set(1, source as any, source as any)
+  EditorStates.set(2, other as any, other as any)
+  const started = Promise.withResolvers<void>()
+  const resume = Promise.withResolvers<void>()
+  updateDerivedStateMock.mockImplementation(async (_oldState, newState: any) => {
+    if (newState.uid === 2) {
+      started.resolve()
+      await resume.promise
+    }
+    return newState
+  })
+  const edit = WrapCommands.wrapCommand((editor: any) => ({ ...editor, lines: ['new'] }))
+  const pending = edit(1)
+  await started.promise
+  other.lifecycle.disposed = true
+  EditorStates.dispose(2)
+  resume.resolve()
+  await pending
+
+  expect(EditorStates.get(1).newState.lines).toEqual(['new'])
+  expect(EditorStates.get(2)).toBeUndefined()
 })

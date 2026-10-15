@@ -17,6 +17,11 @@ import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts
 
 const cursorUndoLimit = 100
 
+const isLiveEditor = (uid: number, snapshot: EditorState): boolean => {
+  const current = Editors.get(uid)?.newState
+  return Boolean(current && !snapshot.lifecycle?.disposed && current.lifecycle === snapshot.lifecycle)
+}
+
 const selectionsEqual = (left: Uint32Array, right: Uint32Array): boolean => {
   if (left === right) {
     return true
@@ -71,6 +76,9 @@ export const wrapCommand =
       const state = oldInstance.newState
       const { cursorUndoStack, endOfLine, initial, insertSpaces, isSelecting, lines, modified, redoStack, selections, undoStack, uri } = state
       const commandResult = await fn(state, ...args)
+      if (!isLiveEditor(uid, state)) {
+        return undefined
+      }
       let newEditor = !preservesTypingCoalescing && commandResult.canCoalesceTyping ? { ...commandResult, canCoalesceTyping: false } : commandResult
       if (lines !== newEditor.lines && newEditor.cursorUndoStack?.length) {
         newEditor = { ...newEditor, cursorUndoStack: [] }
@@ -92,6 +100,9 @@ export const wrapCommand =
       }
       const deferGutterDecorations = !initial && uri === newEditor.uri && lines !== newEditor.lines && Boolean(newEditor.lifecycle)
       const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor, deferGutterDecorations)
+      if (!isLiveEditor(uid, state)) {
+        return undefined
+      }
       // Another command can commit before the renderer consumes this edit.
       // Keep its last rendered baseline, including renders completed while we awaited derived state.
       const renderedState = Editors.get(uid)?.oldState ?? oldInstance.oldState
@@ -147,6 +158,9 @@ export const wrapCommand =
             },
             deferGutterDecorations,
           )
+          if (!isLiveEditor(otherUid, editor)) {
+            continue
+          }
           Editors.set(otherUid, instance.oldState, synchronizedEditor)
           if (deferGutterDecorations) {
             ScheduleGutterDecorations.schedule(synchronizedEditor)
