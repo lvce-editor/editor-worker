@@ -108,13 +108,16 @@ const renderAdditionalFocusContext = {
 
 const renderDecorations = {
   apply(oldState: EditorState, newState: EditorState) {
+    const textDecorationsDom = newState.textDecorationDom || []
     const diagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(newState.visualDecorations || [])
     const bracketMatchesDom = GetBracketMatchesVirtualDom.getBracketMatchesVirtualDom(newState.bracketMatchInfos || [])
-    const dom = [...diagnosticsDom, ...bracketMatchesDom]
+    const dom = [...diagnosticsDom, ...bracketMatchesDom, ...textDecorationsDom]
     return ['setDecorationsDom', dom]
   },
   isEqual: (oldState: EditorState, newState: EditorState) =>
-    oldState.visualDecorations === newState.visualDecorations && oldState.bracketMatchInfos === newState.bracketMatchInfos,
+    oldState.visualDecorations === newState.visualDecorations &&
+    oldState.bracketMatchInfos === newState.bracketMatchInfos &&
+    oldState.textDecorationDom === newState.textDecorationDom,
 }
 
 const renderGutterInfo = {
