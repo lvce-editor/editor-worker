@@ -69,7 +69,8 @@ export const wrapCommand =
         return undefined
       }
       const state = oldInstance.newState
-      const { cursorUndoStack, endOfLine, initial, insertSpaces, isSelecting, lines, modified, redoStack, selections, undoStack, uri } = state
+      const { cursorUndoStack, endOfLine, initial, insertSpaces, isSelecting, lifecycle, lines, modified, redoStack, selections, undoStack, uri } =
+        state
       const commandResult = await fn(state, ...args)
       let newEditor = !preservesTypingCoalescing && commandResult.canCoalesceTyping ? { ...commandResult, canCoalesceTyping: false } : commandResult
       if (lines !== newEditor.lines && newEditor.cursorUndoStack?.length) {
@@ -87,11 +88,14 @@ export const wrapCommand =
           cursorUndoStack: [...previousCursorUndoStack.slice(1 - cursorUndoLimit), new Uint32Array(selections)],
         }
       }
-      if (state === newEditor) {
+      if (state === newEditor || !Editors.get(uid) || lifecycle?.disposed || Editors.get(uid).newState.lifecycle !== lifecycle) {
         return returnState ? newEditor : undefined
       }
       const deferGutterDecorations = !initial && uri === newEditor.uri && lines !== newEditor.lines && Boolean(newEditor.lifecycle)
       const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor, deferGutterDecorations)
+      if (!Editors.get(uid) || lifecycle?.disposed || Editors.get(uid).newState.lifecycle !== lifecycle) {
+        return returnState ? newEditorWithDerivedState : undefined
+      }
       // Another command can commit before the renderer consumes this edit.
       // Keep its last rendered baseline, including renders completed while we awaited derived state.
       const renderedState = Editors.get(uid)?.oldState ?? oldInstance.oldState
@@ -147,7 +151,11 @@ export const wrapCommand =
             },
             deferGutterDecorations,
           )
-          Editors.set(otherUid, instance.oldState, synchronizedEditor)
+          const latest = Editors.get(otherUid)
+          if (!latest || editor.lifecycle?.disposed || latest.newState.lifecycle !== editor.lifecycle) {
+            continue
+          }
+          Editors.set(otherUid, latest.oldState, synchronizedEditor)
           if (deferGutterDecorations) {
             ScheduleGutterDecorations.schedule(synchronizedEditor)
           }
