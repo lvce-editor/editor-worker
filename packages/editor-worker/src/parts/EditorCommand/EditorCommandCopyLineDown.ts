@@ -32,7 +32,7 @@ const getCopyLineOperations = (selections: Uint32Array): CopyLineOperation[] => 
   return mergedOperations
 }
 
-export const copyLineDown = (editor: any) => {
+export const copyLineDown = async (editor: any) => {
   const { selections } = editor
   const operations = getCopyLineOperations(selections)
   const changes = operations.map(({ endRowIndex, startRowIndex }) => {
@@ -66,5 +66,6 @@ export const copyLineDown = (editor: any) => {
     selectionChanges[i + 2] = selections[i + 2] + getRowOffset(selections[i + 2])
     selectionChanges[i + 3] = selections[i + 3]
   }
-  return Editor.scheduleDocumentAndCursorsSelections(editor, changes, selectionChanges)
+  const newEditor = await Editor.scheduleDocumentAndCursorsSelections(editor, changes, selectionChanges)
+  return typeof newEditor.finalDeltaY === 'number' ? Editor.scheduleSelections(newEditor, selectionChanges) : newEditor
 }

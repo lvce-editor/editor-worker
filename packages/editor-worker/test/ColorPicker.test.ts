@@ -36,3 +36,21 @@ test('loads the picker with the selected editor value', async () => {
   expect(invoke).toHaveBeenNthCalledWith(4, 'ColorPicker.render2', 42, [1])
   expect(result.commands).toEqual([['render']])
 })
+
+test('loads a JavaScript hex value into the picker as CSS hex', async () => {
+  invoke.mockClear()
+  const state = {
+    commands: [],
+    endOffset: 22,
+    height: 200,
+    startOffset: 14,
+    uid: 43,
+    undoStackIndex: 0,
+    value: '0x11ff00',
+    width: 300,
+    x: 100,
+    y: 120,
+  }
+  await ColorPicker.loadContent(state, 7)
+  expect(invoke).toHaveBeenNthCalledWith(2, 'ColorPicker.loadContent', 43, '#11ff00')
+})

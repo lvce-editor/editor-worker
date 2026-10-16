@@ -74,6 +74,6 @@ test('rejects failed scoped callbacks instead of falling back to the default wor
       throw new Error('Application disposed')
     },
   })
-  await expect(ApplicationRpc.readFile('preview', 'memfs:///main.ts')).rejects.toThrow('Application disposed')
-  expect(rpc.invocations).toEqual([['Application.execute', 'preview', 'FileSystem.readFile', 'memfs:///main.ts']])
+  await expect(ApplicationRpc.invoke('preview', 'FileSystem.isReadonly', 'memfs:///main.ts')).rejects.toThrow('Application disposed')
+  expect(rpc.invocations).toEqual([['Application.execute', 'preview', 'FileSystem.isReadonly', 'memfs:///main.ts']])
 })

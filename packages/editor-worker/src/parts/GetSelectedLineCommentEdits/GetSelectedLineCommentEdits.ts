@@ -2,7 +2,7 @@ import type { Edit } from '../Edit/Edit.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import { getLineCommentEdit } from '../GetLineCommentEdit/GetLineCommentEdit.ts'
 
-export const getSelectedLineCommentEdits = (editor: any, lineComment: string): readonly Edit[] => {
+export const getSelectedLineCommentEdits = (editor: any, lineComment: string, origin = EditOrigin.ToggleBlockComment): readonly Edit[] => {
   const { lines, selections } = editor
   const selectedRows = new Set<number>()
   for (let i = 0; i < selections.length; i += 4) {
@@ -30,7 +30,7 @@ export const getSelectedLineCommentEdits = (editor: any, lineComment: string): r
       deleted: [''],
       end: { columnIndex, rowIndex },
       inserted: [`${lineComment} `],
-      origin: EditOrigin.ToggleBlockComment,
+      origin,
       start: { columnIndex, rowIndex },
     }
   })

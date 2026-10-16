@@ -8,6 +8,54 @@ import * as GetX from '../GetX/GetX.ts'
 
 const getPositionKey = (position: BracketPosition): string => `${position.rowIndex}:${position.columnIndex}`
 
+interface BracketMatchCacheEntry {
+  readonly positions: readonly BracketPosition[]
+  readonly selections: Uint32Array
+}
+
+const bracketMatchCache = new WeakMap<readonly string[], BracketMatchCacheEntry>()
+
+const selectionsEqual = (left: Uint32Array, right: Uint32Array): boolean => {
+  if (left.length !== right.length) {
+    return false
+  }
+  for (let i = 0; i < left.length; i++) {
+    if (left[i] !== right[i]) {
+      return false
+    }
+  }
+  return true
+}
+
+const findBracketMatchPositions = (lines: readonly string[], selections: Uint32Array): readonly BracketPosition[] => {
+  const cached = bracketMatchCache.get(lines)
+  if (cached && selectionsEqual(cached.selections, selections)) {
+    return cached.positions
+  }
+  const positions = new Map<string, BracketPosition>()
+  for (let i = 0; i < selections.length; i += 4) {
+    const startRowIndex = selections[i]
+    const startColumnIndex = selections[i + 1]
+    const endRowIndex = selections[i + 2]
+    const endColumnIndex = selections[i + 3]
+    if (startRowIndex !== endRowIndex || startColumnIndex !== endColumnIndex) {
+      continue
+    }
+    const pair = BracketMatching.findMatchingBracket(lines, endRowIndex, endColumnIndex)
+    if (!pair) {
+      continue
+    }
+    positions.set(getPositionKey(pair.source), pair.source)
+    positions.set(getPositionKey(pair.match), pair.match)
+  }
+  const entry = {
+    positions: positions.values().toArray(),
+    selections: new Uint32Array(selections),
+  }
+  bracketMatchCache.set(lines, entry)
+  return entry.positions
+}
+
 const getInfo = async (
   editor: EditorState,
   position: BracketPosition,
@@ -81,22 +129,9 @@ export const getVisibleBracketMatches = async (editor: EditorState): Promise<rea
     : viewLineIndices
       ? EditorViewRows.getVisualRowForDocumentRow(minLineY, viewLineIndices)
       : EditorFolding.getVisualRowForDocumentRow(minLineY, foldingRanges)
-  const positions = new Map<string, BracketPosition>()
-  for (let i = 0; i < selections.length; i += 4) {
-    const startRowIndex = selections[i]
-    const startColumnIndex = selections[i + 1]
-    const endRowIndex = selections[i + 2]
-    const endColumnIndex = selections[i + 3]
-    if (startRowIndex !== endRowIndex || startColumnIndex !== endColumnIndex) {
-      continue
-    }
-    const pair = BracketMatching.findMatchingBracket(lines, endRowIndex, endColumnIndex)
-    if (!pair) {
-      continue
-    }
-    positions.set(getPositionKey(pair.source), pair.source)
-    positions.set(getPositionKey(pair.match), pair.match)
-  }
-  const infos = await Promise.all(Array.from(positions.values(), (position) => getInfo(editor, position, actualVisibleLineIndices, startVisualRow)))
+  const positions = findBracketMatchPositions(lines, selections)
+  const infos = await Promise.all(positions.map((position) => getInfo(editor, position, actualVisibleLineIndices, startVisualRow)))
   return infos.filter((info): info is BracketMatchInfo => info !== undefined)
 }
+
+export const getBracketMatchPositions = findBracketMatchPositions

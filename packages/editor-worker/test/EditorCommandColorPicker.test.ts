@@ -43,6 +43,7 @@ const ColorPickerWidgetFactory = await import('../src/parts/ColorPickerWidgetFac
 const FocusKey = await import('../src/parts/FocusKey/FocusKey.ts')
 const GetColorPickerBounds = await import('../src/parts/GetColorPickerBounds/GetColorPickerBounds.ts')
 const GetColorPickerRange = await import('../src/parts/GetColorPickerRange/GetColorPickerRange.ts')
+const GetDocumentEdits = await import('../src/parts/GetDocumentEdits/GetDocumentEdits.ts')
 
 beforeEach(() => {
   WidgetRevision.reset()
@@ -81,6 +82,17 @@ test('updateColorPickerValue replaces the captured range and advances its end of
   expect(result.undoStack[0][0]).toMatchObject({ inserted: ['#ff0000'], origin: 'colorPicker' })
   expect(result.widgets[0].newState.endOffset).toBe(17)
   expect(result.widgets[0].oldState.endOffset).toBe(17)
+})
+
+test('updateColorPickerValue preserves a JavaScript hex literal across picker changes', async () => {
+  const colorPicker = {
+    id: WidgetId.ColorPicker,
+    newState: { endOffset: 22, startOffset: 14, undoStackIndex: 0, value: '0x11ff00' },
+    oldState: { endOffset: 22, startOffset: 14, undoStackIndex: 0, value: '0x11ff00' },
+  }
+  const editor = { undoStack: [], widgets: [colorPicker] }
+  await EditorCommandColorPicker.updateColorPickerValue(editor, '#00ab01')
+  expect(GetDocumentEdits.getDocumentEdits).toHaveBeenCalledWith(editor, [{ endOffset: 22, inserted: '0x00ab01', startOffset: 14 }])
 })
 
 test('updateColorPickerValue does nothing without a color picker', async () => {

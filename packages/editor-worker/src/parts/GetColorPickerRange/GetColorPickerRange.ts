@@ -12,7 +12,7 @@ const noColorRange: ColorRange = {
   value: '',
 }
 
-const colorPattern = /#[\da-f]{3,8}\b|\b(?:hsla?|rgba?)\([^)]*\)/gi
+const colorPattern = /#[\da-f]{3,8}\b|(?<![\w$])0x[\da-f]{6}(?![\w$])|\b(?:hsla?|rgba?)\([^)]*\)/gi
 export const getColorPickerRange = async (editor: any): Promise<ColorRange> => {
   const { lines, selections } = editor
   if (!selections || selections.length < 4) {

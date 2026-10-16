@@ -42,6 +42,32 @@ test('finds a short hex color under the cursor', async () => {
   expect(await GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 15, startOffset: 11, value: '#000' })
 })
 
+test('finds a JavaScript hex color under the cursor', async () => {
+  const editor = {
+    lines: ['const color = 0x11ff00;'],
+    selections: EditorSelection.fromRange(0, 18, 0, 18),
+  }
+  expect(await GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 22, startOffset: 14, value: '0x11ff00' })
+})
+
+test('finds a selected JavaScript hex color', async () => {
+  const editor = {
+    lines: ['const color = 0x11ff00;'],
+    selections: EditorSelection.fromRange(0, 14, 0, 22),
+  }
+  expect(await GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: 22, startOffset: 14, value: '0x11ff00' })
+})
+
+test('does not match a partial JavaScript hex token', async () => {
+  for (const line of ['const color = 0x11ff0011;', 'const color = prefix0x11ff00;', 'const color = 0x11ff00_suffix;']) {
+    const editor = {
+      lines: [line],
+      selections: EditorSelection.fromRange(0, line.indexOf('0x') + 4, 0, line.indexOf('0x') + 4),
+    }
+    expect(await GetColorPickerRange.getColorPickerRange(editor)).toEqual({ endOffset: -1, startOffset: -1, value: '' })
+  }
+})
+
 test('finds a functional color under the cursor', async () => {
   const editor = {
     lines: ['color: hsl(240, 100%, 50%);'],

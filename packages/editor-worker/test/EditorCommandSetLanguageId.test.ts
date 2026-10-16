@@ -41,9 +41,18 @@ test('setLanguageId loads the tokenizer and invalidates syntax highlighting', as
   expect(setTokenizerMock).toHaveBeenCalledWith(3, tokenizer)
   expect(result).toEqual({
     ...editor,
+    explicitLanguageId: undefined,
     focused: true,
     invalidStartIndex: 0,
     languageId: 'xyz',
     tokenizerId: 3,
   })
+})
+
+test('setLanguageId records explicitly selected language modes', async () => {
+  getTokenizerMock.mockReturnValue({})
+
+  const result = await setLanguageId({ tokenizerId: 2 }, 'xyz', '/extensions/test/tokenizeXyz.js', true)
+
+  expect(result.explicitLanguageId).toBe('xyz')
 })

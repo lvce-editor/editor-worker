@@ -96,5 +96,7 @@ export const createStandaloneEditor = async ({
     cursorInfos,
     selectionInfos,
   }
-  EditorStates.set(id, createdEditor, finalEditor)
+  if (!createdEditor.lifecycle?.disposed) {
+    EditorStates.set(id, createdEditor, finalEditor)
+  }
 }

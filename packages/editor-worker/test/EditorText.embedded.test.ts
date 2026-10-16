@@ -4,7 +4,7 @@ import * as TokenizerMap from '../src/parts/TokenizerMap/TokenizerMap.ts'
 import * as TokenizerState from '../src/parts/TokenizerState/TokenizerState.ts'
 import * as TokenMaps from '../src/parts/TokenMaps/TokenMaps.ts'
 
-test('getVisible - renders partial embedded tokens with surrounding tokens', async () => {
+test('getVisible - renders partial embedded tokens when the viewport contains a stale row after formatting', async () => {
   const line = '<style>h1 {color:red}</style>'
   const tokenizerId = 'html-with-inline-css'
   const languageId = 'html-with-inline-css'
@@ -52,6 +52,8 @@ test('getVisible - renders partial embedded tokens with surrounding tokens', asy
     minLineY: 0,
     numberOfVisibleLines: 1,
     tokenizerId,
+    // A format-on-save edit can remove a trailing line before the viewport is recomputed.
+    visibleLineIndices: [0, 1],
     width: 800,
   }
 

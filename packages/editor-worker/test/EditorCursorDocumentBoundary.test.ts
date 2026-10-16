@@ -18,6 +18,15 @@ test('cursorDocumentStart moves the cursor to the start of the document', () => 
   })
 })
 
+test('cursorDocumentStart stays at the start of an empty document', () => {
+  const editor = createEditor(EditorSelection.fromRange(0, 0, 0, 0))
+  editor.lines = ['']
+
+  expect(CursorDocumentStart.cursorDocumentStart(editor)).toMatchObject({
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
+  })
+})
+
 test('cursorDocumentEnd moves the cursor to the end of the document', () => {
   const editor = createEditor(EditorSelection.fromRange(0, 3, 0, 3))
 

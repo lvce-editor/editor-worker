@@ -8,6 +8,5 @@ export const saveUntitledFile = async (uri: string, content: string, platform: n
   }
   await ApplicationRpc.invoke(applicationId, 'FileSystem.writeFile', filePath, content)
   await ApplicationRpc.invoke(applicationId, 'Layout.handleWorkspaceRefresh')
-  await ApplicationRpc.invoke(applicationId, 'Main.handleUriChange', uri, filePath)
   return filePath
 }

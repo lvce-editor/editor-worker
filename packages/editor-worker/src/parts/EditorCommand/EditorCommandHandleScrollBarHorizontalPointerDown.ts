@@ -1,3 +1,4 @@
+import { getHorizontalScrollDimensions } from '../GetHorizontalScrollDimensions/GetHorizontalScrollDimensions.ts'
 // @ts-ignore
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
@@ -6,10 +7,11 @@ import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts
 // @ts-ignore
 export const handleScrollBarHorizontalPointerDown = (state, eventX) => {
   // @ts-ignore
-  const { deltaX, longestLineWidth, width, x } = state
+  const { deltaX, longestLineWidth, minimumSliderSize } = state
+  const { width, x } = getHorizontalScrollDimensions(state)
   const relativeX = eventX - x
-  const scrollBarWidth = ScrollBarFunctions.getScrollBarWidth(width, longestLineWidth)
-  const finalDeltaX = width - scrollBarWidth
+  const scrollBarWidth = ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize)
+  const finalDeltaX = Math.max(0, longestLineWidth - width)
   const currentScrollBarX = ScrollBarFunctions.getScrollBarOffset(deltaX, finalDeltaX, width, scrollBarWidth)
   const diff = relativeX - currentScrollBarX
   if (diff >= 0 && diff < scrollBarWidth) {

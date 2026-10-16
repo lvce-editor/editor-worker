@@ -9,6 +9,9 @@ const getTextDocument = (editor: any) => ({
 })
 
 export const execute = async ({ args, editor, kind, method, noProviderFoundResult = undefined }: any) => {
+  if (editor.largeFile) {
+    return noProviderFoundResult
+  }
   const textDocument = getTextDocument(editor)
   const result = await ApplicationExtensionRpc.invoke(editor.applicationId, 'Extensions.executeLanguageProvider', kind, method, textDocument, ...args)
   if (!result.found) {

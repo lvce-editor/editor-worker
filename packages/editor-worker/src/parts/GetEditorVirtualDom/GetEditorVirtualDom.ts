@@ -28,6 +28,7 @@ const textEditorErrorMessageNode: VirtualDomNode = {
 
 interface EditorVirtualDomOptions {
   readonly bracketMatchInfos?: readonly any[]
+  readonly breadcrumbFileIcon?: string
   readonly breadcrumbsEnabled?: boolean
   readonly breakPoints?: readonly number[]
   readonly combineWhitespaceTokens?: boolean
@@ -44,6 +45,12 @@ interface EditorVirtualDomOptions {
   readonly height?: number
   readonly highlightActiveLineNumber?: boolean
   readonly highlightedLine?: number
+  readonly horizontalVisibleRanges?: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[]
   readonly lightBulbRowIndex?: number
   readonly lineNumbers?: boolean
   readonly lines?: readonly string[]
@@ -57,10 +64,14 @@ interface EditorVirtualDomOptions {
   readonly roundedSelection?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
+  readonly scrollBarWidth?: number
   readonly selectionInfos?: readonly any[]
   readonly selections?: any
+  readonly tabSize?: number
+  readonly textDecorationDom?: readonly VirtualDomNode[]
   readonly textInfos: readonly any[]
   readonly uid: number
+  readonly unnecessaryDiagnostics?: readonly any[]
   readonly uri?: string
   readonly visibleLineIndices?: readonly number[]
   readonly visibleViewLineIndices?: readonly number[]
@@ -71,6 +82,7 @@ const getMinimapVirtualDom = (
   minimapEnabled: boolean,
   minimapLines: readonly (readonly (number | string)[])[],
   minLineY: number,
+  breadcrumbsEnabled: boolean,
 ): readonly VirtualDomNode[] => {
   if (!minimapEnabled) {
     return []
@@ -79,7 +91,7 @@ const getMinimapVirtualDom = (
     {
       ariaHidden: AriaBoolean.True,
       childCount: 0,
-      className: 'EditorMinimap',
+      className: breadcrumbsEnabled ? 'EditorMinimap EditorBreadcrumbsOffset' : 'EditorMinimap',
       'data-lineCount': minimapLines.length,
       'data-visibleStart': minLineY,
       type: VirtualDomElements.Div,
@@ -89,6 +101,7 @@ const getMinimapVirtualDom = (
 
 export const getEditorVirtualDom = ({
   bracketMatchInfos = [],
+  breadcrumbFileIcon = '',
   breadcrumbsEnabled = false,
   breakPoints = [],
   combineWhitespaceTokens = false,
@@ -102,6 +115,7 @@ export const getEditorVirtualDom = ({
   gutterInfos = [],
   highlightActiveLineNumber = true,
   highlightedLine = -1,
+  horizontalVisibleRanges = [],
   lightBulbRowIndex = -1,
   lineNumbers = true,
   lines = [],
@@ -114,10 +128,15 @@ export const getEditorVirtualDom = ({
   problemsHighlightedRow = -1,
   roundedSelection = false,
   scrollBarDiagnostics = [],
+  scrollBarHeight = 0,
+  scrollBarWidth = 0,
   selectionInfos = [],
   selections = new Uint32Array(),
+  tabSize = 2,
+  textDecorationDom = [],
   textInfos,
   uid,
+  unnecessaryDiagnostics = [],
   uri = '',
   visibleLineIndices,
   visibleViewLineIndices = [],
@@ -145,10 +164,13 @@ export const getEditorVirtualDom = ({
   const showGutter = lineNumbers || breakPoints.length > 0 || lightBulbRowIndex >= 0 || gutterDecorations.length > 0
   const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
   const activeLineNumber = highlightActiveLineNumber ? primaryCursorRowIndex + 1 : -1
-  const gutterDom = showGutter ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, activeLineNumber) : []
-  const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY)
+  const gutterDom = showGutter
+    ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, activeLineNumber, breadcrumbsEnabled)
+    : []
+  const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY, breadcrumbsEnabled)
   const breadcrumbsDom = breadcrumbsEnabled
     ? GetEditorBreadcrumbsVirtualDom.getEditorBreadcrumbsVirtualDom({
+        breadcrumbFileIcon,
         breadcrumbsEnabled,
         documentSymbols,
         lines,
@@ -164,6 +186,8 @@ export const getEditorVirtualDom = ({
       className: ClassNames.Editor,
       'data-uid': uid,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+      onMouseOut: DomEventListenerFunctions.HandleMouseOut,
+      onMouseOver: DomEventListenerFunctions.HandleMouseOver,
       role: AriaRoles.Code,
       type: VirtualDomElements.Div,
     },
@@ -171,18 +195,26 @@ export const getEditorVirtualDom = ({
     ...gutterDom,
     ...GetEditorContentVirtualDom.getEditorContentVirtualDom({
       bracketMatchInfos,
+      breadcrumbsEnabled,
       cursorInfos,
       diagnostics,
       differences,
       endOfLineDecorations,
       focused,
       highlightedLine,
+      horizontalVisibleRanges,
       lineNumbers,
+      lines,
       problemsHighlightedRow,
       roundedSelection,
       scrollBarDiagnostics,
+      scrollBarHeight,
+      scrollBarWidth,
       selectionInfos,
+      tabSize,
+      textDecorationDom,
       textInfos: combineWhitespaceTokens ? textInfos.map(combineTokens) : textInfos,
+      unnecessaryDiagnostics,
       visibleLineIndices: visibleLineIndices || [],
       visibleViewLineIndices,
     }),

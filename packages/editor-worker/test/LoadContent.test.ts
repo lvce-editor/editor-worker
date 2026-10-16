@@ -11,7 +11,17 @@ const measureCharacterWidthMock: any = jest.fn()
 const readFileMock: any = jest.fn()
 const rendererInvokeMock: any = jest.fn()
 
+jest.unstable_mockModule('../src/parts/FileSystemWorker/FileSystemWorker.ts', () => ({
+  invoke: (method: string, ...args: any[]) =>
+    method === 'FileSystem.readFile'
+      ? readFileMock(...args)
+      : rendererInvokeMock('Application.execute', args[0], 'FileSystem.readFile', ...args.slice(2)),
+}))
+
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
+  ErrorWorker: {
+    invoke: jest.fn(),
+  },
   ExtensionHost: {
     invoke: extensionHostInvoke,
     invokeAndTransfer: jest.fn(),
@@ -31,7 +41,7 @@ jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
     set: jest.fn(),
   },
   TextMeasurementWorker: {
-    invoke: jest.fn(),
+    invoke: jest.fn<(method: string, text: string) => Promise<number>>().mockImplementation(async (_method, text) => text.length * 8),
     invokeAndTransfer: jest.fn(),
     set: jest.fn(),
   },
@@ -68,6 +78,7 @@ const createState = () =>
     columnWidth: 0,
     completionTriggerCharacters: [],
     cursorWidth: 2,
+    deltaX: 0,
     deltaY: 0,
     differences: [],
     embeds: [],
@@ -113,6 +124,7 @@ beforeEach(() => {
   loadTokenizerMock.mockReset()
   measureCharacterWidthMock.mockReset()
   readFileMock.mockReset()
+  rendererInvokeMock.mockReset()
 
   getEditorPreferencesMock.mockResolvedValue({
     completionTriggerCharacters: [],
@@ -154,6 +166,162 @@ test('loadContent returns error state when reading file fails', async () => {
   expect(readFileMock).toHaveBeenCalledWith('file:///test.txt')
 })
 
+test('loadContent does not focus the editor when focus is false and reading file fails', async () => {
+  readFileMock.mockRejectedValue(new Error('Failed to read file'))
+
+  const result = await LoadContent.loadContent(createState(), undefined, false, false)
+
+  expect(result.loadError).toBe('Failed to read file')
+  expect(result.focused).toBe(false)
+})
+
+test('loadContent shares a pending file read for the same application and uri', async () => {
+  const { promise, resolve } = Promise.withResolvers<string>()
+  readFileMock.mockReturnValue(promise)
+  const firstLoad = LoadContent.loadContent(createState(), undefined)
+  const secondLoad = LoadContent.loadContent({ ...createState(), id: 2 }, undefined)
+
+  await new Promise((resolve) => setImmediate(resolve))
+  expect(readFileMock).toHaveBeenCalledTimes(1)
+  resolve('shared content')
+
+  const [firstResult, secondResult] = await Promise.all([firstLoad, secondLoad])
+  expect(firstResult.lines).toEqual(['shared content'])
+  expect(secondResult.lines).toEqual(['shared content'])
+})
+
+test('loadContent keeps pending file reads separate across applications', async () => {
+  rendererInvokeMock.mockImplementation(async (_method: string, applicationId: string) => `${applicationId} content`)
+  const firstLoad = LoadContent.loadContent({ ...createState(), applicationId: 'first' }, undefined)
+  const secondLoad = LoadContent.loadContent({ ...createState(), applicationId: 'second' }, undefined)
+
+  const [firstResult, secondResult] = await Promise.all([firstLoad, secondLoad])
+
+  expect(firstResult.lines).toEqual(['first content'])
+  expect(secondResult.lines).toEqual(['second content'])
+  expect(
+    rendererInvokeMock.mock.calls.filter(
+      ([method, , operation]: readonly unknown[]) => method === 'Application.execute' && operation === 'FileSystem.readFile',
+    ),
+  ).toHaveLength(2)
+})
+
+test('loadContent removes failed pending reads so a later load retries', async () => {
+  readFileMock.mockRejectedValueOnce(new Error('Failed to read file')).mockResolvedValueOnce('retried content')
+
+  const firstResult = await LoadContent.loadContent(createState(), undefined)
+  const secondResult = await LoadContent.loadContent({ ...createState(), id: 2 }, undefined)
+
+  expect(firstResult.loadError).toBe('Failed to read file')
+  expect(secondResult.lines).toEqual(['retried content'])
+  expect(readFileMock).toHaveBeenCalledTimes(2)
+})
+
+test('loadContent forceReload bypasses a pending file read', async () => {
+  const { promise, resolve } = Promise.withResolvers<string>()
+  readFileMock.mockReturnValueOnce(promise).mockResolvedValueOnce('fresh content')
+  const pendingLoad = LoadContent.loadContent(createState(), undefined)
+
+  await new Promise((resolve) => setImmediate(resolve))
+  const reloaded = await LoadContent.loadContent({ ...createState(), id: 2 }, undefined, false, true, true)
+
+  expect(reloaded.lines).toEqual(['fresh content'])
+  expect(readFileMock).toHaveBeenCalledTimes(2)
+  resolve('stale content')
+  expect((await pendingLoad).lines).toEqual(['stale content'])
+})
+
+test('loadContent reads again after a previous read completes', async () => {
+  readFileMock.mockResolvedValueOnce('original content').mockResolvedValueOnce('changed externally')
+
+  const firstResult = await LoadContent.loadContent(createState(), undefined)
+  const secondResult = await LoadContent.loadContent({ ...createState(), id: 2 }, undefined)
+
+  expect(firstResult.lines).toEqual(['original content'])
+  expect(secondResult.lines).toEqual(['changed externally'])
+  expect(readFileMock).toHaveBeenCalledTimes(2)
+})
+
+test('loadContent uses a matching cached file after checking filesystem metadata', async () => {
+  rendererInvokeMock.mockImplementation(async (method: string) => {
+    if (method === 'FileSystem.statWithMetadata') {
+      return { mtimeMs: 123, size: 6, type: 7 }
+    }
+    if (method === 'CacheStorage.getEditorFileCache') {
+      return 'cached'
+    }
+    return undefined
+  })
+
+  const result = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true }, undefined)
+
+  expect(result.lines).toEqual(['cached'])
+  expect(readFileMock).not.toHaveBeenCalled()
+  expect(rendererInvokeMock).toHaveBeenCalledWith('CacheStorage.getEditorFileCache', '', 'file:///test.txt', '[7,6,123]')
+})
+
+test('loadContent writes a cacheable file asynchronously after a cache miss', async () => {
+  rendererInvokeMock.mockImplementation(async (method: string) => {
+    if (method === 'FileSystem.statWithMetadata') {
+      return { mtimeMs: 123, size: 4, type: 7 }
+    }
+    if (method === 'CacheStorage.getEditorFileCache') {
+      return null
+    }
+    return undefined
+  })
+  readFileMock.mockResolvedValue('text')
+
+  const result = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true }, undefined)
+  await new Promise((resolve) => setImmediate(resolve))
+
+  expect(result.lines).toEqual(['text'])
+  expect(rendererInvokeMock).toHaveBeenCalledWith('CacheStorage.setEditorFileCache', '', 'file:///test.txt', '[7,4,123]', 'text')
+})
+
+test('loadContent does not cache excluded files or files without reliable metadata', async () => {
+  readFileMock.mockResolvedValue('secret')
+  const excluded = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true, uri: 'file:///workspace/.env.local' }, undefined)
+  rendererInvokeMock.mockImplementation(async (method: string, _applicationId: string, operation: string) => {
+    if (method === 'Application.execute' && operation === 'FileSystem.statWithMetadata') {
+      return { size: 6, type: 7 }
+    }
+    if (method === 'Application.execute' && operation === 'FileSystem.readFile') {
+      return 'secret'
+    }
+    return undefined
+  })
+  const unsupportedStat = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true, id: 2 }, undefined)
+
+  expect(excluded.lines).toEqual(['secret'])
+  expect(unsupportedStat.lines).toEqual(['secret'])
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith('CacheStorage.getEditorFileCache', expect.anything(), expect.anything(), expect.anything())
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith(
+    'CacheStorage.setEditorFileCache',
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+  )
+})
+
+test('loadContent skips caching when the file exceeds 500 kB', async () => {
+  rendererInvokeMock.mockResolvedValue({ mtimeMs: 123, size: 500_001, type: 7 })
+  readFileMock.mockResolvedValue('large')
+
+  const result = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true }, undefined)
+
+  expect(result.lines).toEqual(['large'])
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith('CacheStorage.getEditorFileCache', expect.anything(), expect.anything(), expect.anything())
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith(
+    'CacheStorage.setEditorFileCache',
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+  )
+})
+
 test('loads a separate document for the same uri in another application', async () => {
   const source = { ...createState(), applicationId: 'source', id: 2, initial: false, lines: ['unsaved source'], modified: true, uid: 2 }
   EditorStates.set(2, source, source)
@@ -178,7 +346,7 @@ test('reuses an unsaved document only within its application', async () => {
 
   expect(result.lines).toEqual(['unsaved source'])
   expect(result.modified).toBe(true)
-  expect(rendererInvokeMock).not.toHaveBeenCalled()
+  expect(rendererInvokeMock.mock.calls).toEqual([['Application.execute', 'source', 'Preferences.get', 'editor.completionsOnType']])
 })
 
 test('loadContent returns loaded text without requesting diagnostics', async () => {
@@ -210,6 +378,15 @@ test('loadContent returns loaded text without requesting diagnostics', async () 
   expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
 })
 
+test('loadContent does not focus the editor when focus is false', async () => {
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), undefined, false, false)
+
+  expect(result.lines).toEqual(['test'])
+  expect(result.focused).toBe(false)
+})
+
 test('loadContent uses a tokenizer from a later contribution for the same language', async () => {
   getLanguagesMock.mockResolvedValue([
     { extensions: ['.txt'], id: 'plaintext' },
@@ -220,6 +397,29 @@ test('loadContent uses a tokenizer from a later contribution for the same langua
   await LoadContent.loadContent(createState(), undefined)
 
   expect(loadTokenizerMock).toHaveBeenCalledWith('plaintext', '/test/tokenizePlainText.js')
+})
+
+test('loadContent restores a valid explicitly selected language mode', async () => {
+  getLanguagesMock.mockResolvedValue([
+    { extensions: ['.txt'], id: 'plaintext', tokenize: '' },
+    { id: 'javascript', tokenize: '/test/tokenizeJavaScript.js' },
+  ])
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), { explicitLanguageId: 'javascript' })
+
+  expect(result.languageId).toBe('javascript')
+  expect(result.explicitLanguageId).toBe('javascript')
+  expect(loadTokenizerMock).toHaveBeenCalledWith('javascript', '/test/tokenizeJavaScript.js')
+})
+
+test('loadContent ignores a saved language mode that is not registered', async () => {
+  readFileMock.mockResolvedValue('test')
+
+  const result = await LoadContent.loadContent(createState(), { explicitLanguageId: 'unknown' })
+
+  expect(result.languageId).toBe('plaintext')
+  expect(result.explicitLanguageId).toBeUndefined()
 })
 
 test('loadContent reuses unsaved content from another editor for the same uri', async () => {
@@ -325,4 +525,89 @@ test('ordinary reload never applies an unsaved draft snapshot without the explic
   })
   expect(result.lines).toEqual(['disk content'])
   expect(result.modified).toBe(false)
+})
+
+test('confirmed large files disable automatic services and tokenizer loading', async () => {
+  getEditorPreferencesMock.mockResolvedValue({
+    breadcrumbsEnabled: true,
+    diagnosticsEnabled: true,
+    formatOnSave: true,
+    hoverEnabled: true,
+    isQuickSuggestionsEnabled: true,
+    minimapEnabled: true,
+    rowHeight: 20,
+  })
+  readFileMock.mockResolvedValue('https://example.com\nconst x = 1')
+  const result = await LoadContent.loadContent(createState(), undefined, true)
+  expect(result).toMatchObject({
+    breadcrumbsEnabled: false,
+    completionsOnType: false,
+    decorations: [],
+    diagnosticsEnabled: false,
+    formatOnSave: false,
+    hoverEnabled: false,
+    isQuickSuggestionsEnabled: false,
+    largeFile: true,
+    minimapEnabled: false,
+  })
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+  expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
+})
+
+test('large files automatically disable services and tokenizer loading', async () => {
+  getEditorPreferencesMock.mockResolvedValue({
+    breadcrumbsEnabled: true,
+    diagnosticsEnabled: true,
+    formatOnSave: true,
+    hoverEnabled: true,
+    isQuickSuggestionsEnabled: true,
+    minimapEnabled: true,
+    rowHeight: 20,
+  })
+  readFileMock.mockResolvedValue('x'.repeat(10 * 1024 * 1024 + 1))
+  const result = await LoadContent.loadContent(createState(), undefined)
+  expect(result).toMatchObject({
+    breadcrumbsEnabled: false,
+    diagnosticsEnabled: false,
+    formatOnSave: false,
+    hoverEnabled: false,
+    isQuickSuggestionsEnabled: false,
+    largeFile: true,
+    minimapEnabled: false,
+  })
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+  expect(extensionManagementWorkerInvoke).not.toHaveBeenCalled()
+})
+
+test('large file mode survives restoring saved state', async () => {
+  readFileMock.mockResolvedValue('text')
+  const result = await LoadContent.loadContent(createState(), { largeFile: true })
+  expect(result.largeFile).toBe(true)
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+})
+
+test('split editors inherit large file mode and unsaved content', async () => {
+  const source = { ...createState(), id: 2, initial: false, largeFile: true, lines: ['edited'], modified: true }
+  EditorStates.set(2, source, source)
+  const result = await LoadContent.loadContent(createState(), undefined)
+  expect(result).toMatchObject({ largeFile: true, lines: ['edited'], modified: true })
+  expect(readFileMock).not.toHaveBeenCalled()
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+})
+
+test('closing while a file read is pending does not create document lines or request tokenization', async () => {
+  const { promise, resolve } = Promise.withResolvers<string>()
+  const started = Promise.withResolvers<void>()
+  readFileMock.mockImplementation(() => {
+    started.resolve()
+    return promise
+  })
+  const state = { ...createState(), lifecycle: { disposed: false } }
+  const pending = LoadContent.loadContent(state, undefined)
+  await started.promise
+  state.lifecycle.disposed = true
+  resolve('large document contents')
+  expect(await pending).toBe(state)
+  expect(loadTokenizerMock).not.toHaveBeenCalled()
+  expect(getVisibleMock).not.toHaveBeenCalled()
 })

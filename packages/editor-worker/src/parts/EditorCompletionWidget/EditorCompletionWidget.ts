@@ -39,6 +39,18 @@ export const remove = (widget: CompletionWidget) => {
   return []
 }
 
+const fns = createFns(['handleEditorType', 'handleEditorDeleteLeft'], 'Completions', WidgetId.Completion)
+
+export const handleEditorType = (editor: any) => {
+  const widget = (editor.widgets || []).find((candidate: any) => candidate.id === WidgetId.Completion)
+  return widget?.newState.automatic ? editor : fns.handleEditorType(editor)
+}
+
+export const handleEditorDeleteLeft = (editor: any) => {
+  const widget = (editor.widgets || []).find((candidate: any) => candidate.id === WidgetId.Completion)
+  return widget?.newState.automatic ? editor : fns.handleEditorDeleteLeft(editor)
+}
+
 export const {
   close,
   closeDetails,
@@ -49,8 +61,7 @@ export const {
   focusPrevious,
   handleEditorBlur,
   handleEditorClick,
-  handleEditorDeleteLeft,
-  handleEditorType,
+
   handlePointerDown,
   handleWheel,
   openDetails,

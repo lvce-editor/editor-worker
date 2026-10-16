@@ -88,6 +88,9 @@ export const detectLinks = (text: string): Link[] => {
  */
 export const detectAllLinksAsDecorations = (editor: any): number[] => {
   const decorations: number[] = []
+  if (editor.largeFile) {
+    return decorations
+  }
   const { lines } = editor
   let offset = 0
 

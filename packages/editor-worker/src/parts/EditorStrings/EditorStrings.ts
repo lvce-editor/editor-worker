@@ -9,6 +9,10 @@ export const goToBracket = () => {
   return I18nString.i18nString(UiStrings.GoToBracket)
 }
 
+export const editorToggleSuggestWidget = () => {
+  return I18nString.i18nString(UiStrings.EditorToggleSuggestWidget)
+}
+
 export const noDefinitionFound = () => {
   return I18nString.i18nString(UiStrings.NoDefinitionFound)
 }
@@ -43,6 +47,10 @@ export const sourceAction = () => {
 
 export const organizeImports = () => {
   return I18nString.i18nString(UiStrings.OrganizeImports)
+}
+
+export const editorOrganizeImports = () => {
+  return I18nString.i18nString(UiStrings.EditorOrganizeImports)
 }
 
 export const sortImports = () => {
@@ -207,6 +215,14 @@ export const editorToggleComment = () => {
 
 export const editorDecrementSelection = () => {
   return I18nString.i18nString(UiStrings.EditorDecrementSelection)
+}
+
+export const editorExpandSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorExpandSelection)
+}
+
+export const editorShrinkSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorShrinkSelection)
 }
 
 export const editorSelectUp = () => {

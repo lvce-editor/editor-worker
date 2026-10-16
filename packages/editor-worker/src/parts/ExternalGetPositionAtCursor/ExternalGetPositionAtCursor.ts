@@ -13,10 +13,28 @@ import * as SetFocus from '../SetFocus/SetFocus.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
+import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
+
+const applyEditCommand = WrapCommands.wrapCommand(ApplyEdit.applyEdit, false, false)
 
 export const getPositionAtCursor = (editorUid: number): any => {
   const editor = GetEditor.getEditor(editorUid)
   return GetPositionAtCursor.getPositionAtCursor(editor)
+}
+
+export const getCompletionContext = (editorUid: number, includeLine = false): any => {
+  const editor = GetEditor.getEditor(editorUid)
+  const position = GetPositionAtCursor.getPositionAtCursor(editor)
+  if (!includeLine) {
+    return {
+      ...position,
+      wordBefore: EditorCommandGetWordAt.getWordBefore(editor, position.rowIndex, position.columnIndex),
+    }
+  }
+  return {
+    ...position,
+    line: editor.lines[position.rowIndex] || '',
+  }
 }
 
 export const getUri = (editorUid: number): string => {
@@ -108,10 +126,7 @@ export const closeFind2 = async (editorUid: number) => {
 }
 
 export const applyEdits2 = async (editorUid: number, edits: readonly any[], selectionChanges?: Uint32Array): Promise<void> => {
-  const editor = GetEditor.getEditor(editorUid)
-  const newEditor = await ApplyEdit.applyEdit(editor, edits, selectionChanges)
-  const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
-  Editors.set(editorUid, editor, newEditorWithDerivedState)
+  await applyEditCommand(editorUid, edits, selectionChanges)
 }
 
 export const getSourceActions = async (editorUid: number): Promise<readonly any[]> => {

@@ -1,0 +1,26 @@
+{
+  "id": "test.completion-diagnostic-refresh-isolated",
+  "name": "Completion Diagnostic Refresh",
+  "description": "",
+  "activation": ["onLanguage:completiondiagnosticrefresh", "onCompletion:completiondiagnosticrefresh", "onDiagnostic:completiondiagnosticrefresh"],
+  "browser": "dist/main.js",
+  "isolated": true,
+  "completionProviders": [
+    {
+      "id": "completion-diagnostic-refresh-completion",
+      "languageId": "completiondiagnosticrefresh"
+    }
+  ],
+  "diagnosticProviders": [
+    {
+      "id": "completion-diagnostic-refresh-diagnostics",
+      "languageId": "completiondiagnosticrefresh"
+    }
+  ],
+  "languages": [
+    {
+      "id": "completiondiagnosticrefresh",
+      "extensions": [".cdr"]
+    }
+  ]
+}

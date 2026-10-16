@@ -37,7 +37,7 @@ test('server links the local editor worker package', { timeout: 20_000 }, async 
     const response = await fetch(address)
     assert.equal(response.status, 200)
     const html = await response.text()
-    const configText = html.match(/<script type="application\/json" id="Config">([\s\S]*?)<\/script>/)?.[1]
+    const configText = html.match(/<script\b(?=[^>]*\bid="Config")(?=[^>]*\btype="application\/json")[^>]*>([\s\S]*?)<\/script>/)?.[1]
     assert.ok(configText, 'server must emit linked worker configuration')
     const config = JSON.parse(configText)
     assert.ok(config.editorWorkerUrl.includes('/.tmp/dist/dist/editorWorkerMain.js'))
