@@ -71,6 +71,18 @@ test('openColorPicker gives the color picker full focus and captures the edited 
   )
 })
 
+test('openColorPicker can override the displayed color while retaining the captured edit range', async () => {
+  const editor = { uid: 1, undoStack: [], widgets: [] }
+  await EditorCommandColorPicker.openColorPicker(editor, '#ff8800')
+  const createWidget = (AddWidgetToEditor.addWidgetToEditor as jest.Mock).mock.calls.at(-1)?.[3] as () => unknown
+  createWidget()
+  expect(ColorPickerWidgetFactory.create).toHaveBeenLastCalledWith(
+    { height: 200, width: 300, x: 10, y: 20 },
+    { endOffset: 20, startOffset: 10, value: '#ff8800' },
+    0,
+  )
+})
+
 test('updateColorPickerValue replaces the captured range and advances its end offset', async () => {
   const colorPicker = {
     id: WidgetId.ColorPicker,
