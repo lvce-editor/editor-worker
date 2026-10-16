@@ -1,4 +1,4 @@
-import { WidgetId } from '@lvce-editor/constants'
+import { WhenExpression, WidgetId } from '@lvce-editor/constants'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
@@ -10,6 +10,7 @@ export const cancelSelection = (editor: any) => {
     return {
       ...editor,
       additionalFocus: 0,
+      focus: WhenExpression.FocusEditorText,
       focused: true,
       widgetRevision: WidgetRevision.next(editor.uid),
       widgets: RemoveEditorWidget.removeEditorWidget(widgets, WidgetId.Hover),

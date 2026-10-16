@@ -33,3 +33,27 @@ test('does not mutate the existing selections', () => {
   EditorSelectUp.selectUp(editor)
   expect(selections).toEqual(new Uint32Array([1, 0, 3, 0]))
 })
+
+test('selectUp - scrolls to reveal the active end', () => {
+  const editor = {
+    deltaY: 40,
+    finalDeltaY: 60,
+    height: 40,
+    itemHeight: 20,
+    lineCache: [],
+    lines: ['1', '2', '3', '4', '5'],
+    maxLineY: 4,
+    minLineY: 2,
+    numberOfVisibleLines: 2,
+    primarySelectionIndex: 0,
+    scrollBarHeight: 20,
+    selections: new Uint32Array([3, 0, 2, 0]),
+  }
+  const newEditor = EditorSelectUp.selectUp(editor)
+  expect(newEditor).toMatchObject({
+    deltaY: 20,
+    maxLineY: 3,
+    minLineY: 1,
+    selections: new Uint32Array([3, 0, 1, 0]),
+  })
+})

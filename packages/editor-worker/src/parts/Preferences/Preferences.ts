@@ -1,7 +1,9 @@
 import { RendererWorker } from '@lvce-editor/rpc-registry'
+import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 
-export const get = async (key: string): Promise<any> => {
-  const value = await RendererWorker.getPreference(key)
+export const get = async (key: string, applicationId?: string): Promise<any> => {
+  const value =
+    applicationId === undefined ? await RendererWorker.getPreference(key) : await ApplicationRpc.invoke(applicationId, 'Preferences.get', key)
   return value
 }
 

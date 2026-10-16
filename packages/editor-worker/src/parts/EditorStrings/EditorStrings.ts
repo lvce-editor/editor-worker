@@ -49,6 +49,10 @@ export const organizeImports = () => {
   return I18nString.i18nString(UiStrings.OrganizeImports)
 }
 
+export const editorOrganizeImports = () => {
+  return I18nString.i18nString(UiStrings.EditorOrganizeImports)
+}
+
 export const sortImports = () => {
   return I18nString.i18nString(UiStrings.SortImports)
 }
@@ -211,6 +215,14 @@ export const editorToggleComment = () => {
 
 export const editorDecrementSelection = () => {
   return I18nString.i18nString(UiStrings.EditorDecrementSelection)
+}
+
+export const editorExpandSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorExpandSelection)
+}
+
+export const editorShrinkSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorShrinkSelection)
 }
 
 export const editorSelectUp = () => {

@@ -2,10 +2,12 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.rename-open'
 
-export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locator, Main, Workspace }) => {
   // arrange
+  const extensionUri = import.meta.resolve('../fixtures/editor.rename-provider')
+  await Extension.addWebExtension(extensionUri)
   const tmpDir = await FileSystem.getTmpDir()
-  const uri = `${tmpDir}/main.js`
+  const uri = `${tmpDir}/main.rename-test`
   await FileSystem.writeFile(uri, 'const alpha = alpha\n')
   await Workspace.setPath(tmpDir)
   await Main.openUri(uri)

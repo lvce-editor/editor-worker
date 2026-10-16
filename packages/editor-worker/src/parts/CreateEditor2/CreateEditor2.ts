@@ -18,6 +18,7 @@ export const createEditor2 = (
   _tokenizePath?: string,
   _useCache?: boolean,
   applicationId?: string,
+  editorFileCacheEnabled = false,
 ): void => {
   Assert.number(id)
   const editor: EditorState = {
@@ -43,6 +44,7 @@ export const createEditor2 = (
     differences: [],
     documentSymbols: [],
     dragAndDropEnabled: true,
+    editorFileCacheEnabled,
     embeds: [],
     endOfLine: 'lf',
     endOfLineDecorations: [],

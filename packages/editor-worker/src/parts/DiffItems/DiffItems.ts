@@ -2,6 +2,7 @@ import type { EditorState } from '../State/State.ts'
 
 export const isEqual = (oldState: EditorState, newState: EditorState): boolean => {
   return (
+    oldState.textDecorationDom === newState.textDecorationDom &&
     oldState.breadcrumbFileIcon === newState.breadcrumbFileIcon &&
     oldState.breadcrumbsEnabled === newState.breadcrumbsEnabled &&
     oldState.breakPoints === newState.breakPoints &&
@@ -23,6 +24,7 @@ export const isEqual = (oldState: EditorState, newState: EditorState): boolean =
     oldState.initial === newState.initial &&
     oldState.scrollBarHeight === newState.scrollBarHeight &&
     oldState.width === newState.width &&
+    oldState.gutterWidth === newState.gutterWidth &&
     oldState.longestLineWidth === newState.longestLineWidth &&
     oldState.minimumSliderSize === newState.minimumSliderSize &&
     oldState.selectionInfos === newState.selectionInfos &&

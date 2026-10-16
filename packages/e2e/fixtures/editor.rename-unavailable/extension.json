@@ -1,0 +1,11 @@
+{
+  "id": "test.editor-rename-unavailable",
+  "browser": "dist/main.js",
+  "isolated": true,
+  "activation": ["onRename"],
+  "languages": [
+    { "id": "rename-no-prepare", "extensions": [".rename-no-prepare"] },
+    { "id": "rename-rejected", "extensions": [".rename-rejected"] },
+    { "id": "rename-undefined", "extensions": [".rename-undefined"] }
+  ]
+}

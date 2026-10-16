@@ -3,6 +3,7 @@ import { MockRpc } from '@lvce-editor/rpc'
 import { ExtensionManagementWorker, registerMockRpc, remove, RendererWorker, RpcId, TextMeasurementWorker } from '@lvce-editor/rpc-registry'
 import { editorDiagnosticEffect } from '../src/parts/EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
+import { getEditorRowsVirtualDom } from '../src/parts/GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
 import { updateDiagnostics, updateDiagnosticsAll } from '../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts'
 
 const registerExtensionManagementWorkerMockRpc = (commandMap: any): any => {
@@ -14,6 +15,8 @@ const registerExtensionManagementWorkerMockRpc = (commandMap: any): any => {
   })
   return rpc
 }
+
+const getDiagnostic = (message: string) => ({ message, uri: '/test.ts' })
 
 afterEach(() => {
   for (const key of EditorStates.getKeys()) {
@@ -92,6 +95,63 @@ test('updateDiagnosticsAll refreshes every open editor', async () => {
     ['Layout.handleDiagnosticsChange', 'file:///first.js'],
     ['Editor.renderPending', 2],
     ['Layout.handleDiagnosticsChange', 'file:///second.ts'],
+  ])
+})
+
+test('updateDiagnostics preserves unnecessary tags from extension providers', async () => {
+  const diagnostic = {
+    columnIndex: 0,
+    endColumnIndex: 6,
+    endRowIndex: 0,
+    message: 'unused variable',
+    rowIndex: 0,
+    tags: [1],
+    type: 'warning',
+    uri: '/test.ts',
+  }
+  const { tags: _tags, ...previousDiagnostic } = diagnostic
+  using extensionManagementWorkerRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async () => [diagnostic],
+  })
+  using rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => undefined,
+    'Layout.handleDiagnosticsChange': async () => undefined,
+  })
+  using _textMeasurementWorkerRpc = TextMeasurementWorker.registerMockRpc({
+    'TextMeasurement.measureTextWidth': async (text: string) => text.length * 8,
+  })
+  const editor = {
+    charWidth: 8,
+    deltaY: 0,
+    diagnostics: [previousDiagnostic],
+    diagnosticsEnabled: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    id: 1,
+    isMonospaceFont: true,
+    itemHeight: 20,
+    languageId: 'typescript',
+    letterSpacing: 0,
+    lines: ['unused'],
+    minLineY: 0,
+    rowHeight: 20,
+    tabSize: 2,
+    uri: '/test.ts',
+    viewLineIndices: [],
+    width: 800,
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  await updateDiagnostics(editor)
+
+  expect(extensionManagementWorkerRpc.invocations[0][0]).toBe('Extensions.streamDiagnosticProvider')
+  expect(EditorStates.get(1)?.newState.diagnostics).toEqual([diagnostic])
+  const rows = getEditorRowsVirtualDom([['unused', 'Token TokenVariable']], [0], true, -1, [], [], [], -1, EditorStates.get(1).newState.diagnostics)
+  expect(rows.some((node) => node.className === 'Token TokenVariable EditorTokenUnnecessary')).toBe(true)
+  expect(rendererWorkerRpc.invocations).toEqual([
+    ['Editor.renderPending', 1],
+    ['Layout.handleDiagnosticsChange', '/test.ts'],
   ])
 })
 
@@ -177,6 +237,103 @@ test('updateDiagnostics applies a completed provider before slower providers fin
     ['Layout.handleDiagnosticsChange', '/test.ts'],
   ])
   expect(textMeasurementWorkerRpc.invocations.length).toBeGreaterThan(0)
+})
+
+test('updateDiagnostics retains the latest accepted provider results across rapid edits', async () => {
+  const secondRequestStarted = Promise.withResolvers<void>()
+  const releaseSecondRequest = Promise.withResolvers<void>()
+  const thirdRequestStarted = Promise.withResolvers<void>()
+  const releaseThirdRequest = Promise.withResolvers<void>()
+  const rendered = Array.from({ length: 4 }, () => Promise.withResolvers<void>())
+  const diagnosticsChanged = Array.from({ length: 4 }, () => Promise.withResolvers<void>())
+  let renderIndex = 0
+  let diagnosticsChangedIndex = 0
+  let requestIndex = 0
+  using extensionManagementWorkerRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async (_document: any, resultPort: MessagePort) => {
+      const index = requestIndex++
+      resultPort.postMessage({ providerCount: 2, providerIds: ['fast-provider', 'slow-provider'], type: 'providers' })
+      if (index === 0) {
+        resultPort.postMessage({ diagnostics: [getDiagnostic('fast 1')], providerId: 'fast-provider', providerIndex: 0, type: 'result' })
+        resultPort.postMessage({ diagnostics: [getDiagnostic('slow 1')], providerId: 'slow-provider', providerIndex: 1, type: 'result' })
+        resultPort.postMessage({ type: 'done' })
+        return
+      }
+      if (index === 1) {
+        resultPort.postMessage({ diagnostics: [getDiagnostic('fast 2')], providerId: 'fast-provider', providerIndex: 0, type: 'result' })
+        secondRequestStarted.resolve()
+        await releaseSecondRequest.promise
+        resultPort.postMessage({ diagnostics: [getDiagnostic('obsolete slow 2')], providerId: 'slow-provider', providerIndex: 1, type: 'result' })
+        resultPort.postMessage({ type: 'done' })
+        return
+      }
+      resultPort.postMessage({ diagnostics: [getDiagnostic('slow 3')], providerId: 'slow-provider', providerIndex: 1, type: 'result' })
+      thirdRequestStarted.resolve()
+      await releaseThirdRequest.promise
+      resultPort.postMessage({ type: 'done' })
+    },
+  })
+  using _rendererWorkerRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => {
+      rendered[renderIndex++].resolve()
+    },
+    'Layout.handleDiagnosticsChange': async () => {
+      diagnosticsChanged[diagnosticsChangedIndex++].resolve()
+    },
+  })
+  using _textMeasurementWorkerRpc = TextMeasurementWorker.registerMockRpc({
+    'TextMeasurement.measureTextWidth': async () => 8,
+  })
+  const editor = {
+    charWidth: 8,
+    decorations: [],
+    diagnostics: [],
+    diagnosticsEnabled: true,
+    fontFamily: 'sans-serif',
+    fontSize: 14,
+    fontWeight: 400,
+    id: 1,
+    isMonospaceFont: false,
+    itemHeight: 20,
+    languageId: 'typescript',
+    letterSpacing: 0,
+    lines: ['const value = 1'],
+    minLineY: 0,
+    rowHeight: 20,
+    tabSize: 2,
+    uri: '/test.ts',
+    viewLineIndices: [],
+    width: 800,
+  }
+  EditorStates.set(1, editor as any, editor as any)
+
+  const initialUpdate = updateDiagnostics(editor)
+  await rendered[1].promise
+  expect(EditorStates.get(1)?.newState.diagnostics).toEqual([getDiagnostic('fast 1'), getDiagnostic('slow 1')])
+  await initialUpdate
+
+  const secondEdit = { ...EditorStates.get(1).newState, lines: ['const value = 2'] }
+  EditorStates.set(1, secondEdit, secondEdit)
+  const secondUpdate = updateDiagnostics(secondEdit)
+  await secondRequestStarted.promise
+  await rendered[2].promise
+  await diagnosticsChanged[2].promise
+  expect(EditorStates.get(1)?.newState.diagnostics).toEqual([getDiagnostic('fast 2'), getDiagnostic('slow 1')])
+
+  const thirdEdit = { ...EditorStates.get(1).newState, lines: ['const value = 3'] }
+  EditorStates.set(1, thirdEdit, thirdEdit)
+  const thirdUpdate = updateDiagnostics(thirdEdit)
+  await thirdRequestStarted.promise
+  await rendered[3].promise
+  await diagnosticsChanged[3].promise
+  expect(EditorStates.get(1)?.newState.diagnostics).toEqual([getDiagnostic('fast 2'), getDiagnostic('slow 3')])
+
+  releaseSecondRequest.resolve()
+  await secondUpdate
+  expect(EditorStates.get(1)?.newState.diagnostics).toEqual([getDiagnostic('fast 2'), getDiagnostic('slow 3')])
+  releaseThirdRequest.resolve()
+  await Promise.all([initialUpdate, secondUpdate, thirdUpdate])
+  expect(extensionManagementWorkerRpc.invocations).toHaveLength(3)
 })
 
 test('updateDiagnostics reports failures through the error worker', async () => {

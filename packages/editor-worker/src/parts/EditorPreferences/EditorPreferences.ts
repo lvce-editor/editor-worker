@@ -1,6 +1,9 @@
 import * as Logger from '../Logger/Logger.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
 
+const getPreference = (key: string, applicationId?: string): Promise<any> =>
+  applicationId === undefined ? Preferences.get(key) : Preferences.get(key, applicationId)
+
 const kLineHeight = 'editor.lineHeight'
 const kFontSize = 'editor.fontSize'
 const kFontFamily = 'editor.fontFamily'
@@ -28,24 +31,24 @@ const warnIfChanged = (setting: string, value: unknown, bound: number, direction
   Logger.warn(`[editor-worker] ${setting} value ${value} is too ${direction}; using ${bound}`)
 }
 
-export const isAutoClosingBracketsEnabled = async () => {
-  return Boolean(await Preferences.get(kAutoClosingBrackets))
+export const isAutoClosingBracketsEnabled = async (applicationId?: string) => {
+  return Boolean(await getPreference(kAutoClosingBrackets, applicationId))
 }
 
-export const isAutoClosingQuotesEnabled = async () => {
-  return Boolean(await Preferences.get(kAutoClosingQuotes))
+export const isAutoClosingQuotesEnabled = async (applicationId?: string) => {
+  return Boolean(await getPreference(kAutoClosingQuotes, applicationId))
 }
 
-export const isQuickSuggestionsEnabled = async () => {
-  return Boolean(await Preferences.get(kQuickSuggestions))
+export const isQuickSuggestionsEnabled = async (applicationId?: string) => {
+  return Boolean(await getPreference(kQuickSuggestions, applicationId))
 }
 
 export const isAutoClosingTagsEnabled = async () => {
   return true
 }
 
-export const getRowHeight = async () => {
-  const [lineHeight, fontSize] = await Promise.all([Preferences.get(kLineHeight), getFontSize()])
+export const getRowHeight = async (applicationId?: string) => {
+  const [lineHeight, fontSize] = await Promise.all([getPreference(kLineHeight, applicationId), getFontSize(applicationId)])
   if (typeof lineHeight !== 'number' || !Number.isFinite(lineHeight) || lineHeight === 0) {
     lastWarnings.delete(kLineHeight)
     return fontSize
@@ -62,8 +65,8 @@ export const getRowHeight = async () => {
   return lineHeight
 }
 
-export const getFontSize = async () => {
-  const fontSize = await Preferences.get(kFontSize)
+export const getFontSize = async (applicationId?: string) => {
+  const fontSize = await getPreference(kFontSize, applicationId)
   if (typeof fontSize !== 'number' || !Number.isFinite(fontSize)) {
     lastWarnings.delete(kFontSize)
     return 15
@@ -80,45 +83,45 @@ export const getFontSize = async () => {
   return fontSize
 }
 
-export const getFontFamily = async () => {
-  return (await Preferences.get(kFontFamily)) || 'Fira Code'
+export const getFontFamily = async (applicationId?: string) => {
+  return (await getPreference(kFontFamily, applicationId)) || 'Fira Code'
 }
 
-export const getLetterSpacing = async () => {
+export const getLetterSpacing = async (applicationId?: string) => {
   // if (!false) {
   //   return 0
   // }
-  return (await Preferences.get(kLetterSpacing)) ?? 0.5
+  return (await getPreference(kLetterSpacing, applicationId)) ?? 0.5
 }
 
-export const getTabSize = async () => {
-  return (await Preferences.get(kTabSize)) || 2
+export const getTabSize = async (applicationId?: string) => {
+  return (await getPreference(kTabSize, applicationId)) || 2
 }
 
-export const getLinks = async () => {
-  return (await Preferences.get(kLinks)) || false
+export const getLinks = async (applicationId?: string) => {
+  return (await getPreference(kLinks, applicationId)) || false
 }
 
-export const getLineNumbers = async () => {
-  return (await Preferences.get(kLineNumbers)) ?? false
+export const getLineNumbers = async (applicationId?: string) => {
+  return (await getPreference(kLineNumbers, applicationId)) ?? false
 }
 
-export const getHighlightActiveLineNumber = async () => {
-  return (await Preferences.get(kHighlightActiveLineNumber)) ?? true
+export const getHighlightActiveLineNumber = async (applicationId?: string) => {
+  return (await getPreference(kHighlightActiveLineNumber, applicationId)) ?? true
 }
 
 export const getCompletionTriggerCharacters = async () => {
   return ['.', '/']
 }
 
-export const getFontWeight = async () => {
-  return (await Preferences.get(kFontWeight)) ?? 400
+export const getFontWeight = async (applicationId?: string) => {
+  return (await getPreference(kFontWeight, applicationId)) ?? 400
 }
 
-export const getMinimapEnabled = async () => {
-  return (await Preferences.get(kMinimapEnabled)) ?? false
+export const getMinimapEnabled = async (applicationId?: string) => {
+  return (await getPreference(kMinimapEnabled, applicationId)) ?? false
 }
 
-export const getMergeConflictActionsEnabled = async () => {
-  return (await Preferences.get(kMergeConflictActions)) ?? false
+export const getMergeConflictActionsEnabled = async (applicationId?: string) => {
+  return (await getPreference(kMergeConflictActions, applicationId)) ?? false
 }

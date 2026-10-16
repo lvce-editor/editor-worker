@@ -4,6 +4,7 @@ import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEven
 import * as GetDiagnosticHoverDetail from '../GetDiagnosticHoverDetail/GetDiagnosticHoverDetail.ts'
 import * as GetLineInfosVirtualDom from '../GetLineInfosVirtualDom/GetLineInfosVirtualDom.ts'
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
+import * as TabIndex from '../TabIndex/TabIndex.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
@@ -54,8 +55,10 @@ export const getHoverVirtualDom = (
     childCount: getChildCount(lineInfos, documentationVirtualDom, diagnostics) + 1,
     className: getEditorHoverClassName(lineInfos, documentationVirtualDom, diagnostics),
     'data-uid': editorUid,
+    onMouseDown: DomEventListenerFunctions.HandleHoverMouseDown,
     onMouseOut: DomEventListenerFunctions.HandleMouseOut,
     onMouseOver: DomEventListenerFunctions.HandleMouseOver,
+    tabIndex: TabIndex.Focusable,
     type: VirtualDomElements.Div,
   })
   if (diagnostics && diagnostics.length > 0) {

@@ -1,0 +1,17 @@
+{
+  "browser": "dist/main.js",
+  "isolated": true,
+  "diagnosticProviders": [
+    {
+      "id": "unnecessary-diagnostics",
+      "languageId": "unnecessary-diagnostic"
+    }
+  ],
+  "activation": ["onDiagnostic:unnecessary-diagnostic"],
+  "languages": [
+    {
+      "id": "unnecessary-diagnostic",
+      "extensions": [".unnecessary"]
+    }
+  ]
+}

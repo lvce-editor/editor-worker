@@ -5,6 +5,11 @@ import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEven
 export const renderEventListeners = (): readonly DomEventListener[] => {
   return [
     {
+      name: DomEventListenerFunctions.HandleHoverMouseDown,
+      params: [],
+      stopPropagation: true,
+    },
+    {
       name: DomEventListenerFunctions.HandleLightBulbClick,
       params: ['showSourceActions3'],
       preventDefault: true,
@@ -69,7 +74,7 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     },
     {
       name: DomEventListenerFunctions.HandlePaste,
-      params: ['paste', 'event.clipboardData ? event.clipboardData.getData("text/plain") : ""'],
+      params: ['paste', 'event.clipboardData.text'],
       preventDefault: true,
     },
     {

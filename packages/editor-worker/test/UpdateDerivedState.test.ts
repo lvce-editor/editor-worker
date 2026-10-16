@@ -20,6 +20,10 @@ jest.unstable_mockModule('../src/parts/SyncIncremental/SyncIncremental.ts', () =
   getEnabled: getSyncIncrementalEnabledMock,
 }))
 
+jest.unstable_mockModule('../src/parts/UpdateHorizontalLayout/UpdateHorizontalLayout.ts', () => ({
+  updateHorizontalLayout: async (state: any) => state,
+}))
+
 const UpdateDerivedState = await import('../src/parts/UpdateDerivedState/UpdateDerivedState.ts')
 
 beforeEach(() => {
@@ -304,4 +308,28 @@ test('refreshes breadcrumb symbols after text edits but not cursor moves', async
   expect(getDocumentSymbolsMock).toHaveBeenCalledTimes(1)
   await UpdateDerivedState.updateDerivedState(result, { ...result, selections: new Uint32Array([0, 1, 0, 1]) })
   expect(getDocumentSymbolsMock).toHaveBeenCalledTimes(1)
+})
+
+test('horizontal scrolling refreshes diagnostics even when their source data is unchanged', async () => {
+  const oldState: any = {
+    charWidth: 8,
+    deltaX: 500.5,
+    diagnostics: [{ columnIndex: 70, endColumnIndex: 73, rowIndex: 0, type: 'error' }],
+    differences: [-4.5],
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    letterSpacing: 0,
+    lines: ['a'.repeat(1000)],
+    minLineY: 0,
+    rowHeight: 20,
+    tabSize: 4,
+    textInfos: [['a']],
+    width: 400,
+  }
+  getVisibleTextMock.mockResolvedValue({ differences: oldState.differences, textInfos: oldState.textInfos })
+  getVisibleSelectionsMock.mockResolvedValue({ cursorInfos: [], selectionInfos: [] })
+  const result = await UpdateDerivedState.updateDerivedState(oldState, { ...oldState, deltaX: 501 })
+  expect(result.visualDecorations).toEqual([{ height: 20, type: 'error', width: 24, x: 59, y: 0 }])
 })

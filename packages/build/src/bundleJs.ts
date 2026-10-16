@@ -15,6 +15,7 @@ const options: RollupOptions = {
     dir: join(root, '.tmp/dist/dist'),
     entryFileNames: 'editorWorkerMain.js',
     format: 'es',
+    inlineDynamicImports: true,
     freeze: false,
     generatedCode: {
       constBindings: true,

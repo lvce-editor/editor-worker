@@ -1,3 +1,5 @@
+import { WhenExpression, WidgetId } from '@lvce-editor/constants'
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 import { terminate } from '@lvce-editor/viewlet-registry'
 import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
 import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
@@ -7,6 +9,7 @@ import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import { createStandaloneEditor } from '../CreateStandaloneEditor/CreateStandaloneEditor.ts'
 import { diff2 } from '../Diff2/Diff2.ts'
 import * as DisposeEditor from '../DisposeEditor/DisposeEditor.ts'
+import { updateAutomaticCompletion } from '../EditorAutomaticCompletion/EditorAutomaticCompletion.ts'
 import * as EditorCommandAcceptMergeConflict from '../EditorCommand/EditorCommandAcceptMergeConflict.ts'
 import * as AddCursorAbove from '../EditorCommand/EditorCommandAddCursorAbove.ts'
 import * as AddCursorBelow from '../EditorCommand/EditorCommandAddCursorBelow.ts'
@@ -107,7 +110,6 @@ import * as EditorPaste from '../EditorCommand/EditorCommandPaste.ts'
 import * as PasteText from '../EditorCommand/EditorCommandPasteText.ts'
 import * as EditorRedo from '../EditorCommand/EditorCommandRedo.ts'
 import * as ReplaceRange from '../EditorCommand/EditorCommandReplaceRange.ts'
-import * as Save from '../EditorCommand/EditorCommandSave.ts'
 import * as SelectAll from '../EditorCommand/EditorCommandSelectAll.ts'
 import * as SelectAllLeft from '../EditorCommand/EditorCommandSelectAllLeft.ts'
 import * as SelectAllOccurrences from '../EditorCommand/EditorCommandSelectAllOccurrences.ts'
@@ -151,17 +153,22 @@ import * as Unindent from '../EditorCommand/EditorCommandUnindent.ts'
 import * as EditorCompletionWidget from '../EditorCompletionWidget/EditorCompletionWidget.ts'
 import * as EditorFindWidget from '../EditorFindWidget/EditorFindWidget.ts'
 import * as EditorHover from '../EditorHover/EditorHover.ts'
+import * as EditorHoverDismissalState from '../EditorHoverDismissalState/EditorHoverDismissalState.ts'
 import * as EditorHoverRender from '../EditorHoverRender/EditorHoverRender.ts'
+import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
 import * as EditorRenameWidget from '../EditorRenameWidget/EditorRenameWidget.ts'
 import * as EditorRerender from '../EditorRerender/EditorRerender.ts'
 import * as EditorSourceActionFocusNext from '../EditorSourceActionFocusNext/EditorSourceActionFocusNext.ts'
 import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSourceActionWidget.ts'
 import { getCommandIds, wrapGetter } from '../EditorStates/EditorStates.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
+import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as ExecuteViewletCommand from '../ExecuteViewletCommand/ExecuteViewletCommand.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as Font from '../Font/Font.ts'
+import { refreshTextDecorations } from '../GetEditorTextDecorations/GetEditorTextDecorations.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
 import * as GetKeys from '../GetKeys/GetKeys.ts'
@@ -178,29 +185,35 @@ import * as HandleTab from '../HandleTab/HandleTab.ts'
 import { hotReload } from '../HotReload/HotReload.ts'
 import { configure as configureIds } from '../Id/Id.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
+import * as InputEventType from '../InputEventType/InputEventType.ts'
 import { loadContent } from '../LoadContent/LoadContent.ts'
 import * as Markdown from '../Markdown/Markdown.ts'
 import * as MoveLineDown from '../MoveLineDown/MoveLineDown.ts'
 import * as MoveLineUp from '../MoveLineUp/MoveLineUp.ts'
 import * as RefreshGutterDecorations from '../RefreshGutterDecorations/RefreshGutterDecorations.ts'
 import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
+import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 import { render2 } from '../Render2/Render2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
+import * as RestorePersistentWidgets from '../RestorePersistentWidgets/RestorePersistentWidgets.ts'
 import { revealProblem } from '../RevealProblem/RevealProblem.ts'
+import * as Save from '../SaveCommand/SaveCommand.ts'
 import { saveState } from '../SaveState/SaveState.ts'
 import {
   sendDeprecatedExtensionHostPortToExtensionManagementWorker,
   sendMessagePortToExtensionManagementWorker,
 } from '../SendMessagePortToExtensionManagementWorker/SendMessagePortToExtensionManagementWorker.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
+import { shouldOpenAutomaticCompletion } from '../ShouldOpenAutomaticCompletion/ShouldOpenAutomaticCompletion.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
-import { wrapCommand, wrapFocusCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
+import { wrapCommand, wrapDeferredCommand, wrapFocusCommand, wrapLatestCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
 
 const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
   return ExecuteViewletCommand.executeViewletCommand(commandMap, uid, commandId, ...args)
@@ -210,6 +223,73 @@ const resize = async (editor: any, dimensions: any) => {
   const resizedEditor = Resize.resize(editor, dimensions, editor.columnWidth)
   return EditorFindWidget.resize(resizedEditor, dimensions)
 }
+
+const openCompletionDeferred = wrapDeferredCommand(EditorOpenCompletion.openCompletion)
+const updateAutomaticCompletionDeferred = wrapDeferredCommand(updateAutomaticCompletion)
+
+const removeHoverFromEditor = (editor: any): any => {
+  if (!editor.widgets?.some((widget: any) => widget.id === WidgetId.Hover)) {
+    return editor
+  }
+  const newEditor = {
+    ...editor,
+    additionalFocus: 0,
+    focus: WhenExpression.FocusEditorText,
+    focused: true,
+    widgetRevision: WidgetRevision.next(editor.uid),
+    widgets: RemoveEditorWidget.removeEditorWidget(editor.widgets, WidgetId.Hover),
+  }
+  return newEditor
+}
+
+const wrapTypingCommand = (
+  fn: (...args: any[]) => any,
+  shouldOpenCompletion: (...args: any[]) => boolean,
+  shouldDismissHover: (...args: any[]) => boolean,
+  preservesTypingCoalescing = true,
+) => {
+  const command = wrapCommand(async (editor: any, ...args: any[]) => {
+    const newEditor = await fn(editor, ...args)
+    return shouldDismissHover(...args) ? removeHoverFromEditor(newEditor) : newEditor
+  }, preservesTypingCoalescing)
+  return async (uid: number, ...args: any[]) => {
+    const dismissHover = shouldDismissHover(...args)
+    if (dismissHover) {
+      EditorHoverState.clear(uid)
+      EditorHoverDismissalState.clear(uid)
+    }
+    await command(uid, ...args)
+    const editor = Editors.get(uid)?.newState
+    if (
+      editor &&
+      ((shouldOpenCompletion(...args) && shouldOpenAutomaticCompletion(editor)) ||
+        editor.widgets?.some((widget: any) => widget.id === WidgetId.Completion && widget.newState.automatic))
+    ) {
+      void updateAutomaticCompletionDeferred(uid)
+        .then(() => RendererWorker.invoke('Editor.renderPending', uid))
+        .catch((error) => ErrorHandling.handleError(error, 'Failed to open completion widget: '))
+    }
+  }
+}
+
+const deleteLeftCommand = wrapTypingCommand(
+  DeleteCharacterLeft.deleteCharacterLeft,
+  () => false,
+  () => false,
+)
+const typeCommand = wrapTypingCommand(EditorType.type, () => true, Boolean)
+const typeWithAutoClosingCommand = wrapTypingCommand(EditorTypeWithAutoClosing.typeWithAutoClosing, () => true, Boolean)
+const handleBeforeInputCommand = wrapTypingCommand(
+  HandleBeforeInput.handleBeforeInput,
+  (inputType) => inputType === InputEventType.InsertText,
+  (inputType, data) => inputType === InputEventType.InsertText && Boolean(data),
+)
+const handleBeforeInputFromContentEditableCommand = wrapTypingCommand(
+  EditorCommandHandleNativeBeforeInputFromContentEditable.handleBeforeInputFromContentEditable,
+  () => false,
+  (data, range) => Boolean(data) && Boolean(range),
+  false,
+)
 
 export const commandMap = {
   'ActivateByEvent.activateByEvent': ActivateByEvent.activateByEvent,
@@ -264,10 +344,10 @@ export const commandMap = {
   'Editor.deleteAll': wrapCommand(DeleteAll.deleteAll),
   'Editor.deleteAllLeft': wrapCommand(DeleteAllLeft.deleteAllLeft),
   'Editor.deleteAllRight': wrapCommand(DeleteAllRight.deleteAllRight),
-  'Editor.deleteCharacterLeft': wrapCommand(DeleteCharacterLeft.deleteCharacterLeft),
+  'Editor.deleteCharacterLeft': deleteLeftCommand,
   'Editor.deleteCharacterRight': wrapCommand(DeleteCharacterRight.deleteCharacterRight),
   'Editor.deleteHorizontalRight': wrapCommand(DeleteHorizontalRight.editorDeleteHorizontalRight),
-  'Editor.deleteLeft': wrapCommand(DeleteCharacterLeft.deleteCharacterLeft),
+  'Editor.deleteLeft': deleteLeftCommand,
   'Editor.deleteLine': wrapCommand(DeleteLine.deleteLine),
   'Editor.deleteRight': wrapCommand(DeleteCharacterRight.deleteCharacterRight),
   'Editor.deleteWordLeft': wrapCommand(DeleteWordLeft.deleteWordLeft),
@@ -283,6 +363,7 @@ export const commandMap = {
   'Editor.fold': wrapCommand(fold),
   'Editor.format': wrapCommand(EditorFormat.format),
   'Editor.getCommandIds': getCommandIds,
+  'Editor.getCompletionContext': ExternalGetPositionAtCursor.getCompletionContext,
   'Editor.getDiagnostics': ExternalGetPositionAtCursor.getDiagnostics,
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
   'Editor.getKeys': GetKeys.getKeys,
@@ -309,10 +390,8 @@ export const commandMap = {
   'Editor.goToBracket': wrapCommand(EditorGoToBracket.goToBracket),
   'Editor.goToDefinition': wrapCommand(EditorGoToDefinition.goToDefinition),
   'Editor.goToTypeDefinition': wrapCommand(EditorGoToTypeDefinition.goToTypeDefinition),
-  'Editor.handleBeforeInput': wrapCommand(HandleBeforeInput.handleBeforeInput, true),
-  'Editor.handleBeforeInputFromContentEditable': wrapCommand(
-    EditorCommandHandleNativeBeforeInputFromContentEditable.handleBeforeInputFromContentEditable,
-  ),
+  'Editor.handleBeforeInput': handleBeforeInputCommand,
+  'Editor.handleBeforeInputFromContentEditable': handleBeforeInputFromContentEditableCommand,
   'Editor.handleBlur': wrapCommand(EditorBlur.handleBlur),
   'Editor.handleClickAtPosition': wrapCommand(handleClickAtPosition),
   'Editor.handleContextMenu': wrapCommand(EditorCommandHandleContextMenu.handleContextMenu),
@@ -323,8 +402,8 @@ export const commandMap = {
   'Editor.handleMouseDown': wrapCommand(HandleMouseDown.handleMouseDown),
   'Editor.handleMouseEnter': HandleMouseLeave.handleMouseEnter,
   'Editor.handleMouseLeave': HandleMouseLeave.handleMouseLeave,
-  'Editor.handleMouseMove': wrapCommand(HandleMouseMove.handleMouseMove),
-  'Editor.handleMouseMoveWithAltKey': wrapCommand(EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey),
+  'Editor.handleMouseMove': wrapLatestCommand(HandleMouseMove.handleMouseMove),
+  'Editor.handleMouseMoveWithAltKey': wrapLatestCommand(EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey),
   'Editor.handleNativeSelectionChange': HandleNativeSelectionChange.editorHandleNativeSelectionChange,
   'Editor.handlePointerCaptureLost': wrapCommand(HandlePointerCaptureLost.handlePointerCaptureLost),
   'Editor.handlePointerDown': wrapCommand(handlePointerDown),
@@ -364,7 +443,7 @@ export const commandMap = {
   'Editor.offsetAt': TextDocument.offsetAt,
   'Editor.openCodeGenerator': wrapCommand(EditorCommandOpenCodeGenerator.openCodeGenerator),
   'Editor.openColorPicker': wrapCommand(EditorOpenColorPicker.openColorPicker),
-  'Editor.openCompletion': wrapCommand(EditorOpenCompletion.openCompletion),
+  'Editor.openCompletion': openCompletionDeferred,
   'Editor.openFind': wrapCommand(OpenFind.openFind),
   'Editor.openFind2': wrapCommand(OpenFind2.openFind2),
   'Editor.openRename': wrapCommand(EditorCommandOpenRename.openRename),
@@ -375,14 +454,16 @@ export const commandMap = {
   'Editor.redo': wrapCommand(EditorRedo.redo),
   'Editor.refreshGutterDecorations': wrapCommand(RefreshGutterDecorations.refreshGutterDecorations),
   'Editor.refreshGutterDecorationsAll': RefreshGutterDecorations.refreshGutterDecorationsAll,
+  'Editor.refreshTextDecorations': wrapCommand(refreshTextDecorations),
   'Editor.render': RenderEditor.renderEditor,
   'Editor.render2': render2,
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
   'Editor.resize': wrapCommand(resize),
+  'Editor.restorePersistentWidgets': wrapCommand(RestorePersistentWidgets.restorePersistentWidgets),
   'Editor.revealProblem': wrapCommand(revealProblem),
-  'Editor.save': wrapCommand(Save.save),
+  'Editor.save': Save.save,
   'Editor.saveState': wrapGetter(saveState),
   'Editor.scrollByLines': wrapCommand(SetDelta.scrollByLines),
   'Editor.selectAll': wrapCommand(SelectAll.selectAll),
@@ -414,8 +495,8 @@ export const commandMap = {
   'Editor.setSelections': wrapCommand(SetSelections.setSelections),
   'Editor.setSelections2': ExternalGetPositionAtCursor.setSelections2,
   'Editor.setText': wrapCommand(SetText.setText),
-  'Editor.showHover': wrapCommand(EditorCommandShowHover.showHover),
-  'Editor.showHover2': wrapCommand(EditorCommandShowHover.showHover),
+  'Editor.showHover': wrapDeferredCommand(EditorCommandShowHover.showHover),
+  'Editor.showHover2': wrapDeferredCommand(EditorCommandShowHover.showHover),
   'Editor.showSignatureHelp': wrapCommand(EditorCommandShowSignatureHelp.showSignatureHelp),
   'Editor.showSourceActions': wrapCommand(EditorCommandShowSourceActions3.showSourceActions),
   'Editor.showSourceActions2': wrapCommand(EditorCommandShowSourceActions3.showSourceActions),
@@ -427,11 +508,11 @@ export const commandMap = {
   'Editor.toggleBlockComment': wrapCommand(EditorToggleBlockComment.toggleBlockComment),
   'Editor.toggleBreakpoint': wrapCommand(toggleBreakpoint),
   'Editor.toggleComment': wrapCommand(EditorToggleComment.toggleComment),
-  'Editor.toggleCompletion': wrapCommand(EditorCommandToggleCompletion.toggleCompletion),
+  'Editor.toggleCompletion': wrapDeferredCommand(EditorCommandToggleCompletion.toggleCompletion),
   'Editor.toggleLineComment': wrapCommand(EditorToggleLineComment.editorToggleLineComment),
   'Editor.toggleMinimap': ToggleMinimap.toggleMinimap,
-  'Editor.type': wrapCommand(EditorType.type, true),
-  'Editor.typeWithAutoClosing': wrapCommand(EditorTypeWithAutoClosing.typeWithAutoClosing, true),
+  'Editor.type': typeCommand,
+  'Editor.typeWithAutoClosing': typeWithAutoClosingCommand,
   'Editor.undo': wrapCommand(EditorUndo.undo),
   'Editor.unfold': wrapCommand(unfold),
   'Editor.unIndent': wrapCommand(Unindent.editorUnindent),
@@ -439,6 +520,7 @@ export const commandMap = {
   'Editor.updateDebugInfo': UpdateDebugInfo.updateDebugInfo,
   'Editor.updateDiagnostics': wrapCommand(UpdateDiagnostics.requestDiagnostics),
   'Editor.updateDiagnosticsAll': UpdateDiagnostics.updateDiagnosticsAll,
+  'Editor.waitForDiagnostics': UpdateDiagnostics.waitForDiagnostics,
   'EditorCompletion.close': EditorCompletionWidget.close,
   'EditorCompletion.closeDetails': EditorCompletionWidget.closeDetails,
   'EditorCompletion.focusFirst': EditorCompletionWidget.focusFirst,

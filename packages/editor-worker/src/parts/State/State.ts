@@ -3,8 +3,10 @@ import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
 import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGutterDecoration.ts'
 import type { EditorLifecycle } from '../EditorLifecycle/EditorLifecycle.ts'
 import type { EditorLineDecoration } from '../EditorLineDecoration/EditorLineDecoration.ts'
+import type { EditorTextDecoration } from '../EditorTextDecoration/EditorTextDecoration.ts'
 import type { EndOfLine } from '../EndOfLine/EndOfLine.ts'
 import type { MergeConflict } from '../MergeConflict/MergeConflict.ts'
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
 export interface EditorState {
   readonly additionalFocus: number
@@ -36,6 +38,7 @@ export interface EditorState {
   differences: any[]
   readonly documentSymbols?: readonly DocumentSymbol[]
   readonly dragAndDropEnabled: boolean
+  readonly editorFileCacheEnabled?: boolean
   readonly embeds: any
   readonly endOfLine: EndOfLine
   readonly endOfLineDecorations: readonly EditorLineDecoration[]
@@ -58,6 +61,13 @@ export interface EditorState {
   readonly height: number
   readonly highlightActiveLineNumber: boolean
   readonly highlightedLine: number
+  readonly horizontalVirtualizationThreshold?: number
+  readonly horizontalVisibleRanges?: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[]
   readonly hoverDelay?: number
   readonly hoverEnabled: boolean
   readonly id: number
@@ -85,6 +95,7 @@ export interface EditorState {
   readonly maxLineY: number
   readonly mergeConflictActionsEnabled: boolean
   readonly mergeConflicts: readonly MergeConflict[]
+  readonly messageDelay?: number
   readonly minimapEnabled: boolean
   readonly minimapLines: readonly (readonly (number | string)[])[]
   readonly minimapRevision: number
@@ -106,11 +117,14 @@ export interface EditorState {
   readonly scrollBarHeight: number
   readonly scrollBarWidth: number
   readonly scrollBarY?: number
+  readonly selectedTextOccurrenceMatching?: string
   readonly selectionAnchorPosition: { readonly rowIndex: number; readonly columnIndex: number }
   readonly selectionAutoMovePosition: { readonly x: number; readonly y: number }
   readonly selectionInfos: readonly any[]
   readonly selections: Uint32Array
   readonly tabSize: number
+  readonly textDecorationDom?: readonly VirtualDomNode[]
+  readonly textDecorations?: readonly EditorTextDecoration[]
   readonly textDragDropPosition: { readonly rowIndex: number; readonly columnIndex: number }
   readonly textDragId: number
   readonly textInfos: readonly any[]

@@ -63,6 +63,18 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
         hoverDocumentationWidth,
       )
     : 0
+  const measuredDisplayStringHeight = displayString
+    ? await MeasureTextHeight.measureTextBlockHeight(
+        displayString,
+        editor.fontFamily,
+        editor.fontSize,
+        `${editor.rowHeight}px`,
+        hoverDocumentationWidth,
+      )
+    : 0
+  const displayStringHeight = displayString
+    ? measuredDisplayStringHeight + (measuredDisplayStringHeight > editor.rowHeight ? editor.rowHeight : 0) + 12
+    : 0
   let diagnosticText = ''
   for (const diagnostic of matchingDiagnostics) {
     diagnosticText += `${diagnosticText ? '\n' : ''}${diagnostic.message} ${diagnostic.source} (${diagnostic.code})`
@@ -76,10 +88,7 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
         hoverDocumentationWidth,
       )) + 10
     : 0
-  const height = Math.min(
-    diagnosticsHeight + (lineInfos.length > 0 ? lineInfos.length * editor.rowHeight + 12 : 0) + (documentation ? documentationHeight + 11 : 0) || 20,
-    editor.height,
-  )
+  const height = Math.min(diagnosticsHeight + displayStringHeight + (documentation ? documentationHeight + 11 : 0) || 20, editor.height)
   const x = Math.max(editor.x, Math.min(EditorPosition.x(editor, rowIndex, wordStart), editor.x + editor.width - hoverWidth))
   const rowBottom = EditorPosition.y(editor, rowIndex)
   const y = rowBottom + height <= editor.y + editor.height ? rowBottom : Math.max(editor.y, rowBottom - editor.rowHeight - height)

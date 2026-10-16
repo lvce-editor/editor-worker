@@ -11,7 +11,7 @@ Object.defineProperty(organizeImports, 'execute', {
     return [
       {
         startOffset: 0,
-        endOffset: 100,
+        endOffset: textDocument.text.length,
         inserted: `import { add } from './add.xyz'`,
       },
     ]

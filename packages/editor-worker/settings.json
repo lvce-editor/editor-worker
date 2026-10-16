@@ -84,11 +84,11 @@
     "id": "editor.wordWrap",
     "options": [
       {
-        "id": "editor.on",
+        "id": "on",
         "label": "On"
       },
       {
-        "id": "editor.off",
+        "id": "off",
         "label": "off"
       }
     ],
@@ -102,11 +102,11 @@
     "id": "editor.lineNumbers",
     "options": [
       {
-        "id": "editor.on",
+        "id": "on",
         "label": "On"
       },
       {
-        "id": "editor.off",
+        "id": "off",
         "label": "off"
       }
     ],
@@ -402,8 +402,8 @@
     "description": "Controls whether the editor should automatically close quotes after opening them",
     "heading": "Auto Closing Quotes",
     "id": "editor.autoClosingQuotes",
-    "type": "string",
-    "value": "always"
+    "type": "boolean",
+    "value": true
   },
   {
     "category": "text-editor",
@@ -466,7 +466,17 @@
     "description": "The modifier to be used to add multiple cursors with the mouse",
     "heading": "Multi Cursor Modifier",
     "id": "editor.multiCursorModifier",
-    "type": "string",
+    "options": [
+      {
+        "id": "alt",
+        "label": "Alt"
+      },
+      {
+        "id": "ctrlCmd",
+        "label": "Ctrl/Cmd"
+      }
+    ],
+    "type": "enum",
     "value": "alt"
   },
   {
@@ -788,6 +798,26 @@
     "id": "editor.hoverDelay",
     "type": "number",
     "value": 200,
+    "minimum": 0,
+    "maximum": 10000
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls the minimum line length in characters before horizontal virtualization is enabled",
+    "heading": "Horizontal Virtualization Threshold",
+    "id": "editor.horizontalVirtualizationThreshold",
+    "type": "number",
+    "value": 500,
+    "minimum": 0,
+    "maximum": 100000
+  },
+  {
+    "category": "text-editor",
+    "description": "Controls how long editor messages remain visible, in milliseconds",
+    "heading": "Message Display Duration",
+    "id": "editor.messageDelay",
+    "type": "number",
+    "value": 3000,
     "minimum": 0,
     "maximum": 10000
   },

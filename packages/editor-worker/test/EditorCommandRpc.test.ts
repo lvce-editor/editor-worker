@@ -1,6 +1,8 @@
 import { expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { ExtensionHost, RendererWorker, SyntaxHighlightingWorker } from '@lvce-editor/rpc-registry'
+import { ExtensionHost, RendererWorker, SyntaxHighlightingWorker, TextMeasurementWorker } from '@lvce-editor/rpc-registry'
+
+TextMeasurementWorker.set(MockRpc.create({ commandMap: {}, invoke: async (_method: string, text: string) => text.length * 8 }))
 
 const rpc = MockRpc.create({ commandMap: {}, invoke: async () => undefined })
 ExtensionHost.set(rpc)
@@ -33,6 +35,39 @@ test('editor mutation RPC acknowledges completion without returning document his
     expect(await commandMap['Editor.redo'](uid)).toBeUndefined()
     expect(await commandMap['Editor.undo'](uid)).toBeUndefined()
     expect(await commandMap['Editor.getText'](uid)).toBe('first frame')
+  } finally {
+    EditorStates.dispose(uid)
+  }
+})
+
+test('getCompletionContext returns the cursor, current word, and optional line in one RPC', async () => {
+  const uid = 72
+  const editor = {
+    ...emptyEditor,
+    columnWidth: 8,
+    gutterWidth: 29,
+    lines: ['hello'],
+    rowHeight: 20,
+    selections: new Uint32Array([0, 5, 0, 5]),
+    uid,
+    width: 180,
+    x: 300,
+    y: 50,
+  }
+  EditorStates.set(uid, editor, editor)
+  try {
+    expect(commandMap['Editor.getCompletionContext'](uid, true)).toEqual({
+      columnIndex: 5,
+      editorWidth: 180,
+      editorX: 300,
+      line: 'hello',
+      rowIndex: 0,
+      x: 369,
+      y: 70,
+    })
+    const context = commandMap['Editor.getCompletionContext'](uid)
+    expect(context).toMatchObject({ wordBefore: 'hello' })
+    expect(context).not.toHaveProperty('line')
   } finally {
     EditorStates.dispose(uid)
   }

@@ -17,6 +17,7 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, W
   const horizontalThumb = Locator('.ScrollBarThumbHorizontal')
 
   await expect(verticalThumb).toBeVisible()
-  await expect(horizontalThumb).toHaveCount(0)
+  await expect(horizontalThumb).toBeVisible()
+  await expect(horizontalThumb).toHaveAttribute('style', null)
   await expect(verticalThumb).toHaveAttribute('style', null)
 }

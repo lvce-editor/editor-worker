@@ -6,10 +6,12 @@ import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import * as ExtensionHostDiagnostic from '../ExtensionHostDiagnostic/ExtensionHostDiagnostic.ts'
 import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
 import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import * as TransformDiagnostics from '../TransformDiagnostics/TransformDiagnostics.ts'
 import * as UpdateDiagnosticsWithLinks from './UpdateDiagnosticsWithLinks.ts'
 
 interface DiagnosticProviderMessage {
   readonly diagnostics?: readonly Diagnostic[]
+  readonly error?: string
   readonly providerCount?: number
   readonly providerId?: string
   readonly providerIds?: readonly string[]
@@ -24,7 +26,6 @@ interface ProviderDiagnostics {
 
 interface PreviousProviderResults {
   readonly languageId: string
-  readonly lines: readonly string[]
   readonly providers: ReadonlyMap<string, ProviderDiagnostics>
   readonly uri: string
 }
@@ -88,6 +89,9 @@ const diagnosticsEqual = (left: readonly Diagnostic[] | undefined, right: readon
       other.message === diagnostic.message &&
       other.rowIndex === diagnostic.rowIndex &&
       other.source === diagnostic.source &&
+      (other.tags === diagnostic.tags ||
+        ((other.tags?.length ?? 0) === (diagnostic.tags?.length ?? 0) &&
+          (other.tags ?? []).every((tag, index) => tag === diagnostic.tags?.[index]))) &&
       other.type === diagnostic.type &&
       other.uri === diagnostic.uri
     )
@@ -128,7 +132,7 @@ const mergeDiagnostics = (editor: any, editorWithDiagnostics: any): any => ({
   visualDecorations: editorWithDiagnostics.visualDecorations,
 })
 
-const commitDiagnostics = async (editor: any, generation: number, diagnostics: readonly Diagnostic[]): Promise<any> => {
+const commitDiagnostics = async (editor: any, generation: number, diagnostics: readonly Diagnostic[], onAccepted?: () => void): Promise<any> => {
   return (
     (await EditorCommandQueue.enqueue(editor.id, async () => {
       let latest = EditorState.get(editor.id)
@@ -136,6 +140,7 @@ const commitDiagnostics = async (editor: any, generation: number, diagnostics: r
         return editor
       }
       if (diagnosticsEqual(latest.newState.diagnostics, diagnostics)) {
+        onAccepted?.()
         return latest.newState
       }
       let calculationState = latest.newState
@@ -155,6 +160,7 @@ const commitDiagnostics = async (editor: any, generation: number, diagnostics: r
       const newEditor = mergeDiagnostics(latest.newState, editorWithDiagnostics)
       EditorState.set(editor.id, latest.oldState, newEditor)
       requestDiagnosticSnapshots.set(editor.id, diagnostics)
+      onAccepted?.()
       await RendererWorker.invoke('Editor.renderPending', newEditor.id)
       await notifyDiagnosticsChange(newEditor.uri, newEditor.applicationId)
       return newEditor
@@ -170,7 +176,19 @@ const flattenProviderDiagnostics = (providers: ReadonlyMap<string, ProviderDiagn
     .flatMap(({ diagnostics }) => diagnostics)
 }
 
-export const updateDiagnostics = async (editor: any): Promise<any> => {
+const saveProviderResults = (editor: any, providers: ReadonlyMap<string, ProviderDiagnostics>): void => {
+  previousProviderResults.set(editor.id, {
+    languageId: editor.languageId,
+    providers: new Map(providers),
+    uri: editor.uri,
+  })
+}
+
+export const updateDiagnostics = async (editor: any, timeoutMs = 0): Promise<any> => {
+  const strict = timeoutMs > 0
+  if (strict && editor.loadError) {
+    throw new Error(`Cannot await diagnostics: ${editor.loadError}`)
+  }
   if (!editor.diagnosticsEnabled || editor.loadError) {
     return editor
   }
@@ -179,7 +197,7 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
   requestDiagnosticSnapshots.set(editor.id, EditorState.get(editor.id)?.newState.diagnostics ?? editor.diagnostics)
   const providers = new Map<string, ProviderDiagnostics>()
   const previous = previousProviderResults.get(editor.id)
-  if (previous && previous.languageId === editor.languageId && previous.lines === editor.lines && previous.uri === editor.uri) {
+  if (previous && previous.languageId === editor.languageId && previous.uri === editor.uri) {
     for (const [providerId, result] of previous.providers) {
       providers.set(providerId, result)
     }
@@ -188,13 +206,24 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
   const completed = Promise.withResolvers<void>()
   let commitQueue = Promise.resolve()
   let providerCount = -1
+  let finished = false
+  const receivedProviders = new Set<string>()
+  const timeout = strict
+    ? setTimeout(() => completed.reject(new Error(`Diagnostics timed out after ${timeoutMs}ms for ${editor.uri}`)), timeoutMs)
+    : undefined
   port1.onmessage = (event: MessageEvent<DiagnosticProviderMessage>): void => {
     const previousCommit = commitQueue
     commitQueue = (async () => {
       await previousCommit
       try {
+        if (finished) {
+          return
+        }
         const message = event.data
         if (requestGenerations.get(editor.id) !== generation) {
+          if (strict) {
+            throw new Error('Diagnostics request was superseded')
+          }
           if (message.type === 'done') {
             port1.close()
             completed.resolve()
@@ -215,61 +244,87 @@ export const updateDiagnostics = async (editor: any): Promise<any> => {
               providers.delete(providerId)
             }
           }
+          if (requestGenerations.get(editor.id) === generation) {
+            saveProviderResults(editor, providers)
+          }
           return
         }
         if (message.type === 'result' && message.providerId !== undefined) {
+          if (strict && message.error !== undefined) {
+            throw new Error(`Diagnostic provider ${message.providerId} failed: ${message.error}`)
+          }
+          receivedProviders.add(message.providerId)
           providers.set(message.providerId, {
             diagnostics: message.diagnostics ?? [],
             providerIndex: message.providerIndex ?? providers.size,
           })
-          await commitDiagnostics(editor, generation, flattenProviderDiagnostics(providers))
+          await commitDiagnostics(editor, generation, flattenProviderDiagnostics(providers), () => saveProviderResults(editor, providers))
           return
         }
         if (message.type === 'done') {
+          if (strict && (providerCount < 0 || receivedProviders.size !== providerCount)) {
+            throw new Error('Diagnostics stream ended without all provider results')
+          }
           if (providerCount === 0) {
             providers.clear()
-            await commitDiagnostics(editor, generation, [])
+            await commitDiagnostics(editor, generation, [], () => saveProviderResults(editor, providers))
           }
-          previousProviderResults.set(editor.id, {
-            languageId: editor.languageId,
-            lines: editor.lines,
-            providers: new Map(providers),
-            uri: editor.uri,
-          })
+          if (requestGenerations.get(editor.id) === generation) {
+            saveProviderResults(editor, providers)
+          }
           port1.close()
           completed.resolve()
         }
       } catch (error) {
         port1.close()
-        completed.resolve()
-        await handleError(error, editor)
+        if (strict) {
+          completed.reject(error)
+        } else {
+          completed.resolve()
+          await handleError(error, editor)
+        }
       }
     })()
   }
   port1.start()
-  try {
+  const request = async (): Promise<void> => {
     const response = await getDiagnostics(editor, port2)
+    if (finished) {
+      return
+    }
     if (Array.isArray(response) && providerCount === -1) {
+      if (strict) {
+        throw new Error('Diagnostic provider does not support completion and error reporting')
+      }
       providers.set('legacy', {
         diagnostics: response,
         providerIndex: 0,
       })
-      await commitDiagnostics(editor, generation, response)
-      previousProviderResults.set(editor.id, {
-        languageId: editor.languageId,
-        lines: editor.lines,
-        providers: new Map(providers),
-        uri: editor.uri,
-      })
+      await commitDiagnostics(editor, generation, response, () => saveProviderResults(editor, providers))
       port1.close()
       completed.resolve()
     }
-    await completed.promise
+  }
+  try {
+    await Promise.all([request(), completed.promise])
     const latest = EditorState.get(editor.id)
+    if (strict && !isApplicable(latest, editor, generation)) {
+      throw new Error('Editor changed or closed while waiting for diagnostics')
+    }
     return isApplicable(latest, editor, generation) ? latest.newState : editor
   } catch (error) {
-    port1.close()
+    if (strict) {
+      if (requestGenerations.get(editor.id) === generation) {
+        requestGenerations.set(editor.id, generation + 1)
+      }
+      throw error
+    }
     return handleError(error, editor)
+  } finally {
+    finished = true
+    clearTimeout(timeout)
+    port1.close()
+    port2.close()
   }
 }
 
@@ -284,6 +339,24 @@ export const clearDiagnosticRequestState = (editorId: number): void => {
   previousProviderResults.delete(editorId)
 }
 
+export const transformCachedDiagnostics = (editorId: number, changes: readonly any[]): void => {
+  const previous = previousProviderResults.get(editorId)
+  if (!previous) {
+    return
+  }
+  const providers = new Map<string, ProviderDiagnostics>()
+  for (const [providerId, result] of previous.providers) {
+    providers.set(providerId, {
+      ...result,
+      diagnostics: TransformDiagnostics.transformDiagnostics(result.diagnostics, changes),
+    })
+  }
+  previousProviderResults.set(editorId, {
+    ...previous,
+    providers,
+  })
+}
+
 export const updateDiagnosticsAll = async (): Promise<void> => {
   for (const key of EditorState.getKeys()) {
     const editor = EditorState.get(Number(key))?.newState
@@ -291,4 +364,16 @@ export const updateDiagnosticsAll = async (): Promise<void> => {
       await updateDiagnostics(editor)
     }
   }
+}
+
+// Do not wrap this command in EditorCommandQueue: streamed results need that queue to commit.
+export const waitForDiagnostics = async (editorId: number, timeoutMs = 30_000): Promise<void> => {
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > 300_000) {
+    throw new Error('Diagnostics timeout must be between 1 and 300000ms')
+  }
+  const editor = EditorState.get(editorId)?.newState
+  if (!editor || editor.initial) {
+    throw new Error(`Editor is not ready: ${editorId}`)
+  }
+  await updateDiagnostics(editor, timeoutMs)
 }

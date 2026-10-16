@@ -1,4 +1,4 @@
-import { WidgetId } from '@lvce-editor/constants'
+import { WhenExpression, WidgetId } from '@lvce-editor/constants'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as EditorHoverDismissalState from '../EditorHoverDismissalState/EditorHoverDismissalState.ts'
 import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
@@ -36,6 +36,7 @@ export const handleMouseLeave = (viewletUid: number | string, editorUidValue?: n
     const newEditor = {
       ...latestEditor,
       additionalFocus: 0,
+      focus: WhenExpression.FocusEditorText,
       focused: true,
       widgetRevision: WidgetRevision.next(editorUid),
       widgets: RemoveEditorWidget.removeEditorWidget(latestEditor.widgets, WidgetId.Hover),

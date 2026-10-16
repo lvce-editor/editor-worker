@@ -20,8 +20,115 @@ import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
+import { updateHorizontalLayout } from '../UpdateHorizontalLayout/UpdateHorizontalLayout.ts'
 
 const largeFileContentLength = 10 * 1024 * 1024
+const editorFileCacheMaxBytes = 500_000
+const pendingFileReads = new Map<string | undefined, Map<string, Promise<string>>>()
+
+const getFileStatFingerprint = (stat: any): string => {
+  if (!stat || typeof stat !== 'object' || !Number.isFinite(stat.size)) {
+    return ''
+  }
+  const modifiedTime = stat.mtimeMs ?? stat.mtime
+  if (typeof modifiedTime !== 'number' && typeof modifiedTime !== 'string') {
+    return ''
+  }
+  const fingerprint: Array<number | string | undefined> = [stat.type, stat.size, modifiedTime]
+  const changedTime = stat.ctimeMs ?? stat.ctime
+  if (typeof changedTime === 'number' || typeof changedTime === 'string') {
+    fingerprint.push(changedTime)
+  }
+  if (typeof stat.etag === 'string') {
+    fingerprint.push(stat.etag)
+  }
+  return JSON.stringify(fingerprint)
+}
+
+const isExcludedFromFileCache = (uri: string): boolean => {
+  const path = uri.split(/[?#]/, 1)[0]
+  const fileName = path.slice(path.lastIndexOf('/') + 1)
+  return fileName === '.env' || fileName.startsWith('.env.')
+}
+
+const removeCachedEditorFile = (applicationId: string | undefined, uri: string): void => {
+  void ApplicationRpc.invoke(undefined, 'CacheStorage.removeEditorFileCache', applicationId || '', uri).catch(() => {})
+}
+
+const readFileWithCache = async (applicationId: string | undefined, uri: string, forceReload: boolean, useCache: boolean): Promise<string> => {
+  if (!useCache) {
+    return ApplicationRpc.readFile(applicationId, uri)
+  }
+  if (forceReload) {
+    removeCachedEditorFile(applicationId, uri)
+    return ApplicationRpc.readFile(applicationId, uri)
+  }
+  if (isExcludedFromFileCache(uri)) {
+    removeCachedEditorFile(applicationId, uri)
+    return ApplicationRpc.readFile(applicationId, uri)
+  }
+  let fingerprint = ''
+  try {
+    const stat = await ApplicationRpc.invoke(applicationId, 'FileSystem.statWithMetadata', uri)
+    if (stat?.size <= editorFileCacheMaxBytes) {
+      fingerprint = getFileStatFingerprint(stat)
+    }
+  } catch {
+    // Filesystems without stat metadata continue to use normal reads.
+  }
+  if (!fingerprint) {
+    removeCachedEditorFile(applicationId, uri)
+  }
+  if (fingerprint) {
+    try {
+      const cached = await ApplicationRpc.invoke(undefined, 'CacheStorage.getEditorFileCache', applicationId || '', uri, fingerprint)
+      if (typeof cached === 'string') {
+        return cached
+      }
+    } catch {
+      // Cache Storage failures must not prevent opening a file.
+    }
+  }
+  const content = await ApplicationRpc.readFile(applicationId, uri)
+  if (fingerprint && new TextEncoder().encode(content).byteLength <= editorFileCacheMaxBytes) {
+    void ApplicationRpc.invoke(undefined, 'CacheStorage.setEditorFileCache', applicationId || '', uri, fingerprint, content).catch(() => {})
+  }
+  return content
+}
+
+const readFile = (applicationId: string | undefined, uri: string, forceReload: boolean, useCache: boolean): Promise<string> => {
+  if (forceReload) {
+    return readFileWithCache(applicationId, uri, forceReload, useCache)
+  }
+  let applicationReads = pendingFileReads.get(applicationId)
+  if (!applicationReads) {
+    applicationReads = new Map()
+    pendingFileReads.set(applicationId, applicationReads)
+  }
+  const pendingRead = applicationReads.get(uri)
+  if (pendingRead) {
+    return pendingRead
+  }
+  let fileRead: Promise<string>
+  const removePendingRead = () => {
+    if (applicationReads?.get(uri) !== fileRead) {
+      return
+    }
+    applicationReads.delete(uri)
+    if (applicationReads.size === 0) {
+      pendingFileReads.delete(applicationId)
+    }
+  }
+  fileRead = (async () => {
+    try {
+      return await readFileWithCache(applicationId, uri, forceReload, useCache)
+    } finally {
+      removePendingRead()
+    }
+  })()
+  applicationReads.set(uri, fileRead)
+  return fileRead
+}
 
 const getWorkspaceUri = async (applicationId?: string): Promise<string> => {
   try {
@@ -78,7 +185,7 @@ const getSavedLanguageId = (savedState: unknown, languages: readonly any[]): str
   return explicitLanguageId
 }
 
-export const loadContent = async (state: EditorState, savedState: unknown, largeFile = false) => {
+export const loadContent = async (state: EditorState, savedState: unknown, largeFile = false, focus = true, forceReload = false) => {
   const { assetDir, height, id, platform, uri, width, x, y } = state
   const {
     breadcrumbsEnabled,
@@ -91,6 +198,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     fontWeight,
     formatOnSave,
     highlightActiveLineNumber,
+    horizontalVirtualizationThreshold,
     hoverDelay,
     hoverEnabled,
     insertSpaces,
@@ -104,8 +212,9 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     minimapEnabled,
     roundedSelection,
     rowHeight,
+    selectedTextOccurrenceMatching,
     tabSize,
-  } = await getEditorPreferences()
+  } = await getEditorPreferences(state.applicationId)
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir)
@@ -126,6 +235,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     fontWeight,
     formatOnSave,
     highlightActiveLineNumber,
+    horizontalVirtualizationThreshold,
     hoverDelay,
     hoverEnabled,
     insertSpaces,
@@ -141,22 +251,25 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     minimapEnabled,
     roundedSelection,
     rowHeight,
+    selectedTextOccurrenceMatching,
     tabSize,
     tokenizerId: state.tokenizerId,
   }
   let existingEditor: EditorState | undefined
-  for (const key of EditorStates.getKeys()) {
-    const editor = EditorStates.get(Number(key))?.newState
-    if (editor && editor.id !== id && !editor.initial && editor.uri === uri && editor.applicationId === state.applicationId) {
-      existingEditor = editor
-      break
+  if (!forceReload) {
+    for (const key of EditorStates.getKeys()) {
+      const editor = EditorStates.get(Number(key))?.newState
+      if (editor && editor.id !== id && !editor.initial && editor.uri === uri && editor.applicationId === state.applicationId) {
+        existingEditor = editor
+        break
+      }
     }
   }
   let content = existingEditor ? TextDocument.getText(existingEditor) : ''
   let endOfLine = existingEditor?.endOfLine || 'lf'
   try {
     if (!existingEditor) {
-      content = await ApplicationRpc.readFile(state.applicationId, uri)
+      content = await readFile(state.applicationId, uri, forceReload, state.editorFileCacheEnabled === true)
       endOfLine = getEndOfLine(content)
       content = normalizeLineEndings(content)
     }
@@ -166,7 +279,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
       ...newEditor1,
       differences: [],
       focus: WhenExpression.FocusEditorText,
-      focused: true,
+      focused: focus,
       initial: false,
       loadError: getErrorMessage(error),
       textInfos: [],
@@ -194,7 +307,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
   // TODO avoid creating intermediate editors here
   const newEditor1 = Editor.setBounds({ ...effectiveEditor, endOfLine }, x, y, width, height, 9)
   const newEditor2 = Editor.setText(newEditor1, content)
-  let newEditor3 = newEditor2
+  const newEditor3 = await updateHorizontalLayout(newEditor2)
 
   // Detect links and initialize decorations
   const linkDecorations = LinkDetection.detectAllLinksAsDecorations(newEditor3)
@@ -218,16 +331,20 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
   }
 
   const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(newEditor3WithBreadcrumbs, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(newEditor3WithBreadcrumbs, syncIncremental)
   const newEditor4 = {
     ...newEditor3WithBreadcrumbs,
     differences,
     focus: WhenExpression.FocusEditorText,
-    focused: true,
+    focused: focus,
+    horizontalVisibleRanges,
     textInfos,
   }
 
-  const completionsOnTypeRaw = await Preferences.get('editor.completionsOnType')
+  const completionsOnTypeRaw =
+    state.applicationId === undefined
+      ? await Preferences.get('editor.completionsOnType')
+      : await Preferences.get('editor.completionsOnType', state.applicationId)
   const completionsOnType = Boolean(completionsOnTypeRaw)
   const newEditor5: EditorState = {
     ...newEditor4,

@@ -22,3 +22,29 @@ test.each([
     }),
   ])
 })
+
+test('places a multiline placeholder after applied indentation', () => {
+  const lines = ['first', '  <head>', '  !', '  </head>']
+  const result = GetSnippetChanges.getSnippetChanges(lines, new Uint32Array([2, 3, 2, 3]), {
+    deleted: 1,
+    inserted: '<body>\n  <section>$0</section>\n</body>',
+  })
+  expect(result.selectionChanges).toEqual(new Uint32Array([3, 13, 3, 13]))
+  expect(result.changes).toEqual([
+    expect.objectContaining({
+      end: { columnIndex: 3, rowIndex: 2 },
+      inserted: ['<body>', '    <section></section>', '  </body>'],
+      start: { columnIndex: 2, rowIndex: 2 },
+    }),
+  ])
+})
+
+test('keeps the existing end position for multiline snippets without a placeholder', () => {
+  const lines = ['  !']
+  const result = GetSnippetChanges.getSnippetChanges(lines, new Uint32Array([0, 3, 0, 3]), {
+    deleted: 1,
+    inserted: '<html>\n</html>',
+  })
+  expect(result.selectionChanges).toEqual(new Uint32Array([1, 10, 1, 10]))
+  expect(result.changes[0].inserted).toEqual(['<html>', '  </html>'])
+})

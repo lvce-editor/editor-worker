@@ -45,6 +45,12 @@ interface EditorVirtualDomOptions {
   readonly height?: number
   readonly highlightActiveLineNumber?: boolean
   readonly highlightedLine?: number
+  readonly horizontalVisibleRanges?: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[]
   readonly lightBulbRowIndex?: number
   readonly lineNumbers?: boolean
   readonly lines?: readonly string[]
@@ -61,8 +67,11 @@ interface EditorVirtualDomOptions {
   readonly scrollBarWidth?: number
   readonly selectionInfos?: readonly any[]
   readonly selections?: any
+  readonly tabSize?: number
+  readonly textDecorationDom?: readonly VirtualDomNode[]
   readonly textInfos: readonly any[]
   readonly uid: number
+  readonly unnecessaryDiagnostics?: readonly any[]
   readonly uri?: string
   readonly visibleLineIndices?: readonly number[]
   readonly visibleViewLineIndices?: readonly number[]
@@ -106,6 +115,7 @@ export const getEditorVirtualDom = ({
   gutterInfos = [],
   highlightActiveLineNumber = true,
   highlightedLine = -1,
+  horizontalVisibleRanges = [],
   lightBulbRowIndex = -1,
   lineNumbers = true,
   lines = [],
@@ -122,8 +132,11 @@ export const getEditorVirtualDom = ({
   scrollBarWidth = 0,
   selectionInfos = [],
   selections = new Uint32Array(),
+  tabSize = 2,
+  textDecorationDom = [],
   textInfos,
   uid,
+  unnecessaryDiagnostics = [],
   uri = '',
   visibleLineIndices,
   visibleViewLineIndices = [],
@@ -189,14 +202,19 @@ export const getEditorVirtualDom = ({
       endOfLineDecorations,
       focused,
       highlightedLine,
+      horizontalVisibleRanges,
       lineNumbers,
+      lines,
       problemsHighlightedRow,
       roundedSelection,
       scrollBarDiagnostics,
       scrollBarHeight,
       scrollBarWidth,
       selectionInfos,
+      tabSize,
+      textDecorationDom,
       textInfos: combineWhitespaceTokens ? textInfos.map(combineTokens) : textInfos,
+      unnecessaryDiagnostics,
       visibleLineIndices: visibleLineIndices || [],
       visibleViewLineIndices,
     }),

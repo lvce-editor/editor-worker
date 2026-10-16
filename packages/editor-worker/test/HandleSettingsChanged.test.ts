@@ -40,6 +40,7 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
     letterSpacing: 1,
     lineNumbers: false,
     rowHeight: 24,
+    selectedTextOccurrenceMatching: 'caseInsensitive',
     tabSize: 4,
   })
   measureCharacterWidth.mockResolvedValue(10)
@@ -83,6 +84,7 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
       maxLineY: 4,
       minLineY: 1,
       rowHeight: 24,
+      selectedTextOccurrenceMatching: 'caseInsensitive',
       tabSize: 4,
       visualDecorations: [],
     }),

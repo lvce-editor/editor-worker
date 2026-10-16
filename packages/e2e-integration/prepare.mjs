@@ -1,6 +1,7 @@
-import { cp, mkdir, readdir, readFile, realpath, rm } from 'node:fs/promises'
+import { cp, mkdir, readdir, readFile, realpath, rm, writeFile } from 'node:fs/promises'
+import { stripTypeScriptTypes } from 'node:module'
 import { dirname, join, resolve } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const owner = resolve(here, '../..')
@@ -14,7 +15,17 @@ const tests = join(application, 'packages/extension-host-worker-tests')
 for (const name of await readdir(join(tests, 'src'))) {
   if (name !== '_all.js') await rm(join(tests, 'src', name), { recursive: true })
 }
-await cp(join(here, 'src'), join(tests, 'src'), { recursive: true })
+// The application test loader imports JavaScript modules; emit every owned scenario
+// while keeping the TypeScript source inventory available for type checking here.
+for (const name of await readdir(join(here, 'src'))) {
+  const source = join(here, 'src', name)
+  if (name.endsWith('.ts')) {
+    const code = stripTypeScriptTypes(await readFile(source, 'utf8'))
+    await writeFile(join(tests, 'src', `${name.slice(0, -3)}.js`), code)
+  } else {
+    await cp(source, join(tests, 'src', name), { recursive: true })
+  }
+}
 await rm(join(tests, 'fixtures'), { recursive: true, force: true })
 await mkdir(join(tests, 'fixtures'), { recursive: true })
 try {
@@ -33,19 +44,3 @@ for (const [from, to] of config.artifacts) {
   })
   await cp(join(owner, from), target, { recursive: true })
 }
-
-// Build the built-in settings index from the overlaid worker settings, as the application build does.
-process.chdir(application)
-const workers = JSON.parse(await readFile(join(application, 'packages/renderer-worker/src/parts/Workers/Workers.json'), 'utf8'))
-const { bundleBuiltinSettings } = await import(
-  pathToFileURL(join(application, 'packages/build/src/parts/BundleBuiltinSettings/BundleBuiltinSettings.ts'))
-)
-await bundleBuiltinSettings({
-  toRoot: 'packages/renderer-worker/node_modules',
-  workers,
-})
-const builtinSettings = join(application, 'packages/renderer-worker/node_modules/builtin-settings')
-const settingsFiles = JSON.parse(await readFile(join(builtinSettings, 'index.json'), 'utf8'))
-if (!settingsFiles.includes('editor-worker.json')) throw new Error('Built-in editor worker settings were not bundled')
-const editorSettings = JSON.parse(await readFile(join(builtinSettings, 'editor-worker.json'), 'utf8'))
-if (!editorSettings.some((setting) => setting.id === 'editor.tabCompletion')) throw new Error('Tab Completion setting was not bundled')
