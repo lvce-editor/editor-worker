@@ -14,12 +14,13 @@ const newStateGenerator = (state: ColorPickerState, parentUid: number): Promise<
   return ColorPicker.loadContent(state, parentUid)
 }
 
-export const openColorPicker = async (editor: any) => {
+export const openColorPicker = async (editor: any, initialColor?: string) => {
   const fullFocus = true
   const bounds = GetColorPickerBounds.getColorPickerBounds(editor)
   const { getColorPickerRange } = await import('../GetColorPickerRange/GetColorPickerRange.ts')
   const range = await getColorPickerRange(editor)
-  const createWidget = () => ColorPickerWidgetFactory.create(bounds, range, editor.undoStack.length)
+  const colorRange = initialColor === undefined ? range : { ...range, value: initialColor }
+  const createWidget = () => ColorPickerWidgetFactory.create(bounds, colorRange, editor.undoStack.length)
   return AddWidgetToEditor.addWidgetToEditor(WidgetId.ColorPicker, FocusKey.ColorPicker, editor, createWidget, newStateGenerator, fullFocus)
 }
 
