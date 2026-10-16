@@ -1,5 +1,6 @@
 import { cp, readFile, readdir, rm } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 if (!process.argv[2]) throw new Error('Pass the path to a disposable LVCE checkout')
 
@@ -28,3 +29,18 @@ if (!index.includes('editor-worker.json')) {
 const target = join(application, 'packages/renderer-worker/node_modules/builtin-settings')
 await rm(target, { recursive: true, force: true })
 await cp(source, target, { recursive: true })
+
+// Rebundle after copying static assets: the source server needs settings from the overlaid worker.
+process.chdir(application)
+const workers = JSON.parse(await readFile(join(application, 'packages/renderer-worker/src/parts/Workers/Workers.json'), 'utf8'))
+const { bundleBuiltinSettings } = await import(
+  pathToFileURL(join(application, 'packages/build/src/parts/BundleBuiltinSettings/BundleBuiltinSettings.ts'))
+)
+await bundleBuiltinSettings({
+  toRoot: 'packages/renderer-worker/node_modules',
+  workers,
+})
+const bundledSettings = JSON.parse(await readFile(join(target, 'editor-worker.json'), 'utf8'))
+if (!bundledSettings.some((setting) => setting.id === 'editor.tabCompletion')) {
+  throw new Error('Tab Completion setting was not bundled for the source server')
+}
