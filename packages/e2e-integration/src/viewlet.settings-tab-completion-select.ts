@@ -15,7 +15,9 @@ export const test: Test = async ({ Command, expect, Locator, Main, SettingsView 
   await expect(setting).toContainText('Enables tab completions')
   await expect(tabCompletion).toBeVisible()
   await expect(tabCompletion).toHaveValue('on')
-  await expect(tabCompletion.locator('option')).toHaveText(['On', 'off'])
+  await expect(tabCompletion.locator('option')).toHaveCount(2)
+  await expect(tabCompletion.locator('option').nth(0)).toHaveText('On')
+  await expect(tabCompletion.locator('option').nth(1)).toHaveText('off')
 
   await Command.execute('Settings.handleSettingSelect', 'editor.tabCompletion', 'off')
   await expect(tabCompletion).toHaveValue('off')
