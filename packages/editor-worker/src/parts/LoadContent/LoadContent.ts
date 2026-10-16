@@ -255,6 +255,8 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     tabSize,
     tokenizerId: state.tokenizerId,
   }
+  const snapshot = savedState as { hotReload?: boolean; lines?: readonly string[]; modified?: boolean; endOfLine?: string } | undefined
+  const hotReload = snapshot?.hotReload === true && Array.isArray(snapshot.lines) && snapshot.lines.every((line) => typeof line === 'string')
   let existingEditor: EditorState | undefined
   if (!forceReload) {
     for (const key of EditorStates.getKeys()) {
@@ -268,7 +270,10 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
   let content = existingEditor ? TextDocument.getText(existingEditor) : ''
   let endOfLine = existingEditor?.endOfLine || 'lf'
   try {
-    if (!existingEditor) {
+    if (!existingEditor && hotReload) {
+      content = snapshot.lines!.join('\n')
+      endOfLine = snapshot.endOfLine === 'crlf' ? 'crlf' : 'lf'
+    } else if (!existingEditor) {
       content = await readFile(state.applicationId, uri, forceReload, state.editorFileCacheEnabled === true)
       endOfLine = getEndOfLine(content)
       content = normalizeLineEndings(content)
@@ -350,7 +355,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     ...newEditor4,
     completionsOnType: !largeFile && completionsOnType,
     initial: false,
-    modified: existingEditor?.modified || false,
+    modified: existingEditor?.modified || (hotReload && snapshot.modified === true),
     redoStack: existingEditor?.redoStack || savedHistory?.redoStack || [],
     undoStack: existingEditor?.undoStack || savedHistory?.undoStack || [],
   }

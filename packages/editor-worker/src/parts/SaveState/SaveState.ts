@@ -2,8 +2,8 @@ import type { EditorState } from '../State/State.ts'
 import * as GetWidgetHotReloadDescriptor from '../GetWidgetHotReloadDescriptor/GetWidgetHotReloadDescriptor.ts'
 import * as IsPersistentWidget from '../IsPersistentWidget/IsPersistentWidget.ts'
 
-export const saveState = async (state: EditorState, savedState: unknown): Promise<any> => {
-  const { explicitLanguageId, largeFile, lines, redoStack, undoStack, widgets: stateWidgets } = state
+export const saveState = async (state: EditorState, hotReload: unknown): Promise<any> => {
+  const { deltaY, endOfLine, explicitLanguageId, largeFile, lines, modified, redoStack, selections, undoStack, widgets: stateWidgets } = state
   const widgets = []
   const widgetsToSave = stateWidgets || []
   for (const widget of widgetsToSave) {
@@ -17,10 +17,24 @@ export const saveState = async (state: EditorState, savedState: unknown): Promis
     const widgetState = await descriptor.invoke(`${descriptor.name}.saveState`, widget.newState.uid)
     widgets.push({ id: widget.id, state: widgetState })
   }
-  return {
+  const savedState = {
     ...(explicitLanguageId && { explicitLanguageId }),
     ...(largeFile && { largeFile: true }),
     ...(widgets.length > 0 && { widgets }),
     ...((redoStack.length > 0 || undoStack.length > 0) && { lines, redoStack, undoStack }),
+  }
+  if (hotReload !== true) {
+    return savedState
+  }
+  return {
+    ...savedState,
+    deltaY,
+    endOfLine,
+    hotReload: true,
+    lines,
+    modified,
+    redoStack,
+    selections: [...selections],
+    undoStack,
   }
 }
