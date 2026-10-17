@@ -1,0 +1,30 @@
+import type { Test } from '@lvce-editor/test-with-playwright'
+
+export const name = 'viewlet.editor-copy-line-down'
+
+export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Workspace }) => {
+  // arrange
+  const tmpDir = await FileSystem.getTmpDir()
+  await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'content 1')
+  await Workspace.setUri(tmpDir)
+  await Main.openUri(`${tmpDir}/file1.txt`)
+
+  // act
+  await Editor.setCursor(0, 0)
+  await Editor.copyLineDown()
+
+  const editor = Locator('.Editor')
+  await expect(editor).toHaveText('content 1content 1')
+
+  const longContent = Array.from({ length: 100 }, (_, index) => `line ${index + 1}`).join('\n')
+  await FileSystem.writeFile(`${tmpDir}/long-file.txt`, longContent)
+  await Main.openUri(`${tmpDir}/long-file.txt`)
+  await Editor.setCursor(99, 7)
+
+  const cursor = Locator('.EditorCursor')
+  await Editor.copyLineDown()
+  await expect(cursor).toBeVisible()
+
+  await Editor.copyLineDown()
+  await expect(cursor).toBeVisible()
+}

@@ -8,6 +8,7 @@ jest.unstable_mockModule('../src/parts/FindWidgetWorker/FindWidgetWorker.ts', ()
 }))
 
 const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
+const EmptyEditor = await import('../src/parts/EmptyEditor/EmptyEditor.ts')
 const SaveWidgetState = await import('../src/parts/SaveWidgetState/SaveWidgetState.ts')
 
 beforeEach(() => {
@@ -24,8 +25,11 @@ test('saveWidgetState - skips missing editor key', async () => {
 test('saveWidgetState - skips widget without newState', async () => {
   EditorStates.set(
     910_002,
-    {},
     {
+      ...EmptyEditor.emptyEditor,
+    },
+    {
+      ...EmptyEditor.emptyEditor,
       uid: 910_002,
       widgets: [
         {
@@ -44,8 +48,11 @@ test('saveWidgetState - skips widget without newState', async () => {
 test('saveWidgetState - skips unsupported widget', async () => {
   EditorStates.set(
     910_003,
-    {},
     {
+      ...EmptyEditor.emptyEditor,
+    },
+    {
+      ...EmptyEditor.emptyEditor,
       uid: 910_003,
       widgets: [
         {
@@ -70,8 +77,11 @@ test('saveWidgetState - saves find widget state', async () => {
   })
   EditorStates.set(
     910_004,
-    {},
     {
+      ...EmptyEditor.emptyEditor,
+    },
+    {
+      ...EmptyEditor.emptyEditor,
       uid: 910_004,
       widgets: [
         {

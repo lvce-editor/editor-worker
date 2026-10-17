@@ -5,12 +5,46 @@ import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEven
 export const renderEventListeners = (): readonly DomEventListener[] => {
   return [
     {
+      name: DomEventListenerFunctions.HandleHoverMouseDown,
+      params: [],
+      stopPropagation: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleLightBulbClick,
+      params: ['showSourceActions3'],
+      preventDefault: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleMergeConflictActionClick,
+      params: ['acceptMergeConflict', 'event.target.dataset.action', 'event.target.dataset.rowIndex'],
+      preventDefault: true,
+      stopPropagation: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleMergeConflictActionsMouseDown,
+      params: ['handleMergeConflictActionsMouseDown'],
+      preventDefault: true,
+      stopPropagation: true,
+    },
+    {
       name: DomEventListenerFunctions.HandleFocus,
       params: ['handleFocus'],
     },
     {
       name: DomEventListenerFunctions.HandleMouseMove,
       params: ['handleMouseMove', EventExpression.ClientX, EventExpression.ClientY, EventExpression.AltKey],
+    },
+    {
+      name: DomEventListenerFunctions.HandleMouseOut,
+      params: ['handleMouseLeave', 'event.currentTarget.dataset.uid'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleMouseOver,
+      params: ['handleMouseEnter', 'event.currentTarget.dataset.uid'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleKeyUp,
+      params: ['handleKeyUp', EventExpression.Key],
     },
     {
       name: DomEventListenerFunctions.HandleBlur,
@@ -40,12 +74,21 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     },
     {
       name: DomEventListenerFunctions.HandlePaste,
-      params: ['paste', 'event.clipboardData ? event.clipboardData.getData("text/plain") : ""'],
+      params: ['paste', 'event.clipboardData.text'],
       preventDefault: true,
     },
     {
       name: DomEventListenerFunctions.HandleMouseDown,
-      params: ['handleMouseDown', 'event.button', 'event.altKey', 'event.ctrlKey', EventExpression.ClientX, EventExpression.ClientY, 'event.detail'],
+      params: [
+        'handleMouseDown',
+        'event.button',
+        'event.altKey',
+        'event.ctrlKey',
+        EventExpression.ClientX,
+        EventExpression.ClientY,
+        'event.detail',
+        'event.shiftKey',
+      ],
     },
     {
       name: DomEventListenerFunctions.HandlePointerDown,
@@ -57,6 +100,7 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
         EventExpression.ClientX,
         EventExpression.ClientY,
         'event.detail',
+        'event.currentTarget.parentElement.parentElement.offsetLeft',
       ],
       trackPointerEvents: [DomEventListenerFunctions.HandlePointerMove, DomEventListenerFunctions.HandlePointerUp],
     },

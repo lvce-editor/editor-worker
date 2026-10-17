@@ -1,8 +1,10 @@
 import { expect, test } from '@jest/globals'
 import * as EditorCommandHandleScrollBarMove from '../src/parts/EditorCommand/EditorCommandHandleScrollBarMove.ts'
+import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
 
 test('handleScrollBarMove - dragging the thumb updates the scroll position', async () => {
   const editor = {
+    ...emptyEditor,
     charWidth: 8,
     decorations: [],
     deltaX: 0,
@@ -16,7 +18,7 @@ test('handleScrollBarMove - dragging the thumb updates the scroll position', asy
     lineCache: [],
     lines: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
     minimumSliderSize: 20,
-    numberOfVisibleLines: 2,
+    numberOfVisibleLines: 5,
     scrollBarHeight: 20,
     tokenizerId: 0,
     width: 100,
@@ -25,7 +27,7 @@ test('handleScrollBarMove - dragging the thumb updates the scroll position', asy
 
   await expect(EditorCommandHandleScrollBarMove.handleScrollBarMove(editor, 50)).resolves.toMatchObject({
     deltaY: 50,
-    maxLineY: 4,
+    maxLineY: 7,
     minLineY: 2,
     scrollBarY: 40,
   })
@@ -33,6 +35,7 @@ test('handleScrollBarMove - dragging the thumb updates the scroll position', asy
 
 test('handleScrollBarMove - defaults missing handle offset to zero', async () => {
   const editor = {
+    ...emptyEditor,
     charWidth: 8,
     decorations: [],
     deltaX: 0,
@@ -45,7 +48,7 @@ test('handleScrollBarMove - defaults missing handle offset to zero', async () =>
     lineCache: [],
     lines: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
     minimumSliderSize: 20,
-    numberOfVisibleLines: 2,
+    numberOfVisibleLines: 5,
     scrollBarHeight: 20,
     tokenizerId: 0,
     width: 100,
@@ -54,7 +57,7 @@ test('handleScrollBarMove - defaults missing handle offset to zero', async () =>
 
   await expect(EditorCommandHandleScrollBarMove.handleScrollBarMove(editor, 50)).resolves.toMatchObject({
     deltaY: 62.5,
-    maxLineY: 5,
+    maxLineY: 7,
     minLineY: 3,
     scrollBarY: 50,
   })

@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'find-widget-replace-all-preserve-case'
 
-export const test: Test = async ({ Editor, FileSystem, FindWidget, Main, Workspace }) => {
+export const test: Test = async ({ Command, Editor, FileSystem, FindWidget, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(
@@ -27,4 +27,9 @@ content 3`,
   await Editor.shouldHaveText(`Replaced 1
 REPLACED 2
 replaced 3`)
+
+  await Command.execute('Editor.undo')
+  await Editor.shouldHaveText(`Content 1
+CONTENT 2
+content 3`)
 }

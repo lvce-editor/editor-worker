@@ -1,6 +1,7 @@
 // @ts-ignore
 import * as Editor from '../Editor/Editor.ts'
 // @ts-ignore
+import * as GetLineLength from '../GetLineLength/GetLineLength.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 
 // @ts-ignore
@@ -11,7 +12,7 @@ const getNewSelections = (selections, lines, getDelta) => {
     const line = lines[selectionEndRow]
     newSelections[i] = selectionStartRow
     newSelections[i + 1] = selectionStartColumn
-    if (selectionEndColumn >= line.length) {
+    if (selectionEndColumn >= GetLineLength.getLineLength(line)) {
       newSelections[i + 2] = selectionEndRow + 1
       newSelections[i + 3] = 0
     } else {

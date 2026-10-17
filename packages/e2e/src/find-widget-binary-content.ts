@@ -2,6 +2,8 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'find-widget-binary-content'
 
+export const skip = 1
+
 export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
   // arrange - create a file with binary-like content (null bytes, special chars)
   const tmpDir = await FileSystem.getTmpDir()

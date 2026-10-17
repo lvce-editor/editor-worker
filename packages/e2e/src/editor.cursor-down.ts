@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-cursor-down'
 
-export const test: Test = async ({ Editor, FileSystem, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(
@@ -17,7 +17,6 @@ content 2`,
   await Editor.setCursor(0, 1)
 
   // assert
-  Locator('.EditorCursor')
   await Editor.shouldHaveSelections(new Uint32Array([0, 1, 0, 1]))
 
   // act
@@ -25,4 +24,14 @@ content 2`,
 
   // assert
   await Editor.shouldHaveSelections(new Uint32Array([1, 1, 1, 1]))
+
+  for (let i = 0; i < 3; i++) {
+    await Editor.cursorDown()
+    await Editor.shouldHaveSelections(new Uint32Array([1, 1, 1, 1]))
+  }
+
+  await Editor.cursorUp()
+  await Editor.shouldHaveSelections(new Uint32Array([0, 1, 0, 1]))
+  await Editor.cursorUp()
+  await Editor.shouldHaveSelections(new Uint32Array([0, 0, 0, 0]))
 }

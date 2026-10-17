@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'find-widget-keyboard-navigation'
 
-export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(
@@ -13,52 +13,43 @@ content 3`,
   )
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
+  await new Promise((resolve) => setTimeout(resolve, 100))
   await Editor.setSelections(new Uint32Array([0, 0, 0, 7]))
   await Editor.openFind()
 
   // assert - find input should be focused initially
-  const findWidgetInput = Locator('.FindWidget .MultilineInputBox')
+  const findWidget = Locator('.FindWidget:has(.MultilineInputBox:focus)')
+  const findWidgetInput = findWidget.locator('.MultilineInputBox')
   await expect(findWidgetInput).toBeVisible()
   await expect(findWidgetInput).toBeFocused()
 
-  const findWidgetMatchCount = Locator(`.FindWidgetMatchCount`)
+  const findWidgetMatchCount = findWidget.locator(`.FindWidgetMatchCount`)
   await expect(findWidgetMatchCount).toHaveText('1 of 3')
 
-  // act - go to next match
-  await FindWidget.focusNext()
+  // act - go to next match using the real keyboard path
+  await KeyBoard.press('Enter')
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
-  // assert - should move to next match
+  // assert - should move to next match without inserting a line break
+  await expect(findWidgetInput).toBeFocused()
   await expect(findWidgetMatchCount).toHaveText('2 of 3')
+  await Editor.shouldHaveSelections(new Uint32Array([1, 0, 1, 7]))
 
-  // act - go to previous match
-  await FindWidget.focusPrevious()
+  // act - go to the previous match without inserting a line break
+  await Command.execute('TestFrameWork.performKeyBoardAction', 'press', {
+    bubbles: true,
+    cancelable: true,
+    key: 'Enter',
+    shiftKey: true,
+  })
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
-  // assert - should move back to first match
+  // assert - query and document stay unchanged
+  await expect(findWidgetInput).toBeFocused()
+  await expect(findWidgetInput).toHaveValue('content')
   await expect(findWidgetMatchCount).toHaveText('1 of 3')
-
-  // act - navigate to next element
-  await FindWidget.focusNextElement()
-
-  // assert - match case button should be focused
-  const matchCaseButton = Locator(`.SearchFieldButton[name="MatchCase"]`)
-  await expect(matchCaseButton).toBeFocused()
-
-  // act - navigate to next element again
-  await FindWidget.focusNextElement()
-
-  // assert - match whole word button should be focused
-  const matchWholeWordButton = Locator(`.SearchFieldButton[name="MatchWholeWord"]`)
-  await expect(matchWholeWordButton).toBeFocused()
-
-  // act - navigate to previous element
-  await FindWidget.focusPreviousElement()
-
-  // assert - match case button should be focused again
-  await expect(matchCaseButton).toBeFocused()
-
-  // act - toggle match case
-  await FindWidget.toggleMatchCase()
-
-  // assert - match case should be enabled
-  await expect(matchCaseButton).toHaveAttribute(`aria-checked`, 'true')
+  await Editor.shouldHaveSelections(new Uint32Array([0, 0, 0, 7]))
+  await Editor.shouldHaveText(`content 1
+content 2
+content 3`)
 }

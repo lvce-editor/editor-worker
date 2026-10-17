@@ -8,7 +8,6 @@ import * as RenderRename from '../RenderRename/RenderRename.ts'
 const commandsToForward = [
   RenderMethod.SetDom2,
   RenderMethod.SetCss,
-  RenderMethod.AppendToBody,
   RenderMethod.SetBounds2,
   RenderMethod.RegisterEventListeners,
   RenderMethod.SetSelectionByName,
@@ -37,7 +36,19 @@ export const add = (widget: CompletionWidget) => {
 }
 
 export const remove = (widget: CompletionWidget) => {
-  return [['Viewlet.dispose', widget.newState.uid]]
+  return []
+}
+
+const fns = createFns(['handleEditorType', 'handleEditorDeleteLeft'], 'Completions', WidgetId.Completion)
+
+export const handleEditorType = (editor: any) => {
+  const widget = (editor.widgets || []).find((candidate: any) => candidate.id === WidgetId.Completion)
+  return widget?.newState.automatic ? editor : fns.handleEditorType(editor)
+}
+
+export const handleEditorDeleteLeft = (editor: any) => {
+  const widget = (editor.widgets || []).find((candidate: any) => candidate.id === WidgetId.Completion)
+  return widget?.newState.automatic ? editor : fns.handleEditorDeleteLeft(editor)
 }
 
 export const {
@@ -50,8 +61,7 @@ export const {
   focusPrevious,
   handleEditorBlur,
   handleEditorClick,
-  handleEditorDeleteLeft,
-  handleEditorType,
+
   handlePointerDown,
   handleWheel,
   openDetails,

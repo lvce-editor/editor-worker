@@ -1,0 +1,28 @@
+{
+  "id": "test.editor-diagnostics-retained-slow",
+  "browser": "dist/main.js",
+  "isolated": true,
+  "diagnosticProviders": [
+    {
+      "id": "retained-slow-diagnostics",
+      "languageId": "retained-diagnostics"
+    }
+  ],
+  "activation": ["onDiagnostic:retained-diagnostics", "onCommand:retainedDiagnostics.pendingCount", "onCommand:retainedDiagnostics.resolveSlow"],
+  "commands": [
+    {
+      "id": "retainedDiagnostics.pendingCount",
+      "label": "Get Pending Diagnostics Count"
+    },
+    {
+      "id": "retainedDiagnostics.resolveSlow",
+      "label": "Resolve Slow Diagnostics"
+    }
+  ],
+  "languages": [
+    {
+      "id": "retained-diagnostics",
+      "extensions": [".retained-diagnostics"]
+    }
+  ]
+}

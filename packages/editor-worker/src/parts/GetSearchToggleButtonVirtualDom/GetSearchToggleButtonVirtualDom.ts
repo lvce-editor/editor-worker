@@ -1,5 +1,6 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as InputName from '../InputName/InputName.ts'
+import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export const getSearchToggleButtonVirtualDom = (replaceExpanded: boolean, onClick = ''): readonly VirtualDomNode[] => {
@@ -8,7 +9,7 @@ export const getSearchToggleButtonVirtualDom = (replaceExpanded: boolean, onClic
       ariaExpanded: replaceExpanded,
       ariaLabel: 'Toggle Replace',
       childCount: 1,
-      className: `IconButton SearchToggleButton ${replaceExpanded ? 'SearchToggleButtonExpanded' : ''}`,
+      className: MergeClassNames.mergeClassNames('IconButton', 'SearchToggleButton', replaceExpanded ? 'SearchToggleButtonExpanded' : ''),
       'data-command': 'toggleReplace',
       name: InputName.ToggleReplace,
       onClick,
@@ -18,7 +19,7 @@ export const getSearchToggleButtonVirtualDom = (replaceExpanded: boolean, onClic
     },
     {
       childCount: 0,
-      className: `MaskIcon ${replaceExpanded ? 'MaskIconChevronDown' : 'MaskIconChevronRight'}`,
+      className: MergeClassNames.mergeClassNames('MaskIcon', replaceExpanded ? 'MaskIconChevronDown' : 'MaskIconChevronRight'),
       type: VirtualDomElements.Div,
     },
   ]

@@ -1,13 +1,19 @@
 import { ViewletCommand } from '@lvce-editor/constants'
 import type { EditorState } from '../State/State.ts'
+import * as DiffAdditionalFocus from '../DiffAdditionalFocus/DiffAdditionalFocus.ts'
 import * as DiffCss from '../DiffCss/DiffCss.ts'
+import * as DiffFocus from '../DiffFocus/DiffFocus.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
+import * as GetBracketMatchesVirtualDom from '../GetBracketMatchesVirtualDom/GetBracketMatchesVirtualDom.ts'
 import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
 import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
 import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
+import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
+import { getPrimaryCursorRowIndex } from '../GetPrimaryCursorRowIndex/GetPrimaryCursorRowIndex.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
+import * as RenderAdditionalFocusContext from '../RenderAdditionalFocusContext/RenderAdditionalFocusContext.ts'
 import { renderCss as renderCssCommand } from '../RenderCss/RenderCss.ts'
 import { renderWidgets as renderWidgetsCommand } from '../RenderWidgets/RenderWidgets.ts'
 
@@ -17,33 +23,67 @@ const renderLines = {
     if (incrementalEdits !== emptyIncrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
     }
-    const { differences, textInfos } = newState
+    const { diagnostics, differences, endOfLineDecorations, textInfos } = newState
     newState.differences = differences
-    const { highlightedLine, minLineY } = newState
-    const relativeLine = highlightedLine - minLineY
-    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
+    const { highlightedLine, visibleLineIndices, visibleViewLineIndices } = newState
+    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(
+      textInfos,
+      differences,
+      true,
+      highlightedLine,
+      visibleLineIndices,
+      endOfLineDecorations,
+      visibleViewLineIndices,
+      newState.problemsHighlightedRow,
+      diagnostics || [],
+      newState.deltaX,
+      newState.width,
+      newState.charWidth,
+      newState.tabSize,
+      newState.lines,
+      newState.horizontalVirtualizationThreshold,
+      newState.horizontalVisibleRanges,
+    )
     return [/* method */ 'setText', dom]
   },
   isEqual: (oldState: EditorState, newState: EditorState) =>
     oldState.lines === newState.lines &&
+    oldState.foldingRanges === newState.foldingRanges &&
+    oldState.visibleViewLineIndices === newState.visibleViewLineIndices &&
     oldState.tokenizerId === newState.tokenizerId &&
     oldState.minLineY === newState.minLineY &&
     oldState.decorations === newState.decorations &&
     oldState.embeds === newState.embeds &&
+    oldState.endOfLineDecorations === newState.endOfLineDecorations &&
+    oldState.diagnostics === newState.diagnostics &&
     oldState.deltaX === newState.deltaX &&
+    oldState.charWidth === newState.charWidth &&
+    oldState.tabSize === newState.tabSize &&
+    oldState.gutterWidth === newState.gutterWidth &&
+    oldState.horizontalVirtualizationThreshold === newState.horizontalVirtualizationThreshold &&
+    oldState.fontFamily === newState.fontFamily &&
+    oldState.fontSize === newState.fontSize &&
+    oldState.fontWeight === newState.fontWeight &&
+    oldState.letterSpacing === newState.letterSpacing &&
+    oldState.isMonospaceFont === newState.isMonospaceFont &&
     oldState.width === newState.width &&
     oldState.highlightedLine === newState.highlightedLine &&
+    oldState.problemsHighlightedRow === newState.problemsHighlightedRow &&
     oldState.debugEnabled === newState.debugEnabled,
 }
 
 const renderSelections = {
   apply: (oldState: any, newState: any) => {
     const { cursorInfos = [], selectionInfos = [] } = newState
-    const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos)
-    const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos)
+    const cursorsDom = newState.focused ? GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos) : []
+    const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos, newState.focused, newState.roundedSelection)
     return [/* method */ 'setSelections', cursorsDom, selectionsDom]
   },
-  isEqual: (oldState: any, newState: any) => oldState.cursorInfos === newState.cursorInfos && oldState.selectionInfos === newState.selectionInfos,
+  isEqual: (oldState: any, newState: any) =>
+    oldState.cursorInfos === newState.cursorInfos &&
+    oldState.selectionInfos === newState.selectionInfos &&
+    oldState.focused === newState.focused &&
+    oldState.roundedSelection === newState.roundedSelection,
 }
 
 const renderCss = {
@@ -53,7 +93,7 @@ const renderCss = {
 
 const renderFocus = {
   apply: (oldState: EditorState, newState: EditorState) => [/* method */ 'setFocused', newState.focused],
-  isEqual: (oldState: EditorState, newState: EditorState) => oldState.focused === newState.focused,
+  isEqual: DiffFocus.isEqual,
 }
 
 const renderFocusContext = {
@@ -62,43 +102,67 @@ const renderFocusContext = {
 }
 
 const renderAdditionalFocusContext = {
-  apply(oldState: EditorState, newState: EditorState) {
-    if (newState.additionalFocus) {
-      return ['Viewlet.setAdditionalFocus', newState.uid, newState.additionalFocus]
-    }
-    return ['viewlet.unsetAdditionalFocus', newState.uid, newState.additionalFocus]
-  },
-  isEqual: (oldState: EditorState, newState: EditorState) => oldState.additionalFocus === newState.additionalFocus,
+  apply: RenderAdditionalFocusContext.renderAdditionalFocusContext,
+  isEqual: DiffAdditionalFocus.isEqual,
 }
 
 const renderDecorations = {
   apply(oldState: EditorState, newState: EditorState) {
-    const dom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(newState.visualDecorations || [])
+    const textDecorationsDom = newState.textDecorationDom || []
+    const diagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(newState.visualDecorations || [])
+    const bracketMatchesDom = GetBracketMatchesVirtualDom.getBracketMatchesVirtualDom(newState.bracketMatchInfos || [])
+    const dom = [...diagnosticsDom, ...bracketMatchesDom, ...textDecorationsDom]
     return ['setDecorationsDom', dom]
   },
-  isEqual: (oldState: EditorState, newState: EditorState) => oldState.visualDecorations === newState.visualDecorations,
+  isEqual: (oldState: EditorState, newState: EditorState) =>
+    oldState.visualDecorations === newState.visualDecorations &&
+    oldState.bracketMatchInfos === newState.bracketMatchInfos &&
+    oldState.textDecorationDom === newState.textDecorationDom,
 }
 
 const renderGutterInfo = {
   apply(oldState: EditorState, newState: EditorState) {
-    const { lineNumbers, maxLineY, minLineY } = newState
-    if (!lineNumbers) {
-      return []
+    const {
+      breakPoints,
+      gutterDecorations,
+      highlightActiveLineNumber,
+      lightBulbRowIndex,
+      lineNumbers,
+      maxLineY,
+      minLineY,
+      primarySelectionIndex,
+      selections,
+      visibleLineIndices,
+      visibleViewLineIndices = [],
+    } = newState
+    if (!lineNumbers && breakPoints.length === 0 && lightBulbRowIndex === -1 && gutterDecorations.length === 0) {
+      return ['renderGutter', []]
     }
-    const gutterInfos = []
-    for (let i = minLineY; i < maxLineY; i++) {
-      gutterInfos.push(i + 1)
-    }
-    const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos)
+    const gutterLineIndices = visibleViewLineIndices.length > 0 ? visibleViewLineIndices : visibleLineIndices
+    const gutterInfos = getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, gutterLineIndices, lightBulbRowIndex, gutterDecorations)
+    const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
+    const activeLineNumber = highlightActiveLineNumber ? primaryCursorRowIndex + 1 : -1
+    const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos, activeLineNumber)
     return ['renderGutter', dom]
   },
   isEqual: (oldState: EditorState, newState: EditorState) =>
-    oldState.lineNumbers === newState.lineNumbers && oldState.minLineY === newState.minLineY && oldState.maxLineY === newState.maxLineY,
+    oldState.breakPoints === newState.breakPoints &&
+    oldState.gutterDecorations === newState.gutterDecorations &&
+    oldState.lightBulbRowIndex === newState.lightBulbRowIndex &&
+    oldState.foldingRanges === newState.foldingRanges &&
+    oldState.highlightActiveLineNumber === newState.highlightActiveLineNumber &&
+    oldState.lineNumbers === newState.lineNumbers &&
+    oldState.minLineY === newState.minLineY &&
+    oldState.maxLineY === newState.maxLineY &&
+    oldState.visibleViewLineIndices === newState.visibleViewLineIndices &&
+    (!newState.highlightActiveLineNumber ||
+      getPrimaryCursorRowIndex(oldState.selections, oldState.primarySelectionIndex) ===
+        getPrimaryCursorRowIndex(newState.selections, newState.primarySelectionIndex)),
 }
 
 const renderWidgets = {
   apply: renderWidgetsCommand,
-  isEqual: (oldState: any, newState: any) => oldState.widgets === newState.widgets,
+  isEqual: (oldState: any, newState: any) => oldState.widgets === newState.widgets && oldState.widgetRevision === newState.widgetRevision,
   multiple: true,
 }
 

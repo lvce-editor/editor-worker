@@ -4,8 +4,52 @@ import * as EditorStrings from '../EditorStrings/EditorStrings.ts'
 export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
   return [
     {
+      id: 'Editor.undo',
+      label: EditorStrings.undo(),
+    },
+    {
+      id: 'Editor.redo',
+      label: EditorStrings.redo(),
+    },
+    {
+      id: 'Editor.cursorUndo',
+      label: EditorStrings.cursorUndo(),
+    },
+    {
+      id: 'Editor.expandSelection',
+      label: EditorStrings.editorExpandSelection(),
+    },
+    {
+      id: 'Editor.shrinkSelection',
+      label: EditorStrings.editorShrinkSelection(),
+    },
+    {
+      id: 'Editor.fold',
+      label: EditorStrings.fold(),
+    },
+    {
+      id: 'Editor.unfold',
+      label: EditorStrings.unfold(),
+    },
+    {
+      id: 'Editor.deleteLine',
+      label: EditorStrings.deleteLine(),
+    },
+    {
+      id: 'Editor.incrementSelection',
+      label: EditorStrings.editorIncrementSelection(),
+    },
+    {
+      id: 'Editor.decrementSelection',
+      label: EditorStrings.editorDecrementSelection(),
+    },
+    {
       id: 'Editor.format',
       label: EditorStrings.formatDocument(),
+    },
+    {
+      id: 'Editor.organizeImports',
+      label: EditorStrings.editorOrganizeImports(),
     },
     {
       id: 'Editor.showHover',
@@ -28,12 +72,20 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       label: EditorStrings.editorGoToDefinition(),
     },
     {
+      id: 'Editor.goToBracket',
+      label: EditorStrings.goToBracket(),
+    },
+    {
       id: 'Editor.goToTypeDefinition',
       label: EditorStrings.editorGoToTypeDefinition(),
     },
     {
       id: 'Editor.selectInsideString',
       label: EditorStrings.editorSelectInsideString(),
+    },
+    {
+      id: 'Editor.selectToBracket',
+      label: EditorStrings.selectToBracket(),
     },
     {
       aliases: ['Indent More', 'DeIndent'],
@@ -66,6 +118,10 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
       label: EditorStrings.toggleBlockComment(),
     },
     {
+      id: 'Editor.toggleBreakpoint',
+      label: EditorStrings.toggleBreakpoint(),
+    },
+    {
       id: 'Editor.openColorPicker',
       label: EditorStrings.editorOpenColorPicker(),
     },
@@ -92,6 +148,14 @@ export const getQuickPickMenuEntries = (): readonly QuickPickMenuEntry[] => {
     {
       id: 'Editor.showSourceActions2',
       label: EditorStrings.sourceAction(),
+    },
+    {
+      id: 'Editor.toggleMinimap',
+      label: EditorStrings.viewToggleMinimap(),
+    },
+    {
+      id: 'Editor.toggleCompletion',
+      label: EditorStrings.editorToggleSuggestWidget(),
     },
   ]
 }

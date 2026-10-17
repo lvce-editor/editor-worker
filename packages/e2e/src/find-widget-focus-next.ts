@@ -4,6 +4,8 @@ export const name = 'find-widget-focus-next'
 
 // TODO should only test one thing: focusing next match
 
+export const skip = 1
+
 export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()

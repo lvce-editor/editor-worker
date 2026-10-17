@@ -2,6 +2,7 @@ import { WhenExpression } from '@lvce-editor/constants'
 import type { Widget } from '../Widget/Widget.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as HasWidget from '../HasWidget/HasWidget.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
 const getWidgetIndex = <K>(widgets: readonly Widget<K>[], widgetId: number, uid: number): number => {
   return widgets.findIndex((widget: any) => widget.id === widgetId && widget.newState.uid === uid)
@@ -34,13 +35,14 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
   focusKey: number,
   editor: any,
   factory: () => T,
-  newStateGenerator: (state: K, uid: number) => K | Promise<K>,
+  newStateGenerator: (state: K, uid: number) => K | undefined | Promise<K | undefined>,
   fullFocus?: boolean,
 ): Promise<any> => {
-  const { widgets } = editor
+  const { widgets = [] } = editor
   if (HasWidget.hasWidget(widgets, widgetId)) {
     return editor
   }
+  const widgetRevision = WidgetRevision.next(editor.uid)
   const widget = factory()
   const initialState = {
     ...widget.newState,
@@ -52,18 +54,31 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
     newState: initialState,
   }
   const newWidgets = [...widgets, stagedWidget]
-  const newFocus = !fullFocus
   const stagedEditor = {
     ...editor,
     additionalFocus: fullFocus ? 0 : focusKey,
     focus: fullFocus ? focusKey : WhenExpression.FocusEditorText,
-    focused: newFocus,
+    focused: !fullFocus,
+    widgetRevision,
     widgets: newWidgets,
   }
   if (fullFocus) {
     EditorStates.set(editor.uid, editor, stagedEditor)
   }
   const newState = await newStateGenerator(initialState, editor.uid)
+  if (WidgetRevision.get(editor.uid) !== widgetRevision) {
+    return getLatestEditor(editor.uid, editor)
+  }
+  if (!newState) {
+    if (fullFocus) {
+      const latestEditor = getLatestEditor(editor.uid, stagedEditor)
+      if (latestEditor === stagedEditor) {
+        EditorStates.set(editor.uid, stagedEditor, editor)
+      }
+      return latestEditor === stagedEditor ? editor : latestEditor
+    }
+    return editor
+  }
   const latestState = {
     ...newState,
     editorUid: editor.uid,

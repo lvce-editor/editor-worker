@@ -1,13 +1,17 @@
-import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
+import * as ExtensionManagementEditor from '../ExtensionManagementEditor/ExtensionManagementEditor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { editorReplaceSelections } from './EditorCommandReplaceSelection.ts'
 
 export const typeWithAutoClosingTag = async (editor: any, text: string) => {
   const offset = TextDocument.offsetAt(editor, editor.selections[0], editor.selections[1])
-  // @ts-ignore
-  const result = await RendererWorker.invoke('ExtensionHostClosingTagCompletion.executeClosingTagProvider', editor, offset, text)
+  const result = await ExtensionManagementEditor.execute({
+    args: [offset, text],
+    editor,
+    kind: 'closing tag',
+    method: 'provideClosingTag',
+  })
   if (!result) {
     const changes = editorReplaceSelections(editor, [text], EditOrigin.EditorType)
     return Editor.scheduleDocumentAndCursorsSelections(editor, changes)

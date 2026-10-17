@@ -1,5 +1,5 @@
-export const AppendToBody = 'Viewlet.appendToBody'
 export const Focus = 'focus'
+export const FocusSelector = 'Viewlet.focusSelector'
 export const RegisterEventListeners = 'Viewlet.registerEventListeners'
 export const SetSelectionByName = 'Viewlet.setSelectionByName'
 export const SetValueByName = 'Viewlet.setValueByName'

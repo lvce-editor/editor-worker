@@ -1,5 +1,6 @@
 export interface SourceActionState {
   readonly commands: readonly any[]
+  readonly editorUid: number
   readonly focusedIndex: number
   readonly height: number
   readonly maxHeight: number

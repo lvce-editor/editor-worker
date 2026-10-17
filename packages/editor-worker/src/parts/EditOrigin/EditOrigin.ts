@@ -1,4 +1,5 @@
 // TODO use numeric enum
+export const ColorPicker = 'colorPicker'
 export const CompositionUpdate = 'compositionUpdate'
 export const ContentEditableInput = 'contentEditableInput'
 export const Delete = 'delete'
@@ -9,6 +10,7 @@ export const EditorPasteText = 'editorPasteText'
 export const EditorSnippet = 'editorSnippet'
 export const EditorType = 'editorType'
 export const EditorTypeWithAutoClosing = 'editorTypeWithAutoClosing'
+export const EditorTextDrag = 'editorTextDrag'
 export const Format = 'format'
 export const IndentLess = 'indentLess'
 export const IndentMore = 'indentMore'

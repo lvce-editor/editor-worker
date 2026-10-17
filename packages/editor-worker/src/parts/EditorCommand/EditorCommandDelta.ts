@@ -1,4 +1,5 @@
 import * as Character from '../Character/Character.ts'
+import * as GetLineLength from '../GetLineLength/GetLineLength.ts'
 import * as TextSegmenter from '../TextSegmenter/TextSegmenter.ts'
 
 /* eslint-disable sonarjs/super-linear-regex */
@@ -50,7 +51,7 @@ export const lineCharacterStart = (line: string, columnIndex: number) => {
 }
 
 export const lineEnd = (line: string, columnIndex: number) => {
-  return line.length - columnIndex
+  return GetLineLength.getLineLength(line) - columnIndex
 }
 
 const tryRegexArray = (partialLine: string, regexArray: RegExp[]) => {
