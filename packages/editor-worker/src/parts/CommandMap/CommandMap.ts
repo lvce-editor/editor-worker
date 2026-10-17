@@ -194,6 +194,7 @@ import * as RefreshGutterDecorations from '../RefreshGutterDecorations/RefreshGu
 import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 import { render2 } from '../Render2/Render2.ts'
+import { renderDirect2 } from '../RenderDirect2/RenderDirect2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
@@ -395,6 +396,7 @@ export const commandMap = {
   'Editor.handleBlur': wrapCommand(EditorBlur.handleBlur),
   'Editor.handleClickAtPosition': wrapCommand(handleClickAtPosition),
   'Editor.handleContextMenu': wrapCommand(EditorCommandHandleContextMenu.handleContextMenu),
+  'Editor.handleDirectMessagePort': (port: MessagePort) => HandleMessagePort.handleDirectMessagePort(port, commandMap),
   'Editor.handleDoubleClick': wrapCommand(HandleDoubleClick.handleDoubleClick),
   'Editor.handleFocus': wrapFocusCommand(HandleFocus.handleFocus),
   'Editor.handleKeyUp': wrapCommand(HandleKeyUp.handleKeyUp, true),
@@ -457,6 +459,7 @@ export const commandMap = {
   'Editor.refreshTextDecorations': wrapCommand(refreshTextDecorations),
   'Editor.render': RenderEditor.renderEditor,
   'Editor.render2': render2,
+  'Editor.renderDirect2': renderDirect2,
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
@@ -553,9 +556,9 @@ export const commandMap = {
   'EditorSourceAction.selectCurrent': EditorSourceActionWidget.selectCurrent,
   'EditorSourceAction.selectIndex': EditorSourceActionWidget.selectIndex,
   'EditorSourceAction.selectItem': EditorSourceActionWidget.selectItem,
+
   'EditorSourceAction.toggleDetails': EditorSourceActionWidget.toggleDetails,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
-
   'FindWidget.close': EditorFindWidget.close,
   'FindWidget.focusCloseButton': EditorFindWidget.focusCloseButton,
   'FindWidget.focusFind': EditorFindWidget.focusFind,
