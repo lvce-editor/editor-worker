@@ -3,6 +3,16 @@ import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as GetWordMatchAtPosition from '../GetWordMatchAtPosition/GetWordMatchAtPosition.ts'
 // TODO handle virtual space
 
+const getOccurrenceIndex = (line: string, word: string, startIndex: number, caseInsensitive: boolean): number => {
+  if (!caseInsensitive) {
+    return line.indexOf(word, startIndex)
+  }
+  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const expression = new RegExp(escapedWord, 'giu')
+  expression.lastIndex = startIndex
+  return expression.exec(line)?.index ?? -1
+}
+
 // TODO editors behave differently when selecting next occurrence, for example:
 
 // aaa
@@ -21,12 +31,14 @@ import * as GetWordMatchAtPosition from '../GetWordMatchAtPosition/GetWordMatchA
 // - brackets (codemirror) selects position 3 and then selects position 1
 // - sublime selects next position 1, then next position 3
 
-const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
+const getSelectionEditsSingleLineWord = (editor: any) => {
+  const { lines, selections } = editor
   const lastSelectionIndex = selections.length - 4
   const [rowIndex, lastSelectionStartColumnIndex, , lastSelectionEndColumnIndex] = GetSelectionPairs.getSelectionPairs(selections, lastSelectionIndex)
   const line = lines[rowIndex]
   const word = line.slice(lastSelectionStartColumnIndex, lastSelectionEndColumnIndex)
-  const columnIndexAfter = line.indexOf(word, lastSelectionEndColumnIndex)
+  const caseInsensitive = editor.selectedTextOccurrenceMatching === 'caseInsensitive'
+  const columnIndexAfter = getOccurrenceIndex(line, word, lastSelectionEndColumnIndex, caseInsensitive)
   if (columnIndexAfter !== -1) {
     const columnIndexAfterEnd = columnIndexAfter + word.length
     // @ts-ignore
@@ -54,7 +66,7 @@ const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
   }
   for (let i = rowIndex + 1; i < lines.length; i++) {
     const line = lines[i]
-    const columnIndex = line.indexOf(word)
+    const columnIndex = getOccurrenceIndex(line, word, 0, caseInsensitive)
     if (columnIndex !== -1) {
       const columnIndexEnd = columnIndex + word.length
       const newSelections = new Uint32Array(selections.length + 4)
@@ -75,7 +87,7 @@ const getSelectionEditsSingleLineWord = (lines: string[], selections: any) => {
   for (let i = 0; i <= rowIndex; i++) {
     const line = lines[i]
     let columnIndex = -word.length
-    while ((columnIndex = line.indexOf(word, columnIndex + word.length)) !== -1) {
+    while ((columnIndex = getOccurrenceIndex(line, word, columnIndex + word.length, caseInsensitive)) !== -1) {
       let startRowIndex = selections[selectionIndex]
       while (startRowIndex < i && selectionIndex < selections.length) {
         selectionIndex += 4
@@ -155,7 +167,7 @@ export const getSelectNextOccurrenceResult = (editor: any) => {
   }
 
   if (EditorSelection.isEverySelectionSingleLine(editor.selections)) {
-    return getSelectionEditsSingleLineWord(editor.lines, editor.selections)
+    return getSelectionEditsSingleLineWord(editor)
   }
   return undefined
 }

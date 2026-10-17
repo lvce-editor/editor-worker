@@ -101,3 +101,23 @@ test('y - accounts for vertical scroll offset', () => {
 
   expect(position).toBe(160)
 })
+
+test('at - clicking left of the text clamps to the start of the line', async () => {
+  const editor = {
+    charWidth: 10,
+    deltaX: 0,
+    deltaY: 0,
+    fontFamily: 'test',
+    fontSize: 16,
+    fontWeight: 400,
+    gutterWidth: 30,
+    isMonospaceFont: true,
+    letterSpacing: 0,
+    lines: ['abcdef'],
+    rowHeight: 20,
+    tabSize: 2,
+    x: 100,
+    y: 50,
+  }
+  expect(await EditorCommandPosition.at(editor, 100, 55)).toEqual({ columnIndex: 0, rowIndex: 0 })
+})

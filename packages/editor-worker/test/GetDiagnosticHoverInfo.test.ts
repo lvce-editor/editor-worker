@@ -40,6 +40,7 @@ test('creates a diagnostic-only popup positioned from the current editor layout'
   await expect(GetDiagnosticHoverInfo.getDiagnosticHoverInfo(editor, diagnostic)).resolves.toEqual({
     diagnostics: [diagnostic],
     documentation: '',
+    documentationVirtualDom: [],
     height: 50,
     lineInfos: [],
     width: 600,

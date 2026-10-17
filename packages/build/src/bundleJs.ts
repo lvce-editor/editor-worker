@@ -7,13 +7,15 @@ import { root } from './root.ts'
 
 const options: RollupOptions = {
   input: join(root, 'packages/editor-worker/src/editorWorkerMain.ts'),
-  preserveEntrySignatures: 'strict',
+  preserveEntrySignatures: 'exports-only',
   treeshake: {
     propertyReadSideEffects: false,
   },
   output: {
-    file: join(root, '.tmp/dist/dist/editorWorkerMain.js'),
+    dir: join(root, '.tmp/dist/dist'),
+    entryFileNames: 'editorWorkerMain.js',
     format: 'es',
+    inlineDynamicImports: true,
     freeze: false,
     generatedCode: {
       constBindings: true,
@@ -59,7 +61,7 @@ export const bundleJs = async (): Promise<void> => {
     input: join(root, 'packages/editor-worker/src/diffSdk.ts'),
   })
   try {
-    await sdk.write({ ...output, file: join(root, '.tmp/dist/dist/diff-sdk.js') })
+    await sdk.write({ ...output, entryFileNames: 'diff-sdk.js' })
   } finally {
     await sdk.close()
   }

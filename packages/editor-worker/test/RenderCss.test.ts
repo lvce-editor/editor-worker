@@ -20,12 +20,14 @@ test('renderCss', () => {
     ViewletCommand.SetCss,
     1,
     `.Editor[data-uid="1"] {
+  --EditorRowContain: size style;
   --EditorRowHeight: 20px;
   --ScrollBarHeight: 24px;
   --ScrollBarTop: 8px;
   --ScrollBarWidth: 40px;
   --ScrollBarLeft: 20px;
 }
+.EditorRow { contain: var(--EditorRowContain, strict); }
 .Editor[data-uid="1"] .SelectionTopLeft { border-top-left-radius: 3px; }
 .Editor[data-uid="1"] .SelectionTopRight { border-top-right-radius: 3px; }
 .Editor[data-uid="1"] .SelectionBottomRight { border-bottom-right-radius: 3px; }
@@ -43,15 +45,6 @@ test('renderCss', () => {
 .Editor[data-uid="1"] .GutterRows {
   display: flex;
   flex-direction: column;
-}
-.Editor[data-uid="1"] .EditorRow,
-.Editor[data-uid="1"] .LineNumber {
-  flex: none;
-}
-.Editor[data-uid="1"] .EditorRow {
-  contain: size style;
-  height: var(--EditorRowHeight);
-  line-height: var(--EditorRowHeight);
 }
 .Editor[data-uid="1"] .MergeConflictActions,
 .Editor[data-uid="1"] .MergeConflictActionsGutter {
@@ -93,10 +86,6 @@ test('renderCss', () => {
   margin-left: 2em;
   user-select: none;
 }
-.Editor[data-uid="1"] .LineNumber {
-  contain: content;
-  position: relative;
-}
 .Editor[data-uid="1"] .EditorGutterDecoration {
   bottom: 0;
   left: 0;
@@ -117,6 +106,10 @@ test('renderCss', () => {
   top: calc(50% - 1px);
 }
 .Editor[data-uid="1"] .R{background-color:#add6ff40}
+.Editor[data-uid="1"] .EditorTextDecoration {
+  position: absolute;
+  pointer-events: none;
+}
 .Editor[data-uid="1"] .BracketMatch {
   position: absolute;
   box-sizing: border-box;

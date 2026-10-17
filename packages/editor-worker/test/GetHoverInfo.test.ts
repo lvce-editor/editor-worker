@@ -17,6 +17,9 @@ jest.unstable_mockModule('../src/parts/TokenizeCodeBlock/TokenizeCodeBlock.ts', 
   tokenizeCodeBlock,
 }))
 
+const getVirtualDomFromMarkdown = jest.fn<(...args: any[]) => Promise<any[]>>(async () => [])
+jest.unstable_mockModule('../src/parts/Markdown/Markdown.ts', () => ({ getVirtualDomFromMarkdown }))
+
 const GetHoverInfo = await import('../src/parts/GetHoverInfo/GetHoverInfo.ts')
 
 const diagnostic = {
@@ -49,6 +52,7 @@ const editor = {
 afterEach(() => {
   Editors.dispose(editor.uid)
   getHover.mockReset()
+  getVirtualDomFromMarkdown.mockClear()
   measureTextBlockHeight.mockClear()
   tokenizeCodeBlock.mockClear()
 })
@@ -64,6 +68,7 @@ test('returns diagnostic hover info when no language hover provider exists', asy
 
   expect(result).toEqual({
     documentation: '',
+    documentationVirtualDom: [],
     height: 30,
     lineInfos: [],
     matchingDiagnostics: [diagnostic],
@@ -91,6 +96,24 @@ test('sizes a wrapped diagnostic hover to its measured content height', async ()
     '20px',
     582,
   )
+})
+
+test('allows for a line of wrapping variance in language hover height', async () => {
+  const displayString =
+    '(alias) new OrbitControls<THREE.PerspectiveCamera>(object: THREE.PerspectiveCamera, domElement?: HTMLElement | SVGElement | null): OrbitControls<THREE.PerspectiveCamera>'
+  getHover.mockResolvedValue({ displayString, displayStringLanguageId: 'typescript' })
+  tokenizeCodeBlock.mockResolvedValueOnce([[displayString]])
+  measureTextBlockHeight.mockResolvedValueOnce(80)
+  const editorWithoutDiagnostics = { ...editor, diagnostics: [] }
+  Editors.set(editor.uid, editorWithoutDiagnostics as any, editorWithoutDiagnostics as any)
+
+  const result = await GetHoverInfo.getEditorHoverInfo(editor.uid, {
+    columnIndex: 8,
+    rowIndex: 0,
+  })
+
+  expect(result).toEqual(expect.objectContaining({ height: 112 }))
+  expect(measureTextBlockHeight).toHaveBeenCalledWith(displayString, 'Fira Code', 15, '20px', 582)
 })
 
 test('sizes a combined diagnostic and language hover to its content', async () => {
@@ -121,6 +144,31 @@ test('returns no hover info outside the diagnostic range when no language hover 
   })
 
   expect(result).toBeUndefined()
+})
+
+test('returns no hover info when the language hover has no content', async () => {
+  getHover.mockResolvedValue({})
+  const editorWithoutDiagnostics = { ...editor, diagnostics: [] }
+  Editors.set(editor.uid, editorWithoutDiagnostics as any, editorWithoutDiagnostics as any)
+
+  const result = await GetHoverInfo.getEditorHoverInfo(editor.uid, {
+    columnIndex: 8,
+    rowIndex: 0,
+  })
+
+  expect(result).toBeUndefined()
+})
+
+test('returns matching diagnostics when the language hover has no content', async () => {
+  getHover.mockResolvedValue({ displayString: '', documentation: '' })
+  Editors.set(editor.uid, editor as any, editor as any)
+
+  const result = await GetHoverInfo.getEditorHoverInfo(editor.uid, {
+    columnIndex: 8,
+    rowIndex: 0,
+  })
+
+  expect(result).toEqual(expect.objectContaining({ matchingDiagnostics: [diagnostic] }))
 })
 
 test('returns diagnostic hover info for an empty diagnostic range', async () => {
@@ -210,4 +258,18 @@ test('clamps the hover width and horizontal position to the editor', async () =>
   })
 
   expect(result).toEqual(expect.objectContaining({ x: 200 }))
+})
+
+test('converts documentation while preserving signatures and matching diagnostics', async () => {
+  const documentation = 'Read [API](https://example.com).\n\n```ts\nconst answer = 42\n```'
+  const documentationVirtualDom = [{ childCount: 0, className: 'Markdown', type: 4 }]
+  getVirtualDomFromMarkdown.mockResolvedValueOnce(documentationVirtualDom)
+  getHover.mockResolvedValue({ displayString: 'signature', documentation })
+  tokenizeCodeBlock.mockResolvedValueOnce([['signature']])
+  Editors.set(editor.uid, editor as any, editor as any)
+  const result = await GetHoverInfo.getEditorHoverInfo(editor.uid, { columnIndex: 8, rowIndex: 0 })
+  expect(getVirtualDomFromMarkdown).toHaveBeenCalledWith(documentation)
+  expect(result).toEqual(
+    expect.objectContaining({ documentation, documentationVirtualDom, lineInfos: [['signature']], matchingDiagnostics: [diagnostic] }),
+  )
 })

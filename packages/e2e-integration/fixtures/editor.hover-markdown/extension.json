@@ -1,0 +1,20 @@
+{
+  "id": "test.hover-markdown",
+  "name": "Hover Markdown Test",
+  "description": "Test hover documentation with Markdown links and code blocks",
+  "activation": ["onLanguage:xyz", "onHover:xyz"],
+  "browser": "main.js",
+  "languages": [
+    {
+      "id": "xyz",
+      "extensions": [".xyz"]
+    }
+  ],
+  "isolated": true,
+  "hoverProviders": [
+    {
+      "id": "editor-hover-markdown",
+      "languageId": "xyz"
+    }
+  ]
+}

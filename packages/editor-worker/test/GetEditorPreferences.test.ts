@@ -13,6 +13,17 @@ test('whitespace token combining defaults to enabled and respects explicit prefe
   expect((await getEditorPreferences()).combineWhitespaceTokens).toBe(false)
 })
 
+test('selected text occurrence matching defaults to case-sensitive and ignores invalid values', async () => {
+  getPreference.mockResolvedValue(undefined)
+  expect((await getEditorPreferences()).selectedTextOccurrenceMatching).toBe('caseSensitive')
+
+  getPreference.mockImplementation(async (key) => (key === 'editor.selectedTextOccurrenceMatching' ? 'invalid' : undefined))
+  expect((await getEditorPreferences()).selectedTextOccurrenceMatching).toBe('caseSensitive')
+
+  getPreference.mockImplementation(async (key) => (key === 'editor.selectedTextOccurrenceMatching' ? 'caseInsensitive' : undefined))
+  expect((await getEditorPreferences()).selectedTextOccurrenceMatching).toBe('caseInsensitive')
+})
+
 test('boolean preferences retain their defaults and explicit values', async () => {
   getPreference.mockResolvedValue(undefined)
   expect(await getEditorPreferences()).toMatchObject({
@@ -20,8 +31,11 @@ test('boolean preferences retain their defaults and explicit values', async () =
     diagnosticsEnabled: false,
     dragAndDropEnabled: true,
     formatOnSave: false,
-    hoverEnabled: true,
+    horizontalVirtualizationThreshold: 500,
+    hoverDelay: 200,
+    hoverEnabled: false,
     insertSpaces: true,
+    messageDelay: 3000,
     roundedSelection: false,
   })
   for (const value of [false, true]) {
@@ -35,5 +49,49 @@ test('boolean preferences retain their defaults and explicit values', async () =
       insertSpaces: value,
       roundedSelection: value,
     })
+  }
+})
+
+test('horizontal virtualization threshold defaults to 500 and normalizes valid values', async () => {
+  getPreference.mockResolvedValue(undefined)
+  expect((await getEditorPreferences()).horizontalVirtualizationThreshold).toBe(500)
+  getPreference.mockImplementation(async (key) => (key === 'editor.horizontalVirtualizationThreshold' ? '750' : undefined))
+  expect((await getEditorPreferences()).horizontalVirtualizationThreshold).toBe(750)
+  for (const value of [-1, 100_001, NaN, Infinity]) {
+    getPreference.mockImplementation(async (key) => (key === 'editor.horizontalVirtualizationThreshold' ? value : undefined))
+    expect((await getEditorPreferences()).horizontalVirtualizationThreshold).toBe(500)
+  }
+})
+
+test('normalizes the hover delay and falls back for invalid values', async () => {
+  getPreference.mockImplementation(async (key) => {
+    if (key === 'editor.hoverDelay') {
+      return '350'
+    }
+    return undefined
+  })
+  expect((await getEditorPreferences()).hoverDelay).toBe(350)
+
+  getPreference.mockImplementation(async (key) => {
+    if (key === 'editor.hoverDelay') {
+      return -1
+    }
+    return undefined
+  })
+  expect((await getEditorPreferences()).hoverDelay).toBe(200)
+})
+
+test('normalizes the message delay and falls back for invalid values', async () => {
+  getPreference.mockImplementation(async (key) => {
+    if (key === 'editor.messageDelay') {
+      return '4500'
+    }
+    return undefined
+  })
+  expect((await getEditorPreferences()).messageDelay).toBe(4500)
+
+  for (const value of [-1, 10_001, NaN, Infinity]) {
+    getPreference.mockImplementation(async (key) => (key === 'editor.messageDelay' ? value : undefined))
+    expect((await getEditorPreferences()).messageDelay).toBe(3000)
   }
 })

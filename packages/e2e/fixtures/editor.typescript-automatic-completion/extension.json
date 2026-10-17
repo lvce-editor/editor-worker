@@ -1,0 +1,9 @@
+{
+  "id": "test.typescript-automatic-completion",
+  "name": "TypeScript automatic completions",
+  "activation": ["onLanguage:typescript", "onCompletion:typescript"],
+  "browser": "dist/main.js",
+  "isolated": true,
+  "completionProviders": [{ "id": "typescript-automatic-test", "languageId": "typescript" }],
+  "languages": [{ "id": "typescript", "extensions": [".quickts"] }]
+}

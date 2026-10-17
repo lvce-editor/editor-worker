@@ -50,3 +50,15 @@ test('render - associates the editor uid with focus context commands', () => {
 
   expect(EditorFindWidget.render(widget as any)).toEqual([[RenderMethod.SetFocusContext, 3, 43]])
 })
+
+test('render - forwards incremental patches to the widget without wrapping them', () => {
+  const patches = [[1, 2, '1 of 3']]
+  const command = ['Viewlet.setPatches', 7, patches]
+  const widget = {
+    id: WidgetId.Find,
+    newState: { commands: [command], editorUid: 3, uid: 7 },
+    oldState: { commands: [], editorUid: 3, uid: 7 },
+  }
+
+  expect(EditorFindWidget.render(widget as any)).toEqual([command])
+})

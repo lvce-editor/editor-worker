@@ -1,45 +1,15 @@
-// @ts-ignore
-import * as Clamp from '../Clamp/Clamp.ts'
-// @ts-ignore
-import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
+import { clamp } from '../Clamp/Clamp.ts'
+import { getHorizontalScrollDimensions } from '../GetHorizontalScrollDimensions/GetHorizontalScrollDimensions.ts'
+import { getScrollBarSize } from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
-// @ts-ignore
-const getNewPercent = (size, scrollBarSize, relativeX) => {
-  if (relativeX <= 0) {
-    return 0
-  }
-  // if (relativeY <= editor.scrollBarHeight / 2) {
-  //   // clicked at top
-  //   return 0
-  // }
-  if (relativeX <= size - scrollBarSize / 2) {
-    // clicked in middle
-    return relativeX / (size - scrollBarSize)
-  }
-  // clicked at bottom
-  return 1
-}
-
-// @ts-ignore
-export const handleScrollBarHorizontalMove = (state, eventX) => {
-  const { handleOffsetX, longestLineWidth, width, x } = state
-  if (width > longestLineWidth) {
-    return {
-      ...state,
-      deltaX: 0,
-      scrollBarWidth: 0,
-    }
-  }
-  const spaceRight = 20 // TODO make this configurable
-  const normalizedEventX = Clamp.clamp(eventX, x, x + width)
-  const relativeX = normalizedEventX - x - handleOffsetX
-  const scrollBarWidth = ScrollBarFunctions.getScrollBarWidth(width, longestLineWidth)
-  const finalDeltaX = longestLineWidth - width + spaceRight
-  const newPercent = getNewPercent(width, scrollBarWidth, relativeX)
-  const clampedPercent = Clamp.clamp(newPercent, 0, 1)
-  const newDeltaX = clampedPercent * finalDeltaX
+export const handleScrollBarHorizontalMove = (state: any, eventX: number) => {
+  const { handleOffsetX, longestLineWidth, minimumSliderSize } = state
+  const { width, x } = getHorizontalScrollDimensions(state)
+  const scrollBarWidth = getScrollBarSize(width, longestLineWidth, minimumSliderSize)
+  const travel = width - scrollBarWidth
+  const percent = travel > 0 ? clamp((eventX - x - handleOffsetX) / travel, 0, 1) : 0
   return {
     ...state,
-    deltaX: newDeltaX,
+    deltaX: percent * Math.max(0, longestLineWidth - width),
   }
 }

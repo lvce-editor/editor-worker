@@ -1,0 +1,46 @@
+import type { Test } from '@lvce-editor/test-with-playwright'
+
+const expectResponsive = async (operation: Promise<void>): Promise<void> => {
+  let timeout: ReturnType<typeof setTimeout> | undefined
+  try {
+    await Promise.race([
+      operation,
+      new Promise<never>((_resolve, reject) => {
+        timeout = setTimeout(() => reject(new Error('UI operation was blocked by the pending hover provider')), 2000)
+      }),
+    ])
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+export const name = 'editor.hover-pending-panel'
+
+export const test: Test = async ({ Command, Editor, expect, Extension, FileSystem, Locator, Main, Panel, Settings, Workspace }) => {
+  await Settings.update({ 'editor.diagnostics': false, 'editor.hover': true })
+  await Extension.addWebExtension(import.meta.resolve('../fixtures/editor.hover-pending'))
+  const tmpDir = await FileSystem.getTmpDir()
+  await Workspace.setPath(tmpDir)
+  for (let cycle = 0; cycle < 3; cycle++) {
+    const uri = `${tmpDir}/target-${Date.now()}-${cycle}.pending-hover`
+    await FileSystem.writeFile(uri, 'hover target')
+    await Main.closeAllEditors()
+    await Main.openUri(uri)
+    await Editor.setCursor(0, 0)
+    await Panel.openProblems()
+    const pending = Command.execute('Editor.showHover', { columnIndex: 0, rowIndex: 0 })
+    await Command.executeExtensionCommand('pendingHover.wait')
+    try {
+      await expectResponsive(Panel.select('Output'))
+      await expectResponsive(Panel.select('Problems'))
+      await expectResponsive(Panel.close())
+      const panel = Locator('.Panel')
+      await expect(panel).toBeHidden()
+    } finally {
+      await Command.executeExtensionCommand('pendingHover.resolve')
+      await pending
+    }
+    const hover = Locator('.EditorHover')
+    await expect(hover).toBeHidden()
+  }
+}

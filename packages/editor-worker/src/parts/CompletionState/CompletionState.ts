@@ -1,4 +1,5 @@
 export interface CompletionState {
+  readonly automatic?: boolean
   readonly commands: readonly any[]
   readonly height: number
   readonly uid: number

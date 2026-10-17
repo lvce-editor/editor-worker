@@ -298,6 +298,14 @@ test('PageDown advances the editor viewport', () => {
   })
 })
 
+test('PageUp moves the editor cursor to the start of the document', () => {
+  expect(GetKeyBindings.getKeyBindings()).toContainEqual({
+    command: 'Editor.cursorDocumentStart',
+    key: KeyCode.PageUp,
+    when: WhenExpression.FocusEditorText,
+  })
+})
+
 test('Ctrl/Cmd+Shift+brackets fold and unfold', () => {
   expect(GetKeyBindings.getKeyBindings()).toEqual(
     expect.arrayContaining([

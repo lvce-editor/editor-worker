@@ -13,12 +13,14 @@ export const getCss = (
   const scrollOffset = EditorViewport.getScrollOffset(deltaY, rowHeight)
   const translate = scrollOffset === 0 ? 'none' : `0px -${scrollOffset}px`
   return `${editorSelector} {
+  --EditorRowContain: size style;
   --EditorRowHeight: ${rowHeight}px;
   --ScrollBarHeight: ${scrollBarHeight}px;
   --ScrollBarTop: ${scrollBarTop}px;
   --ScrollBarWidth: ${scrollBarWidth}px;
   --ScrollBarLeft: ${scrollBarLeft}px;
 }
+.EditorRow { contain: var(--EditorRowContain, strict); }
 ${editorSelector} .SelectionTopLeft { border-top-left-radius: 3px; }
 ${editorSelector} .SelectionTopRight { border-top-right-radius: 3px; }
 ${editorSelector} .SelectionBottomRight { border-bottom-right-radius: 3px; }
@@ -36,15 +38,6 @@ ${editorSelector} .EditorRows,
 ${editorSelector} .GutterRows {
   display: flex;
   flex-direction: column;
-}
-${editorSelector} .EditorRow,
-${editorSelector} .LineNumber {
-  flex: none;
-}
-${editorSelector} .EditorRow {
-  contain: size style;
-  height: var(--EditorRowHeight);
-  line-height: var(--EditorRowHeight);
 }
 ${editorSelector} .MergeConflictActions,
 ${editorSelector} .MergeConflictActionsGutter {
@@ -86,10 +79,6 @@ ${editorSelector} .EditorLineDecoration {
   margin-left: 2em;
   user-select: none;
 }
-${editorSelector} .LineNumber {
-  contain: content;
-  position: relative;
-}
 ${editorSelector} .EditorGutterDecoration {
   bottom: 0;
   left: 0;
@@ -110,6 +99,10 @@ ${editorSelector} .EditorGutterDecorationDeleted {
   top: calc(50% - 1px);
 }
 ${editorSelector} .R{background-color:#add6ff40}
+${editorSelector} .EditorTextDecoration {
+  position: absolute;
+  pointer-events: none;
+}
 ${editorSelector} .BracketMatch {
   position: absolute;
   box-sizing: border-box;

@@ -4,9 +4,19 @@ const provider = {
   id: 'xyz-hover',
   languageId: 'xyz',
   provideHover(textDocument, offset) {
+    if (textDocument.uri.endsWith('/empty.xyz')) {
+      return {}
+    }
+    if (textDocument.uri.endsWith('/hover-fit-content.xyz')) {
+      return {
+        displayString:
+          '(alias) new OrbitControls<THREE.PerspectiveCamera>(object: THREE.PerspectiveCamera, domElement?: HTMLElement | SVGElement | null): OrbitControls<THREE.PerspectiveCamera>',
+        displayStringLanguageId: 'typescript',
+      }
+    }
     return {
       text: 'abc',
-      documentation: 'def',
+      documentation: offset === 11 ? 'def' : offset < 5 ? 'first' : 'second',
     }
   },
 }

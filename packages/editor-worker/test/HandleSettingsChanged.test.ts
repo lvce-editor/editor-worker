@@ -40,6 +40,7 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
     letterSpacing: 1,
     lineNumbers: false,
     rowHeight: 24,
+    selectedTextOccurrenceMatching: 'caseInsensitive',
     tabSize: 4,
   })
   measureCharacterWidth.mockResolvedValue(10)
@@ -83,9 +84,47 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
       maxLineY: 4,
       minLineY: 1,
       rowHeight: 24,
+      selectedTextOccurrenceMatching: 'caseInsensitive',
       tabSize: 4,
       visualDecorations: [],
     }),
   )
   expect(getEditorGutterDecorations).toHaveBeenCalledWith(expect.objectContaining({ fontFamily: 'Fira Code', rowHeight: 24 }))
+})
+
+test('settings changes cannot reenable large file language services', async () => {
+  getEditorPreferences.mockResolvedValue({
+    breadcrumbsEnabled: true,
+    diagnosticsEnabled: true,
+    formatOnSave: true,
+    hoverEnabled: true,
+    minimapEnabled: true,
+    rowHeight: 20,
+  })
+  measureCharacterWidth.mockResolvedValue(8)
+  getPreference.mockResolvedValue(true)
+  const state = {
+    columnWidth: 8,
+    deltaY: 0,
+    diagnostics: [],
+    height: 200,
+    itemHeight: 20,
+    largeFile: true,
+    lines: ['text'],
+    minimumSliderSize: 20,
+    rowHeight: 20,
+    width: 800,
+    x: 0,
+    y: 0,
+  } as unknown as EditorState
+  const result = await handleSettingsChanged(state)
+  expect(result).toMatchObject({
+    breadcrumbsEnabled: false,
+    completionsOnType: false,
+    diagnosticsEnabled: false,
+    formatOnSave: false,
+    hoverEnabled: false,
+    largeFile: true,
+    minimapEnabled: false,
+  })
 })

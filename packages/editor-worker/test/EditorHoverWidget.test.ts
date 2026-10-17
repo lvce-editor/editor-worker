@@ -7,6 +7,7 @@ test('render creates hover DOM for locally loaded hover content', () => {
     content: '',
     diagnostics: [],
     documentation: '',
+    documentationVirtualDom: [],
     editorUid: 1,
     height: 0,
     lineInfos: [],
@@ -18,6 +19,10 @@ test('render creates hover DOM for locally loaded hover content', () => {
   const newState = {
     ...oldState,
     documentation: 'documentation',
+    documentationVirtualDom: [
+      { childCount: 1, type: 4 },
+      { childCount: 0, text: 'documentation', type: 12 },
+    ],
     height: 100,
     lineInfos: [['const', 'TokenKeyword']],
     width: 300,
@@ -31,6 +36,8 @@ test('render creates hover DOM for locally loaded hover content', () => {
     oldState,
   })
 
-  expect(commands[0]).toEqual(['Viewlet.setDom2', 2, expect.any(Array)])
-  expect(commands[1]).toEqual(['Viewlet.setBounds', 2, 20, 40, 300, 100])
+  expect(commands[0]).toEqual(['Viewlet.registerEventListeners', 2, expect.any(Array)])
+  expect(commands[1]).toEqual(['Viewlet.setDom2', 2, expect.any(Array)])
+  expect(commands[2]).toEqual(['Viewlet.setBounds', 2, 20, 40, 300, 100])
+  expect(commands[3]).toEqual(['Viewlet.setUid', 2, 1])
 })

@@ -4,17 +4,22 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "test:hover-pointer": "node src/testHoverPointer.ts",
     "measure": "node --experimental-strip-types src/measureMemory.ts",
-    "measure:visible": "node --experimental-strip-types src/measureMemory.ts --no-headless"
+    "measure:visible": "node --experimental-strip-types src/measureMemory.ts --no-headless",
+    "test:native-paste": "node src/testNativePaste.ts"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "@babel/preset-typescript": "^7.29.7",
+    "@lvce-editor/completion-worker": "4.26.0",
+    "@lvce-editor/extension-management-worker": "4.83.0",
+    "@lvce-editor/find-widget-worker": "3.17.0",
     "@lvce-editor/measure-memory": "^3.11.0",
-    "@lvce-editor/shared-process": "0.115.17",
-    "@lvce-editor/static-server": "0.115.17",
+    "@lvce-editor/shared-process": "0.120.6",
+    "@lvce-editor/static-server": "0.120.6",
     "@rollup/plugin-babel": "^7.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@types/node": "^24.2.1",
