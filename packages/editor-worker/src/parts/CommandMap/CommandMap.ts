@@ -210,10 +210,12 @@ import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import { shouldOpenAutomaticCompletion } from '../ShouldOpenAutomaticCompletion/ShouldOpenAutomaticCompletion.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
+import { trackStateCommands } from '../TrackStateCommands/TrackStateCommands.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
+import { registerStateCommand } from '../WrapCommands/WrapCommands.ts'
 import { wrapCommand, wrapDeferredCommand, wrapFocusCommand, wrapLatestCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
 
 const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
@@ -253,7 +255,7 @@ const wrapTypingCommand = (
     const newEditor = await fn(editor, ...args)
     return shouldDismissHover(...args) ? removeHoverFromEditor(newEditor) : newEditor
   }, preservesTypingCoalescing)
-  return async (uid: number, ...args: any[]) => {
+  const typingCommand = async (uid: number, ...args: any[]) => {
     const dismissHover = shouldDismissHover(...args)
     if (dismissHover) {
       EditorHoverState.clear(uid)
@@ -271,6 +273,10 @@ const wrapTypingCommand = (
         .catch((error) => ErrorHandling.handleError(error, 'Failed to open completion widget: '))
     }
   }
+  if (trackStateCommands) {
+    registerStateCommand(typingCommand)
+  }
+  return typingCommand
 }
 
 const deleteLeftCommand = wrapTypingCommand(

@@ -13,7 +13,16 @@ import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEdit
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
 import * as ScheduleGutterDecorations from '../ScheduleGutterDecorations/ScheduleGutterDecorations.ts'
+import { trackStateCommands } from '../TrackStateCommands/TrackStateCommands.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
+
+const stateCommands = trackStateCommands ? new WeakSet<(...args: any[]) => any>() : undefined
+
+export const registerStateCommand = (command: (...args: any[]) => any): void => {
+  stateCommands?.add(command)
+}
+
+export const isStateCommand = (command: (...args: any[]) => any): boolean => stateCommands?.has(command) ?? false
 
 const cursorUndoLimit = 100
 
@@ -60,9 +69,8 @@ const saveAfterDelay = async (uid: number, token: number): Promise<void> => {
 // TODO wrap commands globally, not per editor
 // TODO only store editor state in editor worker, not in renderer worker also
 
-export const wrapCommand =
-  (fn: any, preservesTypingCoalescing = false, returnState = true) =>
-  async (uid: number, ...args: any[]) => {
+export const wrapCommand = (fn: any, preservesTypingCoalescing = false, returnState = true) => {
+  const command = async (uid: number, ...args: any[]) => {
     return EditorCommandQueue.enqueue(uid, async () => {
       const oldInstance = Editors.get(uid)
       if (!oldInstance) {
@@ -172,6 +180,9 @@ export const wrapCommand =
       return returnState ? finalEditor : undefined
     })
   }
+  stateCommands?.add(command)
+  return command
+}
 
 export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Promise<EditorState>, returnState = true) => {
   const command = wrapCommand(
@@ -184,18 +195,20 @@ export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Prom
     false,
     returnState,
   )
-  return (uid: number) => {
+  const focusCommand = (uid: number) => {
     // DOM focus events can arrive while a queued command is still opening a widget.
     const widgetRevision = Editors.get(uid)?.newState.widgetRevision
     return command(uid, widgetRevision)
   }
+  stateCommands?.add(focusCommand)
+  return focusCommand
 }
 
 // Mouse positions are replaceable; edits and explicit navigation remain ordered.
 // Check before starting provider work and again before committing its result.
 export const wrapLatestCommand = (fn: (editor: EditorState, ...args: any[]) => Promise<EditorState>, returnState = true) => {
   const latest = new Map<number, object>()
-  return async (uid: number, ...args: any[]) => {
+  const latestCommand = async (uid: number, ...args: any[]) => {
     const token = {}
     latest.set(uid, token)
     const command = wrapCommand(
@@ -213,6 +226,8 @@ export const wrapLatestCommand = (fn: (editor: EditorState, ...args: any[]) => P
       if (latest.get(uid) === token) latest.delete(uid)
     }
   }
+  stateCommands?.add(latestCommand)
+  return latestCommand
 }
 
 // Optional provider work must not hold the editing queue while another worker responds.
@@ -222,7 +237,7 @@ export const wrapDeferredCommand = (fn: (editor: EditorState, ...args: any[]) =>
     false,
     returnState,
   )
-  return async (uid: number, ...args: any[]) => {
+  const deferredCommand = async (uid: number, ...args: any[]) => {
     const snapshot = await EditorCommandQueue.enqueue(uid, async () => Editors.get(uid)?.newState)
     if (!snapshot) {
       return undefined
@@ -230,4 +245,6 @@ export const wrapDeferredCommand = (fn: (editor: EditorState, ...args: any[]) =>
     const result = await fn(snapshot, ...args)
     return apply(uid, snapshot, result)
   }
+  stateCommands?.add(deferredCommand)
+  return deferredCommand
 }

@@ -9,11 +9,9 @@ export const setLanguageId = async (editor: any, languageId: string, tokenizePat
       languageId,
     }
   }
-  const { tokenizerId } = editor
   await Tokenizer.loadTokenizer(languageId, tokenizePath)
   const tokenizer = Tokenizer.getTokenizer(languageId)
-  const newTokenizerId = tokenizerId + 1
-  TokenizerMap.set(newTokenizerId, tokenizer)
+  const newTokenizerId = TokenizerMap.register(tokenizer)
 
   return {
     ...editor,

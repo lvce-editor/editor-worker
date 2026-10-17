@@ -10,6 +10,7 @@ import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 
 export interface StandaloneEditorOptions {
+  readonly applicationId?: string
   readonly assetDir: string
   readonly charWidth: number
   readonly content: string
@@ -32,6 +33,7 @@ export interface StandaloneEditorOptions {
 }
 
 export const createStandaloneEditor = async ({
+  applicationId,
   assetDir,
   charWidth,
   content,
@@ -52,12 +54,11 @@ export const createStandaloneEditor = async ({
   x,
   y,
 }: StandaloneEditorOptions): Promise<void> => {
-  createEditor2(id, uri, x, y, width, height, platform, assetDir)
+  createEditor2(id, uri, x, y, width, height, platform, assetDir, undefined, undefined, undefined, applicationId)
   const createdEditor = EditorStates.get(id).newState
 
   await Tokenizer.loadTokenizer(languageId, tokenizePath)
-  const tokenizerId = createdEditor.tokenizerId + 1
-  TokenizerMap.set(tokenizerId, Tokenizer.getTokenizer(languageId))
+  const tokenizerId = TokenizerMap.register(Tokenizer.getTokenizer(languageId))
 
   const configuredEditor = {
     ...createdEditor,
