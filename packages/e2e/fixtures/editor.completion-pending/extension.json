@@ -1,0 +1,20 @@
+{
+  "id": "test.completion-pending",
+  "name": "Completion Pending",
+  "description": "",
+  "activation": ["onLanguage:xyz", "onCompletion:xyz"],
+  "browser": "dist/main.js",
+  "isolated": true,
+  "completionProviders": [
+    {
+      "id": "xyz-completion",
+      "languageId": "xyz"
+    }
+  ],
+  "languages": [
+    {
+      "id": "xyz",
+      "extensions": [".xyz"]
+    }
+  ]
+}

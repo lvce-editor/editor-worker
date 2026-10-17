@@ -1,0 +1,8 @@
+{
+  "comments": {
+    "lineComment": "#"
+  },
+  "indentationRules": {
+    "increaseIndentPattern": "^(?:((?!#).)*(\\[[^\\]#'\"]*)|\\s*(?:async\\s+)?(?:if|elif|else|for|while|try|except|finally|with|def|class|match|case)\\b.*:\\s*(?:#.*)?)$"
+  }
+}

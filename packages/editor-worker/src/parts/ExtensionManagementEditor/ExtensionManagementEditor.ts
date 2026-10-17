@@ -1,4 +1,4 @@
-import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
+import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/ApplicationExtensionRpc.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 const getTextDocument = (editor: any) => ({
@@ -9,8 +9,11 @@ const getTextDocument = (editor: any) => ({
 })
 
 export const execute = async ({ args, editor, kind, method, noProviderFoundResult = undefined }: any) => {
+  if (editor.largeFile) {
+    return noProviderFoundResult
+  }
   const textDocument = getTextDocument(editor)
-  const result = await ExtensionManagementWorker.invoke('Extensions.executeLanguageProvider', kind, method, textDocument, ...args)
+  const result = await ApplicationExtensionRpc.invoke(editor.applicationId, 'Extensions.executeLanguageProvider', kind, method, textDocument, ...args)
   if (!result.found) {
     return noProviderFoundResult
   }

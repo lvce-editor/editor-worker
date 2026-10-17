@@ -2,7 +2,7 @@ import { afterEach, expect, jest, test } from '@jest/globals'
 import { createMockRpc } from '@lvce-editor/rpc'
 import * as EditorStatusDelivery from '../src/parts/EditorStatusDelivery/EditorStatusDelivery.ts'
 
-const status = { column: 1, encoding: 'utf8', endOfLine: 'lf', insertSpaces: true, languageId: 'json', line: 1, tabSize: 2 }
+const status = { column: 1, encoding: 'utf8', endOfLine: 'lf', insertSpaces: true, languageId: 'json', line: 1, selectedChars: 0, tabSize: 2 }
 const setup = (supportsDeltas = true) => {
   const supports = jest.fn(async () => supportsDeltas)
   const changed = jest.fn<(update: unknown) => Promise<void>>().mockResolvedValue(undefined)
@@ -25,7 +25,8 @@ test('sends a full baseline followed by changed fields and suppresses equal valu
   await EditorStatusDelivery.send(1, rpc, status)
   await EditorStatusDelivery.send(1, rpc, { ...status, column: 7 })
   await EditorStatusDelivery.send(1, rpc, { ...status, column: 7 })
-  expect(changed.mock.calls).toEqual([[status], [{ column: 7 }]])
+  await EditorStatusDelivery.send(1, rpc, { ...status, selectedChars: 3 })
+  expect(changed.mock.calls).toEqual([[status], [{ column: 7 }], [{ column: 1, selectedChars: 3 }]])
   expect(supports).toHaveBeenCalledTimes(1)
 })
 

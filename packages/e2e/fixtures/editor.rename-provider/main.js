@@ -3,6 +3,9 @@ import { activate as activateExtensionApi, registerRenameProvider } from '@lvce-
 const renameProvider = {
   id: 'rename-test',
   languageId: 'rename-test',
+  prepareRename(textDocument, offset) {
+    return { offset, uri: textDocument.uri }
+  },
   provideRename(textDocument, offset, newName) {
     return {
       canRename: true,

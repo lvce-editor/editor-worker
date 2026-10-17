@@ -1,4 +1,4 @@
-import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
+import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/ApplicationExtensionRpc.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 
 interface SourceAction {
@@ -15,7 +15,12 @@ export const getEditorSourceActions = async (editorId?: number): Promise<readonl
     return []
   }
   const { newState } = Editors.get(editorId)
-  const extensions: readonly Extension[] = await ExtensionManagementWorker.invoke('Extensions.getAllExtensions', newState.assetDir, newState.platform)
+  const extensions: readonly Extension[] = await ApplicationExtensionRpc.invoke(
+    newState.applicationId,
+    'Extensions.getAllExtensions',
+    newState.assetDir,
+    newState.platform,
+  )
   return extensions
     .filter((extension) => !extension.disabled)
     .flatMap((extension) => extension.codeActions || [])

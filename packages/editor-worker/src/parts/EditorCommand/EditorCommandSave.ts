@@ -11,27 +11,27 @@ import { saveNormalFile } from './EditorCommandSave/saveNormalFile.ts'
 import { saveUntitledFile } from './EditorCommandSave/saveUntitledFile.ts'
 import { showSaveErrorDialog } from './EditorCommandSave/showSaveErrorDialog.ts'
 
-export const save = async (editor: any): Promise<any> => {
+export const save = async (editor: any, skipFormatting = false): Promise<any> => {
   try {
-    const { platform, uri } = editor
-    if (!isUntitledFile(uri) && (await isReadonlyFile(uri))) {
+    const { applicationId, platform, uri } = editor
+    if (!isUntitledFile(uri) && (await isReadonlyFile(uri, applicationId))) {
       return editor
     }
-    const newEditor = await getNewEditor(editor)
+    const newEditor = await getNewEditor(editor, skipFormatting)
     const content = applyLineEndings(TextDocument.getText(newEditor), newEditor.endOfLine)
     if (isUntitledFile(uri)) {
-      const pickedFilePath = await saveUntitledFile(uri, content, platform)
+      const pickedFilePath = await saveUntitledFile(uri, content, platform, applicationId)
       if (pickedFilePath) {
-        if (editor.modified) {
-          await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false)
+        if (newEditor.modified) {
+          await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false, applicationId)
         }
         return { ...newEditor, modified: false, uri: pickedFilePath }
       }
       return newEditor
     }
-    await saveNormalFile(uri, content)
-    if (editor.modified) {
-      await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false)
+    await saveNormalFile(uri, content, applicationId)
+    if (newEditor.modified) {
+      await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false, applicationId)
     }
     return { ...newEditor, modified: false }
   } catch (error) {

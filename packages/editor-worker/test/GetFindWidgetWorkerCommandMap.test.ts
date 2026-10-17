@@ -5,6 +5,7 @@ test('provides editor callbacks to the find widget worker', () => {
   expect(Object.keys(getFindWidgetWorkerCommandMap())).toEqual([
     'Editor.applyDocumentEdits',
     'Editor.closeFind2',
+    'Editor.getFindWidgetFontSize',
     'Editor.getLines2',
     'Editor.getSelections2',
     'Editor.setSelections2',

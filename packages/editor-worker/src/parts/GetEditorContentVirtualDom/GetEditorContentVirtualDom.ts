@@ -17,6 +17,7 @@ const editorContentNode: VirtualDomNode = {
 
 interface EditorContentVirtualDomOptions {
   readonly bracketMatchInfos?: readonly any[]
+  readonly breadcrumbsEnabled?: boolean
   readonly cursorInfos?: readonly any[]
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
@@ -26,32 +27,58 @@ interface EditorContentVirtualDomOptions {
   readonly focused?: boolean
   readonly height?: number
   readonly highlightedLine?: number
+  readonly horizontalVisibleRanges?: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[]
   readonly lineNumbers?: boolean
+  readonly lines?: readonly string[]
+  readonly problemsHighlightedRow?: number
+  readonly roundedSelection?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
+  readonly scrollBarWidth?: number
   readonly selectionInfos?: readonly any[]
+  readonly tabSize?: number
+  readonly textDecorationDom?: readonly VirtualDomNode[]
   readonly textInfos: readonly any[]
+  readonly unnecessaryDiagnostics?: readonly any[]
   readonly visibleLineIndices?: readonly number[]
   readonly visibleViewLineIndices?: readonly number[]
 }
 
 export const getEditorContentVirtualDom = ({
   bracketMatchInfos = [],
+  breadcrumbsEnabled = false,
   cursorInfos = [],
   diagnostics = [],
   differences,
   endOfLineDecorations = [],
   focused = true,
   highlightedLine = -1,
+  horizontalVisibleRanges = [],
   lineNumbers = true,
+  lines = [],
+  problemsHighlightedRow = -1,
+  roundedSelection = false,
   scrollBarDiagnostics = [],
+  scrollBarHeight = 0,
+  scrollBarWidth = 0,
   selectionInfos = [],
+  tabSize = 2,
+  textDecorationDom = [],
   textInfos,
+  unnecessaryDiagnostics = [],
   visibleLineIndices = [],
   visibleViewLineIndices = [],
 }: EditorContentVirtualDomOptions): readonly VirtualDomNode[] => {
   return [
-    editorContentNode,
+    {
+      ...editorContentNode,
+      className: breadcrumbsEnabled ? 'EditorContent EditorBreadcrumbsOffset' : 'EditorContent',
+    },
     ...GetEditorInputVirtualDom.getEditorInputVirtualDom(),
     ...GetEditorLayersVirtualDom.getEditorLayersVirtualDom(
       selectionInfos,
@@ -66,8 +93,15 @@ export const getEditorContentVirtualDom = ({
       bracketMatchInfos,
       focused,
       visibleViewLineIndices,
+      problemsHighlightedRow,
+      roundedSelection,
+      unnecessaryDiagnostics,
+      horizontalVisibleRanges,
+      lines,
+      tabSize,
+      textDecorationDom,
     ),
     ...GetEditorScrollBarDiagnosticsVirtualDom.getEditorScrollBarDiagnosticsVirtualDom(scrollBarDiagnostics),
-    ...GetScrollBarVirtualDom.getScrollBarVirtualDom(),
+    ...GetScrollBarVirtualDom.getScrollBarVirtualDom(scrollBarHeight, scrollBarWidth),
   ]
 }

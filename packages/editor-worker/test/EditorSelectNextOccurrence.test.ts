@@ -108,6 +108,57 @@ test('editorSelectNextOccurrence - reversed selection and more selections possib
   expect(newEditor.selections).toEqual(EditorSelection.fromRanges([0, 3, 0, 0], [0, 4, 0, 7]))
 })
 
+test('editorSelectNextOccurrence - case-insensitive matching finds a differently cased occurrence on the same line', () => {
+  const editor = {
+    finalDeltaY: 1000,
+    lineCache: [],
+    lines: ['foo FOO foo'],
+    maxLineY: 1000,
+    minLineY: 0,
+    primarySelectionIndex: 0,
+    rowHeight: 20,
+    selectedTextOccurrenceMatching: 'caseInsensitive',
+    selections: EditorSelection.fromRange(0, 0, 0, 3),
+  }
+  const newEditor = EditorSelectNextOccurrence.selectNextOccurrence(editor)
+
+  expect(newEditor.selections).toEqual(EditorSelection.fromRanges([0, 0, 0, 3], [0, 4, 0, 7]))
+})
+
+test('editorSelectNextOccurrence - case-sensitive matching skips differently cased occurrences', () => {
+  const editor = {
+    finalDeltaY: 1000,
+    lineCache: [],
+    lines: ['foo FOO', 'foo'],
+    maxLineY: 1000,
+    minLineY: 0,
+    primarySelectionIndex: 0,
+    rowHeight: 20,
+    selectedTextOccurrenceMatching: 'caseSensitive',
+    selections: EditorSelection.fromRange(0, 0, 0, 3),
+  }
+  const newEditor = EditorSelectNextOccurrence.selectNextOccurrence(editor)
+
+  expect(newEditor.selections).toEqual(EditorSelection.fromRanges([0, 0, 0, 3], [1, 0, 1, 3]))
+})
+
+test('editorSelectNextOccurrence - case-insensitive matching retains source offsets for Unicode case mappings', () => {
+  const editor = {
+    finalDeltaY: 1000,
+    lineCache: [],
+    lines: ['i İ i'],
+    maxLineY: 1000,
+    minLineY: 0,
+    primarySelectionIndex: 0,
+    rowHeight: 20,
+    selectedTextOccurrenceMatching: 'caseInsensitive',
+    selections: EditorSelection.fromRange(0, 0, 0, 1),
+  }
+  const newEditor = EditorSelectNextOccurrence.selectNextOccurrence(editor)
+
+  expect(newEditor.selections).toEqual(EditorSelection.fromRanges([0, 0, 0, 1], [0, 4, 0, 5]))
+})
+
 test('editorSelectNextOccurrence - one selection and more selections possible before', () => {
   const editor = {
     finalDeltaY: 1000,

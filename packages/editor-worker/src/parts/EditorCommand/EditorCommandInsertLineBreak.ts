@@ -46,12 +46,14 @@ const getChanges = (lines: string[], selections: any, languageConfiguration: any
     if (EditorSelection.isEmpty(selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn)) {
       const line = lines[selectionStartRow]
       const before = line.slice(0, selectionStartColumn)
+      const after = line.slice(selectionStartColumn)
       const indent = TextDocument.getIndent(before)
       if (shouldIncreaseIndent(before, increaseIndentRegex)) {
+        const inserted = after ? ['', indent + indentUnit, indent] : ['', indent + indentUnit]
         changes.push({
           deleted: TextDocument.getSelectionText({ lines }, range),
           end: end,
-          inserted: ['', indent + indentUnit, indent],
+          inserted,
           origin: EditOrigin.InsertLineBreak,
           start: start,
         })

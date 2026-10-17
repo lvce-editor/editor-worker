@@ -7,6 +7,7 @@ export const getVisibleDiagnostics = async (editor: any, diagnostics: readonly D
   const visibleDiagnostics = []
   const {
     charWidth,
+    deltaX = 0,
     deltaY,
     fontFamily,
     fontSize,
@@ -18,14 +19,11 @@ export const getVisibleDiagnostics = async (editor: any, diagnostics: readonly D
     rowHeight,
     tabSize,
     viewLineIndices,
-    width,
   } = editor
   const startVisualRow = itemHeight ? Math.floor(deltaY / itemHeight) : editor.minLineY || 0
   for (const diagnostic of diagnostics) {
     const { columnIndex, endColumnIndex, rowIndex } = diagnostic
-    const columnDelta = Math.max(1, endColumnIndex - columnIndex)
-    const diagnosticWidth = columnDelta * charWidth
-    const endLineDifference = 0
+    const endLineDifference = -deltaX
     const halfCursorWidth = 0
     const x = await GetX.getX(
       lines[rowIndex],
@@ -37,10 +35,25 @@ export const getVisibleDiagnostics = async (editor: any, diagnostics: readonly D
       letterSpacing,
       tabSize,
       halfCursorWidth,
-      width,
+      Infinity,
       charWidth,
       endLineDifference,
     )
+    const endX = await GetX.getX(
+      lines[rowIndex],
+      endColumnIndex,
+      fontWeight,
+      fontSize,
+      fontFamily,
+      isMonospaceFont,
+      letterSpacing,
+      tabSize,
+      halfCursorWidth,
+      Infinity,
+      charWidth,
+      endLineDifference,
+    )
+    const diagnosticWidth = Math.max(charWidth, endX - x)
     const visualRow = viewLineIndices ? EditorViewRows.getVisualRowForDocumentRow(rowIndex, viewLineIndices) : rowIndex
     const y = (visualRow - startVisualRow) * rowHeight
     visibleDiagnostics.push({

@@ -1,4 +1,4 @@
-import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
+import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/ApplicationExtensionRpc.ts'
 import * as Assert from '../Assert/Assert.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
@@ -13,7 +13,7 @@ const getTextDocument = (editor: any) => {
 
 const executeIsolatedHoverProvider = async (editor: any, offset: number) => {
   const textDocument = getTextDocument(editor)
-  return ExtensionManagementWorker.invoke('Extensions.executeHoverProvider', textDocument, offset)
+  return ApplicationExtensionRpc.invoke(editor.applicationId, 'Extensions.executeHoverProvider', textDocument, offset)
 }
 
 export const executeHoverProvider = async (editor: any, offset: number) => {

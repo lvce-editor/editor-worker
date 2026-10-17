@@ -14,6 +14,7 @@ const createEditor = (overrides: Record<string, unknown> = {}) =>
     initial: false,
     insertSpaces: true,
     languageId: 'plaintext',
+    lines: ['', '', ''],
     primarySelectionIndex: 0,
     selections: new Uint32Array([0, 0, 0, 0]),
     tabSize: 4,
@@ -50,10 +51,11 @@ test('registration initializes status from the active editor and cursor changes 
     insertSpaces: true,
     languageId: 'plaintext',
     line: 1,
+    selectedChars: 0,
     tabSize: 4,
   })
   await notifyEditorStatusChange(editor, createEditor({ selections: new Uint32Array([0, 0, 2, 5]) }))
-  expect(changed).toHaveBeenLastCalledWith({ column: 6, line: 3 })
+  expect(changed).toHaveBeenLastCalledWith({ column: 6, line: 3, selectedChars: 7 })
 })
 
 test('equal-value tab switches and inactive editors do not replace status', async () => {

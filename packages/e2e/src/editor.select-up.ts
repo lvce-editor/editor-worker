@@ -2,14 +2,21 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-select-up'
 
-export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
+export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
-  await FileSystem.writeFile(`${tmpDir}/file1.txt`, `first\nsecond`)
+  const content = Array.from({ length: 100 }, (_, index) => `line ${index + 1}`).join('\n')
+  await FileSystem.writeFile(`${tmpDir}/file1.txt`, content)
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
-  await Editor.setCursor(1, 2)
+  await Editor.setCursor(50, 0)
 
-  await Editor.selectUp()
+  for (let i = 0; i < 30; i++) {
+    await Editor.selectUp()
+  }
 
-  await Editor.shouldHaveSelections(new Uint32Array([1, 2, 0, 2]))
+  await Editor.shouldHaveSelections(new Uint32Array([50, 0, 20, 0]))
+  const cursor = Locator('.EditorCursor')
+  const line21 = Locator('.EditorRow', { hasText: 'line 21' })
+  await expect(cursor).toBeVisible()
+  await expect(line21).toBeVisible()
 }

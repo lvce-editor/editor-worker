@@ -9,7 +9,7 @@ export const setEndOfLine = async (editor: any, endOfLine: EndOfLine.EndOfLine) 
     return editor
   }
   if (!editor.modified) {
-    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri, true)
+    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri, true, editor.applicationId)
   }
   return {
     ...editor,

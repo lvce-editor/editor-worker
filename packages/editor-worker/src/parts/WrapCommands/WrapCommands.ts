@@ -1,16 +1,29 @@
+import { WhenExpression } from '@lvce-editor/constants'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
+import * as DeferredEditorState from '../DeferredEditorState/DeferredEditorState.ts'
 import * as EditorCommandSave from '../EditorCommand/EditorCommandSave.ts'
 import { isUntitledFile } from '../EditorCommand/EditorCommandSave/isUntitledFile.ts'
+import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
 import { editorDiagnosticEffect } from '../EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
 import * as Preferences from '../Preferences/Preferences.ts'
+import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
+import * as ScheduleGutterDecorations from '../ScheduleGutterDecorations/ScheduleGutterDecorations.ts'
+import { trackStateCommands } from '../TrackStateCommands/TrackStateCommands.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
-const queues: Record<string, Promise<void> | undefined> = {}
+const stateCommands = trackStateCommands ? new WeakSet<(...args: any[]) => any>() : undefined
+
+export const registerStateCommand = (command: (...args: any[]) => any): void => {
+  stateCommands?.add(command)
+}
+
+export const isStateCommand = (command: (...args: any[]) => any): boolean => stateCommands?.has(command) ?? false
+
 const cursorUndoLimit = 100
 
 const selectionsEqual = (left: Uint32Array, right: Uint32Array): boolean => {
@@ -56,27 +69,16 @@ const saveAfterDelay = async (uid: number, token: number): Promise<void> => {
 // TODO wrap commands globally, not per editor
 // TODO only store editor state in editor worker, not in renderer worker also
 
-export const wrapCommand =
-  (fn: any, preservesTypingCoalescing = false) =>
-  async (uid: number, ...args: any[]) => {
-    const initialInstance = Editors.get(uid)
-    if (!initialInstance) {
-      return undefined
-    }
-    const queueKey = initialInstance?.newState.uri || uid
-    const previous = queues[queueKey]
-    const { promise: next, resolve } = Promise.withResolvers<void>()
-    queues[queueKey] = next
-    if (previous) {
-      await previous
-    }
-    try {
+export const wrapCommand = (fn: any, preservesTypingCoalescing = false, returnState = true) => {
+  const command = async (uid: number, ...args: any[]) => {
+    return EditorCommandQueue.enqueue(uid, async () => {
       const oldInstance = Editors.get(uid)
       if (!oldInstance) {
         return undefined
       }
       const state = oldInstance.newState
-      const { cursorUndoStack, endOfLine, initial, insertSpaces, isSelecting, lines, modified, redoStack, selections, undoStack, uri } = state
+      const { cursorUndoStack, endOfLine, initial, insertSpaces, isSelecting, lifecycle, lines, modified, redoStack, selections, undoStack, uri } =
+        state
       const commandResult = await fn(state, ...args)
       let newEditor = !preservesTypingCoalescing && commandResult.canCoalesceTyping ? { ...commandResult, canCoalesceTyping: false } : commandResult
       if (lines !== newEditor.lines && newEditor.cursorUndoStack?.length) {
@@ -94,15 +96,26 @@ export const wrapCommand =
           cursorUndoStack: [...previousCursorUndoStack.slice(1 - cursorUndoLimit), new Uint32Array(selections)],
         }
       }
-      if (state === newEditor) {
-        return newEditor
+      if (state === newEditor || !Editors.get(uid) || lifecycle?.disposed || Editors.get(uid).newState.lifecycle !== lifecycle) {
+        return returnState ? newEditor : undefined
       }
-      const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor)
-      Editors.set(uid, state, newEditorWithDerivedState)
+      const deferGutterDecorations = !initial && uri === newEditor.uri && lines !== newEditor.lines && Boolean(newEditor.lifecycle)
+      const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(state, newEditor, deferGutterDecorations)
+      if (!Editors.get(uid) || lifecycle?.disposed || Editors.get(uid).newState.lifecycle !== lifecycle) {
+        return returnState ? newEditorWithDerivedState : undefined
+      }
+      // Another command can commit before the renderer consumes this edit.
+      // Keep its last rendered baseline, including renders completed while we awaited derived state.
+      const renderedState = Editors.get(uid)?.oldState ?? oldInstance.oldState
+      Editors.set(uid, renderedState, newEditorWithDerivedState)
+      await RenameWorker.dispose()
       if (editorDiagnosticEffect.isActive(state, newEditorWithDerivedState)) {
         void editorDiagnosticEffect.apply(newEditorWithDerivedState)
       }
       const finalEditor = newEditorWithDerivedState
+      if (deferGutterDecorations) {
+        ScheduleGutterDecorations.schedule(finalEditor)
+      }
       await notifyEditorStatusChange(state, finalEditor)
       if (
         !initial &&
@@ -118,24 +131,45 @@ export const wrapCommand =
           const otherUid = Number(key)
           const instance = Editors.get(otherUid)
           const editor = instance?.newState
-          if (otherUid === uid || !instance || !editor || editor.initial || editor.uri !== finalEditor.uri) {
+          if (
+            otherUid === uid ||
+            !instance ||
+            !editor ||
+            editor.initial ||
+            editor.uri !== finalEditor.uri ||
+            editor.applicationId !== finalEditor.applicationId
+          ) {
             continue
           }
-          const synchronizedEditor = await UpdateDerivedState.updateDerivedState(editor, {
-            ...editor,
-            decorations: finalEditor.decorations,
-            diagnostics: finalEditor.diagnostics,
-            endOfLine: finalEditor.endOfLine,
-            incrementalEdits: emptyIncrementalEdits,
-            insertSpaces: finalEditor.insertSpaces,
-            invalidStartIndex: Math.min(editor.invalidStartIndex, finalEditor.invalidStartIndex),
-            lines: finalEditor.lines,
-            modified: finalEditor.modified,
-            redoStack: finalEditor.redoStack,
-            undoStack: finalEditor.undoStack,
-            visualDecorations: finalEditor.visualDecorations,
-          })
-          Editors.set(otherUid, instance.oldState, synchronizedEditor)
+          const synchronizedEditor = await UpdateDerivedState.updateDerivedState(
+            editor,
+            {
+              ...editor,
+              decorations: finalEditor.decorations,
+              diagnostics: finalEditor.diagnostics,
+              endOfLine: finalEditor.endOfLine,
+              incrementalEdits: emptyIncrementalEdits,
+              insertSpaces: finalEditor.insertSpaces,
+              invalidStartIndex: Math.min(editor.invalidStartIndex, finalEditor.invalidStartIndex),
+              lines: finalEditor.lines,
+              modified: finalEditor.modified,
+              redoStack: finalEditor.redoStack,
+              undoStack: finalEditor.undoStack,
+              visualDecorations: finalEditor.visualDecorations,
+            },
+            deferGutterDecorations,
+          )
+          const latest = Editors.get(otherUid)
+          if (!latest || editor.lifecycle?.disposed || latest.newState.lifecycle !== editor.lifecycle) {
+            continue
+          }
+          Editors.set(otherUid, latest.oldState, synchronizedEditor)
+          if (deferGutterDecorations) {
+            ScheduleGutterDecorations.schedule(synchronizedEditor)
+          }
+          if (editorDiagnosticEffect.isActive(editor, synchronizedEditor)) {
+            void editorDiagnosticEffect.apply(synchronizedEditor)
+          }
         }
       }
       if (lines !== finalEditor.lines && !isUntitledFile(finalEditor.uri)) {
@@ -143,11 +177,74 @@ export const wrapCommand =
       } else if (modified && !finalEditor.modified) {
         AutoSave.dispose(uid)
       }
-      return finalEditor
-    } finally {
-      resolve()
-      if (queues[queueKey] === next) {
-        delete queues[queueKey]
+      return returnState ? finalEditor : undefined
+    })
+  }
+  stateCommands?.add(command)
+  return command
+}
+
+export const wrapFocusCommand = (fn: (editor: EditorState) => EditorState | Promise<EditorState>, returnState = true) => {
+  const command = wrapCommand(
+    (editor: EditorState, widgetRevision: number | undefined) => {
+      if (editor.widgetRevision !== widgetRevision && editor.focus !== WhenExpression.FocusEditorText) {
+        return editor
       }
+      return fn(editor)
+    },
+    false,
+    returnState,
+  )
+  const focusCommand = (uid: number) => {
+    // DOM focus events can arrive while a queued command is still opening a widget.
+    const widgetRevision = Editors.get(uid)?.newState.widgetRevision
+    return command(uid, widgetRevision)
+  }
+  stateCommands?.add(focusCommand)
+  return focusCommand
+}
+
+// Mouse positions are replaceable; edits and explicit navigation remain ordered.
+// Check before starting provider work and again before committing its result.
+export const wrapLatestCommand = (fn: (editor: EditorState, ...args: any[]) => Promise<EditorState>, returnState = true) => {
+  const latest = new Map<number, object>()
+  const latestCommand = async (uid: number, ...args: any[]) => {
+    const token = {}
+    latest.set(uid, token)
+    const command = wrapCommand(
+      async (editor: EditorState) => {
+        if (latest.get(uid) !== token) return editor
+        const result = await fn(editor, ...args)
+        return latest.get(uid) === token ? result : editor
+      },
+      false,
+      returnState,
+    )
+    try {
+      return await command(uid)
+    } finally {
+      if (latest.get(uid) === token) latest.delete(uid)
     }
   }
+  stateCommands?.add(latestCommand)
+  return latestCommand
+}
+
+// Optional provider work must not hold the editing queue while another worker responds.
+export const wrapDeferredCommand = (fn: (editor: EditorState, ...args: any[]) => Promise<EditorState>, returnState = true) => {
+  const apply = wrapCommand(
+    (editor: EditorState, snapshot: EditorState, result: EditorState) => DeferredEditorState.merge(editor, snapshot, result),
+    false,
+    returnState,
+  )
+  const deferredCommand = async (uid: number, ...args: any[]) => {
+    const snapshot = await EditorCommandQueue.enqueue(uid, async () => Editors.get(uid)?.newState)
+    if (!snapshot) {
+      return undefined
+    }
+    const result = await fn(snapshot, ...args)
+    return apply(uid, snapshot, result)
+  }
+  stateCommands?.add(deferredCommand)
+  return deferredCommand
+}

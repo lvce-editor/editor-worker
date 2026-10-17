@@ -1,8 +1,10 @@
 import type { OffsetBasedEdit } from '../OffsetBasedEdit/OffsetBasedEdit.ts'
+import * as EditorSelection from '../Editor/EditorSelection.ts'
 import * as ApplyDocumentEdits from '../EditorCommand/EditorCommandApplyDocumentEdits.ts'
 import * as EditorCommandCloseFind from '../EditorCommand/EditorCommandCloseFind.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
+import * as Preferences from '../Preferences/Preferences.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
@@ -36,11 +38,12 @@ export const getSelections = (editorUid: number): Uint32Array => {
   return GetEditor.getEditor(editorUid).selections
 }
 
+export const getFindWidgetFontSize = async (): Promise<unknown> => {
+  return Preferences.get('editor.findWidgetFontSize')
+}
+
 export const setSelections = async (editorUid: number, selections: Uint32Array): Promise<void> => {
   const editor = GetEditor.getEditor(editorUid)
-  const newEditor = {
-    ...editor,
-    selections,
-  }
+  const newEditor = EditorSelection.setSelections(editor, selections)
   await updateEditor(editorUid, editor, newEditor)
 }

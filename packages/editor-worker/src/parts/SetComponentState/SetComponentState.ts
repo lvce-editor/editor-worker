@@ -1,4 +1,5 @@
 import type { EditorState } from '../State/State.ts'
+import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetComponentState from '../GetComponentState/GetComponentState.ts'
@@ -50,4 +51,8 @@ const applyComponentState = async (currentState: EditorState, value: unknown): P
   return UpdateDerivedState.updateDerivedState(currentState, updatedState)
 }
 
-export const setComponentState = EditorStates.wrapCommand(applyComponentState)
+const applyState = EditorStates.wrapCommand(applyComponentState)
+
+export const setComponentState = (uid: number, value: unknown): Promise<void> => {
+  return EditorCommandQueue.enqueue(uid, () => applyState(uid, value))
+}

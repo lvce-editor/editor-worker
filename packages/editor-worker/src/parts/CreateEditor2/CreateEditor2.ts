@@ -1,5 +1,6 @@
 import type { EditorState } from '../State/State.ts'
 import * as Assert from '../Assert/Assert.ts'
+import * as EditorLifecycle from '../EditorLifecycle/EditorLifecycle.ts'
 import * as EditorStates from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
@@ -13,9 +14,15 @@ export const createEditor2 = (
   height: number,
   platform: number,
   assetDir: string,
+  _languageId?: string,
+  _tokenizePath?: string,
+  _useCache?: boolean,
+  applicationId?: string,
+  editorFileCacheEnabled = false,
 ): void => {
   Assert.number(id)
   const editor: EditorState = {
+    ...(applicationId !== undefined && { applicationId }),
     additionalFocus: 0,
     assetDir,
     bracketMatchInfos: [],
@@ -37,6 +44,7 @@ export const createEditor2 = (
     differences: [],
     documentSymbols: [],
     dragAndDropEnabled: true,
+    editorFileCacheEnabled,
     embeds: [],
     endOfLine: 'lf',
     endOfLineDecorations: [],
@@ -57,6 +65,7 @@ export const createEditor2 = (
     height,
     highlightActiveLineNumber: true,
     highlightedLine: -1,
+    hoverDelay: 200,
     hoverEnabled: false,
     id,
     incrementalEdits: emptyIncrementalEdits,
@@ -72,6 +81,7 @@ export const createEditor2 = (
     itemHeight: 20,
     languageId: '',
     letterSpacing: 0,
+    lifecycle: EditorLifecycle.create(),
     lightBulbRowIndex: -1,
     lineCache: [],
     lineNumbers: false,
@@ -92,7 +102,9 @@ export const createEditor2 = (
     outerWidth: width,
     platform,
     primarySelectionIndex: 0,
+    problemsHighlightedRow: -1,
     redoStack: [],
+    roundedSelection: false,
     rowHeight: 0,
     savedSelections: [],
     scrollBarHeight: 0,

@@ -35,3 +35,6 @@ export const HandleKeyUp = 34
 export const HandleLightBulbClick = 35
 export const HandleMergeConflictActionClick = 36
 export const HandleMergeConflictActionsMouseDown = 37
+export const HandleMouseOut = 38
+export const HandleMouseOver = 39
+export const HandleHoverMouseDown = 40

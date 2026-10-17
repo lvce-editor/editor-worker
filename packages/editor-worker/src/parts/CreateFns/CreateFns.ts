@@ -2,6 +2,7 @@ import * as Editors from '../EditorStates/EditorStates.ts'
 import * as GetWidgetInvoke from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as Names from '../Names/Names.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
+import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 
@@ -57,6 +58,7 @@ const createFn = (key: string, name: string, widgetId: number) => {
     const latestChildIndex = latestAfterInvoke.widgets.findIndex(isWidget)
     if (latestChildIndex === -1) {
       Editors.set(editor.uid, editor, latestAfterInvoke)
+      await RenameWorker.dispose()
       return latestAfterInvoke
     }
     const diff = await invoke(`${name}.diff2`, uid)

@@ -1,8 +1,8 @@
-import * as RendererWorker from '../RendererWorker/RendererWorker.ts'
+import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 
-export const notifyTabModifiedStatusChange = async (uri: string, modified: boolean): Promise<void> => {
+export const notifyTabModifiedStatusChange = async (uri: string, modified: boolean, applicationId?: string): Promise<void> => {
   try {
-    await RendererWorker.invoke('Main.handleModifiedStatusChange', uri, modified)
+    await ApplicationRpc.invoke(applicationId, 'Main.handleModifiedStatusChange', uri, modified)
   } catch {
     // ignore
   }

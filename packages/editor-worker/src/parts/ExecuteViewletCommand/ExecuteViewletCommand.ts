@@ -11,5 +11,5 @@ export const executeViewletCommand = async (
     throw new TypeError(`Viewlet command not found: ${commandId}`)
   }
   await fn(uid, ...args)
-  await RendererWorker.invoke('Viewlet.requestRender', uid)
+  await RendererWorker.invoke('Viewlet.executeViewletCommand', uid, '__renderPending', false)
 }

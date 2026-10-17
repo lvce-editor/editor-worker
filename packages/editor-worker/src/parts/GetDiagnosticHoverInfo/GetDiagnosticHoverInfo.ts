@@ -25,6 +25,7 @@ export const getDiagnosticHoverInfo = async (editor: any, diagnostic: Diagnostic
   return {
     diagnostics: [diagnostic],
     documentation: '',
+    documentationVirtualDom: [],
     height,
     lineInfos: [],
     width,

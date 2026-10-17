@@ -1,12 +1,14 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import type { EditorState } from '../src/parts/State/State.ts'
 import { createEditor2 } from '../src/parts/CreateEditor2/CreateEditor2.ts'
+import * as EditorCommandQueue from '../src/parts/EditorCommandQueue/EditorCommandQueue.ts'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { getComponentState } from '../src/parts/GetComponentState/GetComponentState.ts'
 
 const updateDerivedState = jest.fn<(oldState: EditorState, newState: EditorState) => Promise<EditorState>>(async (_oldState, newState) => newState)
 jest.unstable_mockModule('../src/parts/UpdateDerivedState/UpdateDerivedState.ts', () => ({ updateDerivedState }))
 const { setComponentState } = await import('../src/parts/SetComponentState/SetComponentState.ts')
+const { commandMap } = await import('../src/parts/CommandMap/CommandMap.ts')
 
 beforeEach(() => {
   createEditor2(101, 'file:///test.txt', 0, 0, 800, 600, 0, '')
@@ -81,4 +83,32 @@ test('reapplying a JSON snapshot does not restore stale text render caches', asy
   await setComponentState(101, snapshot)
   expect(EditorStates.get(101).newState.textInfos).toBe(rendered.textInfos)
   expect(EditorStates.get(101).newState.differences).toBe(rendered.differences)
+})
+
+test('component updates finish before later queued edits commit', async () => {
+  const started = Promise.withResolvers<void>()
+  const finish = Promise.withResolvers<void>()
+  updateDerivedState.mockImplementationOnce(async (_oldState, newState) => {
+    started.resolve()
+    await finish.promise
+    return newState
+  })
+  const setting = setComponentState(101, { ...getComponentState(101), cursorWidth: 4 })
+  await started.promise
+  const editing = EditorCommandQueue.enqueue(101, async () => {
+    const current = EditorStates.get(101)
+    EditorStates.set(101, current.oldState, { ...current.newState, lines: ['later edit'] })
+  })
+  await Promise.resolve()
+  finish.resolve()
+  await Promise.all([setting, editing])
+  expect(EditorStates.get(101).newState.lines).toEqual(['later edit'])
+  expect(EditorStates.get(101).newState.cursorWidth).toBe(4)
+})
+
+test('component state is exposed through the worker RPC command map', async () => {
+  const serialized = JSON.stringify(commandMap['Editor.getComponentState'](101))
+  const snapshot = JSON.parse(serialized)
+  await commandMap['Editor.setComponentState'](101, { ...snapshot, cursorWidth: 7 })
+  expect(commandMap['Editor.getComponentState'](101).cursorWidth).toBe(7)
 })

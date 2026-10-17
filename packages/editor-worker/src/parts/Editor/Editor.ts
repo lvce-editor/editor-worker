@@ -15,6 +15,8 @@ import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as TabModifiedStatusChange from '../TabModifiedStatusChange/TabModifiedStatusChange.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import * as TransformDiagnostics from '../TransformDiagnostics/TransformDiagnostics.ts'
+import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as EditorSelection from './EditorSelection.ts'
 
 // TODO
@@ -62,6 +64,12 @@ const applyAutoClosingRangesEdit = (editor: any, changes: any[]) => {
   return newAutoClosingRanges
 }
 
+const updateTransformedDiagnostics = async (editor: any, changes: readonly any[]) => {
+  UpdateDiagnostics.transformCachedDiagnostics(editor.id ?? editor.uid, changes)
+  const diagnostics = TransformDiagnostics.transformDiagnostics(editor.diagnostics ?? [], changes)
+  return UpdateDiagnostics.addDiagnostics(editor, diagnostics)
+}
+
 export const scheduleSelections = (editor: any, selectionEdits: any) => {
   return EditorSelection.setSelections(editor, selectionEdits)
 }
@@ -89,7 +97,16 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   }
   const newLines = TextDocument.applyEdits(editor, changes)
   const partialNewEditor = updateLines(editor, newLines)
+  const partialNewEditorWithDiagnostics = await updateTransformedDiagnostics(partialNewEditor, changes)
   const newSelections = selectionChanges || EditorSelection.applyEdit(partialNewEditor, changes)
+  const selectionHistory = {
+    after: newSelections,
+    before: editor.selections,
+  }
+  Object.defineProperty(changes, 'selectionHistory', {
+    configurable: true,
+    value: selectionHistory,
+  })
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
   // invalidStartIndex, lineCache, etc. just for testing editorType
@@ -119,7 +136,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     : [...editor.undoStack, changes]
 
   const newEditor = {
-    ...partialNewEditor,
+    ...partialNewEditorWithDiagnostics,
     autoClosingRanges,
     canCoalesceTyping,
     invalidStartIndex,
@@ -139,7 +156,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
 
   // Notify main-area-worker about modified status change
   if (!editor.modified) {
-    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri, true)
+    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri, true, editor.applicationId)
   }
 
   // Notify registered listeners about editor changes
@@ -162,15 +179,16 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     return newEditor2
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(newEditor2, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(newEditor2, syncIncremental)
   return {
     ...newEditor2,
     differences,
+    horizontalVisibleRanges,
     textInfos,
   }
 }
 // @ts-ignore
-export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes) => {
+export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes, selectionChanges = undefined) => {
   Assert.object(editor)
   Assert.array(changes)
   if (changes.length === 0) {
@@ -178,10 +196,11 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes)
   }
   const newLines = TextDocument.applyEdits(editor, changes)
   const partialNewEditor = updateLines(editor, newLines)
-  const newSelections = EditorSelection.applyEdit(partialNewEditor, changes)
+  const partialNewEditorWithDiagnostics = await updateTransformedDiagnostics(partialNewEditor, changes)
+  const newSelections = selectionChanges || EditorSelection.applyEdit(partialNewEditor, changes)
   const invalidStartIndex = Math.min(editor.invalidStartIndex, changes[0].start.rowIndex)
   const newEditor = {
-    ...partialNewEditor,
+    ...partialNewEditorWithDiagnostics,
     // undoStack: [...editor.undoStack.slice(0, -2)],
     invalidStartIndex,
     lines: newLines,
@@ -200,10 +219,11 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes)
     return finalEditor
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
   return {
     ...finalEditor,
     differences,
+    horizontalVisibleRanges,
     textInfos,
   }
 }
@@ -211,6 +231,8 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes)
 // @ts-ignore
 export const scheduleDocument = async (editor, changes) => {
   const newLines = TextDocument.applyEdits(editor, changes)
+  const partialNewEditor = updateLines(editor, newLines)
+  const partialNewEditorWithDiagnostics = await updateTransformedDiagnostics(partialNewEditor, changes)
   const invalidStartIndex = changes[0].start.rowIndex
   // if (editor.undoStack) {
   //   editor.undoStack.push(changes)
@@ -225,7 +247,7 @@ export const scheduleDocument = async (editor, changes) => {
   // const scrollBarHeight = editor.scrollBarHeight
 
   const newEditor = {
-    ...updateLines(editor, newLines),
+    ...partialNewEditorWithDiagnostics,
     invalidStartIndex,
     redoStack: [],
     undoStack: [...editor.undoStack, changes],
@@ -242,10 +264,11 @@ export const scheduleDocument = async (editor, changes) => {
     return finalEditor
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
   return {
     ...finalEditor,
     differences,
+    horizontalVisibleRanges,
     textInfos,
   }
   // RendererProcess.send([
