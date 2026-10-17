@@ -1,9 +1,11 @@
 interface EventMap {
+  'ColorPicker.dispose': (uid: number) => Promise<void>
   'ColorPicker.handleSliderPointerDown': (state: any, x: number, y: number) => Promise<any>
   'ColorPicker.handleSliderPointerMove': (state: any, x: number, y: number) => Promise<any>
   'ColorPicker.loadContent': (state: any) => Promise<any>
   'ColorPicker.render': (oldState: any, newState: any) => Promise<any>
   'Editor.create': (options: any) => Promise<void>
+  'Editor.dispose': (editorUid: number) => Promise<readonly any[]>
   'Editor.getQuickPickMenuEntries': () => Promise<readonly any[]>
   'Editor.offsetAt': (textDocument: any, positionRowIndex: number, positionColumnIndex: number) => Promise<any>
   'Editor.render': (editorUid: number) => Promise<any>

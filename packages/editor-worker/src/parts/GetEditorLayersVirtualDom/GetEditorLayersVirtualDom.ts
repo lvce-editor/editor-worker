@@ -5,6 +5,12 @@ import * as GetEditorRowsLayerVirtualDom from '../GetEditorRowsLayerVirtualDom/G
 import * as GetEditorSelectionsVirtualDom from '../GetEditorSelectionsVirtualDom/GetEditorSelectionsVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
+const editorLayersNode: VirtualDomNode = {
+  childCount: 4,
+  className: 'EditorLayers',
+  type: VirtualDomElements.Div,
+}
+
 export const getEditorLayersVirtualDom = (
   selectionInfos: readonly any[],
   textInfos: readonly any[],
@@ -13,16 +19,42 @@ export const getEditorLayersVirtualDom = (
   highlightedLine = -1,
   cursorInfos: readonly any[] = [],
   diagnostics: readonly any[] = [],
+  visibleLineIndices: readonly number[] = [],
+  endOfLineDecorations: readonly { readonly rowIndex: number; readonly text: string }[] = [],
+  bracketMatchInfos: readonly any[] = [],
+  focused = true,
+  visibleViewLineIndices: readonly number[] = [],
+  problemsHighlightedRow = -1,
+  roundedSelection = false,
+  unnecessaryDiagnostics: readonly any[] = [],
+  horizontalVisibleRanges: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[] = [],
+  lines: readonly string[] = [],
+  tabSize = 2,
+  textDecorationDom: readonly VirtualDomNode[] = [],
 ): readonly VirtualDomNode[] => {
   return [
-    {
-      childCount: 4,
-      className: 'EditorLayers',
-      type: VirtualDomElements.Div,
-    },
-    ...GetEditorSelectionsVirtualDom.getEditorSelectionsVirtualDom(selectionInfos),
-    ...GetEditorRowsLayerVirtualDom.getEditorRowsVirtualDom(textInfos, differences, lineNumbers, highlightedLine),
-    ...GetEditorCursorsVirtualDom.getEditorCursorsVirtualDom(cursorInfos),
-    ...GetEditorDiagnosticsVirtualDom.getEditorDiagnosticsVirtualDom(diagnostics),
+    editorLayersNode,
+    ...GetEditorSelectionsVirtualDom.getEditorSelectionsVirtualDom(selectionInfos, focused, roundedSelection),
+    ...GetEditorRowsLayerVirtualDom.getEditorRowsVirtualDom(
+      textInfos,
+      differences,
+      lineNumbers,
+      highlightedLine,
+      visibleLineIndices,
+      endOfLineDecorations,
+      visibleViewLineIndices,
+      problemsHighlightedRow,
+      unnecessaryDiagnostics,
+      horizontalVisibleRanges,
+      lines,
+      tabSize,
+    ),
+    ...GetEditorCursorsVirtualDom.getEditorCursorsVirtualDom(cursorInfos, focused),
+    ...GetEditorDiagnosticsVirtualDom.getEditorDiagnosticsVirtualDom(diagnostics, bracketMatchInfos, textDecorationDom),
   ]
 }

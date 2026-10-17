@@ -5,6 +5,14 @@ export const goToDefinition = () => {
   return I18nString.i18nString(UiStrings.GoToDefinition)
 }
 
+export const goToBracket = () => {
+  return I18nString.i18nString(UiStrings.GoToBracket)
+}
+
+export const editorToggleSuggestWidget = () => {
+  return I18nString.i18nString(UiStrings.EditorToggleSuggestWidget)
+}
+
 export const noDefinitionFound = () => {
   return I18nString.i18nString(UiStrings.NoDefinitionFound)
 }
@@ -41,6 +49,10 @@ export const organizeImports = () => {
   return I18nString.i18nString(UiStrings.OrganizeImports)
 }
 
+export const editorOrganizeImports = () => {
+  return I18nString.i18nString(UiStrings.EditorOrganizeImports)
+}
+
 export const sortImports = () => {
   return I18nString.i18nString(UiStrings.SortImports)
 }
@@ -65,12 +77,20 @@ export const findAllReferences = () => {
   return I18nString.i18nString(UiStrings.FindAllReferences)
 }
 
+export const fold = () => {
+  return I18nString.i18nString(UiStrings.Fold)
+}
+
 export const findAllImplementations = () => {
   return I18nString.i18nString(UiStrings.FindAllImplementations)
 }
 
 export const cut = () => {
   return I18nString.i18nString(UiStrings.Cut)
+}
+
+export const deleteLine = () => {
+  return I18nString.i18nString(UiStrings.DeleteLine)
 }
 
 export const copy = () => {
@@ -81,12 +101,20 @@ export const paste = () => {
   return I18nString.i18nString(UiStrings.Paste)
 }
 
+export const cursorUndo = () => {
+  return I18nString.i18nString(UiStrings.CursorUndo)
+}
+
 export const undo = () => {
   return I18nString.i18nString(UiStrings.Undo)
 }
 
 export const redo = () => {
   return I18nString.i18nString(UiStrings.Redo)
+}
+
+export const unfold = () => {
+  return I18nString.i18nString(UiStrings.Unfold)
 }
 
 export const toggleLineComment = () => {
@@ -97,12 +125,20 @@ export const toggleBlockComment = () => {
   return I18nString.i18nString(UiStrings.ToggleBlockComment)
 }
 
+export const toggleBreakpoint = () => {
+  return I18nString.i18nString(UiStrings.ToggleBreakpoint)
+}
+
 export const separator = () => {
   return ''
 }
 
 export const selectAll = () => {
   return I18nString.i18nString(UiStrings.SelectAll)
+}
+
+export const selectToBracket = () => {
+  return I18nString.i18nString(UiStrings.SelectToBracket)
 }
 
 export const copyLineUp = () => {
@@ -161,6 +197,10 @@ export const editorIndent = () => {
   return I18nString.i18nString(UiStrings.EditorIndent)
 }
 
+export const editorIncrementSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorIncrementSelection)
+}
+
 export const editorUnindent = () => {
   return I18nString.i18nString(UiStrings.EditorUnindent)
 }
@@ -171,6 +211,18 @@ export const editorSortLinesAscending = () => {
 
 export const editorToggleComment = () => {
   return I18nString.i18nString(UiStrings.EditorToggleComment)
+}
+
+export const editorDecrementSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorDecrementSelection)
+}
+
+export const editorExpandSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorExpandSelection)
+}
+
+export const editorShrinkSelection = () => {
+  return I18nString.i18nString(UiStrings.EditorShrinkSelection)
 }
 
 export const editorSelectUp = () => {
@@ -191,6 +243,10 @@ export const editorOpenColorPicker = () => {
 
 export const editorCloseColorPicker = () => {
   return I18nString.i18nString(UiStrings.EditorCloseColorPicker)
+}
+
+export const viewToggleMinimap = () => {
+  return I18nString.i18nString(UiStrings.ViewToggleMinimap)
 }
 
 export const editorCopyLineDown = () => {

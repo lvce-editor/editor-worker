@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.find-replace-one-occurrence'
 
-export const test: Test = async ({ Editor, FileSystem, FindWidget, Main, Workspace }) => {
+export const test: Test = async ({ Editor, expect, FileSystem, FindWidget, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(
@@ -24,4 +24,6 @@ content 2`,
   // assert
   await Editor.shouldHaveText(`replaced 1
 content 2`)
+  const editorRows = Locator('.EditorRows')
+  await expect(editorRows).toHaveText('replaced 1content 2')
 }

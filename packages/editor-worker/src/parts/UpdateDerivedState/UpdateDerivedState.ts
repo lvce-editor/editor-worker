@@ -1,14 +1,47 @@
 import type { EditorState } from '../State/State.ts'
+import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
+import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
+import { getDocumentSymbols } from '../GetDocumentSymbols/GetDocumentSymbols.ts'
+import { getEditorGutterDecorations } from '../GetEditorGutterDecorations/GetEditorGutterDecorations.ts'
+import { getEditorTextDecorations } from '../GetEditorTextDecorations/GetEditorTextDecorations.ts'
+import * as GetLightBulbRowIndex from '../GetLightBulbRowIndex/GetLightBulbRowIndex.ts'
+import * as GetMinimapLines from '../GetMinimapLines/GetMinimapLines.ts'
+import { getTextDecorationsVirtualDom } from '../GetTextDecorationsVirtualDom/GetTextDecorationsVirtualDom.ts'
+import * as GetVisibleBracketMatches from '../GetVisibleBracketMatches/GetVisibleBracketMatches.ts'
+import * as GetVisibleDiagnostics from '../GetVisibleDiagnostics/GetVisibleDiagnostics.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
+import { updateHorizontalLayout } from '../UpdateHorizontalLayout/UpdateHorizontalLayout.ts'
+
+const shouldUpdateDiagnosticData = (oldState: EditorState, newState: EditorState): boolean => {
+  return (
+    oldState.diagnostics !== newState.diagnostics ||
+    ((newState.diagnostics?.length ?? 0) > 0 &&
+      (oldState.deltaX !== newState.deltaX ||
+        oldState.minLineY !== newState.minLineY ||
+        oldState.charWidth !== newState.charWidth ||
+        oldState.fontFamily !== newState.fontFamily ||
+        oldState.fontSize !== newState.fontSize ||
+        oldState.fontWeight !== newState.fontWeight ||
+        oldState.isMonospaceFont !== newState.isMonospaceFont ||
+        oldState.letterSpacing !== newState.letterSpacing ||
+        oldState.lines !== newState.lines ||
+        oldState.rowHeight !== newState.rowHeight ||
+        oldState.tabSize !== newState.tabSize ||
+        oldState.width !== newState.width))
+  )
+}
 
 const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState): boolean => {
   return (
     oldState.selections !== newState.selections ||
     oldState.focused !== newState.focused ||
+    oldState.deltaX !== newState.deltaX ||
     oldState.minLineY !== newState.minLineY ||
     oldState.maxLineY !== newState.maxLineY ||
+    oldState.visibleViewLineIndices !== newState.visibleViewLineIndices ||
+    oldState.foldingRanges !== newState.foldingRanges ||
     oldState.differences !== newState.differences ||
     oldState.charWidth !== newState.charWidth ||
     oldState.cursorWidth !== newState.cursorWidth ||
@@ -24,8 +57,39 @@ const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState)
   )
 }
 
+const shouldUpdateBracketMatchData = (oldState: EditorState, newState: EditorState): boolean => {
+  if (!('bracketMatchInfos' in newState)) {
+    return false
+  }
+  return (
+    oldState.selections !== newState.selections ||
+    oldState.lines !== newState.lines ||
+    oldState.minLineY !== newState.minLineY ||
+    oldState.maxLineY !== newState.maxLineY ||
+    oldState.visibleLineIndices !== newState.visibleLineIndices ||
+    oldState.visibleViewLineIndices !== newState.visibleViewLineIndices ||
+    oldState.foldingRanges !== newState.foldingRanges ||
+    oldState.differences !== newState.differences ||
+    oldState.charWidth !== newState.charWidth ||
+    oldState.fontFamily !== newState.fontFamily ||
+    oldState.fontSize !== newState.fontSize ||
+    oldState.fontWeight !== newState.fontWeight ||
+    oldState.isMonospaceFont !== newState.isMonospaceFont ||
+    oldState.letterSpacing !== newState.letterSpacing ||
+    oldState.rowHeight !== newState.rowHeight ||
+    oldState.tabSize !== newState.tabSize ||
+    oldState.width !== newState.width
+  )
+}
+
+const shouldUpdateLightBulb = (oldState: EditorState, newState: EditorState): boolean =>
+  oldState.diagnostics !== newState.diagnostics ||
+  oldState.languageId !== newState.languageId ||
+  oldState.selections !== newState.selections ||
+  oldState.uri !== newState.uri
+
 const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorState): boolean => {
-  if (oldState.textInfos !== newState.textInfos || oldState.differences !== newState.differences) {
+  if (oldState.deltaX === newState.deltaX && (oldState.textInfos !== newState.textInfos || oldState.differences !== newState.differences)) {
     return false
   }
 
@@ -34,28 +98,137 @@ const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorStat
     oldState.tokenizerId !== newState.tokenizerId ||
     oldState.minLineY !== newState.minLineY ||
     oldState.maxLineY !== newState.maxLineY ||
+    oldState.visibleLineIndices !== newState.visibleLineIndices ||
+    oldState.visibleViewLineIndices !== newState.visibleViewLineIndices ||
     oldState.decorations !== newState.decorations ||
     oldState.embeds !== newState.embeds ||
     oldState.deltaX !== newState.deltaX ||
     oldState.width !== newState.width ||
+    oldState.charWidth !== newState.charWidth ||
+    oldState.tabSize !== newState.tabSize ||
+    oldState.horizontalVirtualizationThreshold !== newState.horizontalVirtualizationThreshold ||
+    oldState.fontFamily !== newState.fontFamily ||
+    oldState.fontSize !== newState.fontSize ||
+    oldState.fontWeight !== newState.fontWeight ||
+    oldState.letterSpacing !== newState.letterSpacing ||
+    oldState.isMonospaceFont !== newState.isMonospaceFont ||
     oldState.highlightedLine !== newState.highlightedLine ||
+    oldState.foldingRanges !== newState.foldingRanges ||
     oldState.debugEnabled !== newState.debugEnabled
   )
 }
 
-export const updateDerivedState = async (oldState: EditorState, newState: EditorState): Promise<EditorState> => {
-  let finalState = newState
-  if (shouldUpdateVisibleTextData(oldState, newState)) {
+const shouldUpdateMinimapData = (oldState: EditorState, newState: EditorState): boolean => {
+  return newState.minimapEnabled && (!oldState.minimapEnabled || oldState.lines !== newState.lines || oldState.tokenizerId !== newState.tokenizerId)
+}
+
+const mergeConflictsEqual = (oldState: EditorState, newState: EditorState): boolean => {
+  const oldConflicts = oldState.mergeConflicts || []
+  const newConflicts = newState.mergeConflicts || []
+  if (oldConflicts.length !== newConflicts.length) {
+    return false
+  }
+  return oldConflicts.every((conflict, index) => {
+    const other = newConflicts[index]
+    return conflict.startRowIndex === other.startRowIndex && conflict.endRowIndex === other.endRowIndex
+  })
+}
+
+export const updateDerivedState = async (oldState: EditorState, newState: EditorState, deferGutterDecorations = false): Promise<EditorState> => {
+  const horizontalState =
+    oldState.initial ||
+    oldState.lines !== newState.lines ||
+    oldState.width !== newState.width ||
+    oldState.charWidth !== newState.charWidth ||
+    oldState.fontFamily !== newState.fontFamily ||
+    oldState.fontSize !== newState.fontSize ||
+    oldState.fontWeight !== newState.fontWeight ||
+    oldState.isMonospaceFont !== newState.isMonospaceFont ||
+    oldState.letterSpacing !== newState.letterSpacing ||
+    oldState.tabSize !== newState.tabSize ||
+    oldState.lineNumbers !== newState.lineNumbers ||
+    oldState.breakPoints !== newState.breakPoints ||
+    oldState.gutterDecorations !== newState.gutterDecorations ||
+    oldState.lightBulbRowIndex !== newState.lightBulbRowIndex
+      ? await updateHorizontalLayout(newState)
+      : newState
+  const layoutState =
+    oldState.lines !== newState.lines && 'foldingRanges' in newState ? EditorFolding.updateLayout(horizontalState, []) : horizontalState
+  const nextState = mergeConflictsEqual(oldState, layoutState) ? layoutState : { ...layoutState, incrementalEdits: emptyIncrementalEdits }
+  let finalState = nextState
+  if (oldState.lines !== nextState.lines || oldState.uri !== nextState.uri) {
+    finalState = { ...finalState, textDecorations: await getEditorTextDecorations(nextState) }
+  }
+  if (nextState.breadcrumbsEnabled && oldState.lines !== nextState.lines && oldState.documentSymbols === nextState.documentSymbols) {
+    finalState = { ...finalState, documentSymbols: await getDocumentSymbols(nextState) }
+  }
+  if (newState.deltaX !== nextState.deltaX || newState.gutterWidth !== nextState.gutterWidth || shouldUpdateVisibleTextData(oldState, nextState)) {
     const syncIncremental = SyncIncremental.getEnabled()
-    const { differences, textInfos } = await EditorText.getVisible(newState, syncIncremental)
+    const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(nextState, syncIncremental)
     finalState = {
-      ...newState,
+      ...finalState,
       differences,
+      horizontalVisibleRanges,
       textInfos,
     }
   }
 
-  if (!shouldUpdateSelectionData(oldState, newState)) {
+  if (!nextState.minimapEnabled && oldState.minimapEnabled) {
+    finalState = {
+      ...finalState,
+      minimapLines: [],
+      minimapRevision: finalState.minimapRevision + 1,
+    }
+  } else if (shouldUpdateMinimapData(oldState, nextState)) {
+    const syncIncremental = SyncIncremental.getEnabled()
+    const minimapLines = await GetMinimapLines.getMinimapLines(finalState, syncIncremental)
+    finalState = {
+      ...finalState,
+      minimapLines,
+      minimapRevision: finalState.minimapRevision + 1,
+    }
+  }
+
+  if (shouldUpdateBracketMatchData(oldState, finalState)) {
+    finalState = {
+      ...finalState,
+      bracketMatchInfos: await GetVisibleBracketMatches.getVisibleBracketMatches(finalState),
+    }
+  }
+
+  if (shouldUpdateDiagnosticData(oldState, nextState)) {
+    const visualDecorations = await GetVisibleDiagnostics.getVisibleDiagnostics(finalState, finalState.diagnostics ?? [])
+    finalState = {
+      ...finalState,
+      visualDecorations,
+    }
+  }
+
+  if (oldState.lines !== nextState.lines) {
+    finalState = {
+      ...finalState,
+      lightBulbRowIndex: -1,
+      problemsHighlightedRow: -1,
+    }
+  } else if (shouldUpdateLightBulb(oldState, nextState)) {
+    finalState = {
+      ...finalState,
+      lightBulbRowIndex: await GetLightBulbRowIndex.getLightBulbRowIndex(finalState),
+    }
+  }
+
+  if (!deferGutterDecorations && (oldState.lines !== nextState.lines || oldState.uri !== nextState.uri)) {
+    finalState = {
+      ...finalState,
+      gutterDecorations: await getEditorGutterDecorations(finalState),
+    }
+  }
+
+  if ((finalState.textDecorations?.length || 0) > 0 || (oldState.textDecorationDom?.length || 0) > 0) {
+    finalState = { ...finalState, textDecorationDom: await getTextDecorationsVirtualDom(finalState) }
+  }
+
+  if (!shouldUpdateSelectionData(oldState, nextState)) {
     return finalState
   }
 

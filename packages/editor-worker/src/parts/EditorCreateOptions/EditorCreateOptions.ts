@@ -1,4 +1,5 @@
 export interface EditorCreateOptions {
+  readonly applicationId?: string
   readonly assetDir: string
   readonly columnToReveal?: number
   readonly completionTriggerCharacters: any
@@ -9,6 +10,8 @@ export interface EditorCreateOptions {
   readonly fontWeight: number
   readonly formatOnSave: boolean
   readonly height: number
+  readonly highlightActiveLineNumber?: boolean
+  readonly hoverDelay?: number
   readonly hoverEnabled: boolean
   readonly id: number
   readonly isAutoClosingBracketsEnabled: boolean

@@ -8,12 +8,12 @@ const id = 1
 
 beforeEach(() => {
   WidgetRegistry.set(id, {
-    handleEditorDeleteLeft: (editor: any, state: any) => ({
-      ...state,
+    handleEditorDeleteLeft: (editor: any) => ({
+      ...editor,
       updated: true,
     }),
-    handleEditorType: (editor: any, state: any) => ({
-      ...state,
+    handleEditorType: (editor: any) => ({
+      ...editor,
       updated: true,
     }),
   })
@@ -48,6 +48,7 @@ test('applyWidgetChanges - delete', async () => {
     },
   ]
   expect(await ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toEqual({
+    ...editor,
     updated: true,
   })
 })
@@ -70,5 +71,59 @@ test('applyWidgetChanges - empty widgets', async () => {
       origin: EditOrigin.DeleteLeft,
     },
   ]
-  expect(await ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toEqual([])
+  expect(await ApplyWidgetChanges.applyWidgetChanges(editor, changes)).toBe(editor)
+})
+
+test('applyWidgetChanges preserves editor identity for unrelated edits', async () => {
+  const editor = {
+    id: 123,
+    lines: ['before'],
+    uid: 123,
+    widgets: [
+      {
+        id,
+        newState: {},
+        oldState: {},
+      },
+    ],
+  }
+  const changes = [
+    {
+      deleted: ['before'],
+      inserted: ['after'],
+      origin: EditOrigin.Format,
+    },
+  ]
+
+  await expect(ApplyWidgetChanges.applyWidgetChanges(editor, changes)).resolves.toBe(editor)
+})
+
+test('applyWidgetChanges passes each widget the latest editor', async () => {
+  const secondId = 2
+  WidgetRegistry.set(secondId, {
+    handleEditorType: (editor: any) => ({
+      ...editor,
+      secondUpdated: editor.updated,
+    }),
+  })
+  const editor = {
+    lines: ['before'],
+    widgets: [
+      { id, newState: {}, oldState: {} },
+      { id: secondId, newState: {}, oldState: {} },
+    ],
+  }
+  const changes = [
+    {
+      deleted: [],
+      inserted: ['a'],
+      origin: EditOrigin.EditorType,
+    },
+  ]
+
+  await expect(ApplyWidgetChanges.applyWidgetChanges(editor, changes)).resolves.toEqual({
+    ...editor,
+    secondUpdated: true,
+    updated: true,
+  })
 })

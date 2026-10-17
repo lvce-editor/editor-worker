@@ -1,56 +1,223 @@
+import type { DocumentSymbol } from '../DocumentSymbol/DocumentSymbol.ts'
+import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGutterDecoration.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as AriaBoolean from '../AriaBoolean/AriaBoolean.ts'
+import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
+import * as ClassNames from '../ClassNames/ClassNames.ts'
+import { combineWhitespaceTokens as combineTokens } from '../CombineWhitespaceTokens/CombineWhitespaceTokens.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
+import * as GetEditorBreadcrumbsVirtualDom from '../GetEditorBreadcrumbsVirtualDom/GetEditorBreadcrumbsVirtualDom.ts'
 import * as GetEditorContentVirtualDom from '../GetEditorContentVirtualDom/GetEditorContentVirtualDom.ts'
 import * as GetEditorGutterLayerVirtualDom from '../GetEditorGutterLayerVirtualDom/GetEditorGutterLayerVirtualDom.ts'
+import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
+import { getPrimaryCursorRowIndex } from '../GetPrimaryCursorRowIndex/GetPrimaryCursorRowIndex.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
+
+const textEditorErrorIconNode: VirtualDomNode = {
+  childCount: 0,
+  className: ClassNames.TextEditorErrorIcon,
+  type: VirtualDomElements.Div,
+}
+
+const textEditorErrorMessageNode: VirtualDomNode = {
+  childCount: 1,
+  className: 'TextEditorErrorMessage',
+  type: VirtualDomElements.Div,
+}
 
 interface EditorVirtualDomOptions {
+  readonly bracketMatchInfos?: readonly any[]
+  readonly breadcrumbFileIcon?: string
+  readonly breadcrumbsEnabled?: boolean
+  readonly breakPoints?: readonly number[]
+  readonly combineWhitespaceTokens?: boolean
   readonly cursorInfos?: readonly any[]
   readonly deltaY?: number
   readonly diagnostics?: readonly any[]
   readonly differences: readonly number[]
+  readonly documentSymbols?: readonly DocumentSymbol[]
+  readonly endOfLineDecorations?: readonly { readonly rowIndex: number; readonly text: string }[]
   readonly finalDeltaY?: number
+  readonly focused?: boolean
+  readonly gutterDecorations?: readonly EditorGutterDecoration[]
   readonly gutterInfos?: readonly any[]
   readonly height?: number
+  readonly highlightActiveLineNumber?: boolean
   readonly highlightedLine?: number
+  readonly horizontalVisibleRanges?: readonly {
+    readonly end: number
+    readonly rowIndex: number
+    readonly segments?: readonly number[]
+    readonly start: number
+  }[]
+  readonly lightBulbRowIndex?: number
   readonly lineNumbers?: boolean
+  readonly lines?: readonly string[]
+  readonly loadError?: string
+  readonly maxLineY?: number
+  readonly minimapEnabled?: boolean
+  readonly minimapLines?: readonly (readonly (number | string)[])[]
+  readonly minLineY?: number
+  readonly primarySelectionIndex?: number
+  readonly problemsHighlightedRow?: number
+  readonly roundedSelection?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
+  readonly scrollBarWidth?: number
   readonly selectionInfos?: readonly any[]
   readonly selections?: any
+  readonly tabSize?: number
+  readonly textDecorationDom?: readonly VirtualDomNode[]
   readonly textInfos: readonly any[]
+  readonly uid: number
+  readonly unnecessaryDiagnostics?: readonly any[]
+  readonly uri?: string
+  readonly visibleLineIndices?: readonly number[]
+  readonly visibleViewLineIndices?: readonly number[]
+  readonly workspaceUri?: string
+}
+
+const getMinimapVirtualDom = (
+  minimapEnabled: boolean,
+  minimapLines: readonly (readonly (number | string)[])[],
+  minLineY: number,
+  breadcrumbsEnabled: boolean,
+): readonly VirtualDomNode[] => {
+  if (!minimapEnabled) {
+    return []
+  }
+  return [
+    {
+      ariaHidden: AriaBoolean.True,
+      childCount: 0,
+      className: breadcrumbsEnabled ? 'EditorMinimap EditorBreadcrumbsOffset' : 'EditorMinimap',
+      'data-lineCount': minimapLines.length,
+      'data-visibleStart': minLineY,
+      type: VirtualDomElements.Div,
+    },
+  ]
 }
 
 export const getEditorVirtualDom = ({
+  bracketMatchInfos = [],
+  breadcrumbFileIcon = '',
+  breadcrumbsEnabled = false,
+  breakPoints = [],
+  combineWhitespaceTokens = false,
   cursorInfos = [],
   diagnostics = [],
   differences,
+  documentSymbols = [],
+  endOfLineDecorations = [],
+  focused = true,
+  gutterDecorations = [],
   gutterInfos = [],
+  highlightActiveLineNumber = true,
   highlightedLine = -1,
+  horizontalVisibleRanges = [],
+  lightBulbRowIndex = -1,
   lineNumbers = true,
+  lines = [],
+  loadError = '',
+  maxLineY = 0,
+  minimapEnabled = false,
+  minimapLines = [],
+  minLineY = 0,
+  primarySelectionIndex = 0,
+  problemsHighlightedRow = -1,
+  roundedSelection = false,
   scrollBarDiagnostics = [],
+  scrollBarHeight = 0,
+  scrollBarWidth = 0,
   selectionInfos = [],
+  selections = new Uint32Array(),
+  tabSize = 2,
+  textDecorationDom = [],
   textInfos,
+  uid,
+  unnecessaryDiagnostics = [],
+  uri = '',
+  visibleLineIndices,
+  visibleViewLineIndices = [],
+  workspaceUri = '',
 }: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
-  const gutterDom = lineNumbers ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(gutterInfos) : []
+  if (loadError) {
+    return [
+      {
+        childCount: 2,
+        className: ClassNames.TextEditorError,
+        'data-uid': uid,
+        role: AriaRoles.Code,
+        type: VirtualDomElements.Div,
+      },
+      textEditorErrorIconNode,
+      textEditorErrorMessageNode,
+      text(loadError),
+    ]
+  }
+  const gutterLineIndices = visibleViewLineIndices.length > 0 ? visibleViewLineIndices : visibleLineIndices
+  const visibleGutterInfos =
+    breakPoints.length > 0 || gutterDecorations.length > 0 || visibleLineIndices
+      ? getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, gutterLineIndices, lightBulbRowIndex, gutterDecorations)
+      : gutterInfos
+  const showGutter = lineNumbers || breakPoints.length > 0 || lightBulbRowIndex >= 0 || gutterDecorations.length > 0
+  const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
+  const activeLineNumber = highlightActiveLineNumber ? primaryCursorRowIndex + 1 : -1
+  const gutterDom = showGutter
+    ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, activeLineNumber, breadcrumbsEnabled)
+    : []
+  const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY, breadcrumbsEnabled)
+  const breadcrumbsDom = breadcrumbsEnabled
+    ? GetEditorBreadcrumbsVirtualDom.getEditorBreadcrumbsVirtualDom({
+        breadcrumbFileIcon,
+        breadcrumbsEnabled,
+        documentSymbols,
+        lines,
+        primarySelectionIndex,
+        selections,
+        uri,
+        workspaceUri,
+      })
+    : []
   return [
     {
-      childCount: lineNumbers ? 2 : 1,
-      className: 'Viewlet Editor',
+      childCount: (showGutter ? 2 : 1) + (minimapEnabled ? 1 : 0) + (breadcrumbsEnabled ? 1 : 0),
+      className: ClassNames.Editor,
+      'data-uid': uid,
       onContextMenu: DomEventListenerFunctions.HandleContextMenu,
-      role: 'code',
+      onMouseOut: DomEventListenerFunctions.HandleMouseOut,
+      onMouseOver: DomEventListenerFunctions.HandleMouseOver,
+      role: AriaRoles.Code,
       type: VirtualDomElements.Div,
     },
+    ...breadcrumbsDom,
     ...gutterDom,
     ...GetEditorContentVirtualDom.getEditorContentVirtualDom({
+      bracketMatchInfos,
+      breadcrumbsEnabled,
       cursorInfos,
       diagnostics,
       differences,
+      endOfLineDecorations,
+      focused,
       highlightedLine,
+      horizontalVisibleRanges,
       lineNumbers,
+      lines,
+      problemsHighlightedRow,
+      roundedSelection,
       scrollBarDiagnostics,
+      scrollBarHeight,
+      scrollBarWidth,
       selectionInfos,
-      textInfos,
+      tabSize,
+      textDecorationDom,
+      textInfos: combineWhitespaceTokens ? textInfos.map(combineTokens) : textInfos,
+      unnecessaryDiagnostics,
+      visibleLineIndices: visibleLineIndices || [],
+      visibleViewLineIndices,
     }),
+    ...minimapDom,
   ]
 }

@@ -15,5 +15,5 @@ export const applyWidgetChange = async (editor: any, widget: any, changes: any[]
       ...newState,
     }
   }
-  return widget
+  return editor
 }

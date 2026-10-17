@@ -11,3 +11,4 @@ export const FocusFindWidgetCloseButton = 48
 export const FocusFindWidgetNextMatchButton = 49
 export const FocusFindWidgetPreviousMatchButton = 50
 export const FocusEditorCodeGenerator = 52
+export const FocusColorPicker = 41

@@ -5,6 +5,10 @@ test('goToDefinition', () => {
   expect(EditorStrings.goToDefinition()).toBe('Go to Definition')
 })
 
+test('goToBracket', () => {
+  expect(EditorStrings.goToBracket()).toBe('Go to Bracket')
+})
+
 test('noDefinitionFound', () => {
   expect(EditorStrings.noDefinitionFound()).toBe('No definition found')
 })
@@ -79,8 +83,16 @@ test('editorSelectInsideString', () => {
   expect(EditorStrings.editorSelectInsideString()).toBe('Editor: Select Inside String')
 })
 
+test('selectToBracket', () => {
+  expect(EditorStrings.selectToBracket()).toBe('Select to Bracket')
+})
+
 test('editorIndent', () => {
   expect(EditorStrings.editorIndent()).toBe('Editor: Indent')
+})
+
+test('editorIncrementSelection', () => {
+  expect(EditorStrings.editorIncrementSelection()).toBe('Editor: Increment Selection')
 })
 
 test('editorUnindent', () => {
@@ -95,6 +107,10 @@ test('editorToggleComment', () => {
   expect(EditorStrings.editorToggleComment()).toBe('Editor: Toggle Comment')
 })
 
+test('editorDecrementSelection', () => {
+  expect(EditorStrings.editorDecrementSelection()).toBe('Editor: Decrement Selection')
+})
+
 test('editorSelectUp', () => {
   expect(EditorStrings.editorSelectUp()).toBe('Editor: Select Up')
 })
@@ -105,6 +121,10 @@ test('editorSelectDown', () => {
 
 test('toggleBlockComment', () => {
   expect(EditorStrings.toggleBlockComment()).toBe('Toggle Block Comment')
+})
+
+test('toggleBreakpoint', () => {
+  expect(EditorStrings.toggleBreakpoint()).toBe('Toggle Breakpoint')
 })
 
 test('editorOpenColorPicker', () => {

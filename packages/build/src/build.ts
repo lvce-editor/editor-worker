@@ -2,6 +2,7 @@ import { execa } from 'execa'
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { bundleJs } from './bundleJs.ts'
+import { buildE2eExtensions } from './buildE2eExtensions.ts'
 import { root } from './root.ts'
 
 const dist = join(root, '.tmp', 'dist')
@@ -53,6 +54,7 @@ await rm(dist, { recursive: true, force: true })
 await mkdir(dist, { recursive: true })
 
 await bundleJs()
+await buildE2eExtensions()
 
 const version = await getVersion()
 
@@ -72,6 +74,7 @@ await writeJson(join(dist, 'package.json'), packageJson)
 
 await cp(join(root, 'README.md'), join(dist, 'README.md'))
 await cp(join(root, 'LICENSE'), join(dist, 'LICENSE'))
+await cp(join(root, 'packages', 'editor-worker', 'settings.json'), join(dist, 'dist', 'settings.json'))
 
 await mkdir(join(dist, 'dist', 'api'), {
   recursive: true,

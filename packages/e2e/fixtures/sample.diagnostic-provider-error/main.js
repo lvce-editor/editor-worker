@@ -1,10 +1,12 @@
+import { activate as activateExtensionApi, registerDiagnosticProvider } from '@lvce-editor/api'
+
 const diagnosticProvider = {
+  id: 'xyz-diagnostics',
   languageId: 'xyz',
   provideDiagnostics(textDocument, offset) {
     throw new TypeError(`x is not a function`)
   },
 }
 
-export const activate = () => {
-  vscode.registerDiagnosticProvider(diagnosticProvider)
-}
+await activateExtensionApi()
+registerDiagnosticProvider(diagnosticProvider)

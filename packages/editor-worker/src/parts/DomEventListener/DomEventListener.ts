@@ -5,5 +5,6 @@ export interface DomEventListener {
   readonly passive?: boolean
   // TODO maybe use flags enum for options
   readonly preventDefault?: boolean
+  readonly stopPropagation?: boolean
   readonly trackPointerEvents?: readonly number[]
 }

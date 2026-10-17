@@ -2,9 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.source-actions-execute'
 
-export const skip = 1
-
-export const test: Test = async ({ Command, Editor, expect, Extension, FileSystem, Locator, Main }) => {
+export const test: Test = async ({ Editor, EditorSourceAction, expect, Extension, FileSystem, Locator, Main }) => {
   // arrange
   const url = import.meta.resolve('../fixtures/editor.source-actions-execute')
   await Extension.addWebExtension(url)
@@ -15,7 +13,7 @@ export const test: Test = async ({ Command, Editor, expect, Extension, FileSyste
   await Editor.openSourceActions()
 
   // act
-  await Command.execute('EditorSourceAction.selectItem', 'Organize Imports')
+  await EditorSourceAction.selectItem('Organize Imports')
 
   // assert
   const sourceActions = Locator('.EditorSourceActions')

@@ -1,6 +1,6 @@
-import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
+import * as ExtensionManagementEditor from '../ExtensionManagementEditor/ExtensionManagementEditor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { editorReplaceSelections } from './EditorCommandReplaceSelection.ts'
 import * as EditorShowMessage from './EditorCommandShowMessage.ts'
@@ -24,10 +24,13 @@ const getMatchingClosingBrace = (brace) => {
 
 export const braceCompletion = async (editor: any, text: string) => {
   try {
-    // @ts-ignore
-    const offset = TextDocument.offsetAt(editor, editor.cursor)
-    // @ts-ignore
-    const result = await RendererWorker.invoke('ExtensionHostBraceCompletion.executeBraceCompletionProvider', editor, offset, text)
+    const offset = getCursorOffset(editor)
+    const result = await ExtensionManagementEditor.execute({
+      args: [offset, text],
+      editor,
+      kind: 'brace completion',
+      method: 'provideBraceCompletion',
+    })
     if (result) {
       const closingBrace = getMatchingClosingBrace(text)
       const insertText = text + closingBrace
@@ -43,4 +46,8 @@ export const braceCompletion = async (editor: any, text: string) => {
     // @ts-ignore
     return EditorShowMessage.showErrorMessage(editor, position, getErrorMessage(error))
   }
+}
+
+export const getCursorOffset = (editor: any): number => {
+  return TextDocument.offsetAt(editor, editor.selections[0], editor.selections[1])
 }

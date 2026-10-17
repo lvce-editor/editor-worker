@@ -8,6 +8,7 @@ jest.unstable_mockModule('../src/parts/FindWidgetWorker/FindWidgetWorker.ts', ()
 }))
 
 const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
+const EmptyEditor = await import('../src/parts/EmptyEditor/EmptyEditor.ts')
 const RestoreWidgetState = await import('../src/parts/RestoreWidgetState/RestoreWidgetState.ts')
 
 beforeEach(() => {
@@ -30,10 +31,12 @@ test('restoreWidgetState - preserves unsupported widgets unchanged', async () =>
   }
   const editor = {
     newState: {
+      ...EmptyEditor.emptyEditor,
       uid: 920_002,
       widgets: [unsupportedWidget],
     },
     oldState: {
+      ...EmptyEditor.emptyEditor,
       uid: 920_002,
       widgets: [unsupportedWidget],
     },
@@ -68,10 +71,12 @@ test('restoreWidgetState - restores find widget commands', async () => {
   }
   const editor = {
     newState: {
+      ...EmptyEditor.emptyEditor,
       uid: 920_003,
       widgets: [findWidget],
     },
     oldState: {
+      ...EmptyEditor.emptyEditor,
       uid: 920_003,
       widgets: [findWidget],
     },

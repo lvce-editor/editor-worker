@@ -1,27 +1,5 @@
-// TODO move cursor
-// TODO multiple cursors -> VS Code removes multiple cursors
-// TODO with selection -> VS Code moves whole selection
+import * as MoveLines from '../MoveLines/MoveLines.ts'
+
 export const moveLineDown = (editor: any) => {
-  // const rowIndex = editor.cursor.rowIndex
-  // if (rowIndex === editor.lines.length - 1) {
-  //   return
-  // }
-  // const documentEdits = [
-  //   {
-  //     type: /* splice */ 2,
-  //     rowIndex: rowIndex,
-  //     count: 2,
-  //     newLines: [TextDocument.getLine(editor.textDocument, rowIndex + 1), TextDocument.getLine(editor.textDocument, rowIndex)],
-  //   },
-  // ]
-  // // @ts-ignore
-  // const cursorEdits = Editor.moveCursors(editor, (editor, cursor) => {
-  //   return {
-  //     rowIndex: cursor.rowIndex + 1,
-  //     columnIndex: cursor.columnIndex,
-  //   }
-  // })
-  // @ts-ignore
-  // Editor.scheduleDocumentAndCursors(editor, documentEdits, cursorEdits)
-  return editor
+  return MoveLines.moveLines(editor, 1)
 }

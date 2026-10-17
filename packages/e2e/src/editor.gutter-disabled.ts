@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.gutter-disabled'
 
-export const test: Test = async ({ expect, FileSystem, Locator, Main, Settings, Workspace }) => {
+export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, Settings, Workspace }) => {
   // arrange
   await Settings.update({ 'editor.lineNumbers': false })
   const tmpDir = await FileSystem.getTmpDir()
@@ -12,6 +12,7 @@ export const test: Test = async ({ expect, FileSystem, Locator, Main, Settings, 
 
   // act
   await Main.openUri(filePath)
+  await Command.execute('Editor.handleSettingsChanged')
 
   // assert
   const editorContent = Locator('.EditorContent')

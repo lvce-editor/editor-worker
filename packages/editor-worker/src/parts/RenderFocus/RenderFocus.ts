@@ -2,6 +2,9 @@ import { ViewletCommand } from '@lvce-editor/constants'
 import type { EditorState } from '../State/State.ts'
 
 export const renderFocus = (oldState: EditorState, newState: EditorState): readonly any[] => {
+  if (!newState.focused) {
+    return []
+  }
   const selector = '.EditorInput textarea'
   return [ViewletCommand.FocusSelector, newState.uid, selector]
 }
