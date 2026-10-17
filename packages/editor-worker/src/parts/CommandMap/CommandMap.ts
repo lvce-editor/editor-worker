@@ -7,6 +7,7 @@ import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 import { createEditor2 } from '../CreateEditor2/CreateEditor2.ts'
 import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import { createStandaloneEditor } from '../CreateStandaloneEditor/CreateStandaloneEditor.ts'
+import { renderDirect2 } from '../RenderDirect2/RenderDirect2.ts'
 import { diff2 } from '../Diff2/Diff2.ts'
 import * as DisposeEditor from '../DisposeEditor/DisposeEditor.ts'
 import { updateAutomaticCompletion } from '../EditorAutomaticCompletion/EditorAutomaticCompletion.ts'
@@ -585,6 +586,8 @@ export const commandMap = {
   'FindWidget.toggleReplace': EditorFindWidget.toggleReplace,
   'FindWidget.toggleUseRegularExpression': EditorFindWidget.toggleUseRegularExpression,
   'Font.ensure': Font.ensure,
+  'Editor.renderDirect2': renderDirect2,
+  'Editor.handleDirectMessagePort': (port: MessagePort) => HandleMessagePort.handleDirectMessagePort(port, commandMap),
   'HandleMessagePort.handleMessagePort': HandleMessagePort.handleMessagePort,
   'Hover.getHoverInfo': GetHoverInfo.getEditorHoverInfo,
   'Hover.handleMouseEnter': HandleMouseLeave.handleMouseEnter,
