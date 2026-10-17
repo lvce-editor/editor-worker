@@ -146,6 +146,13 @@ export const getHorizontalVisibleRangesMeasured = async (
   measureWidths: (texts: readonly string[]) => Promise<readonly number[]>,
 ): Promise<readonly { readonly difference: number; readonly end: number; readonly start: number }[]> => {
   const fallback = (request: MeasuredRangeRequest) => {
+    if (request.line.length <= request.threshold) {
+      return {
+        difference: getHorizontalVisibleDifference(request.line, 0, request.deltaX, request.averageCharWidth, request.tabSize, []),
+        end: request.line.length,
+        start: 0,
+      }
+    }
     const segments = request.segments || getSegments(request.line)
     const range = getHorizontalVisibleRange(
       request.line,

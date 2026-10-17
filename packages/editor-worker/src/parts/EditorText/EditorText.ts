@@ -12,7 +12,10 @@ import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 
 const maxTokenizerLoadPasses = 10
 
-const getGraphemeSegments = async (lines: readonly string[]) => {
+const getGraphemeSegments = async (lines: readonly string[], threshold: number) => {
+  if (lines.every((line) => line.length <= threshold)) {
+    return undefined
+  }
   try {
     return await TextMeasurementWorker.invoke('TextMeasurement.getGraphemeSegments', lines)
   } catch {
@@ -519,7 +522,7 @@ const getLineInfosViewport = async (
   let offset = minLineOffset
   const tabSize = editor.tabSize ?? 2
   const visibleLines = lines.slice(minLineY, maxLineY)
-  const graphemeSegments = await getGraphemeSegments(visibleLines)
+  const graphemeSegments = await getGraphemeSegments(visibleLines, horizontalVirtualizationThreshold)
   const measuredRanges = await GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured(
     visibleLines.map((line: string, index: number) => ({
       averageCharWidth,

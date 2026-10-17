@@ -16,6 +16,7 @@ export const getX = async (
   width: number,
   averageCharWidth: number,
   difference = 0,
+  measuredLineWidth?: number,
 ): Promise<number> => {
   if (!line) {
     return 0
@@ -35,14 +36,9 @@ export const getX = async (
   const normalizedLine = NormalizeText.normalizeText(line, normalize, tabSize)
   const tabCount = GetTabCount.getTabCount(line.slice(0, column))
   const partialText = normalizedLine.slice(0, column + tabCount * (tabSize - 1))
-  const textWidth = await MeasureTextWidth.measureTextWidth(
-    partialText,
-    fontWeight,
-    fontSize,
-    fontFamily,
-    letterSpacing,
-    isMonospaceFont,
-    averageCharWidth,
-  )
+  const textWidth =
+    column === line.length && measuredLineWidth !== undefined
+      ? measuredLineWidth
+      : await MeasureTextWidth.measureTextWidth(partialText, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, averageCharWidth)
   return Math.min(width, textWidth - halfCursorWidth + difference)
 }

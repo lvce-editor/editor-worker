@@ -10,13 +10,25 @@ interface WidthCache {
 // Owned by the editor lifecycle, with only the current document's distinct lines retained.
 const caches = new WeakMap<object, WidthCache>()
 
+const getFontKey = ({ charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, tabSize }: EditorState): string =>
+  JSON.stringify([charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, tabSize])
+
+export const getCachedLineWidth = (state: EditorState, line: string): number | undefined => {
+  const { largeFile, lifecycle, lines } = state
+  if (largeFile || lifecycle?.disposed) {
+    return undefined
+  }
+  const cache = caches.get(lifecycle || lines)
+  return cache?.font === getFontKey(state) ? cache.widths.get(line) : undefined
+}
+
 export const updateHorizontalLayout = async (state: EditorState): Promise<EditorState> => {
   const { breakPoints = [], deltaX, gutterDecorations = [], largeFile, lifecycle, lightBulbRowIndex = -1, lineNumbers } = state
   if (largeFile || lifecycle?.disposed) {
     return state
   }
   const { charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, lines, tabSize, width } = state
-  const font = JSON.stringify([charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, tabSize])
+  const font = getFontKey(state)
   const owner = lifecycle || lines
   const previous = caches.get(owner)
   const previousWidths = previous?.font === font ? previous.widths : undefined

@@ -3,6 +3,7 @@ import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as GetX from '../GetX/GetX.ts'
 import * as Px from '../Px/Px.ts'
+import { getCachedLineWidth } from '../UpdateHorizontalLayout/UpdateHorizontalLayout.ts'
 
 export const fromRange = (startRowIndex: number, startColumnIndex: number, endRowIndex: number, endColumnIndex: number) => {
   return new Uint32Array([startRowIndex, startColumnIndex, endRowIndex, endColumnIndex])
@@ -192,6 +193,7 @@ export const getVisible = async (editor: any) => {
       width,
       averageCharWidth,
       endLineDifference,
+      getCachedLineWidth(editor, endLine),
     )
     const endLineY = relativeEndLineRow * rowHeight
     if (isEmpty(selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn) && endLineEndX > 0) {
