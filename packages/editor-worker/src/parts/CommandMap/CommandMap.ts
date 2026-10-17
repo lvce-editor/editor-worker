@@ -168,6 +168,7 @@ import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetComm
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
 import * as FindWidget from '../FindWidgetFunctions/FindWidgetFunctions.ts'
 import * as Font from '../Font/Font.ts'
+import { getComponentState } from '../GetComponentState/GetComponentState.ts'
 import { refreshTextDecorations } from '../GetEditorTextDecorations/GetEditorTextDecorations.ts'
 import * as GetHoverInfo from '../GetHoverInfo/GetHoverInfo.ts'
 import * as GetKeyBindings from '../GetKeyBindings/GetKeyBindings.ts'
@@ -206,6 +207,7 @@ import {
   sendDeprecatedExtensionHostPortToExtensionManagementWorker,
   sendMessagePortToExtensionManagementWorker,
 } from '../SendMessagePortToExtensionManagementWorker/SendMessagePortToExtensionManagementWorker.ts'
+import { setComponentState } from '../SetComponentState/SetComponentState.ts'
 import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import { shouldOpenAutomaticCompletion } from '../ShouldOpenAutomaticCompletion/ShouldOpenAutomaticCompletion.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
@@ -371,6 +373,7 @@ export const commandMap = {
   'Editor.format': wrapCommand(EditorFormat.format),
   'Editor.getCommandIds': getCommandIds,
   'Editor.getCompletionContext': ExternalGetPositionAtCursor.getCompletionContext,
+  'Editor.getComponentState': getComponentState,
   'Editor.getDiagnostics': ExternalGetPositionAtCursor.getDiagnostics,
   'Editor.getKeyBindings': GetKeyBindings.getKeyBindings,
   'Editor.getKeys': GetKeys.getKeys,
@@ -493,6 +496,7 @@ export const commandMap = {
   'Editor.selectWord': wrapCommand(SelectWord.selectWord),
   'Editor.selectWordLeft': wrapCommand(SelectWordLeft.selectWordLeft),
   'Editor.selectWordRight': wrapCommand(SelectWordRight.selectWordRight),
+  'Editor.setComponentState': setComponentState,
   'Editor.setDebugEnabled': wrapCommand(SetDebugEnabled.setDebugEnabled),
   'Editor.setDecorations': wrapCommand(SetDecorations.setDecorations),
   'Editor.setDelta': wrapCommand(SetDelta.setDelta),
