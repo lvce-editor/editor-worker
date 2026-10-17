@@ -22,7 +22,7 @@ export const format = async (editor: any) => {
     console.error(error)
 
     // TODO configure editor message as widget
-    const displayErrorMessage = `${error}`
+    const displayErrorMessage = String(error)
     await EditorShowMessage.editorShowMessage(editor, 0, 0, displayErrorMessage, true)
     return editor
   }

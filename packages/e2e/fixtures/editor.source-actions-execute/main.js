@@ -1,25 +1,30 @@
+import { activate as activateExtensionApi, registerCodeActionsProvider } from '@lvce-editor/api'
+
 const organizeImports = {
   kind: 'source.organizeImports', // TODO use numeric code action type
   name: 'Organize Imports',
-  async execute(textDocument) {
+}
+
+Object.defineProperty(organizeImports, 'execute', {
+  enumerable: false,
+  async value(textDocument) {
     return [
       {
         startOffset: 0,
-        endOffset: 100,
+        endOffset: textDocument.text.length,
         inserted: `import { add } from './add.xyz'`,
       },
     ]
   },
-}
+})
 
 const codeActionProvider = {
+  id: 'xyz-code-actions',
   languageId: 'xyz',
   async provideCodeActions() {
     return [organizeImports]
   },
 }
 
-export const activate = () => {
-  // @ts-ignore
-  vscode.registerCodeActionsProvider(codeActionProvider)
-}
+await activateExtensionApi()
+registerCodeActionsProvider(codeActionProvider)

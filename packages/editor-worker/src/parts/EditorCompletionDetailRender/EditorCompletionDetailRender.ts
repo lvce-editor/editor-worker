@@ -8,9 +8,7 @@ const renderContent = {
     const dom: any[] = GetCompletionDetailVirtualDom.getCompletionDetailVirtualDom(newState.content)
     return [RenderMethod.SetDom2, newState.uid, dom]
   },
-  isEqual(oldState: CompletionDetailState, newState: CompletionDetailState) {
-    return oldState.content === newState.content
-  },
+  isEqual: (oldState: CompletionDetailState, newState: CompletionDetailState) => oldState.content === newState.content,
 }
 
 const renderBounds = {
@@ -18,9 +16,8 @@ const renderBounds = {
     const { height, width, x, y } = newState
     return [/* method */ RenderMethod.SetBounds, /* x */ x, /* y */ y, /* width */ width, /* height */ height]
   },
-  isEqual(oldState: CompletionDetailState, newState: CompletionDetailState) {
-    return oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height
-  },
+  isEqual: (oldState: CompletionDetailState, newState: CompletionDetailState) =>
+    oldState.x === newState.x && oldState.y === newState.y && oldState.width === newState.width && oldState.height === newState.height,
 }
 const render = [renderContent, renderBounds]
 

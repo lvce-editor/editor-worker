@@ -1,6 +1,7 @@
+import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
+import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as GetX from '../GetX/GetX.ts'
-import * as GetY from '../GetY/GetY.ts'
 import * as Px from '../Px/Px.ts'
 
 export const fromRange = (startRowIndex: number, startColumnIndex: number, endRowIndex: number, endColumnIndex: number) => {
@@ -133,12 +134,14 @@ export const getVisible = async (editor: any) => {
   const {
     charWidth,
     cursorWidth,
-    differences,
+    deltaY,
     focused,
+    foldingRanges = [],
     fontFamily,
     fontSize,
     fontWeight,
     isMonospaceFont,
+    itemHeight,
     letterSpacing,
     lines,
     maxLineY,
@@ -146,21 +149,35 @@ export const getVisible = async (editor: any) => {
     rowHeight,
     selections,
     tabSize,
+    viewLineIndices,
+    visibleLineIndices,
+    visibleViewLineIndices,
     width,
   } = editor
 
   const averageCharWidth = charWidth
   const halfCursorWidth = cursorWidth / 2
+  const actualVisibleLineIndices = visibleLineIndices || Array.from({ length: maxLineY - minLineY }, (_, index) => minLineY + index)
+  const getVisualRow = (rowIndex: number): number =>
+    viewLineIndices
+      ? EditorViewRows.getVisualRowForDocumentRow(rowIndex, viewLineIndices)
+      : EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges)
+  const startVisualRow = itemHeight ? Math.floor(deltaY / itemHeight) : getVisualRow(minLineY)
+  const endVisualRow = startVisualRow + (visibleViewLineIndices?.length || actualVisibleLineIndices.length)
+  const getRelativeRow = (rowIndex: number) => getVisualRow(rowIndex) - startVisualRow
+  const horizontalOffset = -(editor.deltaX ?? 0)
   for (let i = 0; i < selections.length; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn, reversed] = GetSelectionPairs.getSelectionPairs(
       selections,
       i,
     )
-    if (selectionEndRow < minLineY || selectionStartRow > maxLineY) {
+    const selectionStartVisualRow = getVisualRow(selectionStartRow)
+    const selectionEndVisualRow = getVisualRow(selectionEndRow)
+    if (selectionEndVisualRow < startVisualRow || selectionStartVisualRow >= endVisualRow) {
       continue
     }
-    const relativeEndLineRow = selectionEndRow - minLineY
-    const endLineDifference = differences[relativeEndLineRow]
+    const relativeEndLineRow = getRelativeRow(selectionEndRow)
+    const endLineDifference = horizontalOffset
     const endLine = lines[selectionEndRow]
     const endLineEndX = await GetX.getX(
       endLine,
@@ -176,14 +193,14 @@ export const getVisible = async (editor: any) => {
       averageCharWidth,
       endLineDifference,
     )
-    const endLineY = GetY.getY(selectionEndRow, minLineY, rowHeight)
+    const endLineY = relativeEndLineRow * rowHeight
     if (isEmpty(selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn) && endLineEndX > 0) {
       visibleCursors.push(endLineEndX, endLineY)
       continue
     }
-    const startLineY = GetY.getY(selectionStartRow, minLineY, rowHeight)
-    const startLineYRelative = selectionStartRow - minLineY
-    const startLineDifference = differences[startLineYRelative]
+    const startLineYRelative = getRelativeRow(selectionStartRow)
+    const startLineY = startLineYRelative * rowHeight
+    const startLineDifference = horizontalOffset
     if (selectionStartRow === selectionEndRow) {
       const startX = await GetX.getX(
         endLine,
@@ -207,7 +224,7 @@ export const getVisible = async (editor: any) => {
       const selectionWidth = endLineEndX - startX
       visibleSelections.push(startX, startLineY, selectionWidth, rowHeight)
     } else {
-      if (selectionStartRow >= minLineY) {
+      if (selectionStartVisualRow >= startVisualRow) {
         const startLine = lines[selectionStartRow]
         const startLineStartX = await GetX.getX(
           startLine,
@@ -237,20 +254,19 @@ export const getVisible = async (editor: any) => {
           averageCharWidth,
           startLineDifference,
         )
-        const startLineStartY = GetY.getY(selectionStartRow, minLineY, rowHeight)
+        const startLineStartY = startLineYRelative * rowHeight
         const selectionWidth = startLineEndX - startLineStartX
         if (reversed) {
           visibleCursors.push(startLineStartX, startLineStartY)
         }
         visibleSelections.push(startLineStartX, startLineStartY, selectionWidth, rowHeight)
       }
-      const iMin = Math.max(selectionStartRow + 1, minLineY)
-      const iMax = Math.min(selectionEndRow, maxLineY)
-      for (let i = iMin; i < iMax; i++) {
-        const currentLine = lines[i]
-        const currentLineY = GetY.getY(i, minLineY, rowHeight)
-        const relativeLine = i - minLineY
-        const difference = differences[relativeLine]
+      const selectedVisibleRows = actualVisibleLineIndices.filter((rowIndex: number) => rowIndex > selectionStartRow && rowIndex < selectionEndRow)
+      for (const rowIndex of selectedVisibleRows) {
+        const currentLine = lines[rowIndex]
+        const relativeLine = getRelativeRow(rowIndex)
+        const currentLineY = relativeLine * rowHeight
+        const difference = horizontalOffset
         const selectionWidth = await GetX.getX(
           currentLine,
           currentLine.length,
@@ -267,7 +283,7 @@ export const getVisible = async (editor: any) => {
         )
         visibleSelections.push(0, currentLineY, selectionWidth, rowHeight)
       }
-      if (selectionEndRow <= maxLineY) {
+      if (selectionEndVisualRow < endVisualRow) {
         const selectionWidth = endLineEndX
         visibleSelections.push(0, endLineY, selectionWidth, rowHeight)
         if (!reversed) {

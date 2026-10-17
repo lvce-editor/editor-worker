@@ -1,6 +1,8 @@
 import { WidgetId } from '@lvce-editor/constants'
+import * as EditorSelection from '../Editor/EditorSelection.ts'
 import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
+import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
@@ -9,11 +11,31 @@ import { getEditorSourceActions } from '../GetSourceActions/GetSourceActions.ts'
 import { getWidgetInvoke } from '../GetWidgetInvoke/GetWidgetInvoke.ts'
 import * as GetWordAtOffset from '../GetWordAtOffset/GetWordAtOffset.ts'
 import * as SetFocus from '../SetFocus/SetFocus.ts'
+import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
+import * as WrapCommands from '../WrapCommands/WrapCommands.ts'
+
+const applyEditCommand = WrapCommands.wrapCommand(ApplyEdit.applyEdit, false, false)
 
 export const getPositionAtCursor = (editorUid: number): any => {
   const editor = GetEditor.getEditor(editorUid)
   return GetPositionAtCursor.getPositionAtCursor(editor)
+}
+
+export const getCompletionContext = (editorUid: number, includeLine = false): any => {
+  const editor = GetEditor.getEditor(editorUid)
+  const position = GetPositionAtCursor.getPositionAtCursor(editor)
+  if (!includeLine) {
+    return {
+      ...position,
+      wordBefore: EditorCommandGetWordAt.getWordBefore(editor, position.rowIndex, position.columnIndex),
+    }
+  }
+  return {
+    ...position,
+    line: editor.lines[position.rowIndex] || '',
+  }
 }
 
 export const getUri = (editorUid: number): string => {
@@ -55,20 +77,43 @@ export const getLines2 = (editorUid: number): readonly string[] => {
   return lines
 }
 
-export const getSelections2 = (editorUid: number): readonly string[] => {
+export const getVisibleLineRange = (editorUid: number): readonly number[] => {
+  const { maxLineY, minLineY } = GetEditor.getEditor(editorUid)
+  return [minLineY, maxLineY]
+}
+
+export const getSelections2 = (editorUid: number): Uint32Array => {
   const editor = GetEditor.getEditor(editorUid)
   const { selections } = editor
   return selections
 }
 
-export const setSelections2 = (editorUid: number, selections: Uint32Array): void => {
-  const editor = GetEditor.getEditor(editorUid)
-  const newEditor = { ...editor, selections }
-  Editors.set(editorUid, editor, newEditor)
+export const setSelections2 = async (editorUid: number, selections: Uint32Array): Promise<void> => {
+  const requested = Editors.get(editorUid)
+  if (!requested || requested.newState.lifecycle?.disposed) {
+    return
+  }
+  const requestedLifecycle = requested.newState.lifecycle
+  await EditorCommandQueue.enqueue(editorUid, async () => {
+    const instance = Editors.get(editorUid)
+    if (!instance || instance.newState.lifecycle?.disposed || instance.newState.lifecycle !== requestedLifecycle) {
+      return
+    }
+    const editor = instance.newState
+    const { lifecycle } = editor
+    const newEditor = EditorSelection.setSelections(editor, selections)
+    const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
+    const current = Editors.get(editorUid)
+    if (!current || lifecycle?.disposed || current.newState.lifecycle !== lifecycle) {
+      return
+    }
+    Editors.set(editorUid, current.oldState, newEditorWithDerivedState)
+  })
 }
 
 export const closeWidget2 = async (editorUid: number, widgetId: number, widgetName: string, unsetAdditionalFocus: number) => {
   const editor = GetEditor.getEditor(editorUid)
+  const widgetRevision = WidgetRevision.next(editorUid)
   const invoke = getWidgetInvoke(widgetId)
   const { widgets } = editor
   const index = widgets.findIndex((widget: any) => widget.id === widgetId)
@@ -79,10 +124,14 @@ export const closeWidget2 = async (editorUid: number, widgetId: number, widgetNa
   const newWidgets = [...widgets.slice(0, index), ...widgets.slice(index + 1)]
   const newEditor = {
     ...editor,
+    additionalFocus: unsetAdditionalFocus ? 0 : editor.additionalFocus,
+    decorations: widgetId === WidgetId.Rename ? editor.decorations.slice(0, -4) : editor.decorations,
     focused: true,
+    widgetRevision,
     widgets: newWidgets,
   }
-  Editors.set(editorUid, editor, newEditor)
+  const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
+  Editors.set(editorUid, editor, newEditorWithDerivedState)
   await SetFocus.setFocus(WhenExpression.FocusEditorText)
   if (unsetAdditionalFocus) {
     await SetFocus.unsetAdditionalFocus(unsetAdditionalFocus)
@@ -93,10 +142,8 @@ export const closeFind2 = async (editorUid: number) => {
   await closeWidget2(editorUid, WidgetId.Find, 'FindWidget', 0)
 }
 
-export const applyEdits2 = async (editorUid: number, edits: readonly any[]): Promise<void> => {
-  const editor = GetEditor.getEditor(editorUid)
-  const newEditor = await ApplyEdit.applyEdit(editor, edits)
-  Editors.set(editorUid, editor, newEditor)
+export const applyEdits2 = async (editorUid: number, edits: readonly any[], selectionChanges?: Uint32Array): Promise<void> => {
+  await applyEditCommand(editorUid, edits, selectionChanges)
 }
 
 export const getSourceActions = async (editorUid: number): Promise<readonly any[]> => {

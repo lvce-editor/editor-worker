@@ -2,6 +2,8 @@ import type { Edit } from '../Edit/Edit.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
+/* eslint-disable sonarjs/super-linear-regex */
+
 const RE_WHITESPACE_AT_START = /^\s+/
 const RE_WHITESPACE_AT_END = /\s+$/
 
@@ -12,7 +14,7 @@ const createDeleteEdit = (rowIndex: number, columnIndex: number, text: string): 
       columnIndex: columnIndex + text.length,
       rowIndex,
     },
-    inserted: [],
+    inserted: [''],
     origin: EditOrigin.ToggleBlockComment,
     start: {
       columnIndex,
@@ -39,7 +41,7 @@ const getRemoveBlockCommentEdits = (
   return [createDeleteEdit(startRowIndex, startColumnIndex, blockCommentStart), createDeleteEdit(endRowIndex, endColumnIndex, blockCommentEnd)]
 }
 
-export const getBlockCommentEdits = (editor: any, blockComment: string): readonly Edit[] => {
+export const getBlockCommentEdits = (editor: any, blockComment: readonly string[]): readonly Edit[] => {
   const { selections } = editor
   const [rowIndex] = selections
   const line = TextDocument.getLine(editor, rowIndex)
@@ -97,7 +99,7 @@ export const getBlockCommentEdits = (editor: any, blockComment: string): readonl
       endColumnIndex -= whitespaceAtEnd[0].length
     }
     const change1: Edit = {
-      deleted: [],
+      deleted: [''],
       end: {
         columnIndex: startColumnIndex,
         rowIndex,
@@ -110,7 +112,7 @@ export const getBlockCommentEdits = (editor: any, blockComment: string): readonl
       },
     }
     const change2: Edit = {
-      deleted: [],
+      deleted: [''],
       end: {
         columnIndex: endColumnIndex + blockCommentStart.length,
         rowIndex,

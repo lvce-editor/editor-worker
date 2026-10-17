@@ -1,23 +1,29 @@
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as GetSearchFieldButtonVirtualDom from '../GetSearchFieldButtonVirtualDom/GetSearchFieldButtonVirtualDom.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
+const searchFieldNode: VirtualDomNode = {
+  childCount: 2,
+  className: ClassNames.SearchField,
+  role: AriaRoles.None,
+  type: VirtualDomElements.Div,
+}
+
 export const getSearchFieldVirtualDom = (
   name: string,
   placeholder: string,
-  onInput: string,
+  onInput: string | number,
   insideButtons: any,
   outsideButtons: any,
-  onFocus = '',
+  onFocus: string | number = '',
 ) => {
+  if (outsideButtons.length > 0) {
+    throw new Error('outsideButtons are deprecated')
+  }
   const dom = [
-    {
-      childCount: 2,
-      className: ClassNames.SearchField,
-      role: AriaRoles.None,
-      type: VirtualDomElements.Div,
-    },
+    searchFieldNode,
     {
       autocapitalize: 'off',
       autocorrect: 'off',
@@ -37,8 +43,5 @@ export const getSearchFieldVirtualDom = (
     },
     ...insideButtons.flatMap(GetSearchFieldButtonVirtualDom.getSearchFieldButtonVirtualDom),
   ]
-  if (outsideButtons.length > 0) {
-    throw new Error('outsideButtons are deprecated')
-  }
   return dom
 }

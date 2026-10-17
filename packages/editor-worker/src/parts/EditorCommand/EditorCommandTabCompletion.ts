@@ -3,9 +3,7 @@ import * as TabCompletion from '../TabCompletion/TabCompletion.ts'
 import * as EditorShowMessage from './EditorCommandShowMessage.ts'
 import * as EditorSnippet from './EditorCommandSnippet.ts'
 
-const getErrorMessage = (error: any) => {
-  return `${error}`
-}
+const getErrorMessage = String
 
 export const tabCompletion = async (editor: any) => {
   try {

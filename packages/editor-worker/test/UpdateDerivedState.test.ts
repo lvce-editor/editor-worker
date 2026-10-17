@@ -1,0 +1,335 @@
+import { beforeEach, expect, jest, test } from '@jest/globals'
+import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
+
+const getDocumentSymbolsMock = jest.fn<(...args: readonly any[]) => Promise<any>>().mockResolvedValue([])
+jest.unstable_mockModule('../src/parts/GetDocumentSymbols/GetDocumentSymbols.ts', () => ({ getDocumentSymbols: getDocumentSymbolsMock }))
+
+const getVisibleTextMock: any = jest.fn()
+const getVisibleSelectionsMock: any = jest.fn()
+const getSyncIncrementalEnabledMock: any = jest.fn()
+
+jest.unstable_mockModule('../src/parts/EditorText/EditorText.ts', () => ({
+  getVisible: getVisibleTextMock,
+}))
+
+jest.unstable_mockModule('../src/parts/EditorSelection/EditorSelection.ts', () => ({
+  getVisible: getVisibleSelectionsMock,
+}))
+
+jest.unstable_mockModule('../src/parts/SyncIncremental/SyncIncremental.ts', () => ({
+  getEnabled: getSyncIncrementalEnabledMock,
+}))
+
+jest.unstable_mockModule('../src/parts/UpdateHorizontalLayout/UpdateHorizontalLayout.ts', () => ({
+  updateHorizontalLayout: async (state: any) => state,
+}))
+
+const UpdateDerivedState = await import('../src/parts/UpdateDerivedState/UpdateDerivedState.ts')
+
+beforeEach(() => {
+  getVisibleTextMock.mockReset()
+  getVisibleSelectionsMock.mockReset()
+  getSyncIncrementalEnabledMock.mockReset()
+  getSyncIncrementalEnabledMock.mockReturnValue(false)
+})
+
+test('updateDerivedState recomputes visible text data when lines changed but textInfos are stale', async () => {
+  const oldTextInfos = [['old']]
+  const oldDifferences = [['old-diff']]
+  const oldState: any = {
+    cursorWidth: 2,
+    differences: oldDifferences,
+    focused: true,
+    fontFamily: 'Fira Code',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    letterSpacing: 0,
+    lines: ['a'],
+    maxLineY: 1,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: oldTextInfos,
+    width: 100,
+  }
+  const newState: any = {
+    ...oldState,
+    lines: ['aaaaa'],
+  }
+  getVisibleTextMock.mockResolvedValue({
+    differences: [['new-diff']],
+    textInfos: [['new']],
+  })
+  getVisibleSelectionsMock.mockResolvedValue({
+    cursorInfos: ['cursor'],
+    selectionInfos: ['selection'],
+  })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(getVisibleTextMock).toHaveBeenCalledWith(newState, false)
+  expect(result).toMatchObject({
+    cursorInfos: ['cursor'],
+    differences: [['new-diff']],
+    selectionInfos: ['selection'],
+    textInfos: [['new']],
+  })
+})
+
+test('updateDerivedState skips visible text recomputation when textInfos are already fresh', async () => {
+  const oldState: any = {
+    cursorWidth: 2,
+    differences: [['old-diff']],
+    focused: true,
+    fontFamily: 'Fira Code',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    letterSpacing: 0,
+    lines: ['a'],
+    maxLineY: 1,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [['old']],
+    width: 100,
+  }
+  const newState: any = {
+    ...oldState,
+    cursorWidth: 3,
+    differences: [['new-diff']],
+    textInfos: [['new']],
+  }
+  getVisibleSelectionsMock.mockResolvedValue({
+    cursorInfos: ['cursor'],
+    selectionInfos: ['selection'],
+  })
+
+  await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(getVisibleTextMock).not.toHaveBeenCalled()
+})
+
+test('updateDerivedState rebuilds visible row indices after multiline edits', async () => {
+  const oldState: any = {
+    cursorWidth: 2,
+    deltaY: 0,
+    differences: [],
+    finalDeltaY: 0,
+    focused: true,
+    foldingRanges: [],
+    fontFamily: 'Fira Code',
+    fontSize: 14,
+    fontWeight: 400,
+    height: 100,
+    isMonospaceFont: true,
+    itemHeight: 20,
+    letterSpacing: 0,
+    lines: ['a', 'b', 'c'],
+    maxLineY: 3,
+    minimumSliderSize: 20,
+    minLineY: 0,
+    numberOfVisibleLines: 5,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [],
+    visibleLineIndices: [0, 1, 2],
+    width: 100,
+  }
+  const newState = {
+    ...oldState,
+    lines: ['ac'],
+  }
+  getVisibleTextMock.mockResolvedValue({
+    differences: [],
+    textInfos: [],
+  })
+  getVisibleSelectionsMock.mockResolvedValue({
+    cursorInfos: [],
+    selectionInfos: [],
+  })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(result.visibleLineIndices).toEqual([0])
+  expect(getVisibleTextMock).toHaveBeenCalledWith(expect.objectContaining({ visibleLineIndices: [0] }), false)
+})
+
+test('updateDerivedState repositions diagnostics after scrolling', async () => {
+  const diagnostics = [
+    {
+      columnIndex: 0,
+      endColumnIndex: 1,
+      rowIndex: 1,
+      type: 'warning',
+    },
+  ]
+  const oldState: any = {
+    charWidth: 8,
+    cursorWidth: 2,
+    diagnostics,
+    differences: [],
+    focused: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    letterSpacing: 0,
+    lines: ['first', 'second'],
+    maxLineY: 2,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [['first'], ['second']],
+    visualDecorations: [{ height: 20, type: 'warning', width: 8, x: 0, y: 20 }],
+    width: 100,
+  }
+  const newState: any = {
+    ...oldState,
+    differences: [],
+    maxLineY: 3,
+    minLineY: 1,
+    textInfos: [['second']],
+  }
+  getVisibleSelectionsMock.mockResolvedValue({
+    cursorInfos: [],
+    selectionInfos: [],
+  })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(result.visualDecorations).toEqual([{ height: 20, type: 'warning', width: 8, x: 0, y: 0 }])
+})
+
+test('updateDerivedState shows a lightbulb when the cursor moves onto a fixable diagnostic', async () => {
+  using _rpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeCodeActionProviders'() {
+      return [{ kind: 'quickfix', name: "Fix 'semi' problem" }]
+    },
+  })
+  const diagnostic = {
+    code: 'semi',
+    columnIndex: 10,
+    endColumnIndex: 10,
+    endRowIndex: 0,
+    message: 'Missing semicolon',
+    rowIndex: 0,
+    source: 'eslint',
+    type: 'error',
+    uri: 'file:///test.ts',
+  }
+  const oldState: any = {
+    cursorWidth: 2,
+    diagnostics: [diagnostic],
+    differences: [],
+    focused: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    languageId: 'typescript',
+    letterSpacing: 0,
+    lightBulbRowIndex: -1,
+    lines: ['const x=1'],
+    maxLineY: 1,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [['const x=1']],
+    uid: 1,
+    uri: 'file:///test.ts',
+    width: 100,
+  }
+  const newState = {
+    ...oldState,
+    selections: new Uint32Array([0, 10, 0, 10]),
+  }
+  getVisibleSelectionsMock.mockResolvedValue({ cursorInfos: [], selectionInfos: [] })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(result.lightBulbRowIndex).toBe(0)
+})
+
+test('updateDerivedState refreshes gutter decorations after document text changes', async () => {
+  using _rpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.executeProvidersByEvent': () => [[{ rowIndex: 0, type: 'modified' }]],
+  })
+  const oldState: any = {
+    cursorWidth: 2,
+    differences: [],
+    focused: true,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    gutterDecorations: [],
+    isMonospaceFont: true,
+    languageId: 'plaintext',
+    letterSpacing: 0,
+    lines: ['before'],
+    maxLineY: 1,
+    minLineY: 0,
+    rowHeight: 20,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    tabSize: 2,
+    textInfos: [['before']],
+    uri: 'file:///workspace/file.txt',
+    width: 100,
+  }
+  const newState: any = {
+    ...oldState,
+    lines: ['after'],
+  }
+  getVisibleTextMock.mockResolvedValue({ differences: [], textInfos: [['after']] })
+  getVisibleSelectionsMock.mockResolvedValue({ cursorInfos: [], selectionInfos: [] })
+
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+
+  expect(result.gutterDecorations).toEqual([{ rowIndex: 0, type: 'modified' }])
+})
+
+test('refreshes breadcrumb symbols after text edits but not cursor moves', async () => {
+  const lines = ['{}']
+  const oldState: any = { breadcrumbsEnabled: true, diagnostics: [], documentSymbols: [], lines, selections: new Uint32Array() }
+  const symbols = [{ name: 'updated' }]
+  getDocumentSymbolsMock.mockResolvedValue(symbols)
+  getDocumentSymbolsMock.mockClear()
+  getVisibleTextMock.mockResolvedValue({ differences: [], textInfos: [] })
+  getVisibleSelectionsMock.mockResolvedValue([])
+  const newState = { ...oldState, lines: ['{"updated": true}'] }
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+  expect(result.documentSymbols).toBe(symbols)
+  expect(getDocumentSymbolsMock).toHaveBeenCalledTimes(1)
+  await UpdateDerivedState.updateDerivedState(result, { ...result, selections: new Uint32Array([0, 1, 0, 1]) })
+  expect(getDocumentSymbolsMock).toHaveBeenCalledTimes(1)
+})
+
+test('horizontal scrolling refreshes diagnostics even when their source data is unchanged', async () => {
+  const oldState: any = {
+    charWidth: 8,
+    deltaX: 500.5,
+    diagnostics: [{ columnIndex: 70, endColumnIndex: 73, rowIndex: 0, type: 'error' }],
+    differences: [-4.5],
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    letterSpacing: 0,
+    lines: ['a'.repeat(1000)],
+    minLineY: 0,
+    rowHeight: 20,
+    tabSize: 4,
+    textInfos: [['a']],
+    width: 400,
+  }
+  getVisibleTextMock.mockResolvedValue({ differences: oldState.differences, textInfos: oldState.textInfos })
+  getVisibleSelectionsMock.mockResolvedValue({ cursorInfos: [], selectionInfos: [] })
+  const result = await UpdateDerivedState.updateDerivedState(oldState, { ...oldState, deltaX: 501 })
+  expect(result.visualDecorations).toEqual([{ height: 20, type: 'error', width: 24, x: 59, y: 0 }])
+})

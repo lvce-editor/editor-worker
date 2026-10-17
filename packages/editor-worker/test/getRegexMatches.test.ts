@@ -24,6 +24,7 @@ test('returns multiple matches', () => {
 })
 
 test('returns matches with capture groups', () => {
+  // eslint-disable-next-line sonarjs/super-linear-regex
   const regex = /(\w+)=(\d+)/g
   const result = getRegexMatches('a=1 b=2 c=3', regex)
   expect(result).toHaveLength(3)
@@ -66,7 +67,7 @@ test('handles regex with special characters', () => {
 
 test('handles URLs detection with regex', () => {
   const regex = /https?:\/\/\S+/g
-  const result = getRegexMatches('Visit http://example.com and https://test.org', regex)
+  const result = getRegexMatches('Visit https://example.com and https://test.org', regex)
   expect(result).toHaveLength(2)
   expect(result[0]?.[0]).toContain('example.com')
   expect(result[1]?.[0]).toContain('test.org')

@@ -5,12 +5,46 @@ import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEven
 export const renderEventListeners = (): readonly DomEventListener[] => {
   return [
     {
+      name: DomEventListenerFunctions.HandleHoverMouseDown,
+      params: [],
+      stopPropagation: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleLightBulbClick,
+      params: ['showSourceActions3'],
+      preventDefault: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleMergeConflictActionClick,
+      params: ['acceptMergeConflict', 'event.target.dataset.action', 'event.target.dataset.rowIndex'],
+      preventDefault: true,
+      stopPropagation: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleMergeConflictActionsMouseDown,
+      params: ['handleMergeConflictActionsMouseDown'],
+      preventDefault: true,
+      stopPropagation: true,
+    },
+    {
       name: DomEventListenerFunctions.HandleFocus,
       params: ['handleFocus'],
     },
     {
       name: DomEventListenerFunctions.HandleMouseMove,
-      params: ['handleInput', EventExpression.ClientX, EventExpression.ClientY, EventExpression.AltKey],
+      params: ['handleMouseMove', EventExpression.ClientX, EventExpression.ClientY, EventExpression.AltKey],
+    },
+    {
+      name: DomEventListenerFunctions.HandleMouseOut,
+      params: ['handleMouseLeave', 'event.currentTarget.dataset.uid'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleMouseOver,
+      params: ['handleMouseEnter', 'event.currentTarget.dataset.uid'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleKeyUp,
+      params: ['handleKeyUp', EventExpression.Key],
     },
     {
       name: DomEventListenerFunctions.HandleBlur,
@@ -19,6 +53,7 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     {
       name: DomEventListenerFunctions.HandleBeforeInput,
       params: ['handleBeforeInput', 'event.inputType', 'event.data'],
+      preventDefault: true,
     },
     {
       name: DomEventListenerFunctions.HandleCompositionStart,
@@ -30,7 +65,7 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
     },
     {
       name: DomEventListenerFunctions.HandleCompositionEnd,
-      params: ['compositionUpdate', 'event.data'],
+      params: ['compositionEnd', 'event.data'],
     },
     {
       name: DomEventListenerFunctions.HandleCut,
@@ -38,14 +73,84 @@ export const renderEventListeners = (): readonly DomEventListener[] => {
       preventDefault: true,
     },
     {
+      name: DomEventListenerFunctions.HandlePaste,
+      params: ['paste', 'event.clipboardData.text'],
+      preventDefault: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleMouseDown,
+      params: [
+        'handleMouseDown',
+        'event.button',
+        'event.altKey',
+        'event.ctrlKey',
+        EventExpression.ClientX,
+        EventExpression.ClientY,
+        'event.detail',
+        'event.shiftKey',
+      ],
+    },
+    {
+      name: DomEventListenerFunctions.HandlePointerDown,
+      params: [
+        'handlePointerDown',
+        'event.button',
+        'event.altKey',
+        'event.ctrlKey',
+        EventExpression.ClientX,
+        EventExpression.ClientY,
+        'event.detail',
+        'event.currentTarget.parentElement.parentElement.offsetLeft',
+      ],
+      trackPointerEvents: [DomEventListenerFunctions.HandlePointerMove, DomEventListenerFunctions.HandlePointerUp],
+    },
+    {
+      name: DomEventListenerFunctions.HandlePointerMove,
+      params: ['handlePointerMove', EventExpression.ClientX, EventExpression.ClientY, EventExpression.AltKey],
+    },
+    {
+      name: DomEventListenerFunctions.HandlePointerUp,
+      params: ['handlePointerUp'],
+    },
+    {
       name: DomEventListenerFunctions.HandleWheel,
-      params: ['setDelta', EventExpression.DeltaMode, EventExpression.DeltaY],
+      params: ['handleWheel', EventExpression.DeltaMode, 'event.deltaX', EventExpression.DeltaY],
       passive: true,
     },
     {
       name: DomEventListenerFunctions.HandleContextMenu,
       params: ['handleContextMenu', EventExpression.Button, EventExpression.ClientX, EventExpression.ClientY],
       preventDefault: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarVerticalPointerDown,
+      params: ['handleScrollBarVerticalPointerDown', EventExpression.ClientY],
+      preventDefault: true,
+      trackPointerEvents: [DomEventListenerFunctions.HandleScrollBarVerticalPointerMove, DomEventListenerFunctions.HandleScrollBarVerticalPointerUp],
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarVerticalPointerMove,
+      params: ['handleScrollBarVerticalPointerMove', EventExpression.ClientY],
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarVerticalPointerUp,
+      params: ['handlePointerUp'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarHorizontalPointerDown,
+      params: ['handleScrollBarHorizontalPointerDown', EventExpression.ClientX],
+      trackPointerEvents: [
+        DomEventListenerFunctions.HandleScrollBarHorizontalPointerMove,
+        DomEventListenerFunctions.HandleScrollBarHorizontalPointerUp,
+      ],
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarHorizontalPointerMove,
+      params: ['handleScrollBarHorizontalMove', EventExpression.ClientX],
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarHorizontalPointerUp,
+      params: ['handlePointerUp'],
     },
   ]
 }

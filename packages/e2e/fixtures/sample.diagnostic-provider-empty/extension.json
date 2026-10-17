@@ -1,5 +1,12 @@
 {
-  "browser": "main.js",
+  "browser": "dist/main.js",
+  "isolated": true,
+  "diagnosticProviders": [
+    {
+      "id": "javascript-diagnostics",
+      "languageId": "javascript"
+    }
+  ],
   "activation": ["onDiagnostic:xyz"],
   "languages": [
     {

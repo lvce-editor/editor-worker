@@ -4,8 +4,8 @@ import * as Editor from '../Editor/Editor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 // TODO move cursor
-// TODO multiple cursors -> vscode removes multiple cursors
-// TODO with selection -> vscode moves whole selection
+// TODO multiple cursors -> VS Code removes multiple cursors
+// TODO with selection -> VS Code moves whole selection
 // @ts-ignore
 export const moveLineDown = (editor) => {
   const { rowIndex } = editor.cursor

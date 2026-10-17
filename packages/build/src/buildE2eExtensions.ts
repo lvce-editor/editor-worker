@@ -1,0 +1,53 @@
+import { build } from 'esbuild'
+import { join } from 'node:path'
+import { downloadHtmlExtension } from './downloadHtmlExtension.ts'
+import { root } from './root.ts'
+
+const extensionNames = [
+  'editor.alt-hover-backlog',
+  'editor.alt-hover-definition-link',
+  'editor.completion-click',
+  'editor.completion-close-on-type-space',
+  'editor.completion-diagnostic-refresh',
+  'editor.completion-empty',
+  'editor.completion-one-result',
+  'editor.completion-open-on-type',
+  'editor.completion-pending',
+  'editor.completion-scroll',
+  'editor.diagnostics-scroll-race',
+  'editor.diagnostics-retained-slow',
+  'editor.format-on-save',
+  'editor.gutter-decoration-provider',
+  'editor.hover-show',
+  'editor.hover-pending',
+  'editor.rename-provider',
+  'editor.rename-unavailable',
+  'editor.source-actions-execute',
+  'editor.source-actions-open',
+  'editor.unnecessary-diagnostic',
+  'editor.typescript-automatic-completion',
+  'sample.diagnostic-provider',
+  'sample.diagnostic-provider-empty',
+  'sample.diagnostic-provider-error',
+  'sample.diagnostic-provider-fast',
+  'sample.diagnostic-provider-pending',
+  'sample.diagnostic-provider-update-on-type',
+  'write-file-error',
+] as const
+
+const buildE2eExtension = async (extensionName: string): Promise<void> => {
+  const extensionPath = join(root, 'packages', 'e2e', 'fixtures', extensionName)
+  await build({
+    bundle: true,
+    entryPoints: [join(extensionPath, 'main.js')],
+    external: ['electron', 'node:*'],
+    format: 'esm',
+    outfile: join(extensionPath, 'dist', 'main.js'),
+    platform: 'browser',
+    target: 'esnext',
+  })
+}
+
+export const buildE2eExtensions = async (): Promise<void> => {
+  await Promise.all([...extensionNames.map(buildE2eExtension), downloadHtmlExtension()])
+}

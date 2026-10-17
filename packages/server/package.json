@@ -4,13 +4,16 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "postinstall": "node src/postinstall.js",
-    "dev": "node ./node_modules/@lvce-editor/server/bin/server.js"
+    "dev": "node ./src/server.js",
+    "test": "node --test test/*.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@lvce-editor/server": "^0.81.14"
+    "@lvce-editor/server": "0.120.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3"
   }
 }

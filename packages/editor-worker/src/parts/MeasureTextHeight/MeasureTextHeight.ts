@@ -14,6 +14,5 @@ export const measureTextBlockHeight = async (
   width: number,
 ): Promise<number> => {
   // @ts-ignore
-  // return RendererProcess.invoke('MeasureTextBlockHeight.measureTextBlockHeight', text, fontSize, fontFamily, lineHeight, width)
-  return 100
+  return RendererWorker.invoke('MeasureTextHeight.measureTextBlockHeight', text, fontFamily, fontSize, lineHeight, width)
 }

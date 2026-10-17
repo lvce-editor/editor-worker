@@ -1,19 +1,12 @@
 import * as Assert from '../Assert/Assert.ts'
 import * as Definition from '../Definition/Definition.ts'
+import * as DefinitionLinkDecoration from '../DefinitionLinkDecoration/DefinitionLinkDecoration.ts'
+import * as GetWordMatchAtPosition from '../GetWordMatchAtPosition/GetWordMatchAtPosition.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
 
-// @ts-ignore
-const getTokenIndex = (tokens, offset) => {
-  let currentOffset = 0
-  for (let i = 0; i < tokens.length; i++) {
-    const token = tokens[i]
-    currentOffset += token.length
-    if (currentOffset >= offset) {
-      return i
-    }
-  }
-  return -1
+const isNoDefinitionProviderFoundError = (error: unknown): boolean => {
+  return error instanceof Error && error.message.startsWith('Failed to execute definition provider: No definition provider found')
 }
 
 // @ts-ignore
@@ -22,40 +15,25 @@ export const handleMouseMoveWithAltKey = async (editor, x, y) => {
   Assert.number(x)
   Assert.number(y)
   const position = await EditorPosition.at(editor, x, y)
+  const wordMatch = GetWordMatchAtPosition.getWordMatchAtPosition(editor.lines, position.rowIndex, position.columnIndex)
+  if (!wordMatch.word) {
+    return DefinitionLinkDecoration.clear(editor)
+  }
+  const wordOffset = TextDocument.offsetAt(editor, position.rowIndex, wordMatch.start)
+  const wordLength = wordMatch.end - wordMatch.start
+  if (DefinitionLinkDecoration.matches(editor, wordOffset, wordLength)) {
+    return editor
+  }
   const documentOffset = TextDocument.offsetAt(editor, position.rowIndex, position.columnIndex)
   try {
     const definition = await Definition.getDefinition(editor, documentOffset)
     if (!definition) {
-      return editor
+      return DefinitionLinkDecoration.clear(editor)
     }
-
-    // TODO make sure that editor is not disposed
-
-    const definitionStartPosition = TextDocument.positionAt(editor, definition.startOffset)
-    TextDocument.positionAt(editor, definition.endOffset)
-    // const definitionRelativeY = definitionStartPosition.rowIndex - editor.minLineY
-
-    const lineTokenMap = editor.lineCache[definitionStartPosition.rowIndex + 1]
-    if (!lineTokenMap) {
-      return editor
-    }
-    const tokenIndex = getTokenIndex(lineTokenMap.tokens, definitionStartPosition.columnIndex)
-    if (tokenIndex === -1) {
-      return editor
-    }
-    // .tokens
-    // await RendererProcess.invoke(
-    //   /* Viewlet.invoke */ 'Viewlet.send',
-    //   /* id */ ViewletModuleId.EditorText,
-    //   /* method */ 'highlightAsLink',
-    //   /* relativeY */ definitionRelativeY,
-    //   /* tokenIndex */ tokenIndex,
-    // )
-    return editor
+    return DefinitionLinkDecoration.set(editor, wordOffset, wordLength)
   } catch (error) {
-    // @ts-ignore
-    if (error && error.message.startsWith('Failed to execute definition provider: No definition provider found')) {
-      return editor
+    if (isNoDefinitionProviderFoundError(error)) {
+      return DefinitionLinkDecoration.clear(editor)
     }
     throw error
   }

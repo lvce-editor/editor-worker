@@ -2,6 +2,7 @@ import type { ISearchFieldButton } from '../ISearchFieldButton/ISearchFieldButto
 import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
+import * as TabIndex from '../TabIndex/TabIndex.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export const getSearchFieldButtonVirtualDom = (button: ISearchFieldButton) => {
@@ -11,8 +12,8 @@ export const getSearchFieldButtonVirtualDom = (button: ISearchFieldButton) => {
       ariaChecked: checked,
       childCount: 1,
       className: MergeClassNames.mergeClassNames(ClassNames.SearchFieldButton, checked ? ClassNames.SearchFieldButtonChecked : ''),
-      role: AriaRoles.CheckBox,
-      tabIndex: 0,
+      role: AriaRoles.Checkbox,
+      tabIndex: TabIndex.Focusable,
       title,
       type: VirtualDomElements.Div,
     },

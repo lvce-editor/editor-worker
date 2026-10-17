@@ -23,4 +23,10 @@ export const test: Test = async ({ Editor, expect, Extension, FileSystem, Locato
   const items = Locator('.EditorCompletionItem')
   await expect(items).toHaveCount(1)
   await expect(items).toHaveText('test')
+
+  // act
+  await Editor.closeCompletion()
+
+  // assert
+  await expect(completions).toBeHidden()
 }

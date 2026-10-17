@@ -1,3 +1,5 @@
+import * as GetLineLength from '../GetLineLength/GetLineLength.ts'
+
 // @ts-ignore
 export const editorGetPositionLeft = (rowIndex, columnIndex, lines, getDelta) => {
   if (columnIndex === 0) {
@@ -5,7 +7,7 @@ export const editorGetPositionLeft = (rowIndex, columnIndex, lines, getDelta) =>
       return { columnIndex: 0, rowIndex: 0 }
     }
     return {
-      columnIndex: lines[rowIndex - 1].length,
+      columnIndex: GetLineLength.getLineLength(lines[rowIndex - 1]),
       rowIndex: rowIndex - 1,
     }
   }
@@ -36,7 +38,7 @@ export const moveToPositionLeft = (selections, i, rowIndex, columnIndex, lines, 
       selections[i + 1] = 0
     } else {
       selections[i] = rowIndex - 1
-      selections[i + 1] = lines[rowIndex - 1].length
+      selections[i + 1] = GetLineLength.getLineLength(lines[rowIndex - 1])
     }
   } else {
     const delta = getDelta(lines[rowIndex], columnIndex)
