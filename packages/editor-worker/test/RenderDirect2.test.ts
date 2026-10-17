@@ -3,20 +3,19 @@ import type { EditorState } from '../src/parts/State/State.ts'
 
 const invoke = jest.fn<(...args: readonly unknown[]) => Promise<number>>()
 const applyRender = jest.fn<(...args: readonly unknown[]) => readonly unknown[][]>()
-jest.unstable_mockModule('../src/parts/RendererProcess/RendererProcess.ts', () => ({ isConnected: () => true, invoke }))
+jest.unstable_mockModule('../src/parts/RendererProcess/RendererProcess.ts', () => ({ invoke, isConnected: () => true }))
 jest.unstable_mockModule('../src/parts/ApplyRender/ApplyRender.ts', () => ({ applyRender }))
 jest.unstable_mockModule('../src/parts/Diff/Diff.ts', () => ({ diff: () => [1] }))
 const Editors = await import('../src/parts/EditorStates/EditorStates.ts')
 const Doms = await import('../src/parts/RenderedDoms/RenderedDoms.ts')
 const { renderDirect2 } = await import('../src/parts/RenderDirect2/RenderDirect2.ts')
-let old: EditorState
-let next: EditorState
+const fixture = { next: {} as EditorState, old: {} as EditorState }
 
 beforeEach(() => {
   jest.clearAllMocks()
-  old = { uid: 101, lifecycle: { disposed: false } } as EditorState
-  next = { ...old, lines: ['updated'] }
-  Editors.set(101, old, next)
+  fixture.old = { lifecycle: { disposed: false }, uid: 101 } as EditorState
+  fixture.next = { ...fixture.old, lines: ['updated'] }
+  Editors.set(101, fixture.old, fixture.next)
   Doms.clear()
   invoke.mockResolvedValue(42)
   applyRender.mockReturnValue([['Viewlet.setPatches', 101, ['patches']]])
@@ -26,7 +25,7 @@ test('queues editor patches directly and returns only the ordered commit token',
   const commands = await renderDirect2(101)
   expect(invoke).toHaveBeenCalledWith('Viewlet.queueCommands', 101, [['Viewlet.setPatches', 101, ['patches']]])
   expect(commands).toEqual([['Viewlet.commitPending', 101, 42]])
-  expect(Editors.get(101).oldState).toBe(next)
+  expect(Editors.get(101).oldState).toBe(fixture.next)
 })
 
 test('preserves widget declarations, child patches and focus ordering', async () => {
@@ -54,14 +53,14 @@ test('background and sibling renders cannot move focus', async () => {
 test('a failed queue restores the baseline and preserves changes arriving during the RPC', async () => {
   const dom = [{ type: 1 }]
   Doms.set(101, dom)
-  const newer = { ...next, lines: ['newer'] }
+  const newer = { ...fixture.next, lines: ['newer'] }
   invoke.mockImplementation(async () => {
     Doms.set(101, [])
-    Editors.set(101, next, newer)
+    Editors.set(101, fixture.next, newer)
     throw new Error('queue failed')
   })
   await expect(renderDirect2(101)).rejects.toThrow('queue failed')
-  expect(Editors.get(101)).toMatchObject({ oldState: old, newState: newer })
+  expect(Editors.get(101)).toMatchObject({ newState: newer, oldState: fixture.old })
   expect(Doms.get(101)).toBe(dom)
   invoke.mockResolvedValue(43)
   expect(await renderDirect2(101)).toEqual([['Viewlet.commitPending', 101, 43]])
@@ -77,7 +76,7 @@ test('serializes renders and ignores work queued for an editor that is recreated
   const first = renderDirect2(101)
   await queued
   const second = renderDirect2(101)
-  const replacement = { ...next, lifecycle: { disposed: false } } as EditorState
+  const replacement = { ...fixture.next, lifecycle: { disposed: false } } as EditorState
   Editors.set(101, replacement, replacement)
   resolve(42)
   await first

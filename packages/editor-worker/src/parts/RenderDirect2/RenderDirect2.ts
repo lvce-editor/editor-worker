@@ -1,9 +1,9 @@
 import * as EditorStates from '../EditorStates/EditorStates.ts'
-import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
-import * as RenderedDoms from '../RenderedDoms/RenderedDoms.ts'
 import { render2 } from '../Render2/Render2.ts'
+import * as RenderedDoms from '../RenderedDoms/RenderedDoms.ts'
+import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
 
-const queues = new Map<number, Promise<readonly any[]>>()
+const queues = new Map<number, Promise<void>>()
 const focusCommands = new Set([
   'Viewlet.focus',
   'Viewlet.focusSelector',
@@ -45,19 +45,17 @@ const renderDirect = async (uid: number, preserveFocus: boolean): Promise<readon
   }
 }
 
-export const renderDirect2 = (uid: number, preserveFocus = false): Promise<readonly any[]> => {
+export const renderDirect2 = async (uid: number, preserveFocus = false): Promise<readonly any[]> => {
   const lifecycle = EditorStates.get(uid)?.newState.lifecycle
-  const previous = queues.get(uid) || Promise.resolve([])
-  const current = previous
-    .catch(() => [])
-    .then(() => {
-      if (EditorStates.get(uid)?.newState.lifecycle !== lifecycle) return []
-      return renderDirect(uid, preserveFocus)
-    })
-  queues.set(uid, current)
-  const cleanup = () => {
-    if (queues.get(uid) === current) queues.delete(uid)
+  const previous = queues.get(uid)
+  const { promise, resolve } = Promise.withResolvers<void>()
+  queues.set(uid, promise)
+  if (previous) await previous
+  try {
+    if (EditorStates.get(uid)?.newState.lifecycle !== lifecycle) return []
+    return await renderDirect(uid, preserveFocus)
+  } finally {
+    resolve()
+    if (queues.get(uid) === promise) queues.delete(uid)
   }
-  void current.then(cleanup, cleanup)
-  return current
 }

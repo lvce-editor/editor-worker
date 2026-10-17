@@ -1,14 +1,18 @@
 import type { Rpc } from '@lvce-editor/rpc'
 
-let rpc: Rpc | undefined
+const state: { rpc: Rpc | undefined } = { rpc: undefined }
 
-export const isConnected = (): boolean => rpc !== undefined
+export const isConnected = (): boolean => {
+  const { rpc } = state
+  return rpc !== undefined
+}
 
 export const set = (value: Rpc): void => {
-  rpc = value
+  state.rpc = value
 }
 
 export const invoke = (method: string, ...params: readonly unknown[]): Promise<any> => {
+  const { rpc } = state
   if (!rpc) {
     throw new Error('Editor renderer process is not connected')
   }

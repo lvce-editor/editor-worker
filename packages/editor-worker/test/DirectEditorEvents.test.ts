@@ -57,7 +57,7 @@ test('rejects unknown commands and propagates worker errors without requesting a
 test('ignores disposed editors and commands finishing after recreation', async () => {
   const events = Events.createCommandMap({
     'Editor.type': async () => {
-      const replacement = { uid: 101, lifecycle: { disposed: false } } as EditorState
+      const replacement = { lifecycle: { disposed: false }, uid: 101 } as EditorState
       Editors.set(101, replacement, replacement)
     },
   })

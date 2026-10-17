@@ -1,7 +1,7 @@
 import { PlainMessagePortRpc, PlainMessagePortRpcParent } from '@lvce-editor/rpc'
 import * as DirectEditorEvents from '../DirectEditorEvents/DirectEditorEvents.ts'
-import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
 import { initializeListener } from '../NotifyEditorStatusChange/NotifyEditorStatusChange.ts'
+import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
 import * as RpcRegistry from '../RpcRegistry/RpcRegistry.ts'
 
 export const handleMessagePort = async (port: MessagePort, rpcId?: number) => {
