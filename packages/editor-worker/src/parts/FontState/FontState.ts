@@ -10,7 +10,7 @@ export const getPending = (id: any) => {
 }
 
 export const hasPending = (id: any) => {
-  return id in pending
+  return Object.hasOwn(pending, id)
 }
 
 export const removePending = (id: any) => {

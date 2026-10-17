@@ -4,7 +4,7 @@ export const name = 'editor.delete-all'
 
 export const skip = 1
 
-export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace }) => {
+export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, `first line\nsecond line\n`)
@@ -13,7 +13,7 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
   await Editor.setCursor(1, 3)
 
   // act
-  await Command.execute('Editor.deleteAll')
+  await Editor.deleteAll()
 
   // assert
   await Editor.shouldHaveText('')

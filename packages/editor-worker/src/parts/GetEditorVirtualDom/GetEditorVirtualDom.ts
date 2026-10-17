@@ -1,106 +1,170 @@
 import type { EditorVirtualDomOptions } from '../EditorVirtualDomOptions/EditorVirtualDomOptions.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
-import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
-import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
-import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
-import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
-import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
+import * as AriaBoolean from '../AriaBoolean/AriaBoolean.ts'
+import * as AriaRoles from '../AriaRoles/AriaRoles.ts'
+import * as ClassNames from '../ClassNames/ClassNames.ts'
+import { combineWhitespaceTokens as combineTokens } from '../CombineWhitespaceTokens/CombineWhitespaceTokens.ts'
+import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
+import * as GetEditorBreadcrumbsVirtualDom from '../GetEditorBreadcrumbsVirtualDom/GetEditorBreadcrumbsVirtualDom.ts'
+import * as GetEditorContentVirtualDom from '../GetEditorContentVirtualDom/GetEditorContentVirtualDom.ts'
+import * as GetEditorGutterLayerVirtualDom from '../GetEditorGutterLayerVirtualDom/GetEditorGutterLayerVirtualDom.ts'
+import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
+import { getPrimaryCursorRowIndex } from '../GetPrimaryCursorRowIndex/GetPrimaryCursorRowIndex.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
-export const getEditorVirtualDom = ({
-  cursorInfos,
-  diagnostics,
-  differences,
-  gutterInfos,
-  highlightedLine,
-  lineNumbers,
-  scrollBarDiagnostics,
-  selectionInfos,
-  textInfos,
-}: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
-  const cursorInfosArray = [...cursorInfos]
-  const diagnosticsArray = [...diagnostics]
-  const gutterInfosArray = [...gutterInfos]
-  const scrollBarDiagnosticsArray = [...scrollBarDiagnostics]
-  const rowsDom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, lineNumbers, highlightedLine)
-  const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfosArray)
-  const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos)
-  const diagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(diagnosticsArray)
-  const gutterDom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfosArray)
-  const scrollBarDiagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(scrollBarDiagnosticsArray)
+const textEditorErrorIconNode: VirtualDomNode = {
+  childCount: 0,
+  className: ClassNames.TextEditorErrorIcon,
+  type: VirtualDomElements.Div,
+}
 
+const textEditorErrorMessageNode: VirtualDomNode = {
+  childCount: 1,
+  className: 'TextEditorErrorMessage',
+  type: VirtualDomElements.Div,
+}
+
+const getMinimapVirtualDom = (
+  minimapEnabled: boolean,
+  minimapLines: readonly (readonly (number | string)[])[],
+  minLineY: number,
+  breadcrumbsEnabled: boolean,
+): readonly VirtualDomNode[] => {
+  if (!minimapEnabled) {
+    return []
+  }
   return [
     {
-      childCount: 2,
-      className: 'Viewlet Editor',
-      role: 'code',
+      ariaHidden: AriaBoolean.True,
+      childCount: 0,
+      className: breadcrumbsEnabled ? 'EditorMinimap EditorBreadcrumbsOffset' : 'EditorMinimap',
+      'data-lineCount': minimapLines.length,
+      'data-visibleStart': minLineY,
       type: VirtualDomElements.Div,
     },
+  ]
+}
+
+export const getEditorVirtualDom = ({
+  bracketMatchInfos = [],
+  breadcrumbFileIcon = '',
+  breadcrumbsEnabled = false,
+  breakPoints = [],
+  combineWhitespaceTokens = false,
+  cursorInfos = [],
+  diagnostics = [],
+  differences,
+  documentSymbols = [],
+  endOfLineDecorations = [],
+  focused = true,
+  gutterDecorations = [],
+  gutterInfos = [],
+  highlightActiveLineNumber = true,
+  highlightedLine = -1,
+  horizontalVisibleRanges = [],
+  lightBulbRowIndex = -1,
+  lineNumbers = true,
+  lines = [],
+  loadError = '',
+  maxLineY = 0,
+  minimapEnabled = false,
+  minimapLines = [],
+  minLineY = 0,
+  primarySelectionIndex = 0,
+  problemsHighlightedRow = -1,
+  roundedSelection = false,
+  scrollBarDiagnostics = [],
+  scrollBarHeight = 0,
+  scrollBarWidth = 0,
+  selectionInfos = [],
+  selections = new Uint32Array(),
+  tabSize = 2,
+  textDecorationDom = [],
+  textInfos,
+  uid,
+  unnecessaryDiagnostics = [],
+  uri = '',
+  visibleLineIndices,
+  visibleViewLineIndices = [],
+  workspaceUri = '',
+}: EditorVirtualDomOptions): readonly VirtualDomNode[] => {
+  if (loadError) {
+    return [
+      {
+        childCount: 2,
+        className: ClassNames.TextEditorError,
+        'data-uid': uid,
+        role: AriaRoles.Code,
+        type: VirtualDomElements.Div,
+      },
+      textEditorErrorIconNode,
+      textEditorErrorMessageNode,
+      text(loadError),
+    ]
+  }
+  const gutterLineIndices = visibleViewLineIndices.length > 0 ? visibleViewLineIndices : visibleLineIndices
+  const visibleGutterInfos =
+    breakPoints.length > 0 || gutterDecorations.length > 0 || visibleLineIndices
+      ? getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, gutterLineIndices, lightBulbRowIndex, gutterDecorations)
+      : gutterInfos
+  const showGutter = lineNumbers || breakPoints.length > 0 || lightBulbRowIndex >= 0 || gutterDecorations.length > 0
+  const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
+  const activeLineNumber = highlightActiveLineNumber ? primaryCursorRowIndex + 1 : -1
+  const gutterDom = showGutter
+    ? GetEditorGutterLayerVirtualDom.getEditorGutterVirtualDom(visibleGutterInfos, activeLineNumber, breadcrumbsEnabled)
+    : []
+  const minimapDom = getMinimapVirtualDom(minimapEnabled, minimapLines, minLineY, breadcrumbsEnabled)
+  const breadcrumbsDom = breadcrumbsEnabled
+    ? GetEditorBreadcrumbsVirtualDom.getEditorBreadcrumbsVirtualDom({
+        breadcrumbFileIcon,
+        breadcrumbsEnabled,
+        documentSymbols,
+        lines,
+        primarySelectionIndex,
+        selections,
+        uri,
+        workspaceUri,
+      })
+    : []
+  return [
     {
-      childCount: gutterInfosArray.length,
-      className: 'Gutter',
+      childCount: (showGutter ? 2 : 1) + (minimapEnabled ? 1 : 0) + (breadcrumbsEnabled ? 1 : 0),
+      className: ClassNames.Editor,
+      'data-uid': uid,
+      onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+      onMouseOut: DomEventListenerFunctions.HandleMouseOut,
+      onMouseOver: DomEventListenerFunctions.HandleMouseOver,
+      role: AriaRoles.Code,
       type: VirtualDomElements.Div,
     },
+    ...breadcrumbsDom,
     ...gutterDom,
-    {
-      childCount: 4,
-      className: 'EditorContent',
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 4,
-      className: 'EditorLayers',
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: selectionsDom.length,
-      className: 'Selections',
-      type: VirtualDomElements.Div,
-    },
-    ...selectionsDom,
-    {
-      childCount: textInfos.length,
-      className: 'EditorRows',
-      type: VirtualDomElements.Div,
-    },
-    ...rowsDom,
-    {
-      childCount: cursorsDom.length,
-      className: 'LayerCursor',
-      type: VirtualDomElements.Div,
-    },
-    ...cursorsDom,
-    {
-      childCount: diagnosticsDom.length,
-      className: 'LayerDiagnostics',
-      type: VirtualDomElements.Div,
-    },
-    ...diagnosticsDom,
-    {
-      childCount: scrollBarDiagnosticsDom.length,
-      className: 'EditorScrollBarDiagnostics',
-      type: VirtualDomElements.Div,
-    },
-    ...scrollBarDiagnosticsDom,
-    {
-      childCount: 1,
-      className: 'ScrollBar ScrollBarVertical',
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 0,
-      className: 'ScrollBarThumb ScrollBarThumbVertical',
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 1,
-      className: 'ScrollBar ScrollBarHorizontal',
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 0,
-      className: 'ScrollBarThumb ScrollBarThumbHorizontal',
-      type: VirtualDomElements.Div,
-    },
+    ...GetEditorContentVirtualDom.getEditorContentVirtualDom({
+      bracketMatchInfos,
+      breadcrumbsEnabled,
+      cursorInfos,
+      diagnostics,
+      differences,
+      endOfLineDecorations,
+      focused,
+      highlightedLine,
+      horizontalVisibleRanges,
+      lineNumbers,
+      lines,
+      problemsHighlightedRow,
+      roundedSelection,
+      scrollBarDiagnostics,
+      scrollBarHeight,
+      scrollBarWidth,
+      selectionInfos,
+      tabSize,
+      textDecorationDom,
+      textInfos: combineWhitespaceTokens ? textInfos.map(combineTokens) : textInfos,
+      unnecessaryDiagnostics,
+      visibleLineIndices: visibleLineIndices || [],
+      visibleViewLineIndices,
+    }),
+    ...minimapDom,
   ]
 }

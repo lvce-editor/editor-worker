@@ -1,4 +1,4 @@
-import * as TextMeasurementWorker from '../TextMeasurementWorker/TextMeasurementWorker.ts'
+import { TextMeasurementWorker } from '@lvce-editor/rpc-registry'
 
 export const measureTextWidthSlow = async (
   text: string,

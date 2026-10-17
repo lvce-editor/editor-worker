@@ -3,5 +3,5 @@ export interface FindWidgetButton {
   readonly icon: string
   readonly label: string
   readonly name: string
-  readonly onClick: string
+  readonly onClick: string | number
 }

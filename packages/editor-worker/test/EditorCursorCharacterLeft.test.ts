@@ -51,6 +51,30 @@ test('editorCursorCharacterLeft - at start of line', () => {
   })
 })
 
+test('editorCursorCharacterLeft - skips CRLF line ending', () => {
+  const editor = {
+    lineCache: [],
+    lines: ['first\r', 'second\r', ''],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(1, 0, 1, 0),
+  }
+  expect(EditorCursorLeft.cursorCharacterLeft(editor)).toMatchObject({
+    selections: EditorSelection.fromRange(0, 5, 0, 5),
+  })
+})
+
+test('editorCursorCharacterLeft - in virtual space', () => {
+  const editor = {
+    lineCache: [],
+    lines: ['a'],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 6, 0, 6),
+  }
+  expect(EditorCursorLeft.cursorCharacterLeft(editor)).toMatchObject({
+    selections: EditorSelection.fromRange(0, 5, 0, 5),
+  })
+})
+
 test('editorCursorCharacterLeft - emoji - 👮🏽‍♀️', () => {
   const columnIndex = '👮🏽‍♀️'.length
   const editor = {
@@ -67,7 +91,7 @@ test('editorCursorCharacterLeft - emoji - 👮🏽‍♀️', () => {
 test('editorCursorCharacterLeft - unicode - zero width space', () => {
   const editor = {
     lineCache: [],
-    lines: ['\u200B'],
+    lines: ['\u{200B}'],
     primarySelectionIndex: 0,
     selections: EditorSelection.fromRange(0, 0, 0, 0),
   }

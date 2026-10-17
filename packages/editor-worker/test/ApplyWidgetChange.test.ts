@@ -8,18 +8,14 @@ const id = 1
 
 beforeEach(() => {
   WidgetRegistry.set(id, {
-    handleEditorDeleteLeft(editor: any, state: any) {
-      return {
-        ...state,
-        updated: true,
-      }
-    },
-    handleEditorType(editor: any, state: any) {
-      return {
-        ...state,
-        updated: true,
-      }
-    },
+    handleEditorDeleteLeft: (editor: any, state: any) => ({
+      ...state,
+      updated: true,
+    }),
+    handleEditorType: (editor: any, state: any) => ({
+      ...state,
+      updated: true,
+    }),
   })
 })
 
@@ -49,7 +45,7 @@ test('applyWidgetChange - type', async () => {
       origin: EditOrigin.EditorType,
     },
   ]
-  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual(undefined)
+  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toBeUndefined()
 })
 
 test('applyWidgetChange - deleteLeft', async () => {
@@ -78,10 +74,10 @@ test('applyWidgetChange - deleteLeft', async () => {
       origin: EditOrigin.DeleteLeft,
     },
   ]
-  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual(undefined)
+  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toBeUndefined()
 })
 
-test('applyWidgetChange - other', async () => {
+test('applyWidgetChange - other preserves the editor', async () => {
   const editor = {
     cursor: {
       columnIndex: 4,
@@ -107,7 +103,5 @@ test('applyWidgetChange - other', async () => {
       origin: EditOrigin.Unknown,
     },
   ]
-  expect((await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).newState).toEqual({
-    updated: false,
-  })
+  expect(await ApplyWidgetChange.applyWidgetChange(editor, widget, changes)).toBe(editor)
 })

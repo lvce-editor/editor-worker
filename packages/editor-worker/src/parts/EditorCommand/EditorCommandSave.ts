@@ -1,30 +1,50 @@
+import { PlatformType } from '@lvce-editor/constants'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
+import { applyLineEndings } from '../NormalizeLineEndings/NormalizeLineEndings.ts'
+import * as TabModifiedStatusChange from '../TabModifiedStatusChange/TabModifiedStatusChange.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { VError } from '../VError/VError.ts'
 import { getNewEditor } from './EditorCommandSave/getNewEditor.ts'
+import { isReadonlyFile } from './EditorCommandSave/isReadonlyFile.ts'
 import { isUntitledFile } from './EditorCommandSave/isUntitledFile.ts'
 import { saveNormalFile } from './EditorCommandSave/saveNormalFile.ts'
 import { saveUntitledFile } from './EditorCommandSave/saveUntitledFile.ts'
+import { showSaveErrorDialog } from './EditorCommandSave/showSaveErrorDialog.ts'
 
-export const save = async (editor: any): Promise<any> => {
+export const save = async (editor: any, skipFormatting = false): Promise<any> => {
   try {
-    const { platform, uri } = editor
-    const newEditor = await getNewEditor(editor)
-    const content = TextDocument.getText(newEditor)
+    const { applicationId, platform, uri } = editor
+    if (!isUntitledFile(uri) && (await isReadonlyFile(uri, applicationId))) {
+      return editor
+    }
+    const newEditor = await getNewEditor(editor, skipFormatting)
+    const content = applyLineEndings(TextDocument.getText(newEditor), newEditor.endOfLine)
     if (isUntitledFile(uri)) {
-      const pickedFilePath = await saveUntitledFile(uri, content, platform)
+      const pickedFilePath = await saveUntitledFile(uri, content, platform, applicationId)
       if (pickedFilePath) {
+        if (newEditor.modified) {
+          await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false, applicationId)
+        }
         return { ...newEditor, modified: false, uri: pickedFilePath }
       }
       return newEditor
-    } else {
-      await saveNormalFile(uri, content)
+    }
+    await saveNormalFile(uri, content, applicationId)
+    if (newEditor.modified) {
+      await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false, applicationId)
     }
     return { ...newEditor, modified: false }
   } catch (error) {
     // @ts-ignore
     const betterError = new VError(error, `Failed to save file "${editor.uri}"`)
     await ErrorHandling.handleError(betterError)
+    if (editor.platform === PlatformType.Electron) {
+      try {
+        await showSaveErrorDialog(betterError)
+      } catch (dialogError) {
+        await ErrorHandling.handleError(dialogError)
+      }
+    }
     return editor
   }
 }

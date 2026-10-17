@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-cursor-up'
 
-export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(

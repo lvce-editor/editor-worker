@@ -40,6 +40,8 @@ const prepareErrorMessageWithCodeFrame = (error: any) => {
   }
 }
 
+/* eslint-disable sonarjs/super-linear-regex */
+
 const RE_PATH_1 = /\((.*):(\d+):(\d+)\)$/
 const RE_PATH_2 = /at (.*):(\d+):(\d+)$/
 
@@ -103,12 +105,12 @@ export const print = (error: any) => {
     return `${error.type}: ${error.message}\n${error.stack}`
   }
   if (error && error.stack) {
-    return `${error.stack}`
+    return error.stack
   }
   if (error === null) {
     return null
   }
-  return `${error}`
+  return String(error)
 }
 
 export const getMessage = (error: any) => {

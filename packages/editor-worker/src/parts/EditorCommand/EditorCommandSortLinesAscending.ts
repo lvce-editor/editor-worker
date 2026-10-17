@@ -14,15 +14,7 @@ const origin = 'sort-lines-ascending'
 // @ts-ignore
 const getSortLinesAscendingChanges = (lines, selections) => {
   const startRowIndex = selections[0]
-  // @ts-ignore
-  const startColumnIndex = selections[1]
   const endRowIndex = selections[2]
-  // @ts-ignore
-  const endColumnIndex = selections[3]
-  // @ts-ignore
-  const startRow = lines[startRowIndex]
-  // @ts-ignore
-  const endRow = lines[endRowIndex]
   const changes: any[] = []
   for (let i = 0; i < selections.length; i += 4) {
     const selectionStartRow = selections[i]

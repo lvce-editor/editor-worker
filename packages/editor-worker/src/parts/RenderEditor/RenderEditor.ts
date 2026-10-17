@@ -1,15 +1,21 @@
 import { ViewletCommand } from '@lvce-editor/constants'
 import type { EditorState } from '../State/State.ts'
-import * as Editors from '../Editors/Editors.ts'
-import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
+import * as DiffAdditionalFocus from '../DiffAdditionalFocus/DiffAdditionalFocus.ts'
+import * as DiffCss from '../DiffCss/DiffCss.ts'
+import * as DiffFocus from '../DiffFocus/DiffFocus.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
+import * as GetBracketMatchesVirtualDom from '../GetBracketMatchesVirtualDom/GetBracketMatchesVirtualDom.ts'
 import * as GetCursorsVirtualDom from '../GetCursorsVirtualDom/GetCursorsVirtualDom.ts'
 import * as GetDiagnosticsVirtualDom from '../GetDiagnosticsVirtualDom/GetDiagnosticsVirtualDom.ts'
 import * as GetEditorGutterVirtualDom from '../GetEditorGutterVirtualDom/GetEditorGutterVirtualDom.ts'
 import * as GetEditorRowsVirtualDom from '../GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
+import { getGutterInfos } from '../GetGutterInfos/GetGutterInfos.ts'
+import { getPrimaryCursorRowIndex } from '../GetPrimaryCursorRowIndex/GetPrimaryCursorRowIndex.ts'
 import * as GetSelectionsVirtualDom from '../GetSelectionsVirtualDom/GetSelectionsVirtualDom.ts'
-import * as RenderWidget from '../RenderWidget/RenderWidget.ts'
-import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
+import * as RenderAdditionalFocusContext from '../RenderAdditionalFocusContext/RenderAdditionalFocusContext.ts'
+import { renderCss as renderCssCommand } from '../RenderCss/RenderCss.ts'
+import { renderWidgets as renderWidgetsCommand } from '../RenderWidgets/RenderWidgets.ts'
 
 const renderLines = {
   apply(oldState: EditorState, newState: EditorState) {
@@ -17,190 +23,153 @@ const renderLines = {
     if (incrementalEdits !== emptyIncrementalEdits) {
       return [/* method */ 'setIncrementalEdits', /* incrementalEdits */ incrementalEdits]
     }
-    const { differences, textInfos } = newState
+    const { diagnostics, differences, endOfLineDecorations, textInfos } = newState
     newState.differences = differences
-    const { highlightedLine, minLineY } = newState
-    const relativeLine = highlightedLine - minLineY
-    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(textInfos, differences, true, relativeLine)
+    const { highlightedLine, visibleLineIndices, visibleViewLineIndices } = newState
+    const dom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(
+      textInfos,
+      differences,
+      true,
+      highlightedLine,
+      visibleLineIndices,
+      endOfLineDecorations,
+      visibleViewLineIndices,
+      newState.problemsHighlightedRow,
+      diagnostics || [],
+      newState.deltaX,
+      newState.width,
+      newState.charWidth,
+      newState.tabSize,
+      newState.lines,
+      newState.horizontalVirtualizationThreshold,
+      newState.horizontalVisibleRanges,
+    )
     return [/* method */ 'setText', dom]
   },
-  isEqual(oldState: EditorState, newState: EditorState) {
-    return (
-      oldState.lines === newState.lines &&
-      oldState.tokenizerId === newState.tokenizerId &&
-      oldState.minLineY === newState.minLineY &&
-      oldState.decorations === newState.decorations &&
-      oldState.embeds === newState.embeds &&
-      oldState.deltaX === newState.deltaX &&
-      oldState.width === newState.width &&
-      oldState.highlightedLine === newState.highlightedLine &&
-      oldState.debugEnabled === newState.debugEnabled
-    )
-  },
+  isEqual: (oldState: EditorState, newState: EditorState) =>
+    oldState.lines === newState.lines &&
+    oldState.foldingRanges === newState.foldingRanges &&
+    oldState.visibleViewLineIndices === newState.visibleViewLineIndices &&
+    oldState.tokenizerId === newState.tokenizerId &&
+    oldState.minLineY === newState.minLineY &&
+    oldState.decorations === newState.decorations &&
+    oldState.embeds === newState.embeds &&
+    oldState.endOfLineDecorations === newState.endOfLineDecorations &&
+    oldState.diagnostics === newState.diagnostics &&
+    oldState.deltaX === newState.deltaX &&
+    oldState.charWidth === newState.charWidth &&
+    oldState.tabSize === newState.tabSize &&
+    oldState.gutterWidth === newState.gutterWidth &&
+    oldState.horizontalVirtualizationThreshold === newState.horizontalVirtualizationThreshold &&
+    oldState.fontFamily === newState.fontFamily &&
+    oldState.fontSize === newState.fontSize &&
+    oldState.fontWeight === newState.fontWeight &&
+    oldState.letterSpacing === newState.letterSpacing &&
+    oldState.isMonospaceFont === newState.isMonospaceFont &&
+    oldState.width === newState.width &&
+    oldState.highlightedLine === newState.highlightedLine &&
+    oldState.problemsHighlightedRow === newState.problemsHighlightedRow &&
+    oldState.debugEnabled === newState.debugEnabled,
 }
 
 const renderSelections = {
-  apply: async (oldState: any, newState: any) => {
-    const { cursorInfos, selectionInfos } = await EditorSelection.getVisible(newState)
-    const cursorsDom = GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos)
-    const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos)
+  apply: (oldState: any, newState: any) => {
+    const { cursorInfos = [], selectionInfos = [] } = newState
+    const cursorsDom = newState.focused ? GetCursorsVirtualDom.getCursorsVirtualDom(cursorInfos) : []
+    const selectionsDom = GetSelectionsVirtualDom.getSelectionsVirtualDom(selectionInfos, newState.focused, newState.roundedSelection)
     return [/* method */ 'setSelections', cursorsDom, selectionsDom]
   },
-  isEqual(oldState: any, newState: any) {
-    return (
-      oldState.selections === newState.selections &&
-      oldState.focused === newState.focused &&
-      oldState.minLineY === newState.minLineY &&
-      oldState.deltaX === newState.deltaX
-    )
-  },
+  isEqual: (oldState: any, newState: any) =>
+    oldState.cursorInfos === newState.cursorInfos &&
+    oldState.selectionInfos === newState.selectionInfos &&
+    oldState.focused === newState.focused &&
+    oldState.roundedSelection === newState.roundedSelection,
 }
 
-const renderScrollBarY = {
-  apply(oldState: EditorState, newState: EditorState) {
-    const scrollBarY = ScrollBarFunctions.getScrollBarY(newState.deltaY, newState.finalDeltaY, newState.height, newState.scrollBarHeight)
-    const translate = `0 ${scrollBarY}px`
-    const heightPx = `${newState.scrollBarHeight}px`
-    return [/* method */ 'setScrollBar', translate, heightPx]
-  },
-  isEqual(oldState: EditorState, newState: EditorState) {
-    return oldState.deltaY === newState.deltaY && oldState.scrollBarHeight === newState.scrollBarHeight
-  },
-}
-
-const renderScrollBarX = {
-  apply(oldState: EditorState, newState: EditorState) {
-    const scrollBarWidth = ScrollBarFunctions.getScrollBarSize(newState.width, newState.longestLineWidth, newState.minimumSliderSize)
-    const scrollBarX = (newState.deltaX / newState.longestLineWidth) * newState.width
-    return [/* method */ 'setScrollBarHorizontal', /* scrollBarX */ scrollBarX, /* scrollBarWidth */ scrollBarWidth, /* deltaX */ newState.deltaX]
-  },
-  isEqual(oldState: EditorState, newState: EditorState) {
-    return oldState.longestLineWidth === newState.longestLineWidth && oldState.deltaX === newState.deltaX
-  },
+const renderCss = {
+  apply: renderCssCommand,
+  isEqual: DiffCss.isEqual,
 }
 
 const renderFocus = {
-  apply(oldState: EditorState, newState: EditorState) {
-    return [/* method */ 'setFocused', newState.focused]
-  },
-  isEqual(oldState: EditorState, newState: EditorState) {
-    return oldState.focused === newState.focused
-  },
+  apply: (oldState: EditorState, newState: EditorState) => [/* method */ 'setFocused', newState.focused],
+  isEqual: DiffFocus.isEqual,
 }
 
 const renderFocusContext = {
-  apply(oldState: EditorState, newState: EditorState) {
-    return [ViewletCommand.SetFocusContext, newState.uid, newState.focus, 0, newState.uid, 'Editor']
-  },
-  isEqual(oldState: EditorState, newState: EditorState) {
-    return oldState.focus === newState.focus
-  },
+  apply: (oldState: EditorState, newState: EditorState) => [ViewletCommand.SetFocusContext, newState.uid, newState.focus, 0, newState.uid, 'Editor'],
+  isEqual: (oldState: EditorState, newState: EditorState) => oldState.focus === newState.focus,
 }
 
 const renderAdditionalFocusContext = {
-  apply(oldState: EditorState, newState: EditorState) {
-    if (newState.additionalFocus) {
-      return ['Viewlet.setAdditionalFocus', newState.uid, newState.additionalFocus]
-    }
-    return ['viewlet.unsetAdditionalFocus', newState.uid, newState.additionalFocus]
-  },
-  isEqual(oldState: EditorState, newState: EditorState) {
-    return oldState.additionalFocus === newState.additionalFocus
-  },
+  apply: RenderAdditionalFocusContext.renderAdditionalFocusContext,
+  isEqual: DiffAdditionalFocus.isEqual,
 }
 
 const renderDecorations = {
   apply(oldState: EditorState, newState: EditorState) {
-    const dom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(newState.visualDecorations || [])
+    const textDecorationsDom = newState.textDecorationDom || []
+    const diagnosticsDom = GetDiagnosticsVirtualDom.getDiagnosticsVirtualDom(newState.visualDecorations || [])
+    const bracketMatchesDom = GetBracketMatchesVirtualDom.getBracketMatchesVirtualDom(newState.bracketMatchInfos || [])
+    const dom = [...diagnosticsDom, ...bracketMatchesDom, ...textDecorationsDom]
     return ['setDecorationsDom', dom]
   },
-  isEqual(oldState: EditorState, newState: EditorState) {
-    return oldState.visualDecorations === newState.visualDecorations
-  },
+  isEqual: (oldState: EditorState, newState: EditorState) =>
+    oldState.visualDecorations === newState.visualDecorations &&
+    oldState.bracketMatchInfos === newState.bracketMatchInfos &&
+    oldState.textDecorationDom === newState.textDecorationDom,
 }
 
 const renderGutterInfo = {
   apply(oldState: EditorState, newState: EditorState) {
-    const { lineNumbers, maxLineY, minLineY } = newState
-    const gutterInfos = []
-    if (lineNumbers) {
-      for (let i = minLineY; i < maxLineY; i++) {
-        gutterInfos.push(i + 1)
-      }
+    const {
+      breakPoints,
+      gutterDecorations,
+      highlightActiveLineNumber,
+      lightBulbRowIndex,
+      lineNumbers,
+      maxLineY,
+      minLineY,
+      primarySelectionIndex,
+      selections,
+      visibleLineIndices,
+      visibleViewLineIndices = [],
+    } = newState
+    if (!lineNumbers && breakPoints.length === 0 && lightBulbRowIndex === -1 && gutterDecorations.length === 0) {
+      return ['renderGutter', []]
     }
-    const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos)
+    const gutterLineIndices = visibleViewLineIndices.length > 0 ? visibleViewLineIndices : visibleLineIndices
+    const gutterInfos = getGutterInfos(minLineY, maxLineY, breakPoints, lineNumbers, gutterLineIndices, lightBulbRowIndex, gutterDecorations)
+    const primaryCursorRowIndex = getPrimaryCursorRowIndex(selections, primarySelectionIndex)
+    const activeLineNumber = highlightActiveLineNumber ? primaryCursorRowIndex + 1 : -1
+    const dom = GetEditorGutterVirtualDom.getEditorGutterVirtualDom(gutterInfos, activeLineNumber)
     return ['renderGutter', dom]
   },
-  isEqual(oldState: EditorState, newState: EditorState) {
-    return oldState.minLineY === newState.minLineY && oldState.maxLineY === newState.maxLineY
-  },
+  isEqual: (oldState: EditorState, newState: EditorState) =>
+    oldState.breakPoints === newState.breakPoints &&
+    oldState.gutterDecorations === newState.gutterDecorations &&
+    oldState.lightBulbRowIndex === newState.lightBulbRowIndex &&
+    oldState.foldingRanges === newState.foldingRanges &&
+    oldState.highlightActiveLineNumber === newState.highlightActiveLineNumber &&
+    oldState.lineNumbers === newState.lineNumbers &&
+    oldState.minLineY === newState.minLineY &&
+    oldState.maxLineY === newState.maxLineY &&
+    oldState.visibleViewLineIndices === newState.visibleViewLineIndices &&
+    (!newState.highlightActiveLineNumber ||
+      getPrimaryCursorRowIndex(oldState.selections, oldState.primarySelectionIndex) ===
+        getPrimaryCursorRowIndex(newState.selections, newState.primarySelectionIndex)),
 }
 
 const renderWidgets = {
-  apply(oldState: any, newState: any) {
-    const addedWidgets = []
-    const changedWidgets = []
-    const removedWidgets = []
-    const oldWidgets = oldState.widgets || []
-    const newWidgets = newState.widgets || []
-    const oldWidgetMap = Object.create(null)
-    const newWidgetMap = Object.create(null)
-    for (const oldWidget of oldWidgets) {
-      oldWidgetMap[oldWidget.id] = oldWidget
-    }
-    for (const newWidget of newWidgets) {
-      newWidgetMap[newWidget.id] = newWidget
-    }
-    for (const oldWidget of oldWidgets) {
-      if (oldWidget.id in newWidgetMap) {
-        changedWidgets.push(newWidgetMap[oldWidget.id])
-      } else {
-        removedWidgets.push(oldWidget)
-      }
-    }
-    for (const newWidget of newWidgets) {
-      if (newWidget.id in oldWidgetMap) {
-        // ignore
-      } else {
-        addedWidgets.push(newWidget)
-      }
-    }
-    const addCommands = []
-    for (const addedWidget of addedWidgets) {
-      const childCommands = RenderWidget.addWidget(addedWidget)
-      if (childCommands.length > 0) {
-        addCommands.push(...childCommands)
-      }
-    }
-    const changeCommands: any[] = []
-    for (const changedWidget of changedWidgets) {
-      const childCommands = RenderWidget.renderWidget(changedWidget)
-      if (childCommands.length > 0) {
-        changeCommands.push(...childCommands)
-      }
-    }
-    const removeCommands = []
-    for (const removedWidget of removedWidgets) {
-      const childCommands = RenderWidget.removeWidget(removedWidget)
-      if (childCommands.length > 0) {
-        removeCommands.push(...childCommands)
-      }
-    }
-    const allCommands = [...addCommands, ...changeCommands, ...removeCommands]
-    const filteredCommands = allCommands.filter((item) => item[0] !== 'Viewlet.setFocusContext')
-    return filteredCommands
-  },
-  isEqual(oldState: any, newState: any) {
-    return oldState.widgets === newState.widgets
-  },
+  apply: renderWidgetsCommand,
+  isEqual: (oldState: any, newState: any) => oldState.widgets === newState.widgets && oldState.widgetRevision === newState.widgetRevision,
   multiple: true,
 }
 
 const render = [
   renderLines,
   renderSelections,
-  renderScrollBarX,
-  renderScrollBarY,
+  renderCss,
   renderFocus,
   renderDecorations,
   renderGutterInfo,
@@ -218,14 +187,15 @@ export const renderEditor = async (id: number) => {
   const commands = []
   Editors.set(id, newState, newState)
   for (const item of render) {
-    if (!item.isEqual(oldState, newState)) {
-      const result = await item.apply(oldState, newState)
-      // @ts-ignore
-      if (item.multiple) {
-        commands.push(...result)
-      } else if (result.length > 0) {
-        commands.push(result)
-      }
+    if (item.isEqual(oldState, newState)) {
+      continue
+    }
+    const result = await item.apply(oldState, newState)
+    // @ts-ignore
+    if (item.multiple) {
+      commands.push(...result)
+    } else if (result.length > 0) {
+      commands.push(result)
     }
   }
   return commands

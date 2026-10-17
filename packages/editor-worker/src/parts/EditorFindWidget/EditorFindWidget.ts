@@ -1,27 +1,34 @@
-import { WidgetId } from '@lvce-editor/constants'
+import { ViewletCommand, WidgetId } from '@lvce-editor/constants'
 import type { IFindWidget } from '../IFindWidget/IFindWidget.ts'
+import type { EditorState } from '../State/State.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import { createFns } from '../CreateFns/CreateFns.ts'
 import * as FindWidgetRender from '../FindWidgetRender/FindWidgetRender.ts'
+import * as Names from '../Names/Names.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
+import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
+
+const commandsToForward = [
+  ViewletCommand.SetPatches,
+  RenderMethod.SetDom2,
+  RenderMethod.SetCss,
+  RenderMethod.SetBounds2,
+  RenderMethod.RegisterEventListeners,
+  RenderMethod.SetSelectionByName,
+  RenderMethod.SetValueByName,
+  RenderMethod.SetFocusContext,
+  RenderMethod.SetUid,
+  'Viewlet.focusSelector',
+]
 
 export const render = (widget: IFindWidget) => {
   const commands: readonly any[] = FindWidgetRender.renderFull(widget.oldState, widget.newState)
   const wrappedCommands = []
-  const { uid } = widget.newState
+  const { editorUid, uid } = widget.newState
   for (const command of commands) {
-    if (
-      command[0] === RenderMethod.SetDom2 ||
-      command[0] === RenderMethod.SetCss ||
-      command[0] === RenderMethod.AppendToBody ||
-      command[0] === RenderMethod.SetBounds2 ||
-      command[0] === RenderMethod.RegisterEventListeners ||
-      command[0] === RenderMethod.SetSelectionByName ||
-      command[0] === RenderMethod.SetValueByName ||
-      command[0] === RenderMethod.SetFocusContext ||
-      command[0] === RenderMethod.SetUid ||
-      command[0] === 'Viewlet.focusSelector'
-    ) {
+    if (command[0] === RenderMethod.SetFocusContext) {
+      wrappedCommands.push([command[0], editorUid, ...command.slice(1)])
+    } else if (commandsToForward.includes(command[0])) {
       wrappedCommands.push(command)
     } else {
       wrappedCommands.push(['Viewlet.send', uid, ...command])
@@ -34,7 +41,20 @@ export const add = (widget: IFindWidget) => {
 }
 
 export const remove = (widget: IFindWidget) => {
-  return [['Viewlet.dispose', widget.newState.uid]]
+  return []
+}
+
+export const focusFindInput = <T extends Pick<EditorState, 'widgets'>>(editor: T): T => {
+  const widget = editor.widgets.find((widget: IFindWidget) => widget.id === WidgetId.Find)
+  if (!widget) {
+    return editor
+  }
+  const { uid } = widget.newState
+  const newState = {
+    ...widget.newState,
+    commands: [[RenderMethod.FocusSelector, uid, `[name="${Names.SearchValue}"]`]],
+  }
+  return UpdateWidget.updateWidget(editor, WidgetId.Find, newState)
 }
 
 export const {
@@ -57,9 +77,11 @@ export const {
   handleInput,
   handleReplaceFocus,
   handleReplaceInput,
+  handleSettingsChanged,
   handleToggleReplaceFocus,
   replace,
   replaceAll,
+  resize,
   toggleMatchCase,
   toggleMatchWholeWord,
   togglePreserveCase,
@@ -84,9 +106,11 @@ export const {
     'handleInput',
     'handleReplaceFocus',
     'handleReplaceInput',
+    'handleSettingsChanged',
     'handleToggleReplaceFocus',
     'replace',
     'replaceAll',
+    'resize',
     'toggleMatchCase',
     'toggleMatchWholeWord',
     'toggleReplace',

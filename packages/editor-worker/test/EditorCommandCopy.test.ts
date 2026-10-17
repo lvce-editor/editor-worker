@@ -5,19 +5,23 @@ import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
 beforeAll(() => {
   // TODO remove this when using newer node version
   if (typeof DOMException === 'undefined') {
-    // @ts-ignore
-    globalThis.DOMException = globalThis.Error
+    Object.defineProperty(globalThis, 'DOMException', {
+      configurable: true,
+      value: Error,
+    })
   }
 })
 
-let writeTextSpy: jest.Mock | undefined
+const state: {
+  writeTextSpy?: jest.Mock
+} = {}
 
 const mockRpc = MockRpc.create({
   commandMap: {},
   invoke: async (method: string, ...args: any[]) => {
     if (method === 'ClipBoard.writeText') {
-      if (writeTextSpy) {
-        return writeTextSpy(...args)
+      if (state.writeTextSpy) {
+        return state.writeTextSpy(...args)
       }
       throw new Error('not implemented')
     }
@@ -41,7 +45,7 @@ beforeAll(() => {
 })
 
 test('editorCopy', async () => {
-  writeTextSpy = jest.fn().mockImplementation(() => {})
+  state.writeTextSpy = jest.fn().mockImplementation(() => {})
   const editor = {
     columnWidth: 9,
     completionTriggerCharacters: [],
@@ -71,16 +75,37 @@ test('editorCopy', async () => {
   }
 
   expect(await EditorCopy.copy(editor)).toBe(editor)
-  expect(writeTextSpy).toHaveBeenCalledTimes(1)
-  expect(writeTextSpy).toHaveBeenCalledWith('line 1\nline 2\nline 3')
+  expect(state.writeTextSpy).toHaveBeenCalledTimes(1)
+  expect(state.writeTextSpy).toHaveBeenCalledWith('line 1\nline 2\nline 3')
+})
+
+test('editorCopy - reversed single-line selection', async () => {
+  state.writeTextSpy = jest.fn()
+  const editor = {
+    lines: ['alpha beta'],
+    selections: new Uint32Array([0, 10, 0, 6]),
+  }
+
+  expect(await EditorCopy.copy(editor)).toBe(editor)
+  expect(state.writeTextSpy).toHaveBeenCalledWith('beta')
+})
+
+test('editorCopy - reversed multi-line selection', async () => {
+  state.writeTextSpy = jest.fn()
+  const editor = {
+    lines: ['alpha beta', 'gamma delta', 'epsilon'],
+    selections: new Uint32Array([2, 3, 0, 2]),
+  }
+
+  expect(await EditorCopy.copy(editor)).toBe(editor)
+  expect(state.writeTextSpy).toHaveBeenCalledWith('pha beta\ngamma delta\neps')
 })
 
 test.skip('editorCopy - error from clipboard - document is not focused', async () => {
-  writeTextSpy = jest.fn().mockImplementation(() => {
+  state.writeTextSpy = jest.fn().mockImplementation(() => {
     throw new DOMException('Document is not focused.')
   })
-  // @ts-ignore
-  const spy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+  jest.spyOn(console, 'warn').mockImplementation(() => {})
   const editor = {
     columnWidth: 9,
     completionTriggerCharacters: [],

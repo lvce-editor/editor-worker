@@ -1,16 +1,23 @@
+import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/ApplicationExtensionRpc.ts'
 import * as Assert from '../Assert/Assert.ts'
-import * as ExtensionHostActivationEvent from '../ExtensionHostActivationEvent/ExtensionHostActivationEvent.ts'
-import * as ExtensionHostCommandType from '../ExtensionHostCommandType/ExtensionHostCommandType.ts'
-import * as ExtensionHostEditor from '../ExtensionHostEditor/ExtensionHostEditor.ts'
+import * as TextDocument from '../TextDocument/TextDocument.ts'
+
+const getTextDocument = (editor: any) => {
+  return {
+    documentId: editor.id || editor.uid,
+    languageId: editor.languageId,
+    text: TextDocument.getText(editor),
+    uri: editor.uri,
+  }
+}
+
+const executeIsolatedHoverProvider = async (editor: any, offset: number) => {
+  const textDocument = getTextDocument(editor)
+  return ApplicationExtensionRpc.invoke(editor.applicationId, 'Extensions.executeHoverProvider', textDocument, offset)
+}
 
 export const executeHoverProvider = async (editor: any, offset: number) => {
   Assert.object(editor)
   Assert.number(offset)
-  return ExtensionHostEditor.execute({
-    args: [offset],
-    editor,
-    event: ExtensionHostActivationEvent.OnHover,
-    method: ExtensionHostCommandType.HoverExecute,
-    noProviderFoundMessage: 'No hover provider found',
-  })
+  return executeIsolatedHoverProvider(editor, offset)
 }

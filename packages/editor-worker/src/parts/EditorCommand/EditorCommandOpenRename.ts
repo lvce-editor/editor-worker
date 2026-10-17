@@ -1,8 +1,10 @@
 import { WidgetId } from '@lvce-editor/constants'
 import type { RenameState } from '../RenameState/RenameState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
+import * as ExtensionManagementEditor from '../ExtensionManagementEditor/ExtensionManagementEditor.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
+import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
 import * as GetPositionAtCursor from '../GetPositionAtCursor/GetPositionAtCursor.ts'
 import * as RenameWidgetFactory from '../RenameWidgetFactory/RenameWidgetFactory.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
@@ -11,8 +13,8 @@ import * as EditorCommandGetWordAt from './EditorCommandGetWordAt.ts'
 const newStateGenerator = async (state: RenameState, parentUid: number): Promise<RenameState> => {
   const { height, uid, width, x, y } = state
   const { newState } = Editors.get(parentUid)
-  const { languageId } = newState
-  await RenameWorker.invoke('Rename.create', uid, x, y, width, height, parentUid, languageId)
+  const { applicationId, languageId } = newState
+  await RenameWorker.invoke('Rename.create', uid, x, y, width, height, parentUid, languageId, applicationId)
   await RenameWorker.invoke('Rename.loadContent', uid)
   const diff = await RenameWorker.invoke('Rename.diff2', uid)
   const commands = await RenameWorker.invoke('Rename.render2', uid, diff)
@@ -29,13 +31,48 @@ export const openRename = async (editor: any) => {
     return editor
   }
 
-  const fullFocus = true
-  return AddWidgetToEditor.addWidgetToEditor(
-    WidgetId.Rename,
-    FocusKey.FocusEditorRename,
+  const editorState = Editors.get(editor.uid)
+  if (!editorState) {
+    return editor
+  }
+  const offsetAtCursor = GetOffsetAtCursor.getOffsetAtCursor(editor)
+  const prepareRenameResult = await ExtensionManagementEditor.execute({
+    args: [offsetAtCursor],
     editor,
-    RenameWidgetFactory.create,
-    newStateGenerator,
-    fullFocus,
-  )
+    kind: 'rename',
+    method: 'prepareRename',
+  })
+  if (!prepareRenameResult || typeof prepareRenameResult !== 'object') {
+    return editor
+  }
+  const latestEditor = Editors.get(editor.uid)?.newState
+  if (latestEditor !== editor) {
+    return latestEditor || editor
+  }
+
+  const fullFocus = true
+  let editorWithRenameWidget
+  try {
+    editorWithRenameWidget = await AddWidgetToEditor.addWidgetToEditor(
+      WidgetId.Rename,
+      FocusKey.FocusEditorRename,
+      editor,
+      RenameWidgetFactory.create,
+      newStateGenerator,
+      fullFocus,
+    )
+  } catch (error) {
+    await RenameWorker.dispose()
+    throw error
+  }
+  if (editorWithRenameWidget === editor) {
+    await RenameWorker.dispose()
+    return editor
+  }
+  const wordBefore = EditorCommandGetWordAt.getWordBefore(editor, rowIndex, columnIndex)
+  const offset = GetOffsetAtCursor.getOffsetAtCursor(editor) - wordBefore.length
+  return {
+    ...editorWithRenameWidget,
+    decorations: [...editorWithRenameWidget.decorations, offset, word.length, 3, 0],
+  }
 }

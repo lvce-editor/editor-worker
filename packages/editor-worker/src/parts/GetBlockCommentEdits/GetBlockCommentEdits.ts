@@ -2,10 +2,46 @@ import type { Edit } from '../Edit/Edit.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
+/* eslint-disable sonarjs/super-linear-regex */
+
 const RE_WHITESPACE_AT_START = /^\s+/
 const RE_WHITESPACE_AT_END = /\s+$/
 
-export const getBlockCommentEdits = (editor: any, blockComment: string): readonly Edit[] => {
+const createDeleteEdit = (rowIndex: number, columnIndex: number, text: string): Edit => {
+  return {
+    deleted: [text],
+    end: {
+      columnIndex: columnIndex + text.length,
+      rowIndex,
+    },
+    inserted: [''],
+    origin: EditOrigin.ToggleBlockComment,
+    start: {
+      columnIndex,
+      rowIndex,
+    },
+  }
+}
+
+const getRemoveBlockCommentEdits = (
+  rowIndex: number,
+  startRowIndex: number,
+  startColumnIndex: number,
+  endRowIndex: number,
+  endColumnIndex: number,
+  blockCommentStart: string,
+  blockCommentEnd: string,
+): readonly Edit[] => {
+  if (startRowIndex === endRowIndex) {
+    return [
+      createDeleteEdit(rowIndex, startColumnIndex, blockCommentStart),
+      createDeleteEdit(rowIndex, endColumnIndex - blockCommentStart.length, blockCommentEnd),
+    ]
+  }
+  return [createDeleteEdit(startRowIndex, startColumnIndex, blockCommentStart), createDeleteEdit(endRowIndex, endColumnIndex, blockCommentEnd)]
+}
+
+export const getBlockCommentEdits = (editor: any, blockComment: readonly string[]): readonly Edit[] => {
   const { selections } = editor
   const [rowIndex] = selections
   const line = TextDocument.getLine(editor, rowIndex)
@@ -35,75 +71,21 @@ export const getBlockCommentEdits = (editor: any, blockComment: string): readonl
   const changes: Edit[] = []
 
   if (startColumnIndex !== -1 && endColumnIndex !== -1) {
-    if (startRowIndex === endRowIndex) {
-      const change1: Edit = {
-        deleted: [blockCommentStart],
-        end: {
-          columnIndex: startColumnIndex + blockCommentStart.length,
-          rowIndex,
-        },
-        inserted: [],
-        origin: EditOrigin.ToggleBlockComment,
-        start: {
-          columnIndex: startColumnIndex,
-          rowIndex,
-        },
-      }
-      const change2: Edit = {
-        deleted: [blockCommentEnd],
-        end: {
-          columnIndex: endColumnIndex - blockCommentStart.length + blockCommentEnd.length,
-          rowIndex,
-        },
-        inserted: [],
-        origin: EditOrigin.ToggleBlockComment,
-        start: {
-          columnIndex: endColumnIndex - blockCommentStart.length,
-          rowIndex,
-        },
-      }
-      changes.push(change1, change2)
-    } else {
-      const change1: Edit = {
-        deleted: [blockCommentStart],
-        end: {
-          columnIndex: startColumnIndex + blockCommentStart.length,
-          rowIndex: startRowIndex,
-        },
-        inserted: [],
-        origin: EditOrigin.ToggleBlockComment,
-        start: {
-          columnIndex: startColumnIndex,
-          rowIndex: startRowIndex,
-        },
-      }
-      const change2: Edit = {
-        deleted: [blockCommentEnd],
-        end: {
-          columnIndex: endColumnIndex + blockCommentEnd.length,
-          rowIndex: endRowIndex,
-        },
-        inserted: [],
-        origin: EditOrigin.ToggleBlockComment,
-        start: {
-          columnIndex: endColumnIndex,
-          rowIndex: endRowIndex,
-        },
-      }
-      changes.push(change1, change2)
+    changes.push(
+      ...getRemoveBlockCommentEdits(rowIndex, startRowIndex, startColumnIndex, endRowIndex, endColumnIndex, blockCommentStart, blockCommentEnd),
+    )
 
-      // const oldRow1 = TextDocument.getLine(editor, startRowIndex)
-      // const newRow1 =
-      //   oldRow1.slice(0, startColumnIndex) +
-      //   oldRow1.slice(startColumnIndex + blockCommentStart.length)
-      // const oldRow2 = TextDocument.getLine(editor, endRowIndex)
-      // const newRow2 =
-      //   oldRow2.slice(0, endColumnIndex) +
-      //   oldRow2.slice(endColumnIndex + blockCommentEnd.length)
-      // // TODO use applyEdit to have undo functionality
-      // TextDocument.setLine(editor, startRowIndex, newRow1)
-      // TextDocument.setLine(editor, endRowIndex, newRow2)
-    }
+    // const oldRow1 = TextDocument.getLine(editor, startRowIndex)
+    // const newRow1 =
+    //   oldRow1.slice(0, startColumnIndex) +
+    //   oldRow1.slice(startColumnIndex + blockCommentStart.length)
+    // const oldRow2 = TextDocument.getLine(editor, endRowIndex)
+    // const newRow2 =
+    //   oldRow2.slice(0, endColumnIndex) +
+    //   oldRow2.slice(endColumnIndex + blockCommentEnd.length)
+    // // TODO use applyEdit to have undo functionality
+    // TextDocument.setLine(editor, startRowIndex, newRow1)
+    // TextDocument.setLine(editor, endRowIndex, newRow2)
     // TODO move cursors
   } else {
     const whitespaceAtStart = line.match(RE_WHITESPACE_AT_START)
@@ -117,7 +99,7 @@ export const getBlockCommentEdits = (editor: any, blockComment: string): readonl
       endColumnIndex -= whitespaceAtEnd[0].length
     }
     const change1: Edit = {
-      deleted: [],
+      deleted: [''],
       end: {
         columnIndex: startColumnIndex,
         rowIndex,
@@ -130,7 +112,7 @@ export const getBlockCommentEdits = (editor: any, blockComment: string): readonl
       },
     }
     const change2: Edit = {
-      deleted: [],
+      deleted: [''],
       end: {
         columnIndex: endColumnIndex + blockCommentStart.length,
         rowIndex,

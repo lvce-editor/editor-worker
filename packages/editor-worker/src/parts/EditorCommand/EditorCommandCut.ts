@@ -4,8 +4,7 @@ import * as EditorCommandCutSelectedText from './EditorCommandCutSelectedText.ts
 
 export const cut = async (editor: any) => {
   const { selections } = editor
-  const [startRowIndex, startColumnIndex, endRowIndex, endColumnIndex] = selections
-  if (EditorSelection.isEmpty(startRowIndex, startColumnIndex, endRowIndex, endColumnIndex)) {
+  if (EditorSelection.isEverySelectionEmpty(selections)) {
     return EditorCommandCutLine.cutLine(editor)
   }
   return EditorCommandCutSelectedText.cutSelectedText(editor)

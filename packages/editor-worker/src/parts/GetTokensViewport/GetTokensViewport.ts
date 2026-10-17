@@ -4,34 +4,66 @@ import * as TokenizePlainText from '../TokenizePlainText/TokenizePlainText.ts'
 import * as Tokenizer from '../Tokenizer/Tokenizer.ts'
 import * as TokenizerMap from '../TokenizerMap/TokenizerMap.ts'
 
+const getEmbeddedTokenization = (
+  langageId: string,
+  line: string,
+  embeddedLanguage: string,
+  embeddedLanguageStart: number,
+  embeddedLanguageEnd: number,
+  topContexts: any,
+  tokenizersToLoad: any[],
+): any => {
+  const embeddedTokenizer = Tokenizer.getTokenizer(embeddedLanguage)
+  if (embeddedLanguageStart !== line.length && embeddedTokenizer && embeddedTokenizer !== TokenizePlainText) {
+    const isFull = embeddedLanguageStart === 0 && embeddedLanguageEnd === line.length
+    const partialLine = line.slice(embeddedLanguageStart, embeddedLanguageEnd)
+    const embedResult = SafeTokenizeLine.safeTokenizeLine(
+      langageId,
+      embeddedTokenizer.tokenizeLine,
+      partialLine,
+      topContexts[embeddedLanguage] || GetInitialLineState.getInitialLineState(embeddedTokenizer.initialLineState),
+      embeddedTokenizer.hasArrayReturn,
+    )
+    topContexts[embeddedLanguage] = embedResult
+    if (embedResult.embeddedLanguage) {
+      const nested = getEmbeddedTokenization(
+        langageId,
+        partialLine,
+        embedResult.embeddedLanguage,
+        embedResult.embeddedLanguageStart,
+        embedResult.embeddedLanguageEnd,
+        topContexts,
+        tokenizersToLoad,
+      )
+      if (nested?.isFull) {
+        return nested
+      }
+    }
+    return {
+      isFull,
+      result: embedResult,
+      TokenMap: embeddedTokenizer.TokenMap,
+    }
+  }
+  tokenizersToLoad.push(embeddedLanguage)
+  topContexts[embeddedLanguage] = undefined
+  return {
+    isFull: false,
+    result: {},
+    TokenMap: [],
+  }
+}
+
 const getTokensViewportEmbedded = (langageId: string, lines: string[], lineCache: any, linesWithEmbed: any) => {
-  const tokenizersToLoad = []
-  const embeddedResults = []
-  let topContext
+  const tokenizersToLoad: any[] = []
+  const embeddedResults: any[] = []
+  const topContexts = Object.create(null)
   for (const index of linesWithEmbed) {
     const result = lineCache[index + 1]
     const line = lines[index]
     if (result.embeddedLanguage) {
       const { embeddedLanguage, embeddedLanguageEnd, embeddedLanguageStart } = result
-      const embeddedTokenizer = Tokenizer.getTokenizer(embeddedLanguage)
-      if (embeddedLanguageStart !== line.length && embeddedTokenizer && embeddedTokenizer !== TokenizePlainText) {
-        const isFull = embeddedLanguageStart === 0 && embeddedLanguageEnd === line.length
-        const partialLine = line.slice(embeddedLanguageStart, embeddedLanguageEnd)
-        const embedResult = SafeTokenizeLine.safeTokenizeLine(
-          langageId,
-          embeddedTokenizer.tokenizeLine,
-          partialLine,
-          topContext || GetInitialLineState.getInitialLineState(embeddedTokenizer.initialLineState),
-          embeddedTokenizer.hasArrayReturn,
-        )
-        topContext = embedResult
-        result.embeddedResultIndex = embeddedResults.length
-        embeddedResults.push({
-          isFull,
-          result: embedResult,
-          TokenMap: embeddedTokenizer.TokenMap,
-        })
-      } else if (line.length === 0) {
+      if (line.length === 0) {
         const embedResult = {
           tokens: [],
         }
@@ -42,16 +74,15 @@ const getTokensViewportEmbedded = (langageId: string, lines: string[], lineCache
           TokenMap: [],
         })
       } else {
-        tokenizersToLoad.push(embeddedLanguage)
-        embeddedResults.push({
-          isFull: false,
-          result: {},
-          TokenMap: [],
-        })
-        topContext = undefined
+        result.embeddedResultIndex = embeddedResults.length
+        embeddedResults.push(
+          getEmbeddedTokenization(langageId, line, embeddedLanguage, embeddedLanguageStart, embeddedLanguageEnd, topContexts, tokenizersToLoad),
+        )
       }
     } else {
-      topContext = undefined
+      for (const embeddedLanguage of Object.keys(topContexts)) {
+        topContexts[embeddedLanguage] = undefined
+      }
     }
   }
   return {

@@ -6,13 +6,9 @@ const send = (port: MessagePort): Promise<void> => {
 }
 
 export const initializeTextMeasurementWorker = async (): Promise<void> => {
-  try {
-    const rpc = await LazyTransferMessagePortRpcParent.create({
-      commandMap: {},
-      send,
-    })
-    TextMeasurementWorker.set(rpc)
-  } catch {
-    // ignore
-  }
+  const rpc = await LazyTransferMessagePortRpcParent.create({
+    commandMap: {},
+    send,
+  })
+  TextMeasurementWorker.set(rpc)
 }

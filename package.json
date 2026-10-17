@@ -4,15 +4,18 @@
   "license": "MIT",
   "author": "Lvce Editor",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "node packages/build/src/build.ts",
     "build:static": "node packages/build/src/build-static.ts",
-    "build:watch": "./packages/build/node_modules/.bin/esbuild --format=esm --bundle --external:node:buffer --external:electron --external:ws --external:node:worker_threads  --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=.tmp/dist/dist/editorWorkerMain.js",
+    "build:watch": "npm exec --workspace=packages/build -- esbuild --format=esm --bundle --external:node:buffer --external:electron --external:ws --external:node:worker_threads --watch packages/editor-worker/src/editorWorkerMain.ts --outfile=.tmp/dist/dist/editorWorkerMain.js",
     "dev": "node packages/build/src/dev.ts",
     "format": "prettier --write .",
-    "postinstall": "lerna bootstrap --ci",
-    "lint": "eslint . && prettier --check .",
-    "test": "lerna run test",
+    "lint": "eslint . && prettier --check . && knip --no-config-hints",
+    "test": "npm test --workspaces --if-present",
+    "trigger-ci-branches": "bash packages/build/trigger-ci-branches.sh",
     "type-check": "tsc -b"
   },
   "prettier": {
@@ -21,11 +24,11 @@
     "printWidth": 150
   },
   "devDependencies": {
-    "@lerna/legacy-package-management": "^8.2.4",
-    "@lvce-editor/eslint-config": "^7.1.0",
-    "eslint": "^9.39.2",
-    "lerna": "^8.2.4",
-    "prettier": "^3.8.1",
-    "typescript": "^5.9.3"
+    "@lvce-editor/eslint-config": "^18.14.2",
+    "@lvce-editor/eslint-plugin-tsconfig": "^18.8.0",
+    "eslint": "10.12.0",
+    "knip": "^6.33.0",
+    "prettier": "^3.9.6",
+    "typescript": "^6.0.3"
   }
 }

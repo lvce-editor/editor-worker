@@ -1,0 +1,27 @@
+import type { Test } from '@lvce-editor/test-with-playwright'
+
+export const name = 'editor.rename-close-clears-highlight'
+
+export const test: Test = async ({ Editor, expect, Extension, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
+  // arrange
+  const extensionUri = import.meta.resolve('../fixtures/editor.rename-provider')
+  await Extension.addWebExtension(extensionUri)
+  const tmpDir = await FileSystem.getTmpDir()
+  const uri = `${tmpDir}/main.rename-test`
+  await FileSystem.writeFile(uri, 'const alpha = 1\n')
+  await Workspace.setPath(tmpDir)
+  await Main.openUri(uri)
+  await Editor.setCursor(0, 8)
+  await Editor.openRename()
+  const renameWidget = Locator('.EditorRename:has(.RenameInputBox:focus)')
+  const renameHighlight = Locator('.Token.R')
+  await expect(renameHighlight).toBeVisible()
+
+  // act
+  await KeyBoard.press('Escape')
+  await new Promise((resolve) => setTimeout(resolve, 100))
+
+  // assert
+  await expect(renameWidget).toBeHidden()
+  await expect(renameHighlight).toBeHidden()
+}

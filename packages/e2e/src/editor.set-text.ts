@@ -4,7 +4,7 @@ export const name = 'editor.set-text'
 
 export const skip = 1
 
-export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace }) => {
+export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'before')
@@ -12,7 +12,7 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
   await Main.openUri(`${tmpDir}/file1.txt`)
 
   // act
-  await Command.execute('Editor.setText', 'after\nline2')
+  await Editor.setText('after\nline2')
 
   // assert
   await Editor.shouldHaveText('after\nline2')

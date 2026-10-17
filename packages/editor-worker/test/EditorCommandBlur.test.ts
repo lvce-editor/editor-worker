@@ -1,0 +1,168 @@
+import { beforeEach, expect, jest, test } from '@jest/globals'
+import { WidgetId } from '@lvce-editor/constants'
+import type { EditorState } from '../src/parts/State/State.ts'
+import * as FocusKey from '../src/parts/FocusKey/FocusKey.ts'
+import * as WhenExpression from '../src/parts/WhenExpression/WhenExpression.ts'
+
+const getPreferenceMock = jest.fn<(key: string) => Promise<string>>()
+const saveMock = jest.fn<(editor: EditorState) => Promise<EditorState>>()
+
+jest.unstable_mockModule('../src/parts/Preferences/Preferences.ts', () => ({
+  get: getPreferenceMock,
+}))
+
+jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandSave.ts', () => ({
+  save: saveMock,
+}))
+
+const EditorCommandBlur = await import('../src/parts/EditorCommand/EditorCommandBlur.ts')
+const WidgetRevision = await import('../src/parts/WidgetRevision/WidgetRevision.ts')
+
+beforeEach(() => {
+  getPreferenceMock.mockReset()
+  saveMock.mockReset()
+  WidgetRevision.reset()
+})
+
+const createEditor = (overrides: Partial<EditorState> = {}): EditorState => {
+  return {
+    additionalFocus: 0,
+    focused: true,
+    modified: true,
+    uri: 'file:///test.txt',
+    widgets: [],
+    ...overrides,
+  } as EditorState
+}
+
+test('handleBlur returns the editor unchanged when it is not focused', async () => {
+  const editor = createEditor({ focused: false })
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toBe(editor)
+  expect(getPreferenceMock).not.toHaveBeenCalled()
+  expect(saveMock).not.toHaveBeenCalled()
+})
+
+test('handleBlur clears focus without saving an unmodified editor', async () => {
+  const editor = createEditor({ modified: false })
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toEqual({
+    ...editor,
+    focused: false,
+    widgetRevision: 1,
+  })
+  expect(getPreferenceMock).not.toHaveBeenCalled()
+  expect(saveMock).not.toHaveBeenCalled()
+})
+
+test('handleBlur closes transient widgets and clears additional focus', async () => {
+  const completionWidget = { id: WidgetId.Completion }
+  const findWidget = { id: WidgetId.Find }
+  const editor = createEditor({
+    additionalFocus: 9,
+    modified: false,
+    widgets: [completionWidget, findWidget],
+  })
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toEqual({
+    ...editor,
+    additionalFocus: 0,
+    completionWidgetDismissedOnBlur: true,
+    focused: false,
+    widgetRevision: 1,
+    widgets: [findWidget],
+  })
+})
+
+test('handleBlur preserves a focused hover and disables editor focus context', async () => {
+  const hoverWidget = { id: WidgetId.Hover }
+  const findWidget = { id: WidgetId.Find }
+  const editor = createEditor({
+    additionalFocus: 9,
+    focus: WhenExpression.FocusEditorText,
+    modified: false,
+    widgets: [hoverWidget, findWidget],
+  })
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toEqual({
+    ...editor,
+    additionalFocus: FocusKey.FocusEditorHover,
+    focus: FocusKey.Empty,
+    focused: false,
+    widgetRevision: 1,
+    widgets: [findWidget, hoverWidget],
+  })
+})
+
+test('handleBlur does not save when auto save is off', async () => {
+  getPreferenceMock.mockResolvedValue('off')
+  const editor = createEditor()
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toEqual({
+    ...editor,
+    focused: false,
+    widgetRevision: 1,
+  })
+  expect(getPreferenceMock).toHaveBeenCalledWith('files.autoSave')
+  expect(saveMock).not.toHaveBeenCalled()
+})
+
+test('handleBlur does not save when auto save is after delay', async () => {
+  getPreferenceMock.mockResolvedValue('afterDelay')
+  const editor = createEditor()
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toEqual({
+    ...editor,
+    focused: false,
+    widgetRevision: 1,
+  })
+  expect(getPreferenceMock).toHaveBeenCalledWith('files.autoSave')
+  expect(saveMock).not.toHaveBeenCalled()
+})
+
+test('handleBlur does not save an untitled file when auto save is on focus change', async () => {
+  getPreferenceMock.mockResolvedValue('onFocusChange')
+  const editor = createEditor({ uri: 'untitled:///1' })
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toEqual({
+    ...editor,
+    focused: false,
+    widgetRevision: 1,
+  })
+  expect(getPreferenceMock).not.toHaveBeenCalled()
+  expect(saveMock).not.toHaveBeenCalled()
+})
+
+test('handleBlur saves when auto save is on focus change', async () => {
+  getPreferenceMock.mockResolvedValue('onFocusChange')
+  const editor = createEditor()
+  const savedEditor = createEditor({
+    focused: false,
+    modified: false,
+  })
+  saveMock.mockResolvedValue(savedEditor)
+
+  const result = await EditorCommandBlur.handleBlur(editor)
+
+  expect(result).toBe(savedEditor)
+  expect(getPreferenceMock).toHaveBeenCalledWith('files.autoSave')
+  expect(saveMock).toHaveBeenCalledWith({
+    ...editor,
+    focused: false,
+    widgetRevision: 1,
+  })
+})

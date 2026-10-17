@@ -1,19 +1,38 @@
-import { beforeEach, expect, jest, test } from '@jest/globals'
+import { expect, test } from '@jest/globals'
+import { DragAndDropWorker } from '@lvce-editor/rpc-registry'
+import * as EditorCommandHandlePointerCaptureLost from '../src/parts/EditorCommand/EditorCommandHandlePointerCaptureLost.ts'
 
-beforeEach(() => {
-  jest.resetAllMocks()
+test('handlePointerCaptureLost - clears selection auto move state', async () => {
+  const editor = {
+    hasListener: true,
+    isSelecting: true,
+    selectionAutoMovePosition: { x: 2, y: 3 },
+  }
+  await expect(EditorCommandHandlePointerCaptureLost.handlePointerCaptureLost(editor)).resolves.toEqual({
+    hasListener: false,
+    isSelecting: false,
+    selectionAutoMovePosition: { x: 0, y: 0 },
+    textDragDropPosition: {
+      columnIndex: 0,
+      rowIndex: 0,
+    },
+    textDragId: 0,
+  })
 })
 
-const EditorSelectionAutoMoveState = await import('../src/parts/EditorSelectionAutoMoveState/EditorSelectionAutoMoveState.ts')
-const EditorCommandHandlePointerCaptureLost = await import('../src/parts/EditorCommand/EditorCommandHandlePointerCaptureLost.ts')
-
-test.skip('handlePointerCaptureLost', () => {
-  // Skipped: Cannot spy on ES module exports (read-only properties)
-  const clearEditorSpy = jest.spyOn(EditorSelectionAutoMoveState, 'clearEditor')
+test('handlePointerCaptureLost - discards an active text drag session', async () => {
+  using mockRpc = DragAndDropWorker.registerMockRpc({
+    'DragAndDrop.discardTextDrag'() {},
+  })
   const editor = {
-    lineCache: [],
+    hasListener: true,
+    isSelecting: false,
+    selectionAutoMovePosition: { x: 0, y: 0 },
+    textDragId: 12,
   }
-  expect(EditorCommandHandlePointerCaptureLost.handlePointerCaptureLost(editor)).toBe(editor)
-  expect(clearEditorSpy).toHaveBeenCalledTimes(1)
-  clearEditorSpy.mockRestore()
+
+  const result = await EditorCommandHandlePointerCaptureLost.handlePointerCaptureLost(editor)
+
+  expect(result.textDragId).toBe(0)
+  expect(mockRpc.invocations).toEqual([['DragAndDrop.discardTextDrag', 12]])
 })

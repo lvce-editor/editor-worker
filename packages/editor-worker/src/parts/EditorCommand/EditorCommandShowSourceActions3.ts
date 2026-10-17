@@ -1,7 +1,7 @@
 import { WidgetId } from '@lvce-editor/constants'
 import type { SourceActionState } from '../SourceActionState/SourceActionState.ts'
 import * as AddWidgetToEditor from '../AddWidgetToEditor/AddWidgetToEditor.ts'
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as SourceActionWidgetFactory from '../SourceActionWidgetFactory/SourceActionWidgetFactory.ts'
 import * as SourceActionWorker from '../SourceActionWorker/SourceActionWorker.ts'

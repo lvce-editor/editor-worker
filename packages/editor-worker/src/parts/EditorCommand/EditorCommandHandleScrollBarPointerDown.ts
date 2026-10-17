@@ -1,3 +1,4 @@
+import type { EditorState } from '../State/State.ts'
 import * as Editor from '../Editor/Editor.ts'
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
@@ -7,7 +8,7 @@ import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts
 // when clicked at y > editor.height - editor.scrollBarHeight/2, position scrollbar at (y - scrollbarHeight/2)
 // additionally, when clicked on scrollbar, scrollbar position shouldn't move
 
-export const handleScrollBarPointerDown = (state: any, eventY: number): any => {
+export const handleScrollBarPointerDown = async (state: EditorState, eventY: number): Promise<EditorState> => {
   const { deltaY, finalDeltaY, height, scrollBarHeight, y } = state
   const relativeY = eventY - y
   const currentScrollBarY = ScrollBarFunctions.getScrollBarY(deltaY, finalDeltaY, height, scrollBarHeight)
@@ -20,8 +21,9 @@ export const handleScrollBarPointerDown = (state: any, eventY: number): any => {
   }
   const { handleOffset, percent } = ScrollBarFunctions.getNewDeltaPercent(height, scrollBarHeight, relativeY)
   const newDeltaY = percent * finalDeltaY
+  const newState = await Editor.setDeltaYFixedValue(state, newDeltaY)
   return {
-    ...Editor.setDeltaYFixedValue(state, newDeltaY),
+    ...newState,
     handleOffset,
   }
 }

@@ -1,0 +1,16 @@
+{
+  "browser": "dist/main.js",
+  "isolated": true,
+  "main": "main.js",
+  "activation": ["onFileSystem:xyz"],
+  "fileSystems": [
+    {
+      "scheme": "xyz"
+    }
+  ],
+  "fileSystemProviders": [
+    {
+      "id": "xyz"
+    }
+  ]
+}

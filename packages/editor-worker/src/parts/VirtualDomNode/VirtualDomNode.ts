@@ -1,4 +1,1 @@
-export interface VirtualDomNode {
-  readonly [key: string]: any
-  readonly type: number
-}
+export type { VirtualDomNode } from '@lvce-editor/virtual-dom-worker'

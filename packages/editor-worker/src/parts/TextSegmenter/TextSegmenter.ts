@@ -10,9 +10,7 @@ export const create = () => {
       const segments = segmenter.segment(line)
       return segments.containing(index)
     },
-    getSegments(line: string) {
-      return segmenter.segment(line)
-    },
+    getSegments: (line: string) => segmenter.segment(line),
     modelIndex(line: string, visualIndex: number) {
       const segments = segmenter.segment(line)
       let currentVisualIndex = 0

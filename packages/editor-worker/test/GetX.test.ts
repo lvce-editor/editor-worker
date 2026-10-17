@@ -1,18 +1,18 @@
 import { beforeAll, expect, test } from '@jest/globals'
 
 beforeAll(() => {
-  // @ts-ignore
-  globalThis.OffscreenCanvas = class {
-    getContext() {
-      return {
-        measureText() {
-          return {
+  Object.defineProperty(globalThis, 'OffscreenCanvas', {
+    configurable: true,
+    value: class {
+      getContext() {
+        return {
+          measureText: () => ({
             width: 52,
-          }
-        },
+          }),
+        }
       }
-    }
-  }
+    },
+  })
 })
 
 const GetX = await import('../src/parts/GetX/GetX.ts')

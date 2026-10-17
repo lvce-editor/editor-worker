@@ -1,19 +1,22 @@
 import * as ApplyWidgetChanges from '../ApplyWidgetChanges/ApplyWidgetChanges.ts'
 import * as Assert from '../Assert/Assert.ts'
+import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
-import * as EditorStates from '../Editors/Editors.ts'
 import * as EditorScrolling from '../EditorScrolling/EditorScrolling.ts'
+import * as EditorStates from '../EditorStates/EditorStates.ts'
 import * as EditorText from '../EditorText/EditorText.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as GetIncrementalEdits from '../GetIncrementalEdits/GetIncrementalEdits.ts'
 import * as LinkDetection from '../LinkDetection/LinkDetection.ts'
 import * as ListenerType from '../ListenerType/ListenerType.ts'
 import * as NotifyListeners from '../NotifyListeners/NotifyListeners.ts'
-import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
+import * as Resize from '../Resize/Resize.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as SyncIncremental from '../SyncIncremental/SyncIncremental.ts'
 import * as TabModifiedStatusChange from '../TabModifiedStatusChange/TabModifiedStatusChange.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
+import * as TransformDiagnostics from '../TransformDiagnostics/TransformDiagnostics.ts'
+import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as EditorSelection from './EditorSelection.ts'
 
 // TODO
@@ -42,14 +45,12 @@ const applyAutoClosingRangesEdit = (editor: any, changes: any[]) => {
     const autoStartColumnIndex = autoClosingRanges[i + 1]
     const autoEndRowIndex = autoClosingRanges[i + 2]
     const autoEndColumnIndex = autoClosingRanges[i + 3]
-    if (changeEndRowIndex === autoEndRowIndex && changeEndColumnIndex === autoEndColumnIndex) {
-      const delta = change.inserted[0].length - change.deleted[0].length
-      newAutoClosingRanges.push(autoStartRowIndex, autoStartColumnIndex, autoEndRowIndex, autoEndColumnIndex + delta)
-    } else if (
-      changeStartRowIndex === autoStartRowIndex &&
-      changeStartColumnIndex >= autoStartColumnIndex &&
-      changeEndRowIndex === autoEndRowIndex &&
-      changeEndColumnIndex <= autoEndColumnIndex
+    if (
+      (changeEndRowIndex === autoEndRowIndex && changeEndColumnIndex === autoEndColumnIndex) ||
+      (changeStartRowIndex === autoStartRowIndex &&
+        changeStartColumnIndex >= autoStartColumnIndex &&
+        changeEndRowIndex === autoEndRowIndex &&
+        changeEndColumnIndex <= autoEndColumnIndex)
     ) {
       const delta = change.inserted[0].length - change.deleted[0].length
       newAutoClosingRanges.push(autoStartRowIndex, autoStartColumnIndex, autoEndRowIndex, autoEndColumnIndex + delta)
@@ -63,8 +64,22 @@ const applyAutoClosingRangesEdit = (editor: any, changes: any[]) => {
   return newAutoClosingRanges
 }
 
+const updateTransformedDiagnostics = async (editor: any, changes: readonly any[]) => {
+  UpdateDiagnostics.transformCachedDiagnostics(editor.id ?? editor.uid, changes)
+  const diagnostics = TransformDiagnostics.transformDiagnostics(editor.diagnostics ?? [], changes)
+  return UpdateDiagnostics.addDiagnostics(editor, diagnostics)
+}
+
 export const scheduleSelections = (editor: any, selectionEdits: any) => {
   return EditorSelection.setSelections(editor, selectionEdits)
+}
+
+const updateLines = (editor: any, lines: readonly string[]) => {
+  const newEditor = {
+    ...editor,
+    lines,
+  }
+  return 'foldingRanges' in editor ? EditorFolding.updateLayout(newEditor, []) : newEditor
 }
 
 /**
@@ -81,29 +96,55 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     return editor
   }
   const newLines = TextDocument.applyEdits(editor, changes)
-  const partialNewEditor = {
-    ...editor,
-    lines: newLines,
-  }
+  const partialNewEditor = updateLines(editor, newLines)
+  const partialNewEditorWithDiagnostics = await updateTransformedDiagnostics(partialNewEditor, changes)
   const newSelections = selectionChanges || EditorSelection.applyEdit(partialNewEditor, changes)
+  const selectionHistory = {
+    after: newSelections,
+    before: editor.selections,
+  }
+  Object.defineProperty(changes, 'selectionHistory', {
+    configurable: true,
+    value: selectionHistory,
+  })
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
   // invalidStartIndex, lineCache, etc. just for testing editorType
   const invalidStartIndex = Math.min(editor.invalidStartIndex, changes[0].start.rowIndex)
 
-  // TODO maybe put undostack into indexeddb so that there is no memory leak in application
+  // TODO maybe put undostack into indexeddb so that there is no memory leak in app
   // then clear old undostack from indexeddb after 3 days
   // TODO should push to undostack after rendering
   const autoClosingRanges = applyAutoClosingRangesEdit(editor, changes)
+  const change = changes[0]
+  const canCoalesceTyping =
+    changes.length === 1 &&
+    change.origin === EditOrigin.EditorType &&
+    change.deleted[0] === '' &&
+    change.inserted[0].length > 0 &&
+    change.inserted.length === 1 &&
+    change.start.rowIndex === change.end.rowIndex &&
+    change.start.columnIndex === change.end.columnIndex
+  const previous = editor.undoStack.at(-1)?.[0]
+  const shouldCoalesce =
+    editor.canCoalesceTyping &&
+    canCoalesceTyping &&
+    change.start.rowIndex === previous.start.rowIndex &&
+    change.start.columnIndex === previous.start.columnIndex + previous.inserted[0].length
+  const undoStack = shouldCoalesce
+    ? [...editor.undoStack.slice(0, -1), [{ ...previous, inserted: [previous.inserted[0] + change.inserted[0]] }]]
+    : [...editor.undoStack, changes]
 
   const newEditor = {
-    ...partialNewEditor,
+    ...partialNewEditorWithDiagnostics,
     autoClosingRanges,
+    canCoalesceTyping,
     invalidStartIndex,
     lines: newLines,
     modified: true,
+    redoStack: [],
     selections: newSelections,
-    undoStack: [...editor.undoStack, changes],
+    undoStack,
   }
   // Update link decorations after text changes
   const linkDecorations = LinkDetection.detectAllLinksAsDecorations(newEditor)
@@ -115,14 +156,16 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
 
   // Notify main-area-worker about modified status change
   if (!editor.modified) {
-    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri)
+    await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri, true, editor.applicationId)
   }
 
   // Notify registered listeners about editor changes
-  NotifyListeners.notifyListeners(ListenerType.EditorChange, 'handleEditorChanged', editor.uid, editor.uri, changes).catch((error) => {
+  try {
+    await NotifyListeners.notifyListeners(ListenerType.EditorChange, 'handleEditorChanged', editor.uid, editor.uri, changes)
+  } catch (error) {
     // Silently ignore notification errors to not interrupt the edit flow
     console.warn('Failed to notify editor change listeners:', error)
-  })
+  }
 
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditorWithDecorations)
 
@@ -136,29 +179,28 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     return newEditor2
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(newEditor2, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(newEditor2, syncIncremental)
   return {
     ...newEditor2,
     differences,
+    horizontalVisibleRanges,
     textInfos,
   }
 }
 // @ts-ignore
-export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes) => {
+export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes, selectionChanges = undefined) => {
   Assert.object(editor)
   Assert.array(changes)
   if (changes.length === 0) {
     return editor
   }
   const newLines = TextDocument.applyEdits(editor, changes)
-  const partialNewEditor = {
-    ...editor,
-    lines: newLines,
-  }
-  const newSelections = EditorSelection.applyEdit(partialNewEditor, changes)
+  const partialNewEditor = updateLines(editor, newLines)
+  const partialNewEditorWithDiagnostics = await updateTransformedDiagnostics(partialNewEditor, changes)
+  const newSelections = selectionChanges || EditorSelection.applyEdit(partialNewEditor, changes)
   const invalidStartIndex = Math.min(editor.invalidStartIndex, changes[0].start.rowIndex)
   const newEditor = {
-    ...partialNewEditor,
+    ...partialNewEditorWithDiagnostics,
     // undoStack: [...editor.undoStack.slice(0, -2)],
     invalidStartIndex,
     lines: newLines,
@@ -177,10 +219,11 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes)
     return finalEditor
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
   return {
     ...finalEditor,
     differences,
+    horizontalVisibleRanges,
     textInfos,
   }
 }
@@ -188,6 +231,8 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes)
 // @ts-ignore
 export const scheduleDocument = async (editor, changes) => {
   const newLines = TextDocument.applyEdits(editor, changes)
+  const partialNewEditor = updateLines(editor, newLines)
+  const partialNewEditorWithDiagnostics = await updateTransformedDiagnostics(partialNewEditor, changes)
   const invalidStartIndex = changes[0].start.rowIndex
   // if (editor.undoStack) {
   //   editor.undoStack.push(changes)
@@ -202,9 +247,9 @@ export const scheduleDocument = async (editor, changes) => {
   // const scrollBarHeight = editor.scrollBarHeight
 
   const newEditor = {
-    ...editor,
+    ...partialNewEditorWithDiagnostics,
     invalidStartIndex,
-    lines: newLines,
+    redoStack: [],
     undoStack: [...editor.undoStack, changes],
   }
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
@@ -219,10 +264,11 @@ export const scheduleDocument = async (editor, changes) => {
     return finalEditor
   }
   const syncIncremental = SyncIncremental.getEnabled()
-  const { differences, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
+  const { differences, horizontalVisibleRanges, textInfos } = await EditorText.getVisible(finalEditor, syncIncremental)
   return {
     ...finalEditor,
     differences,
+    horizontalVisibleRanges,
     textInfos,
   }
   // RendererProcess.send([
@@ -243,41 +289,16 @@ export const hasSelection = (editor: any) => {
 }
 
 export const setBounds = (editor: any, x: number, y: number, width: number, height: number, columnWidth: number) => {
-  const { itemHeight } = editor
-  const numberOfVisibleLines = Math.floor(height / itemHeight)
-  const total = editor.lines.length
-  const maxLineY = Math.min(numberOfVisibleLines, total)
-  const finalY = Math.max(total - numberOfVisibleLines, 0)
-  const finalDeltaY = finalY * itemHeight
-  return {
-    ...editor,
-    columnWidth,
-    finalDeltaY,
-    finalY,
-    height,
-    maxLineY,
-    numberOfVisibleLines,
-    width,
-    x,
-    y,
-  }
+  return Resize.resize(editor, { height, width, x, y }, columnWidth)
 }
 
 export const setText = (editor: any, text: string) => {
   const lines = SplitLines.splitLines(text)
-  const { itemHeight, minimumSliderSize, numberOfVisibleLines } = editor
-  const total = lines.length
-  const maxLineY = Math.min(numberOfVisibleLines, total)
-  const finalY = Math.max(total - numberOfVisibleLines, 0)
-  const finalDeltaY = finalY * itemHeight
-  const contentHeight = lines.length * editor.rowHeight
-  const scrollBarHeight = ScrollBarFunctions.getScrollBarSize(editor.height, contentHeight, minimumSliderSize)
-  return {
-    ...editor,
-    finalDeltaY,
-    finalY,
-    lines,
-    maxLineY,
-    scrollBarHeight,
-  }
+  return EditorFolding.updateLayout(
+    {
+      ...editor,
+      lines,
+    },
+    [],
+  )
 }

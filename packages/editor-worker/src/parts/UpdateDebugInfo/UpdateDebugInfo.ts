@@ -1,5 +1,5 @@
 import { RendererWorker } from '@lvce-editor/rpc-registry'
-import * as Editors from '../Editors/Editors.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
 import * as GetDebugHighlight from '../GetDebugHighlight/GetDebugHighlight.ts'
 
 const getKey = (): number => {

@@ -5,11 +5,13 @@ export const loadContent = async (editorUid: number, state: any, position: any) 
   if (!hoverInfo) {
     return state
   }
-  const { documentation, lineInfos, matchingDiagnostics, x, y } = hoverInfo
+  const { documentation, documentationVirtualDom, height, lineInfos, matchingDiagnostics, x, y } = hoverInfo
   return {
     ...state,
     diagnostics: matchingDiagnostics,
     documentation,
+    documentationVirtualDom,
+    height,
     lineInfos,
     x,
     y,
@@ -22,7 +24,7 @@ export const handleSashPointerDown = (state: any, eventX: any, eventY: any) => {
 
 export const handleSashPointerMove = (state: any, eventX: any, eventY: any) => {
   // @ts-ignore
-  const { x, y } = state
+  const { x } = state
   const minWidth = 100
   const newWidth = Math.max(eventX - x, minWidth)
   return {

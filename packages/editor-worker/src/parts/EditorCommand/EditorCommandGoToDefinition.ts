@@ -12,7 +12,7 @@ import * as EditorGoTo from './EditorCommandGoTo.ts'
 // TODO possible to do this with events/state machine instead of promises -> enables canceling operations / concurrent calls
 
 // TODO there are still race conditions in this function:
-// - when open is called twice, previous dom nodes can either be reused or the previous dom nodes must be disposed
+// - when open is called twice, previous DOM nodes can either be reused or the previous DOM nodes must be disposed
 
 // @ts-ignore
 const getLocation = async (editor, rowIndex, columnIndex) => {
@@ -29,17 +29,7 @@ const getNoLocationFoundMessage = (info) => {
   return EditorStrings.noDefinitionFound()
 }
 
-// @ts-ignore
-const getErrorMessage = (error) => {
-  // if (
-  //   error &&
-  //   error.message &&
-  //   error.message.startsWith('Failed to execute definition provider: ')
-  // ) {
-  //   return error.message.replace('Failed to execute definition provider: ', '')
-  // }
-  return `${error}`
-}
+const getErrorMessage = String
 
 // @ts-ignore
 const isNoProviderFoundError = (error) => {

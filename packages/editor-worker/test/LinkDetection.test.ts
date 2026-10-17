@@ -2,8 +2,8 @@ import { expect, test } from '@jest/globals'
 import * as LinkDetection from '../src/parts/LinkDetection/LinkDetection.ts'
 
 test('detects simple http URL', () => {
-  const links = LinkDetection.detectLinks('Check out http://example.com for more')
-  expect(links).toEqual([{ length: 18, start: 10 }])
+  const links = LinkDetection.detectLinks('Check out https://example.com for more')
+  expect(links).toEqual([{ length: 19, start: 10 }])
 })
 
 test('detects https URL', () => {
@@ -32,10 +32,10 @@ test('detects www URL without scheme', () => {
 })
 
 test('detects multiple URLs', () => {
-  const links = LinkDetection.detectLinks('Check https://example.com and http://test.org')
+  const links = LinkDetection.detectLinks('Check https://example.com and https://test.org')
   expect(links).toEqual([
     { length: 19, start: 6 },
-    { length: 15, start: 30 },
+    { length: 16, start: 30 },
   ])
 })
 
@@ -43,6 +43,14 @@ test('does not detect plain domain without www or scheme', () => {
   const links = LinkDetection.detectLinks('example.com is not a link')
   expect(links).toEqual([])
 })
+
+test.each(['return `file:///${encodeFilePath(normalizedPath)}`', 'return `file://${encodeFilePath(path)}`', 'const url = `https://${host}/path`'])(
+  'does not detect links in dynamic JavaScript template strings',
+  (text) => {
+    const links = LinkDetection.detectLinks(text)
+    expect(links).toEqual([])
+  },
+)
 
 test('detects ftps URL', () => {
   const links = LinkDetection.detectLinks('Secure: ftps://secure.example.com/file')
@@ -57,6 +65,18 @@ test('handles URL at start of line', () => {
 test('handles URL at end of line', () => {
   const links = LinkDetection.detectLinks('Visit my site at https://example.com')
   expect(links).toEqual([{ length: 19, start: 17 }])
+})
+
+test('handles markdown inline link followed by period', () => {
+  const url = 'https://github.com/lvce-editor/lvce-editor'
+  const links = LinkDetection.detectLinks(`[Lvce Editor](${url}).`)
+  expect(links).toEqual([{ length: url.length, start: 14 }])
+})
+
+test('preserves balanced parentheses inside URL', () => {
+  const url = 'https://example.com/path(foo)'
+  const links = LinkDetection.detectLinks(`See ${url}.`)
+  expect(links).toEqual([{ length: url.length, start: 4 }])
 })
 
 test('detects no links in plain text', () => {
@@ -89,18 +109,18 @@ test('detectAllLinksAsDecorations returns empty for editor with no links', () =>
 
 test('detectAllLinksAsDecorations finds links in editor', () => {
   const editor = {
-    lines: ['Visit https://example.com', 'See http://test.org today'],
+    lines: ['Visit https://example.com', 'See https://test.org today'],
   }
   const decorations = LinkDetection.detectAllLinksAsDecorations(editor)
   // First line: link at offset 6, length 19
-  // Second line: offset is (25 + 1) = 26, link starts at position 4, so offset 30, length 15
+  // Second line: offset is (25 + 1) = 26, link starts at position 4, so offset 30, length 16
   expect(decorations).toEqual([
     6,
     19,
     1,
     0, // offset, length, DecorationType.Link, modifiers
     30,
-    15,
+    16,
     1,
     0,
   ])
@@ -108,7 +128,7 @@ test('detectAllLinksAsDecorations finds links in editor', () => {
 
 test('detectAllLinksAsDecorations handles multiple links per line', () => {
   const editor = {
-    lines: ['Check https://example.com and http://test.org'],
+    lines: ['Check https://example.com and https://test.org'],
   }
   const decorations = LinkDetection.detectAllLinksAsDecorations(editor)
   expect(decorations).toEqual([
@@ -117,7 +137,7 @@ test('detectAllLinksAsDecorations handles multiple links per line', () => {
     1,
     0, // first link
     30,
-    15,
+    16,
     1,
     0, // second link
   ])

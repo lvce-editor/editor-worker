@@ -18,17 +18,9 @@ const getNewSelections = (selections, lines, getDelta) => {
   const newSelections = EditorSelection.clone(selections)
   for (let i = 0; i < selections.length; i += 4) {
     // @ts-ignore
-    const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn, reversed] = GetSelectionPairs.getSelectionPairs(
-      selections,
-      i,
-    )
-    if (selectionStartRow === selectionEndRow && selectionStartColumn === selectionEndColumn) {
-      EditorGetPositionLeft.moveToPositionLeft(newSelections, i + 2, selectionStartRow, selectionStartColumn, lines, getDelta)
-      EditorGetPositionLeft.moveToPositionEqual(newSelections, i, selectionEndRow, selectionEndColumn)
-    } else {
-      EditorGetPositionLeft.moveToPositionLeft(newSelections, i + 2, selectionStartRow, selectionStartColumn, lines, getDelta)
-      EditorGetPositionLeft.moveToPositionEqual(newSelections, i, selectionEndRow, selectionEndColumn)
-    }
+    const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
+    EditorGetPositionLeft.moveToPositionLeft(newSelections, i + 2, selectionStartRow, selectionStartColumn, lines, getDelta)
+    EditorGetPositionLeft.moveToPositionEqual(newSelections, i, selectionEndRow, selectionEndColumn)
   }
   return newSelections
 }

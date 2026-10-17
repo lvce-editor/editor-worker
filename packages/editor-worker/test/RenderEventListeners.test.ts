@@ -1,0 +1,186 @@
+import { expect, test } from '@jest/globals'
+import { EventExpression } from '@lvce-editor/constants'
+import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
+import * as RenderEventListeners from '../src/parts/RenderEventListeners/RenderEventListeners.ts'
+
+test('renders a lightbulb click listener that opens source actions', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: 35,
+    params: ['showSourceActions3'],
+    preventDefault: true,
+  })
+})
+
+test('stops hover mouse-down from reaching the editor focus handler', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleHoverMouseDown,
+    params: [],
+    stopPropagation: true,
+  })
+})
+
+test('renderEventListeners - handles Alt key release', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleKeyUp,
+    params: ['handleKeyUp', EventExpression.Key],
+  })
+})
+
+test('renderEventListeners - dismisses editor hovers on pointer exit and cancels on re-entry', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleMouseOut,
+    params: ['handleMouseLeave', 'event.currentTarget.dataset.uid'],
+  })
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleMouseOver,
+    params: ['handleMouseEnter', 'event.currentTarget.dataset.uid'],
+  })
+})
+
+test('renderEventListeners - captures the editor gutter width on pointer down', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandlePointerDown,
+    params: [
+      'handlePointerDown',
+      'event.button',
+      'event.altKey',
+      'event.ctrlKey',
+      EventExpression.ClientX,
+      EventExpression.ClientY,
+      'event.detail',
+      'event.currentTarget.parentElement.parentElement.offsetLeft',
+    ],
+    trackPointerEvents: [DomEventListenerFunctions.HandlePointerMove, DomEventListenerFunctions.HandlePointerUp],
+  })
+})
+
+test('renderEventListeners - forwards Shift for text dragging', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleMouseDown,
+    params: [
+      'handleMouseDown',
+      'event.button',
+      'event.altKey',
+      'event.ctrlKey',
+      EventExpression.ClientX,
+      EventExpression.ClientY,
+      'event.detail',
+      'event.shiftKey',
+    ],
+  })
+})
+
+test('renderEventListeners - forwards clipboard text through the renderer event expression', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandlePaste,
+    params: ['paste', 'event.clipboardData.text'],
+    preventDefault: true,
+  })
+})
+
+test.skip('renderEventListeners', () => {
+  const eventListeners = RenderEventListeners.renderEventListeners()
+  expect(eventListeners).toEqual([
+    {
+      name: DomEventListenerFunctions.HandleFocus,
+      params: ['handleFocus'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleMouseMove,
+      params: ['handleMouseMove', EventExpression.ClientX, EventExpression.ClientY, EventExpression.AltKey],
+    },
+    {
+      name: DomEventListenerFunctions.HandleBlur,
+      params: ['handleBlur'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleBeforeInput,
+      params: ['handleBeforeInput', 'event.inputType', 'event.data'],
+      preventDefault: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleCompositionStart,
+      params: ['compositionStart', 'event.data'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleCompositionUpdate,
+      params: ['compositionUpdate', 'event.data'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleCompositionEnd,
+      params: ['compositionEnd', 'event.data'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleCut,
+      params: ['cut'],
+      preventDefault: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandlePaste,
+      params: ['paste', 'event.clipboardData.text'],
+      preventDefault: true,
+    },
+    // {
+    //   name: DomEventListenerFunctions.HandleMouseDown,
+    //   params: [
+    //     'handleMouseDown',
+    //     'event.button === 2 ? -1 : (((event.metaKey || event.ctrlKey) ? 2048 : 0) | (event.shiftKey ? 1024 : 0) | (event.altKey ? 512 : 0))',
+    //     EventExpression.ClientX,
+    //     EventExpression.ClientY,
+    //     'event.button === 2 ? 0 : event.detail',
+    //   ],
+    // },
+    {
+      name: DomEventListenerFunctions.HandlePointerDown,
+      params: [],
+      trackPointerEvents: [DomEventListenerFunctions.HandlePointerMove, DomEventListenerFunctions.HandlePointerUp],
+    },
+    {
+      name: DomEventListenerFunctions.HandlePointerMove,
+      params: ['handlePointerMove', EventExpression.ClientX, EventExpression.ClientY, EventExpression.AltKey],
+    },
+    {
+      name: DomEventListenerFunctions.HandlePointerUp,
+      params: ['handlePointerUp'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleWheel,
+      params: ['setDelta', EventExpression.DeltaMode, EventExpression.DeltaY],
+      passive: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleContextMenu,
+      params: ['handleContextMenu', EventExpression.Button, EventExpression.ClientX, EventExpression.ClientY],
+      preventDefault: true,
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarVerticalPointerDown,
+      params: ['handleScrollBarVerticalPointerDown', EventExpression.ClientY],
+      trackPointerEvents: [DomEventListenerFunctions.HandleScrollBarVerticalPointerMove, DomEventListenerFunctions.HandleScrollBarVerticalPointerUp],
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarVerticalPointerMove,
+      params: ['handleScrollBarVerticalPointerMove', EventExpression.ClientY],
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarVerticalPointerUp,
+      params: ['handlePointerUp'],
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarHorizontalPointerDown,
+      params: ['handleScrollBarHorizontalPointerDown', EventExpression.ClientX],
+      trackPointerEvents: [
+        DomEventListenerFunctions.HandleScrollBarHorizontalPointerMove,
+        DomEventListenerFunctions.HandleScrollBarHorizontalPointerUp,
+      ],
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarHorizontalPointerMove,
+      params: ['handleScrollBarHorizontalMove', EventExpression.ClientX],
+    },
+    {
+      name: DomEventListenerFunctions.HandleScrollBarHorizontalPointerUp,
+      params: ['handlePointerUp'],
+    },
+  ])
+})

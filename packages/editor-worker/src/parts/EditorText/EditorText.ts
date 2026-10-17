@@ -1,9 +1,24 @@
+import { TextMeasurementWorker } from '@lvce-editor/rpc-registry'
 import * as GetDecorationClassName from '../GetDecorationClassName/GetDecorationClassName.ts'
+import { getHorizontalScrollDimensions } from '../GetHorizontalScrollDimensions/GetHorizontalScrollDimensions.ts'
+import * as GetHorizontalVisibleRange from '../GetHorizontalVisibleRange/GetHorizontalVisibleRange.ts'
+import { getLargeFileVisible } from '../GetLargeFileVisible/GetLargeFileVisible.ts'
 import * as GetTokensViewport2 from '../GetTokensViewport2/GetTokensViewport2.ts'
 import * as LoadTokenizers from '../LoadTokenizers/LoadTokenizers.ts'
+import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
+
+const maxTokenizerLoadPasses = 10
+
+const getGraphemeSegments = async (lines: readonly string[]) => {
+  try {
+    return await TextMeasurementWorker.invoke('TextMeasurement.getGraphemeSegments', lines)
+  } catch {
+    return undefined
+  }
+}
 
 // const getTokens = (editor) => {
 //   const tokens = []
@@ -13,7 +28,7 @@ import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 //   // because storing tokens could maybe result in high
 //   // memory usage (e.g. 10000 lines * 10 tokens per line = 100 000 objects stored)
 //   // on the other hand, scrolling should be really fast, and needlessly
-//   // recomputing tokens would be a waste of cpu time and cause lots of garbage collection
+//   // recomputing tokens would be a waste of CPU time and cause lots of garbage collection
 //   const lineCache = editor.lineCache
 //   // TODO only compute tokens in viewport
 //   // const cachedLineStates = Object.create(null)
@@ -25,7 +40,7 @@ import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 //       continue
 //     }
 //     // TODO use TextDocument.getLine so that text document buffer implementation
-//     // can be changed (e.g. vscode has piece tree, codemirror has something like chunked arrays / string[][])
+//     // can be changed (e.g. VS Code has piece tree, codemirror has something like chunked arrays / string[][])
 //     const line = lines[i]
 //     lineState = safeTokenizeLine(tokenizeLine, line, lineState)
 //     const newTokens = lineState.tokens
@@ -35,7 +50,7 @@ import * as TokenMaps from '../TokenMaps/TokenMaps.ts'
 //   return tokens
 // }
 
-// TODO vscode has an interesting approach for tokenizing:
+// TODO VS Code has an interesting approach for tokenizing:
 // first, the viewport is tokenized from startLine to endLine
 // the first iteration might not be accurate because for example
 // there can be a open multiline comment at the start of the file
@@ -106,23 +121,50 @@ const getStartDefaults = (tokens: any, minOffset: any) => {
   let start = 0
   let end = 0
   let startIndex = 0
+  let found = false
   const tokensLength = tokens.length
   for (let i = 0; i < tokensLength; i += 2) {
     const tokenLength = tokens[i + 1]
     end += tokenLength
     start = end
-    if (start >= minOffset) {
+    if (start > minOffset) {
       start -= tokenLength
       end -= tokenLength
       startIndex = i
+      found = true
       break
     }
   }
+  if (!found) {
+    return { start: end, startIndex: tokensLength }
+  }
   return {
-    end,
     start,
     startIndex,
   }
+}
+
+interface DecorationInfo {
+  className: string
+  end: number
+}
+
+const hasDecorationOverlap = (decorationMap: Map<number, DecorationInfo>, tokenStart: number, tokenEnd: number): boolean => {
+  for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
+    if (decorationStart < tokenEnd && decorationEnd > tokenStart) {
+      return true
+    }
+  }
+  return false
+}
+
+const getActiveDecoration = (decorationMap: Map<number, DecorationInfo>, currentPos: number): DecorationInfo | undefined => {
+  for (const [decorationStart, decoration] of decorationMap) {
+    if (decorationStart <= currentPos && decoration.end > currentPos) {
+      return decoration
+    }
+  }
+  return undefined
 }
 
 const getLineInfoEmbeddedFull = (
@@ -142,7 +184,7 @@ const getLineInfoEmbeddedFull = (
   const lineInfo = []
 
   // Build decoration map for this line (position -> decoration class)
-  const decorationMap = new Map<number, { end: number; className: string }>()
+  const decorationMap = new Map<number, DecorationInfo>()
   for (let j = 0; j < decorations.length; j += 4) {
     const decorationOffset = decorations[j]
     const decorationLength = decorations[j + 1]
@@ -167,76 +209,67 @@ const getLineInfoEmbeddedFull = (
   const embeddedTokens = embeddedResult.result.tokens
   const embeddedTokenMap = embeddedResult.TokenMap
   const tokensLength = embeddedTokens.length
-  let { end, start, startIndex } = getStartDefaults(embeddedTokens, minOffset)
-  const difference = getDifference(start, averageCharWidth, deltaX)
+  let { start, startIndex } = getStartDefaults(embeddedTokens, minOffset)
+  const difference = GetHorizontalVisibleRange.getHorizontalVisibleDifference(line, Math.max(start, minOffset), deltaX, averageCharWidth, tabSize)
 
   for (let i = startIndex; i < tokensLength; i += 2) {
     const tokenType = embeddedTokens[i]
     const tokenLength = embeddedTokens[i + 1]
     const tokenEnd = start + tokenLength
 
-    // Check if any decorations overlap with this token
-    let hasOverlap = false
-    for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
-      if (decorationStart < tokenEnd && decorationEnd > start) {
-        hasOverlap = true
-        break
-      }
+    const tokenStart = Math.max(start, minOffset)
+    const visibleTokenEnd = Math.min(tokenEnd, maxOffset)
+    if (tokenStart >= visibleTokenEnd) {
+      break
     }
+    const hasOverlap = hasDecorationOverlap(decorationMap, tokenStart, visibleTokenEnd)
 
     if (hasOverlap) {
       // Token has decoration overlap - split into parts
-      let currentPos = start
+      let currentPos = tokenStart
 
-      while (currentPos < tokenEnd) {
+      while (currentPos < visibleTokenEnd) {
         // Find if current position is inside a decoration
-        let activeDecoration: { end: number; className: string } | null = null
+        const activeDecoration = getActiveDecoration(decorationMap, currentPos)
 
-        for (const [decorationStart, decoration] of decorationMap) {
-          if (decorationStart <= currentPos && decoration.end > currentPos) {
-            activeDecoration = decoration
-            break
-          }
-        }
+        let partEnd
+        let text
+        let className
 
         if (activeDecoration) {
           // Render decorated part
-          const partEnd = Math.min(tokenEnd, activeDecoration.end)
-          const text = line.slice(currentPos, partEnd)
+          partEnd = Math.min(visibleTokenEnd, activeDecoration.end)
+          text = line.slice(currentPos, partEnd)
           const baseTokenClass = embeddedTokenMap[tokenType] || 'Unknown'
-          const className = `Token ${baseTokenClass} ${activeDecoration.className}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
+          className = `Token ${baseTokenClass} ${activeDecoration.className}`
         } else {
           // Find next decoration start or token end
-          let nextDecorationStart = tokenEnd
+          let nextDecorationStart = visibleTokenEnd
           for (const [decorationStart] of decorationMap) {
-            if (decorationStart > currentPos && decorationStart < tokenEnd) {
+            if (decorationStart > currentPos && decorationStart < visibleTokenEnd) {
               nextDecorationStart = Math.min(nextDecorationStart, decorationStart)
             }
           }
 
           // Render non-decorated part
-          const partEnd = nextDecorationStart
-          const text = line.slice(currentPos, partEnd)
-          const className = `Token ${embeddedTokenMap[tokenType] || 'Unknown'}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
+          partEnd = nextDecorationStart
+          text = line.slice(currentPos, partEnd)
+          className = `Token ${embeddedTokenMap[tokenType] || 'Unknown'}`
         }
+        const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
+        lineInfo.push(normalizedText, className)
+        currentPos = partEnd
       }
     } else {
       // No decoration overlap - render token normally
-      const text = line.slice(start, tokenEnd)
+      const text = line.slice(tokenStart, visibleTokenEnd)
       const className = `Token ${embeddedTokenMap[tokenType] || 'Unknown'}`
       const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
       lineInfo.push(normalizedText, className)
     }
 
     start = tokenEnd
-    end = tokenEnd
-    if (end >= maxOffset) {
+    if (start >= maxOffset) {
       break
     }
   }
@@ -247,27 +280,41 @@ const getLineInfoEmbeddedFull = (
   }
 }
 
-const getOffsets = (deltaX: any, width: any, averageCharWidth: any) => {
-  // TODO accurately measure char widths using offscreen canvas
-  // and use fast measurements for monospace ascii text
-  if (deltaX === 0) {
-    return {
-      maxOffset: Math.ceil(width / averageCharWidth),
-      minOffset: 0,
+const appendTokenRange = (
+  resultTokens: number[],
+  resultTokenMap: Record<number, string>,
+  tokens: readonly number[],
+  tokenMap: Record<number, string>,
+  rangeStart: number,
+  rangeEnd: number,
+) => {
+  let tokenStart = 0
+  for (let i = 0; i < tokens.length; i += 2) {
+    const tokenType = tokens[i]
+    const tokenEnd = tokenStart + tokens[i + 1]
+    const start = Math.max(tokenStart, rangeStart)
+    const end = Math.min(tokenEnd, rangeEnd)
+    if (start < end) {
+      const resultTokenType = resultTokens.length / 2
+      resultTokens.push(resultTokenType, end - start)
+      resultTokenMap[resultTokenType] = tokenMap[tokenType] || 'Unknown'
     }
-  }
-  const minOffset = Math.ceil(deltaX / averageCharWidth)
-  const maxOffset = minOffset + Math.ceil(width / averageCharWidth)
-  return {
-    maxOffset,
-    minOffset,
+    tokenStart = tokenEnd
   }
 }
 
-const getDifference = (start: any, averageCharWidth: any, deltaX: any) => {
-  const beforeWidth = start * averageCharWidth
-  const difference = beforeWidth - deltaX
-  return difference
+const mergeEmbeddedTokens = (line: string, tokenResults: any, embeddedResult: any, tokenMap: Record<number, string>) => {
+  const embeddedStart = Math.max(0, Math.min(line.length, tokenResults.embeddedLanguageStart))
+  const embeddedEnd = Math.max(embeddedStart, Math.min(line.length, tokenResults.embeddedLanguageEnd))
+  const tokens: number[] = []
+  const mergedTokenMap: Record<number, string> = Object.create(null)
+  appendTokenRange(tokens, mergedTokenMap, tokenResults.tokens, tokenMap, 0, embeddedStart)
+  appendTokenRange(tokens, mergedTokenMap, embeddedResult.result.tokens, embeddedResult.TokenMap, 0, embeddedEnd - embeddedStart)
+  appendTokenRange(tokens, mergedTokenMap, tokenResults.tokens, tokenMap, embeddedEnd, line.length)
+  return {
+    tokenMap: mergedTokenMap,
+    tokens,
+  }
 }
 
 const getLineInfoDefault = (
@@ -288,7 +335,7 @@ const getLineInfoDefault = (
   const lineInfo = []
 
   // Build decoration map for this line (position -> decoration class)
-  const decorationMap = new Map<number, { end: number; className: string }>()
+  const decorationMap = new Map<number, DecorationInfo>()
   for (let j = 0; j < decorations.length; j += 4) {
     const decorationOffset = decorations[j]
     const decorationLength = decorations[j + 1]
@@ -310,8 +357,8 @@ const getLineInfoDefault = (
   }
 
   const { tokens } = tokenResults
-  let { end, start, startIndex } = getStartDefaults(tokens, minOffset)
-  const difference = getDifference(start, averageCharWidth, deltaX)
+  let { start, startIndex } = getStartDefaults(tokens, minOffset)
+  const difference = GetHorizontalVisibleRange.getHorizontalVisibleDifference(line, Math.max(start, minOffset), deltaX, averageCharWidth, tabSize)
   const tokensLength = tokens.length
 
   for (let i = startIndex; i < tokensLength; i += 2) {
@@ -319,68 +366,59 @@ const getLineInfoDefault = (
     const tokenLength = tokens[i + 1]
     const tokenEnd = start + tokenLength
 
-    // Check if any decorations overlap with this token
-    let hasOverlap = false
-    for (const [decorationStart, { end: decorationEnd }] of decorationMap) {
-      if (decorationStart < tokenEnd && decorationEnd > start) {
-        hasOverlap = true
-        break
-      }
+    const tokenStart = Math.max(start, minOffset)
+    const visibleTokenEnd = Math.min(tokenEnd, maxOffset)
+    if (tokenStart >= visibleTokenEnd) {
+      break
     }
+    const hasOverlap = hasDecorationOverlap(decorationMap, tokenStart, visibleTokenEnd)
 
     if (hasOverlap) {
       // Token has decoration overlap - split into parts
-      let currentPos = start
+      let currentPos = tokenStart
 
-      while (currentPos < tokenEnd) {
+      while (currentPos < visibleTokenEnd) {
         // Find if current position is inside a decoration
-        let activeDecoration: { end: number; className: string } | null = null
+        const activeDecoration = getActiveDecoration(decorationMap, currentPos)
 
-        for (const [decorationStart, decoration] of decorationMap) {
-          if (decorationStart <= currentPos && decoration.end > currentPos) {
-            activeDecoration = decoration
-            break
-          }
-        }
+        let partEnd
+        let text
+        let className
 
         if (activeDecoration) {
           // Render decorated part
-          const partEnd = Math.min(tokenEnd, activeDecoration.end)
-          const text = line.slice(currentPos, partEnd)
+          partEnd = Math.min(visibleTokenEnd, activeDecoration.end)
+          text = line.slice(currentPos, partEnd)
           const baseTokenClass = TokenMap[tokenType] || 'Unknown'
-          const className = `Token ${baseTokenClass} ${activeDecoration.className}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
+          className = `Token ${baseTokenClass} ${activeDecoration.className}`
         } else {
           // Find next decoration start or token end
-          let nextDecorationStart = tokenEnd
+          let nextDecorationStart = visibleTokenEnd
           for (const [decorationStart] of decorationMap) {
-            if (decorationStart > currentPos && decorationStart < tokenEnd) {
+            if (decorationStart > currentPos && decorationStart < visibleTokenEnd) {
               nextDecorationStart = Math.min(nextDecorationStart, decorationStart)
             }
           }
 
           // Render non-decorated part
-          const partEnd = nextDecorationStart
-          const text = line.slice(currentPos, partEnd)
-          const className = `Token ${TokenMap[tokenType] || 'Unknown'}`
-          const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
-          lineInfo.push(normalizedText, className)
-          currentPos = partEnd
+          partEnd = nextDecorationStart
+          text = line.slice(currentPos, partEnd)
+          className = `Token ${TokenMap[tokenType] || 'Unknown'}`
         }
+        const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
+        lineInfo.push(normalizedText, className)
+        currentPos = partEnd
       }
     } else {
       // No decoration overlap - render token normally
-      const text = line.slice(start, tokenEnd)
+      const text = line.slice(tokenStart, visibleTokenEnd)
       const className = `Token ${TokenMap[tokenType] || 'Unknown'}`
       const normalizedText = NormalizeText.normalizeText(text, normalize, tabSize)
       lineInfo.push(normalizedText, className)
     }
 
     start = tokenEnd
-    end = tokenEnd
-    if (end >= maxOffset) {
+    if (start >= maxOffset) {
       break
     }
   }
@@ -403,8 +441,9 @@ const getLineInfo = (
   width: any,
   deltaX: any,
   averageCharWidth: any,
+  measuredRange: { readonly difference: number; readonly end: number; readonly start: number },
 ) => {
-  const { maxOffset, minOffset } = getOffsets(deltaX, width, averageCharWidth)
+  const { end: maxOffset, start: minOffset } = measuredRange
   if (embeddedResults.length > 0 && tokenResults.embeddedResultIndex !== undefined) {
     const embeddedResult = embeddedResults[tokenResults.embeddedResultIndex]
     if (embeddedResult?.isFull) {
@@ -413,6 +452,24 @@ const getLineInfo = (
         tokenResults,
         line,
         decorations,
+        lineOffset,
+        normalize,
+        tabSize,
+        width,
+        deltaX,
+        averageCharWidth,
+        minOffset,
+        maxOffset,
+      )
+    }
+    if (embeddedResult?.result?.tokens) {
+      const merged = mergeEmbeddedTokens(line, tokenResults, embeddedResult, TokenMap)
+      return getLineInfoDefault(
+        line,
+        merged,
+        embeddedResults,
+        decorations,
+        merged.tokenMap,
         lineOffset,
         normalize,
         tabSize,
@@ -442,7 +499,7 @@ const getLineInfo = (
 }
 
 // TODO need lots of tests for this
-const getLineInfosViewport = (
+const getLineInfosViewport = async (
   editor: any,
   tokens: any,
   embeddedResults: any,
@@ -452,16 +509,42 @@ const getLineInfosViewport = (
   width: any,
   deltaX: any,
   averageCharWidth: any,
+  horizontalVirtualizationThreshold: number,
 ) => {
   const result = []
   const differences = []
+  const horizontalVisibleRanges = []
   const { decorations, languageId, lines } = editor
   const tokenMap = TokenMaps.get(languageId)
   let offset = minLineOffset
-  const tabSize = 2
+  const tabSize = editor.tabSize ?? 2
+  const visibleLines = lines.slice(minLineY, maxLineY)
+  const graphemeSegments = await getGraphemeSegments(visibleLines)
+  const measuredRanges = await GetHorizontalVisibleRange.getHorizontalVisibleRangesMeasured(
+    visibleLines.map((line: string, index: number) => ({
+      averageCharWidth,
+      deltaX,
+      line,
+      segments: graphemeSegments?.[index],
+      tabSize,
+      threshold: horizontalVirtualizationThreshold,
+      width,
+    })),
+    (texts) =>
+      MeasureTextWidth.measureTextWidths(
+        texts,
+        editor.fontWeight,
+        editor.fontSize,
+        editor.fontFamily,
+        editor.letterSpacing,
+        editor.isMonospaceFont,
+        editor.charWidth,
+      ),
+  )
   for (let i = minLineY; i < maxLineY; i++) {
     const line = lines[i]
     const normalize = NormalizeText.shouldNormalizeText(line)
+    const measuredRange = measuredRanges[i - minLineY]
 
     // Use decorations that were pre-computed (includes links and diagnostics)
     // Filter decorations to only include those for this line
@@ -478,7 +561,7 @@ const getLineInfosViewport = (
       }
     }
 
-    const { difference, lineInfo } = getLineInfo(
+    const { lineInfo } = getLineInfo(
       line,
       tokens[i - minLineY],
       embeddedResults,
@@ -490,30 +573,90 @@ const getLineInfosViewport = (
       width,
       deltaX,
       averageCharWidth,
+      measuredRange,
     )
     result.push(lineInfo)
-    differences.push(difference)
+    differences.push(measuredRange.difference)
+    horizontalVisibleRanges.push({
+      end: measuredRange.end,
+      rowIndex: i,
+      segments: graphemeSegments?.[i - minLineY],
+      start: measuredRange.start,
+    })
     offset += line.length + 1
   }
   return {
     differences,
+    horizontalVisibleRanges,
     result,
   }
 }
 
-export const getVisible = async (editor: any, syncIncremental: boolean) => {
+export const getVisible = async (
+  editor: any,
+  syncIncremental: boolean,
+): Promise<{
+  differences: number[]
+  horizontalVisibleRanges: {
+    end: number
+    rowIndex: number
+    segments?: readonly number[]
+    start: number
+  }[]
+  textInfos: string[][]
+}> => {
+  if (editor.lifecycle?.disposed) {
+    return { differences: [], horizontalVisibleRanges: [], textInfos: [] }
+  }
+  if (editor.largeFile) {
+    return { ...(await getLargeFileVisible(editor)), horizontalVisibleRanges: [] }
+  }
   // TODO should separate rendering from business logic somehow
   // currently hard to test because need to mock editor height, top, left,
   // invalidStartIndex, lineCache, etc. just for testing editorType
   // editor.invalidStartIndex = changes[0].start.rowIndex
   // @ts-ignore
-  const { charWidth, deltaX, fontFamily, fontSize, fontWeight, letterSpacing, lines, minLineY, numberOfVisibleLines, width } = editor
-  const maxLineY = Math.min(minLineY + numberOfVisibleLines, lines.length)
+  const { charWidth, deltaX, horizontalVirtualizationThreshold = 500, lines } = editor
+  const { width } = getHorizontalScrollDimensions(editor)
+  const visibleLineIndices = (
+    editor.visibleLineIndices ??
+    Array.from(
+      {
+        length: Math.max(0, Math.min(editor.maxLineY ?? editor.minLineY + editor.numberOfVisibleLines, lines.length) - editor.minLineY),
+      },
+      (_, index) => editor.minLineY + index,
+    )
+  ).filter((rowIndex: number) => rowIndex >= 0 && rowIndex < lines.length)
+  if (visibleLineIndices.length === 0) {
+    return {
+      differences: [],
+      horizontalVisibleRanges: [],
+      textInfos: [],
+    }
+  }
+  const minLineY = visibleLineIndices[0]
+  const maxLineY = visibleLineIndices.at(-1) + 1
   // @ts-ignore
-  const { embeddedResults, tokenizersToLoad, tokens } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
+  let { embeddedResults, tokenizersToLoad, tokens } = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
+  for (let i = 0; tokenizersToLoad.length > 0 && i < maxTokenizerLoadPasses; i++) {
+    await LoadTokenizers.loadTokenizers(tokenizersToLoad)
+    if (editor.lifecycle?.disposed) {
+      return { differences: [], horizontalVisibleRanges: [], textInfos: [] }
+    }
+    // @ts-ignore
+    const refreshed = await GetTokensViewport2.getTokensViewport2(editor, minLineY, maxLineY, syncIncremental)
+    ;({ embeddedResults, tokenizersToLoad, tokens } = refreshed)
+  }
+  if (editor.lifecycle?.disposed) {
+    return { differences: [], horizontalVisibleRanges: [], textInfos: [] }
+  }
   const minLineOffset = await TextDocument.offsetAtSync(editor, minLineY, 0)
   const averageCharWidth = charWidth
-  const { differences, result } = getLineInfosViewport(
+  const {
+    differences: allDifferences,
+    horizontalVisibleRanges: allHorizontalVisibleRanges,
+    result: allTextInfos,
+  } = await getLineInfosViewport(
     editor,
     tokens,
     embeddedResults,
@@ -523,12 +666,14 @@ export const getVisible = async (editor: any, syncIncremental: boolean) => {
     width,
     deltaX,
     averageCharWidth,
+    horizontalVirtualizationThreshold,
   )
-  if (tokenizersToLoad.length > 0) {
-    LoadTokenizers.loadTokenizers(tokenizersToLoad)
-  }
+  const relativeIndices = visibleLineIndices.map((rowIndex: number) => rowIndex - minLineY)
   return {
-    differences,
-    textInfos: result,
+    differences: relativeIndices.map((index: number) => allDifferences[index]),
+    horizontalVisibleRanges: allHorizontalVisibleRanges.filter(({ rowIndex }: { readonly rowIndex: number }) =>
+      visibleLineIndices.includes(rowIndex),
+    ),
+    textInfos: relativeIndices.map((index: number) => allTextInfos[index]),
   }
 }

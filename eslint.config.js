@@ -1,9 +1,12 @@
+import { defineConfig } from 'eslint/config'
 import * as config from '@lvce-editor/eslint-config'
-import * as actions from '@lvce-editor/eslint-plugin-github-actions'
+import * as tsconfig from '@lvce-editor/eslint-plugin-tsconfig'
 
-export default [
+export default defineConfig([
   ...config.default,
-  ...actions.default,
+  ...config.recommendedVirtualDom,
+  ...config.recommendedActions,
+  ...tsconfig.default,
   {
     ignores: [
       'dist',
@@ -21,10 +24,12 @@ export default [
     rules: {
       '@cspell/spellchecker': 'off',
       'github-actions/permissions': 'off',
+      'jest/no-disabled-tests': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
+      'unicorn/prefer-short-arrow-method': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
@@ -63,6 +68,74 @@ export default [
       'unicorn/no-immediate-mutation': 'off',
       'unicorn/empty-brace-spaces': 'off',
       'unicorn/no-nested-ternary': 'off',
+      'no-useless-assignment': 'off',
+      'sonarjs/cognitive-complexity': 'off',
+      'sonarjs/no-dead-store': 'off',
+      'sonarjs/no-duplicated-branches': 'off',
+      'sonarjs/no-identical-functions': 'off',
+      'sonarjs/no-nested-conditional': 'off',
+      'sonarjs/no-redundant-boolean': 'off',
+      'sonarjs/regex-complexity': 'off',
+      'sonarjs/single-char-in-character-classes': 'off',
+      'devcontainer/post-create-command': 'off',
     },
   },
-]
+  {
+    files: [
+      'packages/editor-worker/src/parts/{ColorPickerWorker,EditorCommand,EditorCompletionDetailWidget,EditorFolding,EditorScrolling,EditorSourceActionFocusNext,HandleSettingsChanged,HandleWheel,HotReload,HoverWorker,LoadContent,LoadHoverContent,MeasureTextWidthState,RenameWorker,Resize,SafeTokenizeLine,SourceActionWorker,SyncIncremental,SyntaxHighlightingState,TextDocument,TokenizerState}/**/*.ts',
+    ],
+    rules: {
+      'virtual-dom/prefer-state-destructuring': 'off',
+    },
+  },
+  {
+    files: [
+      'packages/editor-worker/src/parts/EditorCommand/{EditorCommandDeleteHorizontal,EditorCommandMoveLineDown,EditorCommandMoveLineUp,EditorIndent}.ts',
+      'packages/editor-worker/src/parts/EditorCommand/EditorCommandSave/showSaveErrorDialog.ts',
+    ],
+    rules: {
+      'virtual-dom/no-object-attribute-values': 'off',
+      'virtual-dom/prefer-constants': 'off',
+    },
+  },
+  {
+    files: ['packages/editor-worker/src/parts/EditorMessageWidget/**/*.ts'],
+    rules: {
+      'virtual-dom/no-inline-style': 'off',
+    },
+  },
+  {
+    files: ['packages/editor-worker/src/parts/GetSearchToggleButtonVirtualDom/**/*.ts'],
+    rules: {
+      'virtual-dom/no-inline-event-handlers': 'off',
+    },
+  },
+  {
+    files: ['packages/editor-worker/test/**/*.ts'],
+    rules: {
+      'virtual-dom/no-inline-style': 'off',
+      'virtual-dom/no-object-attribute-values': 'off',
+      'virtual-dom/no-raw-text-children': 'off',
+      'virtual-dom/prefer-constants': 'off',
+      'virtual-dom/prefer-merge-class-names': 'off',
+      'virtual-dom/prefer-state-destructuring': 'off',
+    },
+  },
+  {
+    files: ['packages/{e2e,e2e-integration}/**/*.ts'],
+    rules: {
+      'e2e/no-timeouts': 'off',
+      'e2e/prefer-filesystem-set-files': 'off',
+    },
+  },
+  {
+    // The application runtime has its own Node version in the pinned checkout.
+    files: ['.github/workflows/integration.yml'],
+    rules: { 'github-actions/node-version-file': 'off', 'github-actions/on': 'off' },
+  },
+  {
+    // Preserve real DOM input events covered by the migrated application scenarios.
+    files: ['packages/e2e-integration/src/viewlet.editor-breadcrumbs-json-icons.ts'],
+    rules: { '@typescript-eslint/no-deprecated': 'off' },
+  },
+])
