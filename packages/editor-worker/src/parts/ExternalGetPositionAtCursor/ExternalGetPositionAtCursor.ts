@@ -2,6 +2,7 @@ import { WidgetId } from '@lvce-editor/constants'
 import * as EditorSelection from '../Editor/EditorSelection.ts'
 import * as ApplyEdit from '../EditorCommand/EditorCommandApplyEdit.ts'
 import * as EditorCommandGetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
+import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as GetEditor from '../GetEditor/GetEditor.ts'
 import * as GetOffsetAtCursor from '../GetOffsetAtCursor/GetOffsetAtCursor.ts'
@@ -88,10 +89,26 @@ export const getSelections2 = (editorUid: number): Uint32Array => {
 }
 
 export const setSelections2 = async (editorUid: number, selections: Uint32Array): Promise<void> => {
-  const editor = GetEditor.getEditor(editorUid)
-  const newEditor = EditorSelection.setSelections(editor, selections)
-  const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
-  Editors.set(editorUid, editor, newEditorWithDerivedState)
+  const requested = Editors.get(editorUid)
+  if (!requested || requested.newState.lifecycle?.disposed) {
+    return
+  }
+  const requestedLifecycle = requested.newState.lifecycle
+  await EditorCommandQueue.enqueue(editorUid, async () => {
+    const instance = Editors.get(editorUid)
+    if (!instance || instance.newState.lifecycle?.disposed || instance.newState.lifecycle !== requestedLifecycle) {
+      return
+    }
+    const editor = instance.newState
+    const { lifecycle } = editor
+    const newEditor = EditorSelection.setSelections(editor, selections)
+    const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
+    const current = Editors.get(editorUid)
+    if (!current || lifecycle?.disposed || current.newState.lifecycle !== lifecycle) {
+      return
+    }
+    Editors.set(editorUid, current.oldState, newEditorWithDerivedState)
+  })
 }
 
 export const closeWidget2 = async (editorUid: number, widgetId: number, widgetName: string, unsetAdditionalFocus: number) => {
