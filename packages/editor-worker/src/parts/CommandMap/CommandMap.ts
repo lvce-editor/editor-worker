@@ -194,6 +194,7 @@ import * as RefreshGutterDecorations from '../RefreshGutterDecorations/RefreshGu
 import * as RegisterListener from '../RegisterListener/RegisterListener.ts'
 import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
 import { render2 } from '../Render2/Render2.ts'
+import { renderDirect2 } from '../RenderDirect2/RenderDirect2.ts'
 import * as RenderEditor from '../RenderEditor/RenderEditor.ts'
 import * as RenderEventListeners from '../RenderEventListeners/RenderEventListeners.ts'
 import * as Resize from '../Resize/Resize.ts'
@@ -209,10 +210,12 @@ import * as SetDebugEnabled from '../SetDebugEnabled/SetDebugEnabled.ts'
 import { shouldOpenAutomaticCompletion } from '../ShouldOpenAutomaticCompletion/ShouldOpenAutomaticCompletion.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as ToggleMinimap from '../ToggleMinimap/ToggleMinimap.ts'
+import { trackStateCommands } from '../TrackStateCommands/TrackStateCommands.ts'
 import * as UnregisterListener from '../UnregisterListener/UnregisterListener.ts'
 import * as UpdateDebugInfo from '../UpdateDebugInfo/UpdateDebugInfo.ts'
 import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
+import { registerStateCommand } from '../WrapCommands/WrapCommands.ts'
 import { wrapCommand, wrapDeferredCommand, wrapFocusCommand, wrapLatestCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
 
 const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
@@ -252,7 +255,7 @@ const wrapTypingCommand = (
     const newEditor = await fn(editor, ...args)
     return shouldDismissHover(...args) ? removeHoverFromEditor(newEditor) : newEditor
   }, preservesTypingCoalescing)
-  return async (uid: number, ...args: any[]) => {
+  const typingCommand = async (uid: number, ...args: any[]) => {
     const dismissHover = shouldDismissHover(...args)
     if (dismissHover) {
       EditorHoverState.clear(uid)
@@ -270,6 +273,10 @@ const wrapTypingCommand = (
         .catch((error) => ErrorHandling.handleError(error, 'Failed to open completion widget: '))
     }
   }
+  if (trackStateCommands) {
+    registerStateCommand(typingCommand)
+  }
+  return typingCommand
 }
 
 const deleteLeftCommand = wrapTypingCommand(
@@ -395,6 +402,7 @@ export const commandMap = {
   'Editor.handleBlur': wrapCommand(EditorBlur.handleBlur),
   'Editor.handleClickAtPosition': wrapCommand(handleClickAtPosition),
   'Editor.handleContextMenu': wrapCommand(EditorCommandHandleContextMenu.handleContextMenu),
+  'Editor.handleDirectMessagePort': (port: MessagePort) => HandleMessagePort.handleDirectMessagePort(port, commandMap),
   'Editor.handleDoubleClick': wrapCommand(HandleDoubleClick.handleDoubleClick),
   'Editor.handleFocus': wrapFocusCommand(HandleFocus.handleFocus),
   'Editor.handleKeyUp': wrapCommand(HandleKeyUp.handleKeyUp, true),
@@ -457,6 +465,7 @@ export const commandMap = {
   'Editor.refreshTextDecorations': wrapCommand(refreshTextDecorations),
   'Editor.render': RenderEditor.renderEditor,
   'Editor.render2': render2,
+  'Editor.renderDirect2': renderDirect2,
   'Editor.renderEventListeners': RenderEventListeners.renderEventListeners,
   'Editor.replaceRange': wrapCommand(ReplaceRange.replaceRange),
   'Editor.rerender': wrapCommand(EditorRerender.rerender),
@@ -553,9 +562,9 @@ export const commandMap = {
   'EditorSourceAction.selectCurrent': EditorSourceActionWidget.selectCurrent,
   'EditorSourceAction.selectIndex': EditorSourceActionWidget.selectIndex,
   'EditorSourceAction.selectItem': EditorSourceActionWidget.selectItem,
+
   'EditorSourceAction.toggleDetails': EditorSourceActionWidget.toggleDetails,
   'EditorSourceActions.focusNext': EditorSourceActionFocusNext.focusNext,
-
   'FindWidget.close': EditorFindWidget.close,
   'FindWidget.focusCloseButton': EditorFindWidget.focusCloseButton,
   'FindWidget.focusFind': EditorFindWidget.focusFind,

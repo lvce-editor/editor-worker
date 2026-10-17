@@ -302,8 +302,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     const tokenizePath = getTokenizePath(languages, computedLanguageId)
     await Tokenizer.loadTokenizer(computedLanguageId, tokenizePath)
     const tokenizer = Tokenizer.getTokenizer(computedLanguageId)
-    const newTokenizerId = state.tokenizerId + 1
-    TokenizerMap.set(newTokenizerId, tokenizer)
+    const newTokenizerId = TokenizerMap.register(tokenizer)
     effectiveEditor.tokenizerId = newTokenizerId
   }
 
