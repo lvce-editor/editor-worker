@@ -1,6 +1,6 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 
-const invoke = jest.fn<(method: string, text: string | readonly string[]) => Promise<number | readonly number[]>>()
+const invoke = jest.fn<(method: string, text: string | readonly string[], ...options: readonly unknown[]) => Promise<number | readonly number[]>>()
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({ TextMeasurementWorker: { invoke } }))
 
 const { getVisible } = await import('../src/parts/EditorSelection/EditorSelection.ts')
