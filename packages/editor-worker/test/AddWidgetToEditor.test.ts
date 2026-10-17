@@ -38,6 +38,8 @@ const createFactory = (widgetId: number, widgetUid: number) => () => ({
   },
 })
 
+const noGeneratedState = (_state: { editorUid: number }): undefined => undefined
+
 test('addWidgetToEditor stages full-focus widget before async load resolves', async () => {
   const widgetId = 9001
   const focusKey = 9011
@@ -162,8 +164,8 @@ test('addWidgetToEditor does not resurrect full-focus widget removed during asyn
   const stagedEditor = EditorStates.get(editor.uid).newState
   const latestEditor = {
     ...stagedEditor,
-    widgets: [],
     widgetRevision: WidgetRevision.next(editor.uid),
+    widgets: [],
   }
   EditorStates.set(editor.uid, stagedEditor, latestEditor)
 
@@ -172,6 +174,39 @@ test('addWidgetToEditor does not resurrect full-focus widget removed during asyn
 
   expect(result.widgets).toEqual([])
   expect(EditorStates.get(editor.uid).newState.widgets).toEqual([])
+})
+
+test('addWidgetToEditor restores staged full-focus widget after a stale editor update', async () => {
+  const widgetId = 9005
+  const focusKey = 9015
+  const editor = createEditor(9105)
+  const deferred = createDeferred<any>()
+  const promise = AddWidgetToEditor.addWidgetToEditor(
+    widgetId,
+    focusKey,
+    editor,
+    createFactory(widgetId, 9205),
+    async (state: any) => {
+      await deferred.promise
+      return {
+        ...state,
+        loaded: true,
+      }
+    },
+    true,
+  )
+  const stagedEditor = EditorStates.get(editor.uid).newState
+  const latestEditor = {
+    ...stagedEditor,
+    widgetRevision: WidgetRevision.next(editor.uid),
+    widgets: editor.widgets,
+  }
+  EditorStates.set(editor.uid, stagedEditor, latestEditor)
+
+  deferred.resolve({})
+  const result = await promise
+
+  expect(result.widgets[0].newState).toMatchObject({ loaded: true, uid: 9205 })
 })
 
 test('addWidgetToEditor does not add a widget without generated state', async () => {
@@ -188,8 +223,7 @@ test('addWidgetToEditor does not add a widget without generated state', async ()
       editorUid: 0,
     },
   }
-  const newStateGenerator = (_state: { editorUid: number }): { editorUid: number } | undefined => undefined
-  const result = await AddWidgetToEditor.addWidgetToEditor(1, 2, editor, () => widget, newStateGenerator)
+  const result = await AddWidgetToEditor.addWidgetToEditor(1, 2, editor, () => widget, noGeneratedState)
 
   expect(result).toBe(editor)
   expect(result.widgets).toEqual([])

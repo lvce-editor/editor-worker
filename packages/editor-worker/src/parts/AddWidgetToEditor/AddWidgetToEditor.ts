@@ -84,7 +84,11 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
     editorUid: editor.uid,
   } as K
   if (fullFocus) {
-    const latestEditor = getLatestEditor(editor.uid, stagedEditor)
+    const currentEditor = getLatestEditor(editor.uid, stagedEditor)
+    // A concurrent editor update based on the pre-staging state can replace the
+    // staged widget list. Restore it only when the original widget list is still
+    // current; a changed list may represent an explicit close.
+    const latestEditor = currentEditor.widgets === editor.widgets ? { ...currentEditor, widgets: newWidgets } : currentEditor
     const hydratedEditor = hydrateWidget(latestEditor, widgetId, widgetUid, latestState)
     if (hydratedEditor !== latestEditor) {
       EditorStates.set(editor.uid, latestEditor, hydratedEditor)
