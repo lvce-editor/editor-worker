@@ -1,0 +1,9 @@
+{
+  "id": "test.direct-editor-events",
+  "name": "Direct Editor Events Test",
+  "activation": ["onLanguage:direct-events", "onCompletion:direct-events"],
+  "browser": "main.js",
+  "isolated": true,
+  "languages": [{ "id": "direct-events", "extensions": [".direct-events"] }],
+  "completionProviders": [{ "id": "direct-events-completion", "languageId": "direct-events" }]
+}
