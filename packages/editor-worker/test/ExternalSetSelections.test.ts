@@ -35,13 +35,11 @@ test('setSelections2 reveals the supplied selection', async () => {
 })
 
 const createEditor = (uid: number) => ({
-  uid,
-  uri: `memfs:///selection-${uid}`,
-  lifecycle: {},
   deltaY: 0,
   finalDeltaY: 0,
   height: 100,
   itemHeight: 20,
+  lifecycle: {},
   lineCache: [],
   lines: ['one', 'two'],
   maxLineY: 2,
@@ -49,6 +47,8 @@ const createEditor = (uid: number) => ({
   numberOfVisibleLines: 5,
   scrollBarHeight: 10,
   selections: new Uint32Array([0, 0, 0, 0]),
+  uid,
+  uri: `memfs:///selection-${uid}`,
 })
 
 test('selection restore keeps content changes pending until render', async () => {

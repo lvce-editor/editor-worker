@@ -32,7 +32,7 @@ afterEach(() => {
 test.each([
   { content: 'first line\nsecond line', height: 600, selections: [1, 0, 1, 6], visible: 'second line' },
   { content: 'first line\nsecond line', height: 20, selections: [1, 0, 1, 6], visible: 'second line' },
-  { content: 'a\u0301 and 👩‍💻', height: 600, selections: [0, 0, 0, 2], visible: 'a\u0301 and 👩‍💻' },
+  { content: 'a\u{301} and 👩‍💻', height: 600, selections: [0, 0, 0, 2], visible: 'a\u{301} and 👩‍💻' },
 ])(
   'the first render includes loaded text and a restored selection together ($height, $visible)',
   async ({ content, height, selections, visible }) => {
