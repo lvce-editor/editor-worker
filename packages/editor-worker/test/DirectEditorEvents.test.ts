@@ -43,6 +43,14 @@ test('preserves renderer-owned focus effects', async () => {
   expect(invoke).toHaveBeenCalledWith('Viewlet.executeViewletCommand', 101, 'handleFocus')
 })
 
+test('preserves renderer-owned pointer focus effects', async () => {
+  const mouseDown = jest.fn(async () => {})
+  const events = Events.createCommandMap({ 'Editor.handleMouseDown': mouseDown })
+  await events['Viewlet.executeViewletCommand'](101, 'handleMouseDown', 0, false, false, 40, 80, 1, false)
+  expect(mouseDown).not.toHaveBeenCalled()
+  expect(invoke).toHaveBeenCalledWith('Viewlet.executeViewletCommand', 101, 'handleMouseDown', 0, false, false, 40, 80, 1, false)
+})
+
 test('rejects unknown commands and propagates worker errors without requesting a render', async () => {
   const events = Events.createCommandMap({
     'Editor.type': async () => {
