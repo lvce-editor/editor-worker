@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'editor.context-menu-close-restores-focus'
 
-export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
   // arrange
   const tmpDir = await FileSystem.getTmpDir()
   const filePath = `${tmpDir}/file1.txt`
@@ -12,14 +12,13 @@ export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator
   await Editor.setSelections(new Uint32Array([0, 0, 0, 3]))
 
   const editorInput = Locator('.EditorInput textarea')
-  const editor = Locator('.Editor')
   await expect(editorInput).toBeFocused()
 
   // act
-  await editor.click({ button: 'right' })
+  await Command.execute('Editor.handleContextMenu', 2, 2, 80, 40)
 
   // assert
-  const contextMenu = Locator('#ContextMenu')
+  const contextMenu = Locator('.Menu')
   await expect(contextMenu).toBeVisible()
 
   // act
