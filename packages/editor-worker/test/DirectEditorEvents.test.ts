@@ -29,7 +29,7 @@ test('executes input in the editor worker before requesting a foreground render'
 })
 
 test('retains widget namespaces', async () => {
-  const input = jest.fn(async () => {})
+  const input = jest.fn(async (..._args: readonly unknown[]) => {})
   const events = Events.createCommandMap({ 'FindWidget.handleInput': input })
   await events['Viewlet.executeViewletCommand'](101, 'FindWidget.handleInput', 'abc')
   expect(input).toHaveBeenCalledWith(101, 'abc')
