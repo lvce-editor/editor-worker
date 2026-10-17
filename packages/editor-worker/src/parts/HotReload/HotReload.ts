@@ -14,23 +14,24 @@ export const hotReload = async (): Promise<void> => {
     return
   }
   state.isReloading = true
+  try {
+    // TODO use getEditors
+    const keys = getKeys()
 
-  // TODO use getEditors
-  const keys = getKeys()
+    const savedStates = await saveWidgetState(keys)
 
-  const savedStates = await saveWidgetState(keys)
+    await relaunchWorkers()
 
-  await relaunchWorkers()
+    const newEditors = await restoreWidgetState(keys, savedStates)
 
-  const newEditors = await restoreWidgetState(keys, savedStates)
+    for (const editor of newEditors) {
+      Editors.set(editor.newState.uid, editor.oldState, editor.newState)
+    }
 
-  for (const editor of newEditors) {
-    Editors.set(editor.newState.uid, editor.oldState, editor.newState)
+    // TODO ask renderer worker to rerender all editors
+    // @ts-ignore
+    await RendererWorker.invoke(`Editor.rerender`)
+  } finally {
+    state.isReloading = false
   }
-
-  // TODO ask renderer worker to rerender all editors
-  // @ts-ignore
-  await RendererWorker.invoke(`Editor.rerender`)
-
-  state.isReloading = false
 }

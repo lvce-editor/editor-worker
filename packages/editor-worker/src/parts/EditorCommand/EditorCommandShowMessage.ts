@@ -1,12 +1,14 @@
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as Assert from '../Assert/Assert.ts'
-// @ts-ignore
-// import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
+import * as EditorMessageDismissalState from '../EditorMessageDismissalState/EditorMessageDismissalState.ts'
+import * as EditorStates from '../EditorStates/EditorStates.ts'
+import * as Id from '../Id/Id.ts'
+import * as RemoveEditorWidget from '../RemoveEditorWidget/RemoveEditorWidget.ts'
+import * as LocalWidgetId from '../WidgetId/WidgetId.ts'
+import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
 
-const state = {
-  timeout: -1,
-}
+const defaultMessageDelay = 3000
 
 /**
  *
@@ -18,27 +20,47 @@ const state = {
  * @returns
  */
 // @ts-ignore
-export const editorShowMessage = async (editor, rowIndex, columnIndex, message, isError) => {
+export const editorShowMessage = async (editor, rowIndex, columnIndex, message, _isError) => {
   Assert.object(editor)
   Assert.number(rowIndex)
   Assert.number(columnIndex)
   Assert.string(message)
-  const x = EditorPosition.x(editor, rowIndex, columnIndex)
+  const x = await EditorPosition.getCursorX(editor, rowIndex, columnIndex)
   const y = EditorPosition.y(editor, rowIndex)
-  const displayErrorMessage = message
-  // @ts-ignore
-  await RendererWorker.invoke('Editor.showOverlayMessage', editor, 'Viewlet.send', editor.uid, 'showOverlayMessage', x, y, displayErrorMessage)
-
-  if (!isError) {
-    const handleTimeout = () => {
-      editorHideMessage(editor)
-    }
-
-    // TODO use wrapper timing module instead of this
-    // @ts-ignore
-    state.timeout = setTimeout(handleTimeout, 3000)
+  const existingWidget = editor.widgets.find((widget: any) => widget.id === LocalWidgetId.Message)
+  const uid = existingWidget?.newState.uid ?? Id.create()
+  const newState = { message, uid, x, y }
+  const widget = {
+    id: LocalWidgetId.Message,
+    newState,
   }
-  return editor
+  const newEditor = {
+    ...editor,
+    widgets: [...editor.widgets.filter((item: any) => item.id !== LocalWidgetId.Message), widget],
+  }
+  if (typeof editor.uid === 'number') {
+    const timeout = setTimeout(async () => {
+      EditorMessageDismissalState.clear(editor.uid)
+      const latestInstance = EditorStates.get(editor.uid)
+      if (!latestInstance) {
+        return
+      }
+      const latestEditor = latestInstance.newState
+      const latestWidget = latestEditor.widgets.find((item: any) => item.id === LocalWidgetId.Message)
+      if (latestWidget?.newState.uid !== uid) {
+        return
+      }
+      const editorWithoutMessage = {
+        ...latestEditor,
+        widgetRevision: WidgetRevision.next(editor.uid),
+        widgets: RemoveEditorWidget.removeEditorWidget(latestEditor.widgets, LocalWidgetId.Message),
+      }
+      EditorStates.set(editor.uid, latestEditor, editorWithoutMessage)
+      await RendererWorker.invoke('Editor.renderPending', editor.uid)
+    }, editor.messageDelay ?? defaultMessageDelay)
+    EditorMessageDismissalState.set(editor.uid, { timeout })
+  }
+  return newEditor
 }
 
 /**
@@ -51,13 +73,5 @@ export const editorShowMessage = async (editor, rowIndex, columnIndex, message, 
  */
 // @ts-ignore
 export const showErrorMessage = async (editor, rowIndex, columnIndex, message) => {
-  return editorShowMessage(editor, rowIndex, columnIndex, message, /* isError */ true)
-}
-
-// @ts-ignore
-const editorHideMessage = async (editor) => {
-  clearTimeout(state.timeout)
-  state.timeout = -1
-  // await RendererProcess.invoke(/* Viewlet.send */ 'Viewlet.send', /* id */ editor.uid, /* method */ 'hideOverlayMessage')
-  return editor
+  return await editorShowMessage(editor, rowIndex, columnIndex, message, true)
 }

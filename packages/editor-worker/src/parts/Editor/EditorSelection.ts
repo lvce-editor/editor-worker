@@ -1,5 +1,9 @@
 import * as Assert from '../Assert/Assert.ts'
+import * as Clamp from '../Clamp/Clamp.ts'
+import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
+import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
+import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 const getSelectionFromChange = (change: any) => {
   const { inserted, start } = change
@@ -28,13 +32,74 @@ const getSelectionFromChange = (change: any) => {
 
 export const setSelections = (editor: any, selections: any) => {
   Assert.object(editor)
-  // Assert.uint32array(selections)
-  return {
+  const { foldingRanges = [] } = editor
+  const primarySelectionIndex = editor.primarySelectionIndex || 0
+  const activeRowIndex = selections[primarySelectionIndex + 2]
+  if ('foldingRanges' in editor) {
+    const normalizedSelections =
+      foldingRanges.length === 0
+        ? selections
+        : EditorSelection.map(
+            selections,
+            (result: Uint32Array, index: number, startRow: number, startColumn: number, endRow: number, endColumn: number) => {
+              const previousRow = editor.selections[index + 2] ?? endRow
+              result[index] = EditorFolding.getUnhiddenRow(startRow, previousRow, editor.lines.length, foldingRanges)
+              result[index + 1] = startColumn
+              result[index + 2] = EditorFolding.getUnhiddenRow(endRow, previousRow, editor.lines.length, foldingRanges)
+              result[index + 3] = endColumn
+            },
+          )
+    const previousActiveRowIndex = editor.selections[primarySelectionIndex + 2] ?? activeRowIndex
+    const rowIndex = EditorFolding.getUnhiddenRow(activeRowIndex, previousActiveRowIndex, editor.lines.length, foldingRanges)
+    const visualRow = editor.viewLineIndices
+      ? EditorViewRows.getVisualRowForDocumentRow(rowIndex, editor.viewLineIndices)
+      : EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges)
+    const startVisualRow = Math.floor(editor.deltaY / editor.itemHeight)
+    const endVisualRow = startVisualRow + editor.numberOfVisibleLines
+    if (visualRow >= startVisualRow && visualRow < endVisualRow) {
+      return {
+        ...editor,
+        selections: normalizedSelections,
+      }
+    }
+    const desiredStartVisualRow = visualRow < startVisualRow ? visualRow : visualRow - editor.numberOfVisibleLines + 1
+    return EditorFolding.updateLayout(
+      {
+        ...editor,
+        deltaY: desiredStartVisualRow * editor.itemHeight,
+        selections: normalizedSelections,
+      },
+      foldingRanges,
+    )
+  }
+  const newEditor = {
     ...editor,
     selections,
   }
-  // editor.selections = selections
-  // GlobalEventBus.emitEvent('editor.selectionChange', editor, selections)
+  const { maxLineY, minLineY, numberOfVisibleLines } = editor
+  if (maxLineY === undefined || minLineY === undefined || numberOfVisibleLines === undefined || numberOfVisibleLines <= 0) {
+    return newEditor
+  }
+  const rowIndex = activeRowIndex
+  if (rowIndex === undefined) {
+    return newEditor
+  }
+  if (rowIndex >= minLineY && rowIndex < maxLineY) {
+    return newEditor
+  }
+  const { finalDeltaY, height, itemHeight, lines, scrollBarHeight } = editor
+  const desiredMinLineY = rowIndex < minLineY ? rowIndex : rowIndex - numberOfVisibleLines + 1
+  const deltaY = Clamp.clamp(desiredMinLineY * itemHeight, 0, finalDeltaY)
+  const newMinLineY = Math.floor(deltaY / itemHeight)
+  const newMaxLineY = Math.min(newMinLineY + numberOfVisibleLines, lines.length)
+  const scrollBarY = ScrollBarFunctions.getScrollBarY(deltaY, finalDeltaY, height, scrollBarHeight)
+  return {
+    ...newEditor,
+    deltaY,
+    maxLineY: newMaxLineY,
+    minLineY: newMinLineY,
+    scrollBarY,
+  }
 }
 
 // TODO maybe only accept sorted selection edits in the first place

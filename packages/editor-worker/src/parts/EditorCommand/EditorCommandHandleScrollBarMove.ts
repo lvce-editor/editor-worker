@@ -1,8 +1,7 @@
-// @ts-ignore
+import type { EditorState } from '../State/State.ts'
 import * as Editor from '../Editor/Editor.ts'
 
-// @ts-ignore
-const getNewPercent = (state, relativeY) => {
+const getNewPercent = (state: EditorState, relativeY: number): number => {
   const { height, scrollBarHeight } = state
   // if (relativeY <= editor.scrollBarHeight / 2) {
   //   // clicked at top
@@ -16,7 +15,7 @@ const getNewPercent = (state, relativeY) => {
   return 1
 }
 
-export const handleScrollBarMove = async (state: any, eventY: number): Promise<any> => {
+export const handleScrollBarMove = async (state: EditorState, eventY: number): Promise<EditorState> => {
   const { finalDeltaY, handleOffset = 0, y } = state
   const relativeY = eventY - y - handleOffset
   const newPercent = getNewPercent(state, relativeY)

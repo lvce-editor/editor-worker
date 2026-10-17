@@ -1,7 +1,7 @@
 import { expect, test } from '@jest/globals'
 import * as DiffItems from '../src/parts/DiffItems/DiffItems.ts'
 
-test('isEqual - returns false when deltaY changes', () => {
+test('isEqual - returns true when only scrollbar css changes', () => {
   const oldState = {
     cursorInfos: [],
     deltaY: 0,
@@ -21,5 +21,5 @@ test('isEqual - returns false when deltaY changes', () => {
     deltaY: 40,
   }
 
-  expect(DiffItems.isEqual(oldState as any, newState as any)).toBe(false)
+  expect(DiffItems.isEqual(oldState as any, newState as any)).toBe(true)
 })

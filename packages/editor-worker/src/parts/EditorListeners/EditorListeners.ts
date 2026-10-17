@@ -1,4 +1,6 @@
 import * as Assert from '../Assert/Assert.ts'
+import * as EditorStatusDelivery from '../EditorStatusDelivery/EditorStatusDelivery.ts'
+import * as ListenerType from '../ListenerType/ListenerType.ts'
 
 interface ListenerRegistry {
   [listenerType: number]: number[]
@@ -34,6 +36,9 @@ export const unregisterListener = (listenerType: number, rpcId: number): void =>
   Assert.number(listenerType)
   Assert.number(rpcId)
 
+  if (listenerType === ListenerType.EditorSelection) {
+    EditorStatusDelivery.dispose(rpcId)
+  }
   if (Object.hasOwn(state, listenerType)) {
     const index = state[listenerType].indexOf(rpcId)
     if (index !== -1) {
@@ -58,6 +63,9 @@ export const getListeners = (listenerType: number): readonly number[] => {
  */
 export const clearListeners = (listenerType: number): void => {
   Assert.number(listenerType)
+  if (listenerType === ListenerType.EditorSelection) {
+    EditorStatusDelivery.clear()
+  }
   delete state[listenerType]
 }
 
@@ -65,6 +73,7 @@ export const clearListeners = (listenerType: number): void => {
  * Clear all listeners
  */
 export const clearAll = (): void => {
+  EditorStatusDelivery.clear()
   for (const key of Object.keys(state)) {
     delete state[Number(key)]
   }

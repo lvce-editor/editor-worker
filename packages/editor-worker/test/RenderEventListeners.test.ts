@@ -3,6 +3,81 @@ import { EventExpression } from '@lvce-editor/constants'
 import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as RenderEventListeners from '../src/parts/RenderEventListeners/RenderEventListeners.ts'
 
+test('renders a lightbulb click listener that opens source actions', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: 35,
+    params: ['showSourceActions3'],
+    preventDefault: true,
+  })
+})
+
+test('stops hover mouse-down from reaching the editor focus handler', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleHoverMouseDown,
+    params: [],
+    stopPropagation: true,
+  })
+})
+
+test('renderEventListeners - handles Alt key release', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleKeyUp,
+    params: ['handleKeyUp', EventExpression.Key],
+  })
+})
+
+test('renderEventListeners - dismisses editor hovers on pointer exit and cancels on re-entry', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleMouseOut,
+    params: ['handleMouseLeave', 'event.currentTarget.dataset.uid'],
+  })
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleMouseOver,
+    params: ['handleMouseEnter', 'event.currentTarget.dataset.uid'],
+  })
+})
+
+test('renderEventListeners - captures the editor gutter width on pointer down', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandlePointerDown,
+    params: [
+      'handlePointerDown',
+      'event.button',
+      'event.altKey',
+      'event.ctrlKey',
+      EventExpression.ClientX,
+      EventExpression.ClientY,
+      'event.detail',
+      'event.currentTarget.parentElement.parentElement.offsetLeft',
+    ],
+    trackPointerEvents: [DomEventListenerFunctions.HandlePointerMove, DomEventListenerFunctions.HandlePointerUp],
+  })
+})
+
+test('renderEventListeners - forwards Shift for text dragging', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandleMouseDown,
+    params: [
+      'handleMouseDown',
+      'event.button',
+      'event.altKey',
+      'event.ctrlKey',
+      EventExpression.ClientX,
+      EventExpression.ClientY,
+      'event.detail',
+      'event.shiftKey',
+    ],
+  })
+})
+
+test('renderEventListeners - forwards clipboard text through the renderer event expression', () => {
+  expect(RenderEventListeners.renderEventListeners()).toContainEqual({
+    name: DomEventListenerFunctions.HandlePaste,
+    params: ['paste', 'event.clipboardData.text'],
+    preventDefault: true,
+  })
+})
+
 test.skip('renderEventListeners', () => {
   const eventListeners = RenderEventListeners.renderEventListeners()
   expect(eventListeners).toEqual([
@@ -42,7 +117,7 @@ test.skip('renderEventListeners', () => {
     },
     {
       name: DomEventListenerFunctions.HandlePaste,
-      params: ['paste', 'event.clipboardData ? event.clipboardData.getData("text/plain") : ""'],
+      params: ['paste', 'event.clipboardData.text'],
       preventDefault: true,
     },
     // {

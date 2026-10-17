@@ -1,7 +1,9 @@
+import * as GetLineLength from '../GetLineLength/GetLineLength.ts'
+
 export const editorGetPositionRight = (position: any, lines: string, getDelta: any) => {
   const { rowIndex } = position
   const { columnIndex } = position
-  if (columnIndex >= lines[rowIndex].length) {
+  if (columnIndex >= GetLineLength.getLineLength(lines[rowIndex])) {
     if (rowIndex >= lines.length) {
       return position
     }
@@ -22,7 +24,7 @@ export const moveToPositionRight = (selections: any, i: number, rowIndex: number
     return
   }
   const line = lines[rowIndex]
-  if (columnIndex >= line.length) {
+  if (columnIndex >= GetLineLength.getLineLength(line)) {
     selections[i] = selections[i + 2] = rowIndex + 1
     selections[i + 1] = selections[i + 3] = 0
   } else {

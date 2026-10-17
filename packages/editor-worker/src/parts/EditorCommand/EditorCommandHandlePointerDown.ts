@@ -1,7 +1,21 @@
-import * as EditorSelectionAutoMoveState from '../EditorSelectionAutoMoveState/EditorSelectionAutoMoveState.ts'
-import * as HandleMouseDown from './EditorCommandHandleMouseDown.ts'
+import type { EditorState } from '../State/State.ts'
 
-export const handlePointerDown = (state: any, button: number, altKey: boolean, ctrlKey: boolean, x: number, y: number, detail: number) => {
-  EditorSelectionAutoMoveState.startSelecting()
-  return HandleMouseDown.handleMouseDown(state, button, altKey, ctrlKey, x, y, detail)
+export const handlePointerDown = async (
+  state: EditorState,
+  button: number,
+  altKey: boolean,
+  ctrlKey: boolean,
+  x: number,
+  y: number,
+  detail: number,
+  gutterWidth: number = state.gutterWidth ?? 0,
+): Promise<EditorState> => {
+  const currentGutterWidth = state.gutterWidth ?? 0
+  if (currentGutterWidth === gutterWidth) {
+    return state
+  }
+  return {
+    ...state,
+    gutterWidth,
+  }
 }

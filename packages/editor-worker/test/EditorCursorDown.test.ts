@@ -48,3 +48,15 @@ test('editorCursorDown - line below is shorter', () => {
     selections: EditorSelection.fromRange(1, 4, 1, 4),
   })
 })
+
+test.each([['line 1', 'line 2'], [''], ['line 1', '']])('editorCursorDown stays within document %j', (...lines) => {
+  let editor: any = {
+    lineCache: [],
+    lines,
+    selections: EditorSelection.fromRange(0, 0, 0, 0),
+  }
+  for (let i = 0; i < 4; i++) {
+    editor = EditorCursorDown.cursorDown(editor)
+    expect(editor.selections).toEqual(EditorSelection.fromRange(Math.min(i + 1, lines.length - 1), 0, Math.min(i + 1, lines.length - 1), 0))
+  }
+})

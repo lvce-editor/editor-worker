@@ -1,10 +1,28 @@
+import { RendererWorker } from '@lvce-editor/rpc-registry'
+import * as DefinitionLinkDecoration from '../DefinitionLinkDecoration/DefinitionLinkDecoration.ts'
 import * as EditorHoverState from '../EditorHoverState/EditorHoverState.ts'
+import * as Editors from '../EditorStates/EditorStates.ts'
+import * as Id from '../Id/Id.ts'
+import * as EditorCommandHandleMouseMoveWithAltKey from './EditorCommandHandleMouseMoveWithAltKey.ts'
 import * as EditorPosition from './EditorCommandPosition.ts'
+import * as EditorCommandShowHover from './EditorCommandShowHover.ts'
 
-const showHover = async (editor: any, position: any) => {
-  // TODO race condition
-  // await Viewlet.closeWidget(ViewletModuleId.EditorHover)
-  // await Viewlet.openWidget(ViewletModuleId.EditorHover, position)
+const showHover = async (editor: any, position: any, token: number) => {
+  const instance = Editors.get(editor.uid)
+  if (!instance) {
+    return
+  }
+  const latestEditor = instance.newState
+  if (!latestEditor.hoverEnabled) {
+    return
+  }
+  const newEditor = await EditorCommandShowHover.showHover(latestEditor, position)
+  const latestInstance = Editors.get(editor.uid)
+  if (latestEditor === newEditor || !latestInstance || latestInstance.newState !== latestEditor || EditorHoverState.get().token !== token) {
+    return
+  }
+  Editors.set(editor.uid, latestInstance.oldState, newEditor)
+  await RendererWorker.invoke('Editor.renderPending', editor.uid)
 }
 
 // TODO several things can happen:
@@ -15,24 +33,34 @@ const showHover = async (editor: any, position: any) => {
 // 5. show color picker
 // 6. show error info
 
-const onHoverIdle = async () => {
-  const { editor, x, y } = EditorHoverState.get()
-  const position = await EditorPosition.at(editor, x, y)
-  await showHover(editor, position)
+const onHoverIdle = async (token: number) => {
+  try {
+    const { editor, token: latestToken, x, y } = EditorHoverState.get()
+    if (latestToken !== token || !editor) {
+      return
+    }
+    const instance = Editors.get(editor.uid)
+    if (!instance || !instance.newState.hoverEnabled) {
+      return
+    }
+    const position = await EditorPosition.at(editor, x, y)
+    await showHover(editor, position, token)
+  } catch {
+    // Hover providers are optional and should not surface errors from an idle mouse event.
+  }
 }
 
-const hoverDelay = 300
-
-// @ts-ignore
-export const handleMouseMove = (editor, x, y) => {
-  if (!editor.hoverEnabled) {
-    return editor
+export const handleMouseMove = async (editor: any, x: number, y: number, altKey: boolean) => {
+  EditorHoverState.clear()
+  if (altKey) {
+    return EditorCommandHandleMouseMoveWithAltKey.handleMouseMoveWithAltKey(editor, x, y)
   }
-  const oldState = EditorHoverState.get()
-  if (oldState.timeout !== -1) {
-    clearTimeout(oldState.timeout)
+  const editorWithoutDefinitionLink = DefinitionLinkDecoration.clear(editor)
+  if (!editorWithoutDefinitionLink.hoverEnabled) {
+    return editorWithoutDefinitionLink
   }
-  const timeout = setTimeout(onHoverIdle, hoverDelay)
-  EditorHoverState.set(editor, timeout, x, y)
-  return editor
+  const token = Id.create()
+  const timeout = setTimeout(onHoverIdle, editorWithoutDefinitionLink.hoverDelay ?? 200, token)
+  EditorHoverState.set(editorWithoutDefinitionLink, timeout, x, y, token)
+  return editorWithoutDefinitionLink
 }

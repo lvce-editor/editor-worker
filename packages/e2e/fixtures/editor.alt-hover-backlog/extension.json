@@ -1,0 +1,34 @@
+{
+  "id": "test.alt-hover-backlog",
+  "name": "Alt Hover Backlog",
+  "description": "Controlled definition provider for queued Alt-hover requests",
+  "activation": [
+    "onLanguage:alt-hover-backlog",
+    "onDefinition:alt-hover-backlog",
+    "onCommand:altHoverBacklog.waitForStart",
+    "onCommand:altHoverBacklog.release",
+    "onCommand:altHoverBacklog.offsets"
+  ],
+  "browser": "dist/main.js",
+  "isolated": true,
+  "languages": [
+    {
+      "id": "alt-hover-backlog",
+      "extensions": [".backlog"]
+    }
+  ],
+  "commands": [
+    {
+      "id": "altHoverBacklog.waitForStart",
+      "label": "waitForStart"
+    },
+    {
+      "id": "altHoverBacklog.release",
+      "label": "release"
+    },
+    {
+      "id": "altHoverBacklog.offsets",
+      "label": "offsets"
+    }
+  ]
+}

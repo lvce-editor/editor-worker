@@ -1,35 +1,48 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
-import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
+import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
-export const getScrollBarVirtualDom = (deltaY: number, finalDeltaY: number, height: number, scrollBarHeight: number): readonly VirtualDomNode[] => {
-  const scrollBarY = ScrollBarFunctions.getScrollBarY(deltaY, finalDeltaY, height, scrollBarHeight)
+const verticalScrollBarNode: VirtualDomNode = {
+  childCount: 1,
+  className: MergeClassNames.mergeClassNames('ScrollBar', 'ScrollBarVertical'),
+  onContextMenu: DomEventListenerFunctions.HandleContextMenu,
+  onPointerDown: DomEventListenerFunctions.HandleScrollBarVerticalPointerDown,
+  type: VirtualDomElements.Div,
+}
+
+const verticalScrollBarThumbNode: VirtualDomNode = {
+  childCount: 0,
+  className: MergeClassNames.mergeClassNames('ScrollBarThumb', 'ScrollBarThumbVertical'),
+  type: VirtualDomElements.Div,
+}
+
+const horizontalScrollBarNode: VirtualDomNode = {
+  childCount: 1,
+  className: MergeClassNames.mergeClassNames('ScrollBar', 'ScrollBarHorizontal'),
+  onPointerDown: DomEventListenerFunctions.HandleScrollBarHorizontalPointerDown,
+  type: VirtualDomElements.Div,
+}
+
+const horizontalScrollBarThumbNode: VirtualDomNode = {
+  childCount: 0,
+  className: MergeClassNames.mergeClassNames('ScrollBarThumb', 'ScrollBarThumbHorizontal'),
+  type: VirtualDomElements.Div,
+}
+
+export const getScrollBarVirtualDom = (scrollBarHeight: number, scrollBarWidth: number): readonly VirtualDomNode[] => {
+  const hasVerticalThumb = scrollBarHeight > 0
+  const hasHorizontalThumb = scrollBarWidth > 0
   return [
     {
-      childCount: 1,
-      className: 'ScrollBar ScrollBarVertical',
-      onContextMenu: DomEventListenerFunctions.HandleContextMenu,
-      onPointerDown: DomEventListenerFunctions.HandleScrollBarVerticalPointerDown,
-      type: VirtualDomElements.Div,
+      ...verticalScrollBarNode,
+      childCount: hasVerticalThumb ? 1 : 0,
     },
+    ...(hasVerticalThumb ? [verticalScrollBarThumbNode] : []),
     {
-      childCount: 0,
-      className: 'ScrollBarThumb ScrollBarThumbVertical',
-      style: `height:${scrollBarHeight}px;`,
-      translate: `0 ${scrollBarY}px`,
-      type: VirtualDomElements.Div,
+      ...horizontalScrollBarNode,
+      childCount: hasHorizontalThumb ? 1 : 0,
     },
-    {
-      childCount: 1,
-      className: 'ScrollBar ScrollBarHorizontal',
-      onPointerDown: DomEventListenerFunctions.HandleScrollBarHorizontalPointerDown,
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 0,
-      className: 'ScrollBarThumb ScrollBarThumbHorizontal',
-      type: VirtualDomElements.Div,
-    },
+    ...(hasHorizontalThumb ? [horizontalScrollBarThumbNode] : []),
   ]
 }

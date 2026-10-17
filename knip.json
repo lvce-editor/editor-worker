@@ -2,8 +2,7 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
     ".": {
-      "project": ["*.js"],
-      "ignoreDependencies": ["@lerna/legacy-package-management"]
+      "project": ["*.js"]
     },
     "packages/build": {
       "project": ["src/**/*.ts"],
@@ -12,7 +11,14 @@
     "packages/e2e": {
       "entry": ["src/**/*.ts", "fixtures/**/main.js"],
       "project": ["src/**/*.ts", "fixtures/**/*.js"],
-      "ignoreFiles": ["fixtures/editor.syntax-highlighting-nested-extension/src/*.js"]
+      "ignoreFiles": [
+        "fixtures/editor.syntax-highlighting-html-style-inline/src/*.js",
+        "fixtures/editor.syntax-highlighting-nested-extension/src/*.js"
+      ]
+    },
+    "packages/e2e-status-bar": {
+      "entry": ["src/**/*.ts"],
+      "project": ["src/**/*.ts"]
     },
     "packages/editor-worker": {
       "entry": ["src/editorWorkerMain.ts", "test/**/*.test.ts"],

@@ -51,6 +51,18 @@ test('editorCursorCharacterLeft - at start of line', () => {
   })
 })
 
+test('editorCursorCharacterLeft - skips CRLF line ending', () => {
+  const editor = {
+    lineCache: [],
+    lines: ['first\r', 'second\r', ''],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(1, 0, 1, 0),
+  }
+  expect(EditorCursorLeft.cursorCharacterLeft(editor)).toMatchObject({
+    selections: EditorSelection.fromRange(0, 5, 0, 5),
+  })
+})
+
 test('editorCursorCharacterLeft - in virtual space', () => {
   const editor = {
     lineCache: [],

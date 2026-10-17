@@ -44,6 +44,14 @@ test('does not detect plain domain without www or scheme', () => {
   expect(links).toEqual([])
 })
 
+test.each(['return `file:///${encodeFilePath(normalizedPath)}`', 'return `file://${encodeFilePath(path)}`', 'const url = `https://${host}/path`'])(
+  'does not detect links in dynamic JavaScript template strings',
+  (text) => {
+    const links = LinkDetection.detectLinks(text)
+    expect(links).toEqual([])
+  },
+)
+
 test('detects ftps URL', () => {
   const links = LinkDetection.detectLinks('Secure: ftps://secure.example.com/file')
   expect(links).toEqual([{ length: 30, start: 8 }])
@@ -57,6 +65,18 @@ test('handles URL at start of line', () => {
 test('handles URL at end of line', () => {
   const links = LinkDetection.detectLinks('Visit my site at https://example.com')
   expect(links).toEqual([{ length: 19, start: 17 }])
+})
+
+test('handles markdown inline link followed by period', () => {
+  const url = 'https://github.com/lvce-editor/lvce-editor'
+  const links = LinkDetection.detectLinks(`[Lvce Editor](${url}).`)
+  expect(links).toEqual([{ length: url.length, start: 14 }])
+})
+
+test('preserves balanced parentheses inside URL', () => {
+  const url = 'https://example.com/path(foo)'
+  const links = LinkDetection.detectLinks(`See ${url}.`)
+  expect(links).toEqual([{ length: url.length, start: 4 }])
 })
 
 test('detects no links in plain text', () => {

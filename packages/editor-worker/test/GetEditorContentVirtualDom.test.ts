@@ -11,8 +11,9 @@ test('getEditorContentVirtualDom', () => {
     differences: [0],
     finalDeltaY: 80,
     height: 40,
-    scrollBarDiagnostics: [{ height: 5, type: 'warning', width: 6, x: 7, y: 8 }],
+    scrollBarDiagnostics: [{ height: 5, top: 8, type: 'warning' }],
     scrollBarHeight: 24,
+    scrollBarWidth: 24,
     selectionInfos: [1, 2, 3, 4],
     textInfos: [['x', 'Token X']],
   })
@@ -20,15 +21,41 @@ test('getEditorContentVirtualDom', () => {
   expect(dom[0]).toEqual({
     childCount: 5,
     className: 'EditorContent',
+    onKeyUp: DomEventListenerFunctions.HandleKeyUp,
     onMouseMove: DomEventListenerFunctions.HandleMouseMove,
+    onWheel: DomEventListenerFunctions.HandleWheel,
     type: VirtualDomElements.Div,
   })
 
   expect(dom.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbVertical')).toEqual({
     childCount: 0,
     className: 'ScrollBarThumb ScrollBarThumbVertical',
-    style: 'height:24px;',
-    translate: '0 8px',
     type: VirtualDomElements.Div,
   })
+  expect(dom.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbHorizontal')).toEqual({
+    childCount: 0,
+    className: 'ScrollBarThumb ScrollBarThumbHorizontal',
+    type: VirtualDomElements.Div,
+  })
+  expect(dom).toContainEqual({
+    childCount: 0,
+    className: 'ScrollBarDiagnostic ScrollBarDiagnosticWarning',
+    height: 5,
+    top: 8,
+    type: VirtualDomElements.Div,
+  })
+})
+
+test('getEditorContentVirtualDom omits zero-size scrollbar thumbs and keeps empty tracks', () => {
+  const dom = GetEditorContentVirtualDom.getEditorContentVirtualDom({
+    differences: [],
+    scrollBarHeight: 0,
+    scrollBarWidth: 0,
+    textInfos: [],
+  })
+
+  expect(dom).not.toContainEqual(expect.objectContaining({ className: 'ScrollBarThumb ScrollBarThumbVertical' }))
+  expect(dom).not.toContainEqual(expect.objectContaining({ className: 'ScrollBarThumb ScrollBarThumbHorizontal' }))
+  expect(dom).toContainEqual(expect.objectContaining({ childCount: 0, className: 'ScrollBar ScrollBarVertical' }))
+  expect(dom).toContainEqual(expect.objectContaining({ childCount: 0, className: 'ScrollBar ScrollBarHorizontal' }))
 })

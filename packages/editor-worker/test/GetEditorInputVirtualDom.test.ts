@@ -6,6 +6,11 @@ import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomE
 test('getEditorInputVirtualDom', () => {
   expect(GetEditorInputVirtualDom.getEditorInputVirtualDom()).toEqual([
     {
+      childCount: 1,
+      className: 'EditorInput',
+      type: VirtualDomElements.Div,
+    },
+    {
       ariaAutoComplete: 'list',
       ariaMultiLine: 'true',
       ariaRoleDescription: 'editor',
@@ -13,7 +18,6 @@ test('getEditorInputVirtualDom', () => {
       autocomplete: 'off',
       autocorrect: 'off',
       childCount: 0,
-      className: 'EditorInput',
       name: 'editor',
       onBeforeInput: DomEventListenerFunctions.HandleBeforeInput,
       onBlur: DomEventListenerFunctions.HandleBlur,

@@ -1,5 +1,6 @@
 // @ts-ignore
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
+import { getIndentString } from '../GetIndentString/GetIndentString.ts'
 import * as EditorIndent from './EditorCommandIndentMore.ts'
 import * as EditorTabCompletion from './EditorCommandTabCompletion.ts'
 import * as EditorType from './EditorCommandType.ts'
@@ -12,8 +13,7 @@ export const handleTab = async (editor) => {
     if (applied !== editor) {
       return applied
     }
-    // TODO have setting what should be inserted on tab
-    return EditorType.type(editor, '  ')
+    return EditorType.type(editor, getIndentString(editor))
   }
   return EditorIndent.indentMore(editor)
 }

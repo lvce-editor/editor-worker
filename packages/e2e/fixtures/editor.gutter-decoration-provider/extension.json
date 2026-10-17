@@ -1,0 +1,8 @@
+{
+  "id": "test.editor-gutter-decoration-provider",
+  "name": "Editor Gutter Decoration Provider",
+  "description": "Provides editor gutter decorations for editor tests",
+  "activation": ["onEditorGutterDecoration"],
+  "browser": "dist/main.js",
+  "isolated": true
+}

@@ -1,0 +1,12 @@
+{
+  "id": "test.syntax-highlighting-html-style-inline",
+  "name": "Inline HTML Style Syntax Highlighting",
+  "description": "Provides an inline embedded CSS syntax highlighting fixture.",
+  "languages": [
+    {
+      "id": "html-with-inline-css-test",
+      "extensions": [".html-with-inline-css-test"],
+      "tokenize": "src/tokenizeHtmlWithInlineCss.js"
+    }
+  ]
+}

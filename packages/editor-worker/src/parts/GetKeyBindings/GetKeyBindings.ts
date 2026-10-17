@@ -1,41 +1,99 @@
 import { KeyModifier, KeyCode } from '@lvce-editor/constants'
+import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as WhenExpression from '../WhenExpression/WhenExpression.ts'
+
+const findWidgetFocusContexts = [
+  FocusKey.FindWidget,
+  FocusKey.FocusFindWidgetReplace,
+  FocusKey.FocusFindWidgetOptions,
+  FocusKey.FocusFindWidgetToggleReplace,
+  FocusKey.FocusFindWidgetPreviousMatchButton,
+  FocusKey.FocusFindWidgetNextMatchButton,
+  FocusKey.FocusFindWidgetCloseButton,
+  FocusKey.FocusFindWidgetReplaceButton,
+  FocusKey.FocusFindWidgetReplaceAllButton,
+]
+
+const getFindWidgetFocusKeyBindings = () => {
+  return findWidgetFocusContexts.flatMap((focusContext) => [
+    {
+      command: 'FindWidget.focusNextElement',
+      key: KeyCode.Tab,
+      when: focusContext,
+    },
+    {
+      command: 'FindWidget.focusPreviousElement',
+      key: KeyModifier.Shift | KeyCode.Tab,
+      when: focusContext,
+    },
+  ])
+}
 
 export const getKeyBindings = () => {
   return [
+    {
+      command: 'Editor.nextDiagnostic',
+      key: KeyCode.F8,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.previousDiagnostic',
+      key: KeyModifier.Shift | KeyCode.F8,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.closeColorPicker',
+      key: KeyCode.Escape,
+      when: WhenExpression.FocusColorPicker,
+    },
+    {
+      command: 'Editor.cancelSelection',
+      key: KeyCode.Escape,
+      when: FocusKey.FocusEditorHover,
+    },
     {
       command: 'Editor.closeSourceAction',
       key: KeyCode.Escape,
       when: WhenExpression.FocusSourceActions,
     },
     {
-      command: 'EditorSourceActions.focusNext',
+      command: 'EditorSourceAction.focusNext',
       key: KeyCode.DownArrow,
       when: WhenExpression.FocusSourceActions,
     },
     {
-      command: 'EditorSourceActions.focusPrevious',
+      command: 'EditorSourceAction.focusPrevious',
       key: KeyCode.UpArrow,
       when: WhenExpression.FocusSourceActions,
     },
     {
-      command: 'EditorSourceActions.focusFirst',
+      command: 'EditorSourceAction.focusFirst',
       key: KeyCode.Home,
       when: WhenExpression.FocusSourceActions,
     },
     {
-      command: 'EditorSourceActions.focusLast',
+      command: 'EditorSourceAction.focusLast',
       key: KeyCode.End,
       when: WhenExpression.FocusSourceActions,
     },
     {
-      command: 'EditorSourceActions.selectCurrent',
+      command: 'EditorSourceAction.selectCurrent',
       key: KeyCode.Enter,
       when: WhenExpression.FocusSourceActions,
     },
     {
+      command: 'FindWidget.replace',
+      key: KeyCode.Enter,
+      when: WhenExpression.FocusFindWidgetReplace,
+    },
+    {
       command: 'FindWidget.focusNext',
       key: KeyCode.Enter,
+      when: WhenExpression.FocusFindWidget,
+    },
+    {
+      command: 'FindWidget.focusPrevious',
+      key: KeyModifier.Shift | KeyCode.Enter,
       when: WhenExpression.FocusFindWidget,
     },
     {
@@ -53,75 +111,11 @@ export const getKeyBindings = () => {
       key: KeyCode.F4,
       when: WhenExpression.FocusFindWidget,
     },
-    {
-      command: 'FindWidget.focusToggleReplace',
-      key: KeyModifier.Shift | KeyCode.Tab,
-      when: WhenExpression.FocusFindWidget,
-    },
-    {
-      command: 'FindWidget.focusReplace',
-      key: KeyCode.Tab,
-      when: WhenExpression.FocusFindWidget,
-    },
-    {
-      command: 'FindWidget.focusPreviousMatchButton',
-      key: KeyCode.Tab,
-      when: WhenExpression.FocusFindWidgetReplace,
-    },
+    ...getFindWidgetFocusKeyBindings(),
     {
       command: 'FindWidget.replaceAll',
       key: KeyModifier.Alt | KeyModifier.CtrlCmd | KeyCode.Enter,
       when: WhenExpression.FocusFindWidgetReplace,
-    },
-    {
-      command: 'FindWidget.focusNextMatchButton',
-      key: KeyCode.Tab,
-      when: WhenExpression.FocusFindWidgetPreviousMatchButton,
-    },
-    {
-      command: 'FindWidget.focusReplace',
-      key: KeyModifier.Shift | KeyCode.Tab,
-      when: WhenExpression.FocusFindWidgetPreviousMatchButton,
-    },
-    {
-      command: 'FindWidget.focusPreviousMatchButton',
-      key: KeyModifier.Shift | KeyCode.Tab,
-      when: WhenExpression.FocusFindWidgetNextMatchButton,
-    },
-    {
-      command: 'FindWidget.focusCloseButton',
-      key: KeyCode.Tab,
-      when: WhenExpression.FocusFindWidgetNextMatchButton,
-    },
-    {
-      command: 'FindWidget.focusNextMatchButton',
-      key: KeyModifier.Shift | KeyCode.Tab,
-      when: WhenExpression.FocusFindWidgetCloseButton,
-    },
-    {
-      command: 'FindWidget.focusReplaceButton',
-      key: KeyCode.Tab,
-      when: WhenExpression.FocusFindWidgetCloseButton,
-    },
-    {
-      command: 'FindWidget.focusFind',
-      key: KeyModifier.Shift | KeyCode.Tab,
-      when: WhenExpression.FocusFindWidgetReplace,
-    },
-    {
-      command: 'FindWidget.focusReplaceAllButton',
-      key: KeyCode.Tab,
-      when: WhenExpression.FocusFindWidgetReplaceButton,
-    },
-    {
-      command: 'FindWidget.focusCloseButton',
-      key: KeyModifier.Shift | KeyCode.Tab,
-      when: WhenExpression.FocusFindWidgetReplaceButton,
-    },
-    {
-      command: 'FindWidget.focusReplaceButton',
-      key: KeyModifier.Shift | KeyCode.Tab,
-      when: WhenExpression.FocusFindWidgetReplaceAllButton,
     },
     {
       command: 'EditorCompletion.focusNext',
@@ -139,7 +133,7 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorCompletions,
     },
     {
-      command: 'EditorCompletion.close',
+      command: 'Editor.closeCompletion',
       key: KeyCode.Escape,
       when: WhenExpression.FocusEditorCompletions,
     },
@@ -166,6 +160,26 @@ export const getKeyBindings = () => {
     {
       command: 'Editor.cursorWordLeft',
       key: KeyModifier.CtrlCmd | KeyCode.LeftArrow,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.cursorDocumentEnd',
+      key: KeyModifier.CtrlCmd | KeyCode.End,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.cursorDocumentStart',
+      key: KeyModifier.CtrlCmd | KeyCode.Home,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.incrementSelection',
+      key: KeyModifier.CtrlCmd | KeyModifier.Alt | KeyCode.KeyI,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.decrementSelection',
+      key: KeyModifier.CtrlCmd | KeyModifier.Alt | KeyCode.KeyD,
       when: WhenExpression.FocusEditorText,
     },
     {
@@ -219,6 +233,16 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.fold',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.BracketLeft,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.goToBracket',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.Backslash,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.closeFind',
       key: KeyCode.Escape,
       when: WhenExpression.FocusFindWidget,
@@ -246,6 +270,11 @@ export const getKeyBindings = () => {
     {
       command: 'Editor.indentMore',
       key: KeyModifier.CtrlCmd | KeyCode.BracketRight,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.unfold',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.BracketRight,
       when: WhenExpression.FocusEditorText,
     },
     {
@@ -284,6 +313,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.deleteLine',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.KeyK,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.cancelSelection',
       key: KeyCode.Escape,
       when: WhenExpression.FocusEditorText,
@@ -291,6 +325,21 @@ export const getKeyBindings = () => {
     {
       command: 'Editor.undo',
       key: KeyModifier.CtrlCmd | KeyCode.KeyZ,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.cursorUndo',
+      key: KeyModifier.CtrlCmd | KeyCode.KeyU,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.redo',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.KeyZ,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.redo',
+      key: KeyModifier.CtrlCmd | KeyCode.KeyY,
       when: WhenExpression.FocusEditorText,
     },
     {
@@ -311,6 +360,16 @@ export const getKeyBindings = () => {
     {
       command: 'Editor.cursorDown',
       key: KeyCode.DownArrow,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.cursorPageDown',
+      key: KeyCode.PageDown,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.cursorDocumentStart',
+      key: KeyCode.PageUp,
       when: WhenExpression.FocusEditorText,
     },
     {
@@ -335,12 +394,12 @@ export const getKeyBindings = () => {
     },
     {
       command: 'Editor.moveLineDown',
-      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.DownArrow,
+      key: KeyModifier.Alt | KeyCode.DownArrow,
       when: WhenExpression.FocusEditorText,
     },
     {
       command: 'Editor.moveLineUp',
-      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.UpArrow,
+      key: KeyModifier.Alt | KeyCode.UpArrow,
       when: WhenExpression.FocusEditorText,
     },
     {
@@ -351,6 +410,16 @@ export const getKeyBindings = () => {
     {
       command: 'Editor.openRename',
       key: KeyCode.F2,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.toggleBreakpoint',
+      key: KeyCode.F9,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
+      command: 'Editor.goToDefinition',
+      key: KeyCode.F12,
       when: WhenExpression.FocusEditorText,
     },
     {
@@ -379,6 +448,11 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
+      command: 'Editor.toggleBlockComment',
+      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.KeyA,
+      when: WhenExpression.FocusEditorText,
+    },
+    {
       command: 'Editor.copy',
       key: KeyModifier.CtrlCmd | KeyCode.KeyC,
       when: WhenExpression.FocusEditorText,
@@ -389,7 +463,7 @@ export const getKeyBindings = () => {
       when: WhenExpression.FocusEditorText,
     },
     {
-      command: 'Editor.showHover2',
+      command: 'Editor.showHover',
       key: KeyModifier.CtrlCmd | KeyCode.KeyH,
       when: WhenExpression.FocusEditorText,
     },
@@ -420,17 +494,17 @@ export const getKeyBindings = () => {
     },
     {
       command: 'Editor.addCursorAbove',
-      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.UpArrow,
+      key: KeyModifier.Alt | KeyModifier.CtrlCmd | KeyCode.UpArrow,
       when: WhenExpression.FocusEditorText,
     },
     {
       command: 'Editor.addCursorBelow',
-      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.DownArrow,
+      key: KeyModifier.Alt | KeyModifier.CtrlCmd | KeyCode.DownArrow,
       when: WhenExpression.FocusEditorText,
     },
     {
       command: 'Editor.findAllReferences',
-      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.F12,
+      key: KeyModifier.Shift | KeyCode.F12,
       when: WhenExpression.FocusEditorText,
     },
     {
@@ -440,8 +514,18 @@ export const getKeyBindings = () => {
     },
     {
       command: 'Editor.selectionGrow',
-      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.Space,
+      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.RightArrow,
       when: WhenExpression.FocusEditor,
+    },
+    {
+      command: 'Editor.selectionShrink',
+      key: KeyModifier.Alt | KeyModifier.Shift | KeyCode.LeftArrow,
+      when: WhenExpression.FocusEditor,
+    },
+    {
+      command: 'Editor.showSignatureHelp',
+      key: KeyModifier.CtrlCmd | KeyModifier.Shift | KeyCode.Space,
+      when: WhenExpression.FocusEditorText,
     },
   ]
 }

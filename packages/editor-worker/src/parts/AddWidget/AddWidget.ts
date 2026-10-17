@@ -1,8 +1,10 @@
 import { WidgetId } from '@lvce-editor/constants'
 import type { Widget } from '../Widget/Widget.ts'
+import * as LocalWidgetId from '../WidgetId/WidgetId.ts'
 
 const isFunctional = (widgetId: number | string): boolean => {
   switch (widgetId) {
+    case LocalWidgetId.Message:
     case WidgetId.ColorPicker:
     case WidgetId.Completion:
     case WidgetId.Find:
@@ -16,7 +18,7 @@ const isFunctional = (widgetId: number | string): boolean => {
 }
 
 export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Widget<T>) => readonly any[]): readonly any[] => {
-  const commands = render(widget)
+  const commands = render(widget).filter((command) => command[0] !== 'Viewlet.appendToBody')
   // TODO how to generate a unique integer id
   // that doesn't collide with ids created in renderer worker?
   // @ts-ignore
@@ -24,12 +26,6 @@ export const addWidget = <T>(widget: Widget<T>, id: string, render: (widget: Wid
   const allCommands: any[] = []
   allCommands.push(['Viewlet.createFunctionalRoot', id, uid, isFunctional(widget.id)])
   allCommands.push(...commands)
-  if (isFunctional(widget.id)) {
-    allCommands.push(['Viewlet.appendToBody', uid])
-  } else {
-    allCommands.push(['Viewlet.send', uid, 'appendWidget'])
-  }
-
   const focusCommandIndex = allCommands.findIndex((command) => {
     return command[2] === 'focus' || command[0] === 'Viewlet.focusSelector'
   })
