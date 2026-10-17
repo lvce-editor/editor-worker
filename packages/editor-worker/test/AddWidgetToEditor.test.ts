@@ -1,4 +1,4 @@
-import { expect, test } from '@jest/globals'
+import { beforeEach, expect, test } from '@jest/globals'
 import { WhenExpression } from '@lvce-editor/constants'
 import * as AddWidgetToEditor from '../src/parts/AddWidgetToEditor/AddWidgetToEditor.ts'
 import * as EditorCommandBlur from '../src/parts/EditorCommand/EditorCommandBlur.ts'
@@ -93,7 +93,7 @@ test('addWidgetToEditor makes blur a no-op while full-focus widget is loading', 
   )
 
   const stagedEditor = EditorStates.get(editor.uid).newState
-  const blurredEditor = EditorCommandBlur.handleBlur(stagedEditor)
+  const blurredEditor = await EditorCommandBlur.handleBlur(stagedEditor)
 
   expect(blurredEditor).toBe(stagedEditor)
 
@@ -101,7 +101,7 @@ test('addWidgetToEditor makes blur a no-op while full-focus widget is loading', 
   await promise
 })
 
-test('addWidgetToEditor hydrates full-focus widget against latest editor state', async () => {
+test('addWidgetToEditor hydrates full-focus widget against latest state after another revision', async () => {
   const widgetId = 9003
   const focusKey = 9013
   const editor = createEditor(9103)
@@ -124,6 +124,7 @@ test('addWidgetToEditor hydrates full-focus widget against latest editor state',
   const latestEditor = {
     ...stagedEditor,
     latestChange: true,
+    widgetRevision: WidgetRevision.next(editor.uid),
   }
   EditorStates.set(editor.uid, stagedEditor, latestEditor)
 
@@ -162,6 +163,7 @@ test('addWidgetToEditor does not resurrect full-focus widget removed during asyn
   const latestEditor = {
     ...stagedEditor,
     widgets: [],
+    widgetRevision: WidgetRevision.next(editor.uid),
   }
   EditorStates.set(editor.uid, stagedEditor, latestEditor)
 
@@ -186,7 +188,7 @@ test('addWidgetToEditor does not add a widget without generated state', async ()
       editorUid: 0,
     },
   }
-  const newStateGenerator = () => undefined
+  const newStateGenerator = (_state: { editorUid: number }): { editorUid: number } | undefined => undefined
   const result = await AddWidgetToEditor.addWidgetToEditor(1, 2, editor, () => widget, newStateGenerator)
 
   expect(result).toBe(editor)

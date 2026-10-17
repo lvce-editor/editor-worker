@@ -66,10 +66,10 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
     EditorStates.set(editor.uid, editor, stagedEditor)
   }
   const newState = await newStateGenerator(initialState, editor.uid)
-  if (WidgetRevision.get(editor.uid) !== widgetRevision) {
-    return getLatestEditor(editor.uid, editor)
-  }
   if (!newState) {
+    if (WidgetRevision.get(editor.uid) !== widgetRevision) {
+      return getLatestEditor(editor.uid, editor)
+    }
     if (fullFocus) {
       const latestEditor = getLatestEditor(editor.uid, stagedEditor)
       if (latestEditor === stagedEditor) {
@@ -90,6 +90,9 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
       EditorStates.set(editor.uid, latestEditor, hydratedEditor)
     }
     return hydratedEditor
+  }
+  if (WidgetRevision.get(editor.uid) !== widgetRevision) {
+    return getLatestEditor(editor.uid, editor)
   }
   const latestWidget = {
     ...widget,
