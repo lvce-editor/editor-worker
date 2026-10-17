@@ -5,6 +5,7 @@ import * as EditorStates from '../EditorStates/EditorStates.ts'
 const rendererCommands = new Set([
   'ColorPicker.handleSliderKeyDown',
   'handleFocus',
+  'handleMouseDown',
   'handleUriChange',
   'handleWorkspaceRefresh',
   'hotReload',
