@@ -63,7 +63,8 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
     widgets: newWidgets,
   }
   if (fullFocus) {
-    EditorStates.set(editor.uid, editor, stagedEditor)
+    // Staging changes pending state; only rendering may advance the mounted baseline.
+    EditorStates.set(editor.uid, EditorStates.get(editor.uid)?.oldState || editor, stagedEditor)
   }
   const newState = await newStateGenerator(initialState, editor.uid)
   if (!newState) {
@@ -73,7 +74,7 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
     if (fullFocus) {
       const latestEditor = getLatestEditor(editor.uid, stagedEditor)
       if (latestEditor === stagedEditor) {
-        EditorStates.set(editor.uid, stagedEditor, editor)
+        EditorStates.set(editor.uid, EditorStates.get(editor.uid)?.oldState || editor, editor)
       }
       return latestEditor === stagedEditor ? editor : latestEditor
     }
@@ -91,7 +92,7 @@ export const addWidgetToEditor = async <K, T extends Widget<K>>(
     const latestEditor = currentEditor.widgets === editor.widgets ? { ...currentEditor, widgets: newWidgets } : currentEditor
     const hydratedEditor = hydrateWidget(latestEditor, widgetId, widgetUid, latestState)
     if (hydratedEditor !== latestEditor) {
-      EditorStates.set(editor.uid, latestEditor, hydratedEditor)
+      EditorStates.set(editor.uid, EditorStates.get(editor.uid)?.oldState || editor, hydratedEditor)
     }
     return hydratedEditor
   }

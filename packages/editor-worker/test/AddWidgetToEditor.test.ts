@@ -4,6 +4,8 @@ import * as AddWidgetToEditor from '../src/parts/AddWidgetToEditor/AddWidgetToEd
 import * as EditorCommandBlur from '../src/parts/EditorCommand/EditorCommandBlur.ts'
 import * as EditorCommandCloseFind from '../src/parts/EditorCommand/EditorCommandCloseFind.ts'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
+import * as RenderWidgets from '../src/parts/RenderWidgets/RenderWidgets.ts'
+import * as WidgetRegistry from '../src/parts/WidgetRegistry/WidgetRegistry.ts'
 import * as WidgetRevision from '../src/parts/WidgetRevision/WidgetRevision.ts'
 
 beforeEach(() => {
@@ -255,4 +257,21 @@ test('closing a widget while it opens prevents the delayed result from resurrect
 
   expect(result).toBe(editor)
   expect(result.widgets).toEqual([])
+})
+
+test('loading a full-focus widget preserves the rendered baseline until its root is mounted', async () => {
+  const widgetId = 9006
+  const editor = createEditor(9106)
+  const renderedEditor = { ...editor, previouslyRendered: true }
+  EditorStates.set(editor.uid, renderedEditor as any, editor as any)
+  WidgetRegistry.set(widgetId, {
+    add: () => [['Viewlet.createFunctionalRoot', 'FindWidget', 9206, true]],
+    render: () => [['update-widget', 9206]],
+  })
+
+  const result = await AddWidgetToEditor.addWidgetToEditor(widgetId, 9016, editor, createFactory(widgetId, 9206), async (state) => state, true)
+  const instance = EditorStates.get(editor.uid)
+
+  expect(instance.oldState).toBe(renderedEditor)
+  expect(RenderWidgets.renderWidgets(instance.oldState, result)).toContainEqual(['Viewlet.createFunctionalRoot', 'FindWidget', 9206, true])
 })
