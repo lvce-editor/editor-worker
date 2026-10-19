@@ -38,14 +38,61 @@ test.skip('editorCursorDown - with emoji - 👮🏽‍♀️', () => {
   })
 })
 
-test('editorCursorDown - line below is shorter', () => {
+test('editorCursorDown - clamps column to shorter line', () => {
   const editor = {
     lineCache: [],
     lines: ['abcd', 'a'],
     selections: EditorSelection.fromRange(0, 4, 0, 4),
   }
   expect(EditorCursorDown.cursorDown(editor)).toMatchObject({
-    selections: EditorSelection.fromRange(1, 4, 1, 4),
+    selections: EditorSelection.fromRange(1, 1, 1, 1),
+  })
+})
+
+test('editorCursorDown - clamps column to an empty line', () => {
+  const editor = {
+    lineCache: [],
+    lines: ['abcd', ''],
+    selections: EditorSelection.fromRange(0, 4, 0, 4),
+  }
+  expect(EditorCursorDown.cursorDown(editor)).toMatchObject({
+    selections: EditorSelection.fromRange(1, 0, 1, 0),
+  })
+})
+
+test('editorCursorDown - keeps column when next line is long enough', () => {
+  const editor = {
+    lineCache: [],
+    lines: ['ab', 'abcd'],
+    selections: EditorSelection.fromRange(0, 2, 0, 2),
+  }
+  expect(EditorCursorDown.cursorDown(editor)).toMatchObject({
+    selections: EditorSelection.fromRange(1, 2, 1, 2),
+  })
+})
+
+test.each([
+  ['abcd', '\t', 1],
+  ['abcd', '😀', 2],
+])('editorCursorDown - uses string offsets for %j', (sourceLine, targetLine, expectedColumn) => {
+  const editor = {
+    lineCache: [],
+    lines: [sourceLine, targetLine],
+    selections: EditorSelection.fromRange(0, sourceLine.length, 0, sourceLine.length),
+  }
+  expect(EditorCursorDown.cursorDown(editor)).toMatchObject({
+    selections: EditorSelection.fromRange(1, expectedColumn, 1, expectedColumn),
+  })
+})
+
+test('editorCursorDown - clamps multiple selections independently', () => {
+  const editor = {
+    lineCache: [],
+    lines: ['abcd', 'x', 'longer'],
+    selections: EditorSelection.fromRanges(0, 4, 0, 4, 1, 1, 1, 1),
+  }
+  expect(EditorCursorDown.cursorDown(editor)).toMatchObject({
+    selections: EditorSelection.fromRanges(1, 1, 1, 1, 2, 1, 2, 1),
   })
 })
 
