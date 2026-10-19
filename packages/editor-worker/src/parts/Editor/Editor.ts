@@ -147,7 +147,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     modified: true,
     redoStack: [],
     selections: newSelections,
-    snippetTabStops: changes.every((change) => change.origin === EditOrigin.EditorType || change.origin === EditOrigin.EditorTypeWithAutoClosing)
+    snippetTabStops: changes.every((change: any) => change.origin === EditOrigin.EditorType || change.origin === EditOrigin.EditorTypeWithAutoClosing)
       ? editor.snippetTabStops
       : undefined,
     undoStack,
