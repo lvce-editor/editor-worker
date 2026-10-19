@@ -15,23 +15,24 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, FindWidg
 
   const firstMatch = Locator('.EditorRow', { hasText: 'needle first' })
   const secondMatch = Locator('.EditorRow', { hasText: 'needle second' })
+  const middleRow = Locator('.EditorRow').nth(2)
   await expect(firstMatch).toHaveCount(0)
   await expect(secondMatch).toHaveCount(0)
 
   await Locator('.FindWidget .MultilineInputBox').type('needle')
   await expect(firstMatch).toBeVisible()
   await Editor.shouldHaveSelections(new Uint32Array([100, 0, 100, 6]))
-  await expect(Locator('.EditorRow').nth(2)).toHaveText('needle first')
+  await expect(middleRow).toHaveText('needle first')
 
   await FindWidget.focusNext()
   await expect(secondMatch).toBeVisible()
   await Editor.shouldHaveSelections(new Uint32Array([200, 0, 200, 6]))
-  await expect(Locator('.EditorRow').nth(2)).toHaveText('needle second')
+  await expect(middleRow).toHaveText('needle second')
   await expect(firstMatch).toHaveCount(0)
 
   await FindWidget.focusPrevious()
   await expect(firstMatch).toBeVisible()
   await Editor.shouldHaveSelections(new Uint32Array([100, 0, 100, 6]))
-  await expect(Locator('.EditorRow').nth(2)).toHaveText('needle first')
+  await expect(middleRow).toHaveText('needle first')
   await expect(secondMatch).toHaveCount(0)
 }
