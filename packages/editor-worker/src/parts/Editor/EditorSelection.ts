@@ -30,7 +30,7 @@ const getSelectionFromChange = (change: any) => {
   }
 }
 
-export const setSelections = (editor: any, selections: any) => {
+export const setSelections = (editor: any, selections: any, centerOffscreenSelection = false) => {
   Assert.object(editor)
   const { foldingRanges = [] } = editor
   const primarySelectionIndex = editor.primarySelectionIndex || 0
@@ -62,11 +62,16 @@ export const setSelections = (editor: any, selections: any) => {
         selections: normalizedSelections,
       }
     }
-    const desiredStartVisualRow = visualRow < startVisualRow ? visualRow : visualRow - editor.numberOfVisibleLines + 1
+    const desiredStartVisualRow = centerOffscreenSelection
+      ? visualRow - Math.floor(editor.numberOfVisibleLines / 2)
+      : visualRow < startVisualRow
+        ? visualRow
+        : visualRow - editor.numberOfVisibleLines + 1
+    const deltaY = Clamp.clamp(desiredStartVisualRow * editor.itemHeight, 0, editor.finalDeltaY ?? 0)
     return EditorFolding.updateLayout(
       {
         ...editor,
-        deltaY: desiredStartVisualRow * editor.itemHeight,
+        deltaY,
         selections: normalizedSelections,
       },
       foldingRanges,
@@ -88,7 +93,11 @@ export const setSelections = (editor: any, selections: any) => {
     return newEditor
   }
   const { finalDeltaY, height, itemHeight, lines, scrollBarHeight } = editor
-  const desiredMinLineY = rowIndex < minLineY ? rowIndex : rowIndex - numberOfVisibleLines + 1
+  const desiredMinLineY = centerOffscreenSelection
+    ? rowIndex - Math.floor(numberOfVisibleLines / 2)
+    : rowIndex < minLineY
+      ? rowIndex
+      : rowIndex - numberOfVisibleLines + 1
   const deltaY = Clamp.clamp(desiredMinLineY * itemHeight, 0, finalDeltaY)
   const newMinLineY = Math.floor(deltaY / itemHeight)
   const newMaxLineY = Math.min(newMinLineY + numberOfVisibleLines, lines.length)
