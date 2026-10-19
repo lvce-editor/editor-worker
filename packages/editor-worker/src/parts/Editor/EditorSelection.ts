@@ -67,7 +67,8 @@ export const setSelections = (editor: any, selections: any, centerOffscreenSelec
       : visualRow < startVisualRow
         ? visualRow
         : visualRow - editor.numberOfVisibleLines + 1
-    const deltaY = Clamp.clamp(desiredStartVisualRow * editor.itemHeight, 0, editor.finalDeltaY ?? 0)
+    const desiredDeltaY = desiredStartVisualRow * editor.itemHeight
+    const deltaY = centerOffscreenSelection ? Clamp.clamp(desiredDeltaY, 0, editor.finalDeltaY ?? 0) : desiredDeltaY
     return EditorFolding.updateLayout(
       {
         ...editor,
