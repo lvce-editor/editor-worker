@@ -1,11 +1,11 @@
 import * as ApplyTabCompletion from '../ApplyTabCompletion/ApplyTabCompletion.ts'
+import * as Editor from '../Editor/Editor.ts'
 import * as EditorIndentMore from '../EditorCommand/EditorCommandIndentMore.ts'
 import * as EditorType from '../EditorCommand/EditorCommandType.ts'
 import * as EditorSelection from '../EditorSelection/EditorSelection.ts'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
 import { getIndentString } from '../GetIndentString/GetIndentString.ts'
 import * as TabCompletion from '../TabCompletion/TabCompletion.ts'
-import * as Editor from '../Editor/Editor.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
 const insertTab = (editor: any) => {

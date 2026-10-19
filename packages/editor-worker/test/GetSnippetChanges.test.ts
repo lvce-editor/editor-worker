@@ -57,8 +57,8 @@ test('removes numbered placeholders and reports ordered tab stops', () => {
   expect(result.changes[0].inserted).toEqual(['<input type="">'])
   expect(result.selectionChanges).toEqual(new Uint32Array([0, 13, 0, 13]))
   expect(result.tabStops).toEqual([
-    { index: 0, rowIndex: 0, columnIndex: 13 },
-    { index: 1, rowIndex: 0, columnIndex: 15 },
+    { columnIndex: 13, index: 0, rowIndex: 0 },
+    { columnIndex: 15, index: 1, rowIndex: 0 },
   ])
 })
 
@@ -69,7 +69,7 @@ test('keeps numbered placeholder positions after multiline indentation', () => {
   })
   expect(result.changes[0].inserted).toEqual(['<main>', '  <section></section>', '  '])
   expect(result.tabStops).toEqual([
-    { index: 1, rowIndex: 1, columnIndex: 11 },
-    { index: 0, rowIndex: 2, columnIndex: 2 },
+    { columnIndex: 11, index: 1, rowIndex: 1 },
+    { columnIndex: 2, index: 0, rowIndex: 2 },
   ])
 })

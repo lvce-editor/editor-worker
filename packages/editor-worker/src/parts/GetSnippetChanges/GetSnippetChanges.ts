@@ -57,8 +57,12 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
           rowIndex,
         })),
       )
-      const initialStop = stops.find((stop) => stop.index === 0) ?? stops.filter((stop) => stop.index > 0).sort((a, b) => a.index - b.index)[0]
-      if (!initialStop) {
+      const initialStop = stops.find((stop) => stop.index === 0) ?? stops.filter((stop) => stop.index > 0).toSorted((a, b) => a.index - b.index)[0]
+      if (initialStop) {
+        const cursorRow = selectionStartRow + initialStop.rowIndex
+        const cursorColumn = initialStop.position + (initialStop.rowIndex === 0 ? selectionStartColumn - snippet.deleted : indent.length)
+        selectionChanges.push(cursorRow, cursorColumn, cursorRow, cursorColumn)
+      } else {
         selectionChanges.push(
           selectionEndRow + insertedLines.length - deleted.length,
           // @ts-ignore
@@ -67,20 +71,33 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
           // @ts-ignore
           selectionEndColumn + lastInsertedLine.length,
         )
-      } else {
-        const cursorRow = selectionStartRow + initialStop.rowIndex
-        const cursorColumn = initialStop.position + (initialStop.rowIndex === 0 ? selectionStartColumn - snippet.deleted : indent.length)
-        selectionChanges.push(cursorRow, cursorColumn, cursorRow, cursorColumn)
       }
       for (const stop of stops) {
         const columnIndex = stop.position + (stop.rowIndex === 0 ? selectionStartColumn - snippet.deleted : indent.length)
-        tabStops.push({ index: stop.index, rowIndex: selectionStartRow + stop.rowIndex, columnIndex })
+        tabStops.push({ columnIndex, index: stop.index, rowIndex: selectionStartRow + stop.rowIndex })
       }
     } else {
       const line = insertedLines[0]
       const stops = parsedLines[0].tabStops
-      const initialStop = stops.find((stop) => stop.index === 0) ?? stops.filter((stop) => stop.index > 0).sort((a, b) => a.index - b.index)[0]
-      if (!initialStop) {
+      const initialStop = stops.find((stop) => stop.index === 0) ?? stops.filter((stop) => stop.index > 0).toSorted((a, b) => a.index - b.index)[0]
+      if (initialStop) {
+        const inserted = line
+        const cursorColumnIndex = selectionStartColumn - snippet.deleted + initialStop.position
+        selectionChanges.push(selectionStartRow, cursorColumnIndex, selectionStartRow, cursorColumnIndex)
+        changes.push({
+          deleted: [''],
+          end: {
+            columnIndex: selectionEndColumn,
+            rowIndex: selectionEndRow,
+          },
+          inserted: [inserted],
+          origin: EditOrigin.EditorSnippet,
+          start: {
+            columnIndex: selectionStartColumn - snippet.deleted,
+            rowIndex: selectionStartRow,
+          },
+        })
+      } else {
         const cursorColumnIndex = selectionStartColumn - snippet.deleted
         // @ts-ignore
         selectionChanges.push(selectionStartRow, cursorColumnIndex, selectionStartRow, cursorColumnIndex)
@@ -98,36 +115,19 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
             rowIndex: selectionStartRow,
           },
         })
-      } else {
-        const inserted = line
-        const cursorColumnIndex = selectionStartColumn - snippet.deleted + initialStop.position
-        selectionChanges.push(selectionStartRow, cursorColumnIndex, selectionStartRow, cursorColumnIndex)
-        changes.push({
-          deleted: [''],
-          end: {
-            columnIndex: selectionEndColumn,
-            rowIndex: selectionEndRow,
-          },
-          inserted: [inserted],
-          origin: EditOrigin.EditorSnippet,
-          start: {
-            columnIndex: selectionStartColumn - snippet.deleted,
-            rowIndex: selectionStartRow,
-          },
-        })
       }
       for (const stop of stops) {
         tabStops.push({
+          columnIndex: selectionStartColumn - snippet.deleted + stop.position,
           index: stop.index,
           rowIndex: selectionStartRow,
-          columnIndex: selectionStartColumn - snippet.deleted + stop.position,
         })
       }
     }
   }
   return {
     changes,
-    tabStops,
     selectionChanges: new Uint32Array(selectionChanges),
+    tabStops,
   }
 }

@@ -73,7 +73,7 @@ const updateTransformedDiagnostics = async (editor: any, changes: readonly any[]
 export const scheduleSelections = (editor: any, selectionEdits: any) => {
   return {
     ...EditorSelection.setSelections(editor, selectionEdits),
-    ...(editor.snippetTabStops ? { snippetTabStops: undefined } : {}),
+    ...(editor.snippetTabStops && { snippetTabStops: undefined }),
   }
 }
 
