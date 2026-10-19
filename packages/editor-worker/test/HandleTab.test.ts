@@ -136,6 +136,22 @@ test('handleTab - provider error logs the error and inserts a tab', async () => 
   ])
 })
 
+test('handleTab - advances to the next snippet stop after typing at the current stop', async () => {
+  const editor = {
+    lines: ['<input type="text">'],
+    primarySelectionIndex: 0,
+    selections: new Uint32Array([0, 17, 0, 17]),
+    snippetTabStops: {
+      activeOffset: 13,
+      stops: [{ offset: 15 }],
+    },
+  }
+  const newEditor = await HandleTab.handleTab(editor)
+  expect(newEditor.selections).toEqual(new Uint32Array([0, 19, 0, 19]))
+  expect(newEditor.snippetTabStops).toBeUndefined()
+  expect(mockEditorType.type).not.toHaveBeenCalled()
+})
+
 test.skip('handleTab - apply result', async () => {
   // Skipped: Cannot spy on ES module exports (read-only properties)
   const getTabCompletionSpy = jest.spyOn(TabCompletion, 'getTabCompletion').mockResolvedValue({

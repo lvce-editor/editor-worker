@@ -71,7 +71,10 @@ const updateTransformedDiagnostics = async (editor: any, changes: readonly any[]
 }
 
 export const scheduleSelections = (editor: any, selectionEdits: any) => {
-  return EditorSelection.setSelections(editor, selectionEdits)
+  return {
+    ...EditorSelection.setSelections(editor, selectionEdits),
+    ...(editor.snippetTabStops ? { snippetTabStops: undefined } : {}),
+  }
 }
 
 const updateLines = (editor: any, lines: readonly string[]) => {
@@ -144,6 +147,9 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
     modified: true,
     redoStack: [],
     selections: newSelections,
+    snippetTabStops: changes.every((change) => change.origin === EditOrigin.EditorType || change.origin === EditOrigin.EditorTypeWithAutoClosing)
+      ? editor.snippetTabStops
+      : undefined,
     undoStack,
   }
   // Update link decorations after text changes
@@ -205,6 +211,7 @@ export const scheduleDocumentAndCursorsSelectionIsUndo = async (editor, changes,
     invalidStartIndex,
     lines: newLines,
     selections: newSelections,
+    snippetTabStops: undefined,
   }
 
   const incrementalEdits = await GetIncrementalEdits.getIncrementalEdits(editor, newEditor)
