@@ -44,6 +44,6 @@ export const getFindWidgetFontSize = async (): Promise<unknown> => {
 
 export const setSelections = async (editorUid: number, selections: Uint32Array): Promise<void> => {
   const editor = GetEditor.getEditor(editorUid)
-  const newEditor = EditorSelection.setSelections(editor, selections)
+  const newEditor = EditorSelection.setSelections(editor, selections, true)
   await updateEditor(editorUid, editor, newEditor)
 }

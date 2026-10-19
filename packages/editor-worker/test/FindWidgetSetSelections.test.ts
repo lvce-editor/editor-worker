@@ -8,21 +8,22 @@ const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
 const { getFindWidgetWorkerCommandMap } = await import('../src/parts/GetFindWidgetWorkerCommandMap/GetFindWidgetWorkerCommandMap.ts')
 
 test.each([
-  [0, 2, 40],
-  [40, 0, 0],
-  [20, 1, 20],
-])('find selection scrolls from %i to row %i', async (deltaY, row, expectedDeltaY) => {
+  [0, 5, 80],
+  [100, 0, 0],
+  [0, 19, 300],
+  [40, 3, 40],
+])('find selection scrolls from %i to centered row %i', async (deltaY, row, expectedDeltaY) => {
   const editorUid = 1
   const editor = {
     deltaY,
-    finalDeltaY: 40,
-    height: 20,
+    finalDeltaY: 300,
+    height: 60,
     itemHeight: 20,
     lineCache: [],
-    lines: ['line 1', 'line 2', 'line 3'],
-    maxLineY: deltaY / 20 + 1,
+    lines: Array.from({ length: 20 }, (_, index) => `line ${index + 1}`),
+    maxLineY: deltaY / 20 + 3,
     minLineY: deltaY / 20,
-    numberOfVisibleLines: 1,
+    numberOfVisibleLines: 3,
     scrollBarHeight: 10,
     selections: new Uint32Array([0, 0, 0, 0]),
     uid: editorUid,
@@ -33,8 +34,6 @@ test.each([
 
   expect(EditorStates.get(editorUid)?.newState).toMatchObject({
     deltaY: expectedDeltaY,
-    maxLineY: row + 1,
-    minLineY: row,
     selections: new Uint32Array([row, 0, row, 4]),
   })
 })
