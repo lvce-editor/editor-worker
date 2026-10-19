@@ -13,7 +13,7 @@ export const typeWithAutoClosing = async (editor: any, text: string) => {
   switch (text) {
     // case AutoClosing.ClosingAngleBracket: // TODO support auto closing when typing closing angle bracket of start tag
     case AutoClosing.Slash:
-      if (isAutoClosingTagsEnabled) {
+      if (isAutoClosingTagsEnabled && isClosingTagSlash(editor)) {
         return EditorTypeWithAutoClosingTag.typeWithAutoClosingTag(editor, text)
       }
       break
@@ -65,4 +65,12 @@ export const typeWithAutoClosing = async (editor: any, text: string) => {
 
   // TODO should editor type command know about editor completion? -> no
   // EditorCommandCompletion.openFromType(editor, text)
+}
+
+const isClosingTagSlash = (editor: any): boolean => {
+  const [startRow, startColumn, endRow, endColumn] = editor.selections
+  if (startRow !== endRow || startColumn !== endColumn || startColumn === 0) {
+    return false
+  }
+  return editor.lines[startRow][startColumn - 1] === '<'
 }

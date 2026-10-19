@@ -50,4 +50,12 @@ export const test: Test = async ({ Command, Editor, Extension, FileSystem, Main,
   await Editor.shouldHaveText('<div>')
   await Command.execute('Editor.redo')
   await Editor.shouldHaveText('<div>/')
+
+  const typescriptPath = `${tmpDir}/textures.ts`
+  await FileSystem.writeFile(typescriptPath, 'image.src = "textures')
+  await Main.openUri(typescriptPath)
+  await Editor.setCursor(0, 'image.src = "textures'.length)
+  await Editor.type('/')
+  await Editor.type('icon.png')
+  await Editor.shouldHaveText('image.src = "textures/icon.png')
 }
