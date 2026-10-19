@@ -3,24 +3,36 @@ import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as SplitLines from '../SplitLines/SplitLines.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
+const getSnippetLines = (inserted: string) => {
+  return SplitLines.splitLines(inserted).map((line) => {
+    const tabStops: { index: number; position: number }[] = []
+    let text = ''
+    for (let i = 0; i < line.length; i++) {
+      if (line[i] === '$' && line[i + 1] >= '0' && line[i + 1] <= '9' && line[i - 1] !== '\\') {
+        tabStops.push({
+          index: Number(line[i + 1]),
+          position: text.length,
+        })
+        i++
+      } else {
+        text += line[i]
+      }
+    }
+    return { tabStops, text }
+  })
+}
+
 export const getSnippetChanges = (lines: readonly string[], selections: any, snippet: any) => {
   // TODO verify that deleted fits in the line
-  const insertedLines = SplitLines.splitLines(snippet.inserted)
+  const parsedLines = getSnippetLines(snippet.inserted)
+  const insertedLines = parsedLines.map((line) => line.text)
   const changes: any[] = []
   const selectionChanges: any[] = []
+  const tabStops: { index: number; rowIndex: number; columnIndex: number }[] = []
   for (let i = 0; i < selections.length; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
     if (insertedLines.length > 1) {
-      let placeholderRow = -1
-      let placeholderColumn = -1
-      const insertedLinesWithoutPlaceholder = insertedLines.map((line, rowIndex) => {
-        const index = line.indexOf('$0')
-        if (index !== -1 && placeholderRow === -1) {
-          placeholderRow = rowIndex
-          placeholderColumn = index
-        }
-        return line.replace('$0', '')
-      })
+      const insertedLinesWithoutPlaceholder = insertedLines
       const line = TextDocument.getLine({ lines }, selectionStartRow)
       const indent = TextDocument.getIndent(line)
       const insertedLinesHere = [insertedLinesWithoutPlaceholder[0], ...insertedLinesWithoutPlaceholder.slice(1).map((line) => indent + line)]
@@ -39,7 +51,18 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
         },
       })
       const lastInsertedLine = insertedLines.at(-1)
-      if (placeholderRow === -1) {
+      const stops = parsedLines.flatMap((line, rowIndex) =>
+        line.tabStops.map((stop) => ({
+          ...stop,
+          rowIndex,
+        })),
+      )
+      const initialStop = stops.find((stop) => stop.index === 0) ?? stops.filter((stop) => stop.index > 0).toSorted((a, b) => a.index - b.index)[0]
+      if (initialStop) {
+        const cursorRow = selectionStartRow + initialStop.rowIndex
+        const cursorColumn = initialStop.position + (initialStop.rowIndex === 0 ? selectionStartColumn - snippet.deleted : indent.length)
+        selectionChanges.push(cursorRow, cursorColumn, cursorRow, cursorColumn)
+      } else {
         selectionChanges.push(
           selectionEndRow + insertedLines.length - deleted.length,
           // @ts-ignore
@@ -48,15 +71,33 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
           // @ts-ignore
           selectionEndColumn + lastInsertedLine.length,
         )
-      } else {
-        const cursorRow = selectionStartRow + placeholderRow
-        const cursorColumn = placeholderColumn + (placeholderRow === 0 ? selectionStartColumn - snippet.deleted : indent.length)
-        selectionChanges.push(cursorRow, cursorColumn, cursorRow, cursorColumn)
+      }
+      for (const stop of stops) {
+        const columnIndex = stop.position + (stop.rowIndex === 0 ? selectionStartColumn - snippet.deleted : indent.length)
+        tabStops.push({ columnIndex, index: stop.index, rowIndex: selectionStartRow + stop.rowIndex })
       }
     } else {
       const line = insertedLines[0]
-      const placeholderIndex = line.indexOf('$0')
-      if (placeholderIndex === -1) {
+      const stops = parsedLines[0].tabStops
+      const initialStop = stops.find((stop) => stop.index === 0) ?? stops.filter((stop) => stop.index > 0).toSorted((a, b) => a.index - b.index)[0]
+      if (initialStop) {
+        const inserted = line
+        const cursorColumnIndex = selectionStartColumn - snippet.deleted + initialStop.position
+        selectionChanges.push(selectionStartRow, cursorColumnIndex, selectionStartRow, cursorColumnIndex)
+        changes.push({
+          deleted: [''],
+          end: {
+            columnIndex: selectionEndColumn,
+            rowIndex: selectionEndRow,
+          },
+          inserted: [inserted],
+          origin: EditOrigin.EditorSnippet,
+          start: {
+            columnIndex: selectionStartColumn - snippet.deleted,
+            rowIndex: selectionStartRow,
+          },
+        })
+      } else {
         const cursorColumnIndex = selectionStartColumn - snippet.deleted
         // @ts-ignore
         selectionChanges.push(selectionStartRow, cursorColumnIndex, selectionStartRow, cursorColumnIndex)
@@ -74,22 +115,12 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
             rowIndex: selectionStartRow,
           },
         })
-      } else {
-        const inserted = line.replace('$0', '')
-        const cursorColumnIndex = selectionStartColumn - snippet.deleted + placeholderIndex
-        selectionChanges.push(selectionStartRow, cursorColumnIndex, selectionStartRow, cursorColumnIndex)
-        changes.push({
-          deleted: [''],
-          end: {
-            columnIndex: selectionEndColumn,
-            rowIndex: selectionEndRow,
-          },
-          inserted: [inserted],
-          origin: EditOrigin.EditorSnippet,
-          start: {
-            columnIndex: selectionStartColumn - snippet.deleted,
-            rowIndex: selectionStartRow,
-          },
+      }
+      for (const stop of stops) {
+        tabStops.push({
+          columnIndex: selectionStartColumn - snippet.deleted + stop.position,
+          index: stop.index,
+          rowIndex: selectionStartRow,
         })
       }
     }
@@ -97,5 +128,6 @@ export const getSnippetChanges = (lines: readonly string[], selections: any, sni
   return {
     changes,
     selectionChanges: new Uint32Array(selectionChanges),
+    tabStops,
   }
 }

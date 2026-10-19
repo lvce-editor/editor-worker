@@ -48,3 +48,28 @@ test('keeps the existing end position for multiline snippets without a placehold
   expect(result.selectionChanges).toEqual(new Uint32Array([1, 10, 1, 10]))
   expect(result.changes[0].inserted).toEqual(['<html>', '  </html>'])
 })
+
+test('removes numbered placeholders and reports ordered tab stops', () => {
+  const result = GetSnippetChanges.getSnippetChanges(['input'], new Uint32Array([0, 5, 0, 5]), {
+    deleted: 5,
+    inserted: '<input type="$0">$1',
+  })
+  expect(result.changes[0].inserted).toEqual(['<input type="">'])
+  expect(result.selectionChanges).toEqual(new Uint32Array([0, 13, 0, 13]))
+  expect(result.tabStops).toEqual([
+    { columnIndex: 13, index: 0, rowIndex: 0 },
+    { columnIndex: 15, index: 1, rowIndex: 0 },
+  ])
+})
+
+test('keeps numbered placeholder positions after multiline indentation', () => {
+  const result = GetSnippetChanges.getSnippetChanges(['  !'], new Uint32Array([0, 3, 0, 3]), {
+    deleted: 1,
+    inserted: '<main>\n<section>$1</section>\n$0',
+  })
+  expect(result.changes[0].inserted).toEqual(['<main>', '  <section></section>', '  '])
+  expect(result.tabStops).toEqual([
+    { columnIndex: 11, index: 1, rowIndex: 1 },
+    { columnIndex: 2, index: 0, rowIndex: 2 },
+  ])
+})

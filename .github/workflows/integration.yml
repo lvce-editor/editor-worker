@@ -95,6 +95,9 @@ jobs:
       - name: Test tab completion setting select and persistence
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.settings-tab-completion-select
+      - name: Test HTML snippet Tab stops
+        working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
+        run: npm run e2e:headless -- --test-name-prefix=editor.html-input-snippet-tabstop
       - name: Test highlighted editor horizontal virtualization
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-highlighted-horizontal-virtualization
