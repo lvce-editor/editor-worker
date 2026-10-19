@@ -15,5 +15,5 @@ export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
   await Editor.cursorDown()
 
   // assert
-  await Editor.shouldHaveSelections(new Uint32Array([1, 14, 1, 14])) // TODO
+  await Editor.shouldHaveSelections(new Uint32Array([1, 5, 1, 5]))
 }
