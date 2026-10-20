@@ -99,10 +99,10 @@ test('advanceSelectionAutoScroll - scrolls farther per frame for a more distant 
   await EditorCommandMoveSelectionPx.advanceSelectionAutoScroll(nearbyEditor)
   await EditorCommandMoveSelectionPx.advanceSelectionAutoScroll(distantEditor)
 
-  expect(setDeltaY).toHaveBeenNthCalledWith(1, nearbyEditor, 0.1)
-  expect(setDeltaY).toHaveBeenNthCalledWith(2, distantEditor, 5)
-  expect(at).toHaveBeenNthCalledWith(1, expect.objectContaining({ deltaY: 0.1 }), 20, 49)
-  expect(at).toHaveBeenNthCalledWith(2, expect.objectContaining({ deltaY: 5 }), 20, 49)
+  expect(setDeltaY).toHaveBeenNthCalledWith(1, nearbyEditor, 4.2)
+  expect(setDeltaY).toHaveBeenNthCalledWith(2, distantEditor, 14)
+  expect(at).toHaveBeenNthCalledWith(1, expect.objectContaining({ deltaY: 4.2 }), 20, 49)
+  expect(at).toHaveBeenNthCalledWith(2, expect.objectContaining({ deltaY: 14 }), 20, 49)
 })
 
 test('advanceSelectionAutoScroll - scrolls upward above the editor', async () => {
@@ -114,8 +114,36 @@ test('advanceSelectionAutoScroll - scrolls upward above the editor', async () =>
 
   await EditorCommandMoveSelectionPx.advanceSelectionAutoScroll(editor)
 
-  expect(setDeltaY).toHaveBeenCalledWith(editor, 19)
-  expect(at).toHaveBeenCalledWith(expect.objectContaining({ deltaY: 19 }), 20, 10)
+  expect(setDeltaY).toHaveBeenCalledWith(editor, 14)
+  expect(at).toHaveBeenCalledWith(expect.objectContaining({ deltaY: 14 }), 20, 10)
+})
+
+test('advanceSelectionAutoScroll - scrolls upward farther for a more distant pointer', async () => {
+  const nearbyEditor = createEditor({
+    hasListener: true,
+    selectionAutoMovePosition: { x: 20, y: 9 },
+  })
+  const distantEditor = createEditor({
+    hasListener: true,
+    selectionAutoMovePosition: { x: 20, y: -40 },
+  })
+
+  await EditorCommandMoveSelectionPx.advanceSelectionAutoScroll(nearbyEditor)
+  await EditorCommandMoveSelectionPx.advanceSelectionAutoScroll(distantEditor)
+
+  expect(setDeltaY).toHaveBeenNthCalledWith(1, nearbyEditor, -4.2)
+  expect(setDeltaY).toHaveBeenNthCalledWith(2, distantEditor, -14)
+})
+
+test('advanceSelectionAutoScroll - caps speed for very distant pointers', async () => {
+  const editor = createEditor({
+    hasListener: true,
+    selectionAutoMovePosition: { x: 20, y: 1000 },
+  })
+
+  await EditorCommandMoveSelectionPx.advanceSelectionAutoScroll(editor)
+
+  expect(setDeltaY).toHaveBeenCalledWith(editor, 96)
 })
 
 test('advanceSelectionAutoScroll - stops at the scroll boundary', async () => {

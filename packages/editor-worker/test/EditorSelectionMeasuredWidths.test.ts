@@ -50,6 +50,32 @@ test('measures a partial line instead of using its full width', async () => {
   expect(invoke).toHaveBeenCalledWith('TextMeasurement.measureTextWidth', 'he', 400, 14, 'proportional', 0, false, 3)
 })
 
+test('does not measure unused full-line widths for an uncached single-line selection', async () => {
+  const editor = { ...createEditor(), selections: new Uint32Array([0, 1, 0, 3]) }
+
+  await getVisible(editor)
+
+  expect(invoke).toHaveBeenCalledTimes(2)
+  expect(invoke).toHaveBeenCalledWith('TextMeasurement.measureTextWidth', 'hel', 400, 14, 'proportional', 0, false, 3)
+  expect(invoke).toHaveBeenCalledWith('TextMeasurement.measureTextWidth', 'h', 400, 14, 'proportional', 0, false, 3)
+})
+
+test('batches uncached full-line widths for a multi-line selection', async () => {
+  const editor = {
+    ...createEditor(),
+    lines: ['start', '\t👩‍💻', 'end!!'],
+    maxLineY: 3,
+    selections: new Uint32Array([0, 0, 2, 5]),
+    visibleLineIndices: [0, 1, 2],
+  }
+
+  const result = await getVisible(editor)
+
+  expect(invoke).toHaveBeenCalledTimes(1)
+  expect(invoke).toHaveBeenCalledWith('TextMeasurement.measureTextWidths', ['start', 'end!!', '    👩‍💻'], 400, 14, 'proportional', 0, false, 3)
+  expect(result.cursorInfos).toEqual(['14px 40px'])
+})
+
 test('preserves fractional horizontal scrolling and viewport clipping', async () => {
   const editor = await updateHorizontalLayout(createEditor('hello world'))
   invoke.mockClear()

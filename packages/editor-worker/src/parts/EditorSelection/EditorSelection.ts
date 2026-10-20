@@ -2,6 +2,7 @@ import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as GetX from '../GetX/GetX.ts'
+import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 import * as Px from '../Px/Px.ts'
 import { getCachedLineWidth } from '../UpdateHorizontalLayout/UpdateHorizontalLayout.ts'
 
@@ -163,10 +164,59 @@ export const getVisible = async (editor: any) => {
     viewLineIndices
       ? EditorViewRows.getVisualRowForDocumentRow(rowIndex, viewLineIndices)
       : EditorFolding.getVisualRowForDocumentRow(rowIndex, foldingRanges)
-  const startVisualRow = itemHeight ? Math.floor(deltaY / itemHeight) : getVisualRow(minLineY)
-  const endVisualRow = startVisualRow + (visibleViewLineIndices?.length || actualVisibleLineIndices.length)
-  const getRelativeRow = (rowIndex: number) => getVisualRow(rowIndex) - startVisualRow
+  const visibleStartVisualRow = itemHeight ? Math.floor(deltaY / itemHeight) : getVisualRow(minLineY)
+  const visibleEndVisualRow = visibleStartVisualRow + (visibleViewLineIndices?.length || actualVisibleLineIndices.length)
+  const getRelativeRow = (rowIndex: number) => getVisualRow(rowIndex) - visibleStartVisualRow
   const horizontalOffset = -(editor.deltaX ?? 0)
+  const lineWidths = new Map<string, number>()
+  const textsToMeasure = new Set<string>()
+  const textByLine = new Map<string, string>()
+  const addLineWidth = (line: string): void => {
+    if (!line) {
+      return
+    }
+    const cachedWidth = getCachedLineWidth(editor, line)
+    if (cachedWidth !== undefined) {
+      lineWidths.set(line, cachedWidth)
+      return
+    }
+    const text = line.replaceAll('\t', () => ' '.repeat(tabSize))
+    textByLine.set(line, text)
+    textsToMeasure.add(text)
+  }
+  for (let i = 0; i < selections.length; i += 4) {
+    const [selectionStartRow, , selectionEndRow, selectionEndColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
+    const selectionStartVisualRow = getVisualRow(selectionStartRow)
+    const selectionEndVisualRow = getVisualRow(selectionEndRow)
+    if (selectionEndVisualRow < visibleStartVisualRow || selectionStartVisualRow >= visibleEndVisualRow) {
+      continue
+    }
+    if (selectionStartRow !== selectionEndRow && selectionStartVisualRow >= visibleStartVisualRow && selectionStartVisualRow < visibleEndVisualRow) {
+      const startLine = lines[selectionStartRow]
+      addLineWidth(startLine)
+    }
+    if (
+      selectionEndColumn === lines[selectionEndRow].length &&
+      selectionEndVisualRow >= visibleStartVisualRow &&
+      selectionEndVisualRow < visibleEndVisualRow
+    ) {
+      const endLine = lines[selectionEndRow]
+      addLineWidth(endLine)
+    }
+    const selectedVisibleRows = actualVisibleLineIndices.filter((rowIndex: number) => rowIndex > selectionStartRow && rowIndex < selectionEndRow)
+    for (const rowIndex of selectedVisibleRows) {
+      const line = lines[rowIndex]
+      addLineWidth(line)
+    }
+  }
+  const texts = [...textsToMeasure]
+  if (texts.length > 0) {
+    const widths = await MeasureTextWidth.measureTextWidths(texts, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, averageCharWidth)
+    const widthByText = new Map(texts.map((text, index) => [text, widths[index]]))
+    for (const [line, text] of textByLine) {
+      lineWidths.set(line, widthByText.get(text)!)
+    }
+  }
   for (let i = 0; i < selections.length; i += 4) {
     const [selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn, reversed] = GetSelectionPairs.getSelectionPairs(
       selections,
@@ -174,7 +224,7 @@ export const getVisible = async (editor: any) => {
     )
     const selectionStartVisualRow = getVisualRow(selectionStartRow)
     const selectionEndVisualRow = getVisualRow(selectionEndRow)
-    if (selectionEndVisualRow < startVisualRow || selectionStartVisualRow >= endVisualRow) {
+    if (selectionEndVisualRow < visibleStartVisualRow || selectionStartVisualRow >= visibleEndVisualRow) {
       continue
     }
     const relativeEndLineRow = getRelativeRow(selectionEndRow)
@@ -193,7 +243,7 @@ export const getVisible = async (editor: any) => {
       width,
       averageCharWidth,
       endLineDifference,
-      getCachedLineWidth(editor, endLine),
+      lineWidths.get(endLine) ?? getCachedLineWidth(editor, endLine),
     )
     const endLineY = relativeEndLineRow * rowHeight
     if (isEmpty(selectionStartRow, selectionStartColumn, selectionEndRow, selectionEndColumn) && endLineEndX > 0) {
@@ -226,7 +276,7 @@ export const getVisible = async (editor: any) => {
       const selectionWidth = endLineEndX - startX
       visibleSelections.push(startX, startLineY, selectionWidth, rowHeight)
     } else {
-      if (selectionStartVisualRow >= startVisualRow) {
+      if (selectionStartVisualRow >= visibleStartVisualRow) {
         const startLine = lines[selectionStartRow]
         const startLineStartX = await GetX.getX(
           startLine,
@@ -255,6 +305,7 @@ export const getVisible = async (editor: any) => {
           width,
           averageCharWidth,
           startLineDifference,
+          lineWidths.get(startLine) ?? getCachedLineWidth(editor, startLine),
         )
         const startLineStartY = startLineYRelative * rowHeight
         const selectionWidth = startLineEndX - startLineStartX
@@ -282,10 +333,11 @@ export const getVisible = async (editor: any) => {
           width,
           averageCharWidth,
           difference,
+          lineWidths.get(currentLine) ?? getCachedLineWidth(editor, currentLine),
         )
         visibleSelections.push(0, currentLineY, selectionWidth, rowHeight)
       }
-      if (selectionEndVisualRow < endVisualRow) {
+      if (selectionEndVisualRow < visibleEndVisualRow) {
         const selectionWidth = endLineEndX
         visibleSelections.push(0, endLineY, selectionWidth, rowHeight)
         if (!reversed) {

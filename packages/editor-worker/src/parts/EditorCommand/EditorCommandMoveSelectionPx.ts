@@ -13,7 +13,9 @@ export const advanceSelectionAutoScroll = async (editor: any) => {
   if (y >= editor.y && y <= bottom) {
     return { ...editor, hasListener: false }
   }
-  const deltaY = (y - (y < editor.y ? editor.y : bottom)) * 0.1
+  const distance = Math.abs(y - (y < editor.y ? editor.y : bottom))
+  const speed = Math.min(96, 4 + distance * 0.2)
+  const deltaY = y < editor.y ? -speed : speed
   const scrolledEditor = await EditorScrolling.setDeltaY(editor, editor.deltaY + deltaY)
   if (scrolledEditor === editor) {
     return { ...editor, hasListener: false }
