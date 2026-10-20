@@ -75,3 +75,11 @@ test('ignores disposed editors and commands finishing after recreation', async (
   await events['Viewlet.executeViewletCommand'](101, 'type')
   expect(invoke).not.toHaveBeenCalled()
 })
+
+test('does not let a delayed blur render steal the next editor focus', async () => {
+  const blur = jest.fn(async (..._args: readonly unknown[]) => {})
+  const events = Events.createCommandMap({ 'Editor.handleBlur': blur })
+  await events['Viewlet.executeViewletCommand'](101, 'handleBlur')
+  expect(blur).toHaveBeenCalledWith(101)
+  expect(invoke).toHaveBeenCalledWith('Viewlet.requestRender', 101, true)
+})
