@@ -33,6 +33,7 @@ interface PreviousProviderResults {
 const requestGenerations = new Map<number, number>()
 const requestDiagnosticSnapshots = new Map<number, readonly Diagnostic[]>()
 const previousProviderResults = new Map<number, PreviousProviderResults>()
+const pendingDiagnosticNotifications = new Set<number>()
 
 const getDiagnostics = async (editor: any, resultPort: MessagePort): Promise<unknown> => {
   return ExtensionHostDiagnostic.streamDiagnosticProvider(editor, resultPort)
@@ -141,6 +142,9 @@ const commitDiagnostics = async (editor: any, generation: number, diagnostics: r
       }
       if (diagnosticsEqual(latest.newState.diagnostics, diagnostics)) {
         onAccepted?.()
+        if (pendingDiagnosticNotifications.delete(editor.id)) {
+          await notifyDiagnosticsChange(latest.newState.uri, latest.newState.applicationId)
+        }
         return latest.newState
       }
       let calculationState = latest.newState
@@ -162,6 +166,7 @@ const commitDiagnostics = async (editor: any, generation: number, diagnostics: r
       requestDiagnosticSnapshots.set(editor.id, diagnostics)
       onAccepted?.()
       await RendererWorker.invoke('Editor.renderPending', newEditor.id)
+      pendingDiagnosticNotifications.delete(editor.id)
       await notifyDiagnosticsChange(newEditor.uri, newEditor.applicationId)
       return newEditor
     })) ?? editor
@@ -337,6 +342,7 @@ export const clearDiagnosticRequestState = (editorId: number): void => {
   requestGenerations.delete(editorId)
   requestDiagnosticSnapshots.delete(editorId)
   previousProviderResults.delete(editorId)
+  pendingDiagnosticNotifications.delete(editorId)
 }
 
 export const transformCachedDiagnostics = (editorId: number, changes: readonly any[]): void => {
@@ -346,9 +352,13 @@ export const transformCachedDiagnostics = (editorId: number, changes: readonly a
   }
   const providers = new Map<string, ProviderDiagnostics>()
   for (const [providerId, result] of previous.providers) {
+    const diagnostics = TransformDiagnostics.transformDiagnostics(result.diagnostics, changes)
+    if (!diagnosticsEqual(result.diagnostics, diagnostics)) {
+      pendingDiagnosticNotifications.add(editorId)
+    }
     providers.set(providerId, {
       ...result,
-      diagnostics: TransformDiagnostics.transformDiagnostics(result.diagnostics, changes),
+      diagnostics,
     })
   }
   previousProviderResults.set(editorId, {

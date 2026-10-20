@@ -4,7 +4,12 @@ import { ExtensionManagementWorker, registerMockRpc, remove, RendererWorker, Rpc
 import { editorDiagnosticEffect } from '../src/parts/EditorDiagnosticEffect/EditorDiagnosticEffect.ts'
 import * as EditorStates from '../src/parts/EditorStates/EditorStates.ts'
 import { getEditorRowsVirtualDom } from '../src/parts/GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
-import { updateDiagnostics, updateDiagnosticsAll } from '../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts'
+import {
+  clearDiagnosticRequestState,
+  transformCachedDiagnostics,
+  updateDiagnostics,
+  updateDiagnosticsAll,
+} from '../src/parts/UpdateDiagnostics/UpdateDiagnostics.ts'
 
 const registerExtensionManagementWorkerMockRpc = (commandMap: any): any => {
   const rpc = ExtensionManagementWorker.registerMockRpc(commandMap)
@@ -20,6 +25,7 @@ const getDiagnostic = (message: string) => ({ message, uri: '/test.ts' })
 
 afterEach(() => {
   for (const key of EditorStates.getKeys()) {
+    clearDiagnosticRequestState(Number(key))
     EditorStates.dispose(Number(key))
   }
   remove(RpcId.ErrorWorker)
@@ -719,4 +725,53 @@ test('updateDiagnostics ignores a result for the previous language mode', async 
   await pending
 
   expect(EditorStates.get(1).newState).toBe(changed)
+})
+
+test('updateDiagnostics notifies Problems when an edit already cleared the cached diagnostics', async () => {
+  const diagnostic = { message: 'TODO', uri: '/test.ts', rowIndex: 0, columnIndex: 0, endRowIndex: 0, endColumnIndex: 4, type: 'error' }
+  let results = [diagnostic]
+  using _extensionRpc = registerExtensionManagementWorkerMockRpc({
+    'Extensions.streamDiagnosticProvider': async () => results,
+  })
+  using rendererRpc = RendererWorker.registerMockRpc({
+    'Editor.renderPending': async () => undefined,
+    'Layout.handleDiagnosticsChange': async () => undefined,
+  })
+  const editor = {
+    id: 901,
+    diagnostics: [],
+    diagnosticsEnabled: true,
+    languageId: 'typescript',
+    lines: ['TODO'],
+    uri: '/test.ts',
+    charWidth: 8,
+    deltaY: 0,
+    fontFamily: 'monospace',
+    fontSize: 14,
+    fontWeight: 400,
+    isMonospaceFont: true,
+    itemHeight: 20,
+    letterSpacing: 0,
+    minLineY: 0,
+    rowHeight: 20,
+    tabSize: 2,
+    viewLineIndices: [],
+    width: 800,
+  }
+  EditorStates.set(901, editor as any, editor as any)
+  await updateDiagnostics(editor)
+  const previous = EditorStates.get(901).newState
+  transformCachedDiagnostics(901, [
+    { start: { rowIndex: 0, columnIndex: 0 }, end: { rowIndex: 0, columnIndex: 4 }, deleted: ['TODO'], inserted: ['done'] },
+  ])
+  const edited = { ...previous, diagnostics: [], lines: ['done'] }
+  EditorStates.set(901, previous, edited as any)
+  results = []
+  await updateDiagnostics(edited)
+  await updateDiagnostics(EditorStates.get(901).newState)
+  expect(rendererRpc.invocations).toEqual([
+    ['Editor.renderPending', 901],
+    ['Layout.handleDiagnosticsChange', '/test.ts'],
+    ['Layout.handleDiagnosticsChange', '/test.ts'],
+  ])
 })
