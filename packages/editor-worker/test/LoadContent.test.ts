@@ -315,21 +315,54 @@ test('loadContent does not cache excluded files or files without reliable metada
   )
 })
 
-test('loadContent skips caching when the file exceeds 500 kB', async () => {
-  rendererInvokeMock.mockResolvedValue({ mtimeMs: 123, size: 500_001, type: 7 })
+test('loadContent caches files larger than 500 kB', async () => {
+  rendererInvokeMock.mockImplementation(async (method: string) => {
+    if (method === 'FileSystem.statWithMetadata') {
+      return { mtimeMs: 123, size: 500_001, type: 7 }
+    }
+    if (method === 'CacheStorage.getEditorFileCache') {
+      return null
+    }
+    return undefined
+  })
+  readFileMock.mockResolvedValue('large')
+
+  const result = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true }, undefined)
+  await new Promise((resolve) => setImmediate(resolve))
+
+  expect(result.lines).toEqual(['large'])
+  expect(rendererInvokeMock).toHaveBeenCalledWith('CacheStorage.getEditorFileCache', '', 'file:///test.txt', '[7,500001,123]')
+  expect(rendererInvokeMock).toHaveBeenCalledWith('CacheStorage.setEditorFileCache', '', 'file:///test.txt', '[7,500001,123]', 'large')
+})
+
+test('loadContent skips caching when metadata exceeds 10 MiB', async () => {
+  rendererInvokeMock.mockResolvedValue({ mtimeMs: 123, size: 10 * 1024 * 1024 + 1, type: 7 })
   readFileMock.mockResolvedValue('large')
 
   const result = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true }, undefined)
 
   expect(result.lines).toEqual(['large'])
   expect(rendererInvokeMock).not.toHaveBeenCalledWith('CacheStorage.getEditorFileCache', expect.anything(), expect.anything(), expect.anything())
-  expect(rendererInvokeMock).not.toHaveBeenCalledWith(
-    'CacheStorage.setEditorFileCache',
-    expect.anything(),
-    expect.anything(),
-    expect.anything(),
-    expect.anything(),
-  )
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith('CacheStorage.setEditorFileCache', expect.anything(), expect.anything(), expect.anything(), expect.anything())
+})
+
+test('loadContent skips caching when UTF-8 content exceeds 10 MiB', async () => {
+  rendererInvokeMock.mockImplementation(async (method: string) => {
+    if (method === 'FileSystem.statWithMetadata') {
+      return { mtimeMs: 123, size: 10 * 1024 * 1024, type: 7 }
+    }
+    if (method === 'CacheStorage.getEditorFileCache') {
+      return null
+    }
+    return undefined
+  })
+  readFileMock.mockResolvedValue('é'.repeat(5 * 1024 * 1024 + 1))
+
+  const result = await LoadContent.loadContent({ ...createState(), editorFileCacheEnabled: true }, undefined)
+  await new Promise((resolve) => setImmediate(resolve))
+
+  expect(result.lines).toHaveLength(1)
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith('CacheStorage.setEditorFileCache', expect.anything(), expect.anything(), expect.anything(), expect.anything())
 })
 
 test('loads a separate document for the same uri in another application', async () => {

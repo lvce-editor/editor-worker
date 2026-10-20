@@ -23,7 +23,7 @@ import * as TokenizerState from '../TokenizerState/TokenizerState.ts'
 import { updateHorizontalLayout } from '../UpdateHorizontalLayout/UpdateHorizontalLayout.ts'
 
 const largeFileContentLength = 10 * 1024 * 1024
-const editorFileCacheMaxBytes = 500_000
+const editorFileCacheMaxBytes = 10 * 1024 * 1024
 const pendingFileReads = new Map<string | undefined, Map<string, Promise<string>>>()
 
 const getFileStatFingerprint = (stat: any): string => {
