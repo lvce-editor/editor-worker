@@ -35,6 +35,8 @@ export const createCommandMap = (commands: Readonly<Record<string, unknown>>) =>
     if (!current || editor.lifecycle?.disposed || current.lifecycle !== editor.lifecycle) return
     // The wrapped command has released the document queue before requesting a
     // render; a diff can now run without waiting on its own command.
-    await RendererWorker.invoke('Viewlet.requestRender', uid, false)
+    // Blur can finish after another editor has gained focus. Apply its state
+    // without letting the delayed render replace the current focus context.
+    await RendererWorker.invoke('Viewlet.requestRender', uid, command === 'handleBlur')
   },
 })
