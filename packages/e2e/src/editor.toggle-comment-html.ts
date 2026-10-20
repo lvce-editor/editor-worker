@@ -62,7 +62,33 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
 <style>
   body { color: red }
 </style>
-<!-- <div>content</div> -->`)
+<!--<div>content</div>-->`)
+  await Command.execute('Editor.toggleComment')
+  await Editor.shouldHaveText(originalText)
+
+  await Editor.setCursor(0, 1)
+  await Command.execute('Editor.toggleComment')
+  await Editor.shouldHaveText(`<!--<script type="module">-->
+  const value = 1
+  console.log(value)
+</script>
+<style>
+  body { color: red }
+</style>
+<div>content</div>`)
+  await Command.execute('Editor.toggleComment')
+  await Editor.shouldHaveText(originalText)
+
+  await Editor.setCursor(3, 1)
+  await Command.execute('Editor.toggleComment')
+  await Editor.shouldHaveText(`<script type="module">
+  const value = 1
+  console.log(value)
+<!--</script>-->
+<style>
+  body { color: red }
+</style>
+<div>content</div>`)
   await Command.execute('Editor.toggleComment')
   await Editor.shouldHaveText(originalText)
 }
