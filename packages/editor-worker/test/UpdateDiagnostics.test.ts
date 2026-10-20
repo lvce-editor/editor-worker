@@ -728,7 +728,7 @@ test('updateDiagnostics ignores a result for the previous language mode', async 
 })
 
 test('updateDiagnostics notifies Problems when an edit already cleared the cached diagnostics', async () => {
-  const diagnostic = { message: 'TODO', uri: '/test.ts', rowIndex: 0, columnIndex: 0, endRowIndex: 0, endColumnIndex: 4, type: 'error' }
+  const diagnostic = { columnIndex: 0, endColumnIndex: 4, endRowIndex: 0, message: 'TODO', rowIndex: 0, type: 'error', uri: '/test.ts' }
   let results = [diagnostic]
   using _extensionRpc = registerExtensionManagementWorkerMockRpc({
     'Extensions.streamDiagnosticProvider': async () => results,
@@ -738,23 +738,23 @@ test('updateDiagnostics notifies Problems when an edit already cleared the cache
     'Layout.handleDiagnosticsChange': async () => undefined,
   })
   const editor = {
-    id: 901,
-    diagnostics: [],
-    diagnosticsEnabled: true,
-    languageId: 'typescript',
-    lines: ['TODO'],
-    uri: '/test.ts',
     charWidth: 8,
     deltaY: 0,
+    diagnostics: [],
+    diagnosticsEnabled: true,
     fontFamily: 'monospace',
     fontSize: 14,
     fontWeight: 400,
+    id: 901,
     isMonospaceFont: true,
     itemHeight: 20,
+    languageId: 'typescript',
     letterSpacing: 0,
+    lines: ['TODO'],
     minLineY: 0,
     rowHeight: 20,
     tabSize: 2,
+    uri: '/test.ts',
     viewLineIndices: [],
     width: 800,
   }
@@ -762,10 +762,10 @@ test('updateDiagnostics notifies Problems when an edit already cleared the cache
   await updateDiagnostics(editor)
   const previous = EditorStates.get(901).newState
   transformCachedDiagnostics(901, [
-    { start: { rowIndex: 0, columnIndex: 0 }, end: { rowIndex: 0, columnIndex: 4 }, deleted: ['TODO'], inserted: ['done'] },
+    { deleted: ['TODO'], end: { columnIndex: 4, rowIndex: 0 }, inserted: ['done'], start: { columnIndex: 0, rowIndex: 0 } },
   ])
   const edited = { ...previous, diagnostics: [], lines: ['done'] }
-  EditorStates.set(901, previous, edited as any)
+  EditorStates.set(901, previous, edited)
   results = []
   await updateDiagnostics(edited)
   await updateDiagnostics(EditorStates.get(901).newState)
