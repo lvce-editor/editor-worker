@@ -2,6 +2,18 @@ import { expect, test } from '@jest/globals'
 import * as EditorCursorCharacterRight from '../src/parts/EditorCommand/EditorCommandCursorCharacterRight.ts'
 import * as EditorSelection from '../src/parts/EditorSelection/EditorSelection.ts'
 
+for (const [lines, row, column] of [
+  [[''], 0, 0],
+  [['last'], 0, 4],
+  [['first', ''], 1, 0],
+] as const) {
+  test(`editorCursorCharacterRight stays at EOF (${JSON.stringify(lines)})`, () => {
+    const selections = EditorSelection.fromRange(row, column, row, column)
+    const editor = { lineCache: [], lines, primarySelectionIndex: 0, selections }
+    expect(EditorCursorCharacterRight.cursorCharacterRight(editor)).toMatchObject({ selections })
+  })
+}
+
 test('editorCursorCharacterRight', () => {
   const editor = {
     lineCache: [],
