@@ -343,7 +343,13 @@ test('loadContent skips caching when metadata exceeds 10 MiB', async () => {
 
   expect(result.lines).toEqual(['large'])
   expect(rendererInvokeMock).not.toHaveBeenCalledWith('CacheStorage.getEditorFileCache', expect.anything(), expect.anything(), expect.anything())
-  expect(rendererInvokeMock).not.toHaveBeenCalledWith('CacheStorage.setEditorFileCache', expect.anything(), expect.anything(), expect.anything(), expect.anything())
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith(
+    'CacheStorage.setEditorFileCache',
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+  )
 })
 
 test('loadContent skips caching when UTF-8 content exceeds 10 MiB', async () => {
@@ -362,7 +368,13 @@ test('loadContent skips caching when UTF-8 content exceeds 10 MiB', async () => 
   await new Promise((resolve) => setImmediate(resolve))
 
   expect(result.lines).toHaveLength(1)
-  expect(rendererInvokeMock).not.toHaveBeenCalledWith('CacheStorage.setEditorFileCache', expect.anything(), expect.anything(), expect.anything(), expect.anything())
+  expect(rendererInvokeMock).not.toHaveBeenCalledWith(
+    'CacheStorage.setEditorFileCache',
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+    expect.anything(),
+  )
 })
 
 test('loads a separate document for the same uri in another application', async () => {
