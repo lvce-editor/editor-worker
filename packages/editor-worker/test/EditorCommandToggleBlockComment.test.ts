@@ -1,13 +1,21 @@
 import { expect, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { ExtensionHost, RendererWorker, SyntaxHighlightingWorker } from '@lvce-editor/rpc-registry'
+import { ExtensionHost, ExtensionManagementWorker, RendererWorker, SyntaxHighlightingWorker } from '@lvce-editor/rpc-registry'
 import { toggleBlockComment } from '../src/parts/EditorCommand/EditorCommandToggleBlockComment.ts'
 import { editorToggleLineComment } from '../src/parts/EditorCommand/EditorCommandToggleLineComment.ts'
 import { emptyEditor } from '../src/parts/EmptyEditor/EmptyEditor.ts'
 
 const mockRpc = MockRpc.create({
   commandMap: {},
-  invoke: async (method: string) => {
+  invoke: async (method: string, ...args: any[]) => {
+    if (method === 'Extensions.executeLanguageProvider') {
+      const [kind, providerMethod, textDocument, offset] = args
+      if (kind === 'comment' && providerMethod === 'provideComment' && textDocument.languageId === 'html') {
+        expect(offset).toBe(textDocument.text.indexOf('const'))
+        return { found: true, result: ['//', ''] }
+      }
+      return { found: false }
+    }
     if (method === 'Languages.getLanguageConfiguration') {
       return { comments: { lineComment: '#' } }
     }
@@ -15,6 +23,7 @@ const mockRpc = MockRpc.create({
   },
 })
 ExtensionHost.set(mockRpc)
+ExtensionManagementWorker.set(mockRpc)
 RendererWorker.set(mockRpc)
 SyntaxHighlightingWorker.set(MockRpc.create({ commandMap: {}, invoke: async () => [{}] }))
 
@@ -30,6 +39,18 @@ test('toggles selected YAML lines when the language has no block comment', async
   expect(commented.lines).toEqual(['steps:', '  # run: test', '  # env: production'])
   const uncommented = await toggleBlockComment(commented)
   expect(uncommented.lines).toEqual(editor.lines)
+})
+
+test('uses the cursor offset to select a contextual HTML line comment', async () => {
+  const editor = {
+    ...emptyEditor,
+    languageId: 'html',
+    lines: ['<script type="module">', '  const value = 1', '  console.log(value)', '</script>'],
+    selections: new Uint32Array([1, 2, 2, 4]),
+    uri: 'file:///test.html',
+  }
+  const commented = await editorToggleLineComment(editor)
+  expect(commented.lines).toEqual(['<script type="module">', '  // const value = 1', '  // console.log(value)', '</script>'])
 })
 
 test.each([
