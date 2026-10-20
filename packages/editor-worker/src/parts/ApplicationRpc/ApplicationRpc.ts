@@ -7,8 +7,9 @@ export const invoke = async (applicationId: string | undefined, method: string, 
     : RendererWorker.invoke('Application.execute', applicationId, method, ...args)
 }
 
-export const readFile = async (applicationId: string | undefined, uri: string): Promise<string> => {
+export const readFile = async (applicationId: string | undefined, uri: string, encoding?: string): Promise<string> => {
+  const args = encoding === undefined ? [uri] : [uri, encoding]
   return applicationId === undefined
-    ? FileSystemWorker.invoke('FileSystem.readFile', uri)
-    : FileSystemWorker.invoke('ApplicationFileSystem.execute', applicationId, 'readFile', uri)
+    ? FileSystemWorker.invoke('FileSystem.readFile', ...args)
+    : FileSystemWorker.invoke('ApplicationFileSystem.execute', applicationId, 'readFile', ...args)
 }

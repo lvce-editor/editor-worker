@@ -19,6 +19,7 @@ export const createEditor2 = (
   _useCache?: boolean,
   applicationId?: string,
   editorFileCacheEnabled = false,
+  forceText = false,
 ): void => {
   Assert.number(id)
   const editor: EditorState = {
@@ -45,6 +46,7 @@ export const createEditor2 = (
     documentSymbols: [],
     dragAndDropEnabled: true,
     editorFileCacheEnabled,
+    forceText,
     embeds: [],
     endOfLine: 'lf',
     endOfLineDecorations: [],

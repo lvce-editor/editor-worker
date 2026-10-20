@@ -55,9 +55,18 @@ const removeCachedEditorFile = (applicationId: string | undefined, uri: string):
   void ApplicationRpc.invoke(undefined, 'CacheStorage.removeEditorFileCache', applicationId || '', uri).catch(() => {})
 }
 
-const readFileWithCache = async (applicationId: string | undefined, uri: string, forceReload: boolean, useCache: boolean): Promise<string> => {
+const readFileWithCache = async (
+  applicationId: string | undefined,
+  uri: string,
+  forceReload: boolean,
+  useCache: boolean,
+  forceText: boolean,
+): Promise<string> => {
   if (!useCache) {
-    return ApplicationRpc.readFile(applicationId, uri)
+    return ApplicationRpc.readFile(applicationId, uri, forceText ? 'binary' : undefined)
+  }
+  if (forceText) {
+    return ApplicationRpc.readFile(applicationId, uri, 'binary')
   }
   if (forceReload) {
     removeCachedEditorFile(applicationId, uri)
@@ -96,9 +105,12 @@ const readFileWithCache = async (applicationId: string | undefined, uri: string,
   return content
 }
 
-const readFile = (applicationId: string | undefined, uri: string, forceReload: boolean, useCache: boolean): Promise<string> => {
+const readFile = (applicationId: string | undefined, uri: string, forceReload: boolean, useCache: boolean, forceText: boolean): Promise<string> => {
+  if (forceText) {
+    return readFileWithCache(applicationId, uri, forceReload, useCache, forceText)
+  }
   if (forceReload) {
-    return readFileWithCache(applicationId, uri, forceReload, useCache)
+    return readFileWithCache(applicationId, uri, forceReload, useCache, forceText)
   }
   let applicationReads = pendingFileReads.get(applicationId)
   if (!applicationReads) {
@@ -121,7 +133,7 @@ const readFile = (applicationId: string | undefined, uri: string, forceReload: b
   }
   fileRead = (async () => {
     try {
-      return await readFileWithCache(applicationId, uri, forceReload, useCache)
+      return await readFileWithCache(applicationId, uri, forceReload, useCache, forceText)
     } finally {
       removePendingRead()
     }
@@ -274,7 +286,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
       content = snapshot.lines!.join('\n')
       endOfLine = snapshot.endOfLine === 'crlf' ? 'crlf' : 'lf'
     } else if (!existingEditor) {
-      content = await readFile(state.applicationId, uri, forceReload, state.editorFileCacheEnabled === true)
+      content = await readFile(state.applicationId, uri, forceReload, state.editorFileCacheEnabled === true, state.forceText === true)
       endOfLine = getEndOfLine(content)
       content = normalizeLineEndings(content)
     }
