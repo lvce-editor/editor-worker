@@ -39,10 +39,10 @@ export interface EditorState {
   readonly documentSymbols?: readonly DocumentSymbol[]
   readonly dragAndDropEnabled: boolean
   readonly editorFileCacheEnabled?: boolean
-  readonly forceText?: boolean
   readonly embeds: any
   readonly endOfLine: EndOfLine
   readonly endOfLineDecorations: readonly EditorLineDecoration[]
+  readonly forceText?: boolean
   readonly explicitLanguageId?: string
   readonly finalDeltaY: number
   readonly finalY: number
