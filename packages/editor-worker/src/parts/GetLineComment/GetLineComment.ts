@@ -1,5 +1,5 @@
-import * as Languages from '../Languages/Languages.ts'
 import * as ExtensionManagementEditor from '../ExtensionManagementEditor/ExtensionManagementEditor.ts'
+import * as Languages from '../Languages/Languages.ts'
 
 export const getLineComment = async (editor: any): Promise<any> => {
   try {
