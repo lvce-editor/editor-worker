@@ -30,6 +30,7 @@ test('boolean preferences retain their defaults and explicit values', async () =
     breadcrumbsEnabled: false,
     diagnosticsEnabled: false,
     dragAndDropEnabled: true,
+    formatActions: 'post-save',
     formatOnSave: false,
     horizontalVirtualizationThreshold: 500,
     hoverDelay: 200,
@@ -50,6 +51,15 @@ test('boolean preferences retain their defaults and explicit values', async () =
       roundedSelection: value,
     })
   }
+})
+
+test('format actions defaults to post-save and only accepts pre-save explicitly', async () => {
+  getPreference.mockResolvedValue(undefined)
+  expect((await getEditorPreferences()).formatActions).toBe('post-save')
+  getPreference.mockImplementation(async (key) => (key === 'editor.formatActions' ? 'pre-save' : undefined))
+  expect((await getEditorPreferences()).formatActions).toBe('pre-save')
+  getPreference.mockImplementation(async (key) => (key === 'editor.formatActions' ? 'invalid' : undefined))
+  expect((await getEditorPreferences()).formatActions).toBe('post-save')
 })
 
 test('horizontal virtualization threshold defaults to 500 and normalizes valid values', async () => {

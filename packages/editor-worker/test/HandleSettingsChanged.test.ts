@@ -31,6 +31,7 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
     fontFamily: 'Fira Code',
     fontSize: 16,
     fontWeight: 500,
+    formatActions: 'pre-save',
     highlightActiveLineNumber: false,
     hoverEnabled: true,
     isAutoClosingBracketsEnabled: true,
@@ -74,6 +75,7 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
       fontFamily: 'Fira Code',
       fontSize: 16,
       fontWeight: 500,
+      formatActions: 'pre-save',
       gutterDecorations: [{ rowIndex: 1, type: 'modified' }],
       highlightActiveLineNumber: false,
       hoverEnabled: true,
@@ -90,6 +92,10 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
     }),
   )
   expect(getEditorGutterDecorations).toHaveBeenCalledWith(expect.objectContaining({ fontFamily: 'Fira Code', rowHeight: 24 }))
+
+  getEditorPreferences.mockResolvedValue({ formatActions: 'post-save', rowHeight: 24 })
+  const resultAfterSettingChange = await handleSettingsChanged(result)
+  expect(resultAfterSettingChange.formatActions).toBe('post-save')
 })
 
 test('settings changes cannot reenable large file language services', async () => {

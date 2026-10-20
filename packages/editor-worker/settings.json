@@ -45,6 +45,24 @@
   },
   {
     "category": "text-editor",
+    "description": "Controls when formatting actions run during save",
+    "heading": "Format Actions",
+    "id": "editor.formatActions",
+    "options": [
+      {
+        "id": "pre-save",
+        "label": "Before saving"
+      },
+      {
+        "id": "post-save",
+        "label": "After saving"
+      }
+    ],
+    "type": "enum",
+    "value": "post-save"
+  },
+  {
+    "category": "text-editor",
     "description": "Show completions automatically while typing",
     "heading": "Completions On Type",
     "id": "editor.completionsOnType",

@@ -12,6 +12,8 @@ const autoSaveDisposeMock = jest.fn<(uid: number) => void>()
 const saveMock = jest.fn()
 const getPreferenceMock = jest.fn<(key: string) => Promise<string>>()
 const rendererInvokeMock = jest.fn()
+const getFormattingEditsMock = jest.fn<() => Promise<readonly unknown[]>>()
+const applyDocumentEditsMock = jest.fn()
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   RendererWorker: {
@@ -28,6 +30,14 @@ jest.unstable_mockModule('../src/parts/AutoSave/AutoSave.ts', () => ({
 
 jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandSave.ts', () => ({
   save: saveMock,
+}))
+
+jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandFormat.ts', () => ({
+  getFormattingEdits: getFormattingEditsMock,
+}))
+
+jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandApplyDocumentEdits.ts', () => ({
+  applyDocumentEdits: applyDocumentEditsMock,
 }))
 
 jest.unstable_mockModule('../src/parts/Preferences/Preferences.ts', () => ({
@@ -80,6 +90,9 @@ beforeEach(() => {
   getPreferenceMock.mockReset()
   getPreferenceMock.mockResolvedValue('afterDelay')
   rendererInvokeMock.mockReset()
+  getFormattingEditsMock.mockReset()
+  getFormattingEditsMock.mockResolvedValue([])
+  applyDocumentEditsMock.mockReset()
 })
 
 afterEach(() => {
@@ -96,6 +109,72 @@ test('serializes concurrent commands for the same editor', async () => {
   await Promise.all([command(1, 'a'), command(1, 'b'), command(1, 'c')])
 
   expect((EditorStates.get(1).newState as any).text).toBe('abc')
+})
+
+test('formats a saved snapshot without blocking edits and skips stale formatter results', async () => {
+  const started = Promise.withResolvers<void>()
+  const { promise, resolve } = Promise.withResolvers<readonly unknown[]>()
+  getFormattingEditsMock.mockImplementation(async () => {
+    started.resolve()
+    return promise
+  })
+  const lifecycle = {}
+  const state = {
+    applicationId: 'source',
+    initial: false,
+    lifecycle,
+    lines: ['before'],
+    modified: false,
+    redoStack: [],
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///sample.ts',
+  }
+  EditorStates.set(1, state as any, state as any)
+  const save = WrapCommands.wrapCommand((editor: any) => ({ ...editor, postSaveFormat: true }))
+  await save(1)
+  await started.promise
+
+  const edit = WrapCommands.wrapCommand((editor: any) => ({ ...editor, lines: ['newer edit'], modified: true }))
+  await edit(1)
+  resolve([{ endOffset: 6, inserted: 'formatted', startOffset: 0 }])
+  await new Promise((resolveTask) => setTimeout(resolveTask, 0))
+
+  expect(EditorStates.get(1).newState.lines).toEqual(['newer edit'])
+  expect(EditorStates.get(1).newState.modified).toBe(true)
+  expect(applyDocumentEditsMock).not.toHaveBeenCalled()
+  expect(saveMock).not.toHaveBeenCalled()
+})
+
+test('persists changed post-save formatting and does not save when formatting is unchanged', async () => {
+  const lifecycle = {}
+  const state = {
+    applicationId: 'source',
+    initial: false,
+    lifecycle,
+    lines: ['before'],
+    modified: false,
+    redoStack: [],
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///sample.ts',
+  }
+  EditorStates.set(1, state as any, state as any)
+  getFormattingEditsMock.mockResolvedValue([{ endOffset: 6, inserted: 'after', startOffset: 0 }])
+  applyDocumentEditsMock.mockImplementation((editor: any) => ({ ...editor, lines: ['after'], modified: true }))
+  const save = WrapCommands.wrapCommand((editor: any) => ({ ...editor, postSaveFormat: true }))
+  await save(1)
+  await new Promise((resolveTask) => setTimeout(resolveTask, 0))
+  expect(saveMock).toHaveBeenCalledTimes(1)
+  expect((saveMock.mock.calls[0][0] as any).lines).toEqual(['after'])
+
+  EditorStates.set(1, state as any, { ...state, postSaveFormat: true } as any)
+  getFormattingEditsMock.mockResolvedValue([])
+  saveMock.mockClear()
+  await save(1)
+  await new Promise((resolveTask) => setTimeout(resolveTask, 0))
+  expect(saveMock).not.toHaveBeenCalled()
 })
 
 test('mouse moves skip superseded queued work and never commit an obsolete result', async () => {

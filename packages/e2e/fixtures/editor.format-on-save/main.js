@@ -4,7 +4,8 @@ await activateExtensionApi()
 registerFormattingProvider({
   id: 'format-test',
   languageId: 'format-test',
-  format(document) {
+  async format(document) {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
     return [{ startOffset: 0, endOffset: document.text.length, inserted: JSON.stringify(JSON.parse(document.text), null, 2) + '\n' }]
   },
 })

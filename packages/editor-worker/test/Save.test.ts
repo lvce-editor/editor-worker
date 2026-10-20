@@ -222,11 +222,12 @@ test('save - keeps an untitled document dirty when writing the selected file fai
   expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', 'file:///tmp/new-file.txt', 'unsaved content']])
 })
 
-for (const [formatOnSave, modified] of [
-  [true, true],
-  [true, false],
-  [false, true],
-  [false, false],
+for (const [formatOnSave, modified, formatActions] of [
+  [true, true, 'post-save'],
+  [true, false, 'post-save'],
+  [true, true, 'pre-save'],
+  [false, true, 'post-save'],
+  [false, false, 'post-save'],
 ]) {
   test(`save - formatOnSave=${formatOnSave}, modified=${modified} writes the expected content in the owning application`, async () => {
     using mockRpc = RendererWorker.registerMockRpc({
@@ -238,6 +239,7 @@ for (const [formatOnSave, modified] of [
     const editor = {
       applicationId: 'source',
       decorations: [],
+      formatActions,
       formatOnSave,
       id: 1,
       invalidStartIndex: 0,
@@ -257,24 +259,29 @@ for (const [formatOnSave, modified] of [
 
     const result = await EditorCommandSave.save(editor)
 
-    expect(result.lines).toEqual(formatOnSave ? ['let x = 1', ''] : editor.lines)
+    expect(result.lines).toEqual(formatOnSave && formatActions === 'pre-save' ? ['let x = 1', ''] : editor.lines)
     expect(result.modified).toBe(false)
     expect(result.selections).toEqual(new Uint32Array([0, 4, 0, 4]))
-    expect(mockRpc.invocations).toContainEqual([
-      'Application.execute',
-      'source',
-      'FileSystem.writeFile',
-      editor.uri,
-      formatOnSave ? 'let x = 1\n' : 'let x=1; ',
-      'utf8',
-      false,
+    const writes = mockRpc.invocations.filter((invocation) => invocation[2] === 'FileSystem.writeFile')
+    expect(writes).toEqual([
+      [
+        'Application.execute',
+        'source',
+        'FileSystem.writeFile',
+        editor.uri,
+        formatOnSave && formatActions === 'pre-save' ? 'let x = 1\n' : 'let x=1; ',
+        'utf8',
+        false,
+      ],
     ])
     const modifiedNotifications = mockRpc.invocations.filter((invocation) => invocation[2] === 'Main.handleModifiedStatusChange')
     expect(modifiedNotifications.at(-1)).toEqual(
-      formatOnSave || modified ? ['Application.execute', 'source', 'Main.handleModifiedStatusChange', editor.uri, false] : undefined,
+      (formatOnSave && formatActions === 'pre-save') || modified
+        ? ['Application.execute', 'source', 'Main.handleModifiedStatusChange', editor.uri, false]
+        : undefined,
     )
     expect(mockExtensionRpc.invocations).toEqual(
-      formatOnSave
+      formatOnSave && formatActions === 'pre-save'
         ? [
             [
               'Extensions.invokeForApplication',
@@ -287,6 +294,41 @@ for (const [formatOnSave, modified] of [
     )
   })
 }
+
+test('post-save formatting is deferred until the save state has been committed', async () => {
+  using mockRpc = RendererWorker.registerMockRpc({
+    'Application.execute': async (_applicationId: string, method: string) => (method === 'FileSystem.isReadonly' ? false : undefined),
+  })
+  using mockExtensionRpc = ExtensionManagementWorker.registerMockRpc({
+    'Extensions.invokeForApplication': async () => [{ endOffset: 9, inserted: 'let x = 1\n', startOffset: 0 }],
+  })
+  const editor = {
+    applicationId: 'source',
+    decorations: [],
+    formatActions: 'post-save' as const,
+    formatOnSave: true,
+    id: 1,
+    invalidStartIndex: 0,
+    languageId: 'typescript',
+    lineCache: [],
+    lines: ['let x=1; '],
+    minLineY: 0,
+    modified: true,
+    numberOfVisibleLines: 0,
+    platform: PlatformType.Web,
+    selections: new Uint32Array([0, 4, 0, 4]),
+    tokenizer: TokenizePlainText,
+    uid: 1,
+    undoStack: [],
+    uri: 'memfs:///sample/main.ts',
+  }
+  const result = await EditorCommandSave.save(editor)
+  expect(result.lines).toEqual(editor.lines)
+  expect(result.modified).toBe(false)
+  expect(result.postSaveFormat).toBe(true)
+  expect(mockRpc.invocations.filter((invocation) => invocation[2] === 'FileSystem.writeFile')).toHaveLength(1)
+  expect(mockExtensionRpc.invocations).toEqual([])
+})
 
 test('save without formatting skips the formatter for one save and preserves format-on-save', async () => {
   using mockRpc = RendererWorker.registerMockRpc({
@@ -322,14 +364,7 @@ test('save without formatting skips the formatter for one save and preserves for
   expect(mockExtensionRpc.invocations).toEqual([])
   expect(mockRpc.invocations).toContainEqual(['Application.execute', 'source', 'FileSystem.writeFile', editor.uri, 'let x=1; ', 'utf8', false])
 
-  await EditorCommandSave.save(savedWithoutFormatting)
-
-  expect(mockExtensionRpc.invocations).toEqual([
-    [
-      'Extensions.invokeForApplication',
-      'source',
-      'Extensions.executeFormattingProvider',
-      { documentId: 1, languageId: 'typescript', text: 'let x=1; ', uri: editor.uri },
-    ],
-  ])
+  const nextSave = await EditorCommandSave.save(savedWithoutFormatting)
+  expect(nextSave.postSaveFormat).toBe(true)
+  expect(mockExtensionRpc.invocations).toEqual([])
 })
