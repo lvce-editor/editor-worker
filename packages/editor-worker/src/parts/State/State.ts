@@ -53,6 +53,7 @@ export interface EditorState {
   readonly fontSize: number
   readonly fontWeight: number
   readonly forceText?: boolean
+  readonly formatActions?: 'pre-save' | 'post-save'
   readonly formatOnSave?: boolean
   readonly gutterDecorations: readonly EditorGutterDecoration[]
   readonly gutterWidth: number
@@ -108,6 +109,7 @@ export interface EditorState {
   readonly outerHeight?: number
   readonly outerWidth: number
   readonly platform: number
+  readonly postSaveFormat?: boolean
   readonly primarySelectionIndex: number
   readonly problemNavigationDiagnostic?: any
   readonly problemsHighlightedRow: number

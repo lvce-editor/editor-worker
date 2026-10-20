@@ -52,6 +52,7 @@ export const handleSettingsChanged = async (state: EditorState): Promise<EditorS
     charWidth,
     completionsOnType: !state.largeFile && Boolean(completionsOnTypeRaw),
     diagnostics: diagnosticsEnabled ? state.diagnostics : [],
+    formatActions: editorPreferences.formatActions === 'pre-save' ? 'pre-save' : 'post-save',
     isMonospaceFont,
     itemHeight: rowHeight,
     minimapRevision: (state.minimapRevision || 0) + (minimapEnabled ? 1 : 0),

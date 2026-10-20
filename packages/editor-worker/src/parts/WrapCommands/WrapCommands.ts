@@ -3,6 +3,8 @@ import { RendererWorker } from '@lvce-editor/rpc-registry'
 import type { EditorState } from '../State/State.ts'
 import * as AutoSave from '../AutoSave/AutoSave.ts'
 import * as DeferredEditorState from '../DeferredEditorState/DeferredEditorState.ts'
+import * as ApplyDocumentEdits from '../EditorCommand/EditorCommandApplyDocumentEdits.ts'
+import * as EditorCommandFormat from '../EditorCommand/EditorCommandFormat.ts'
 import * as EditorCommandSave from '../EditorCommand/EditorCommandSave.ts'
 import { isUntitledFile } from '../EditorCommand/EditorCommandSave/isUntitledFile.ts'
 import * as EditorCommandQueue from '../EditorCommandQueue/EditorCommandQueue.ts'
@@ -13,6 +15,7 @@ import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEdit
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
 import * as ScheduleGutterDecorations from '../ScheduleGutterDecorations/ScheduleGutterDecorations.ts'
+import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { trackStateCommands } from '../TrackStateCommands/TrackStateCommands.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
 
@@ -25,6 +28,36 @@ export const registerStateCommand = (command: (...args: any[]) => any): void => 
 export const isStateCommand = (command: (...args: any[]) => any): boolean => stateCommands?.has(command) ?? false
 
 const cursorUndoLimit = 100
+
+export const formatAfterSave = async (uid: number, snapshot: EditorState): Promise<void> => {
+  const originalText = TextDocument.getText(snapshot)
+  const edits = await EditorCommandFormat.getFormattingEdits(snapshot)
+  if (!edits?.length) {
+    return
+  }
+  const applyFormatting = wrapCommand(async (editor: EditorState) => {
+    const staleReason = snapshot.lifecycle
+      ? editor.lifecycle === snapshot.lifecycle
+        ? editor.uri === snapshot.uri
+          ? editor.applicationId === snapshot.applicationId
+            ? TextDocument.getText(editor) === originalText
+              ? ''
+              : `text:${originalText.length}:${TextDocument.getText(editor).length}`
+            : 'application'
+          : 'uri'
+        : 'lifecycle'
+      : 'missing-snapshot-lifecycle'
+    if (staleReason) {
+      return editor
+    }
+    const formattedEditor = await ApplyDocumentEdits.applyDocumentEdits(editor, edits)
+    if (formattedEditor === editor || TextDocument.getText(formattedEditor) === originalText) {
+      return editor
+    }
+    return EditorCommandSave.save(formattedEditor, true)
+  })
+  await applyFormatting(uid)
+}
 
 const selectionsEqual = (left: Uint32Array, right: Uint32Array): boolean => {
   if (left === right) {
@@ -80,7 +113,12 @@ export const wrapCommand = (fn: any, preservesTypingCoalescing = false, returnSt
       const { cursorUndoStack, endOfLine, initial, insertSpaces, isSelecting, lifecycle, lines, modified, redoStack, selections, undoStack, uri } =
         state
       const commandResult = await fn(state, ...args)
+      const shouldFormatAfterSave = commandResult?.postSaveFormat === true
       let newEditor = !preservesTypingCoalescing && commandResult.canCoalesceTyping ? { ...commandResult, canCoalesceTyping: false } : commandResult
+      if (shouldFormatAfterSave) {
+        const { postSaveFormat: _postSaveFormat, ...stateWithoutPostSaveFormat } = newEditor
+        newEditor = stateWithoutPostSaveFormat
+      }
       if (lines !== newEditor.lines && newEditor.cursorUndoStack?.length) {
         newEditor = { ...newEditor, cursorUndoStack: [] }
       } else if (
@@ -171,6 +209,9 @@ export const wrapCommand = (fn: any, preservesTypingCoalescing = false, returnSt
             void editorDiagnosticEffect.apply(synchronizedEditor)
           }
         }
+      }
+      if (shouldFormatAfterSave) {
+        setTimeout(() => void formatAfterSave(uid, finalEditor), 0)
       }
       if (lines !== finalEditor.lines && !isUntitledFile(finalEditor.uri)) {
         AutoSave.schedule(uid, (token) => saveAfterDelay(uid, token))

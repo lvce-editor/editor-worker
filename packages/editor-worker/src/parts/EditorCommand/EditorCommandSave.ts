@@ -17,23 +17,26 @@ export const save = async (editor: any, skipFormatting = false): Promise<any> =>
     if (!isUntitledFile(uri) && (await isReadonlyFile(uri, applicationId))) {
       return editor
     }
-    const newEditor = await getNewEditor(editor, skipFormatting)
-    const content = applyLineEndings(TextDocument.getText(newEditor), newEditor.endOfLine)
+    const shouldFormat = editor.formatOnSave && !skipFormatting
+    const formatBeforeSave = shouldFormat && editor.formatActions === 'pre-save'
+    const editorToSave = formatBeforeSave ? await getNewEditor(editor) : editor
+    const content = applyLineEndings(TextDocument.getText(editorToSave), editorToSave.endOfLine)
     if (isUntitledFile(uri)) {
       const pickedFilePath = await saveUntitledFile(uri, content, platform, applicationId)
       if (pickedFilePath) {
-        if (newEditor.modified) {
+        const savedEditor = { ...editorToSave, uri: pickedFilePath }
+        if (editor.modified || savedEditor.modified) {
           await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false, applicationId)
         }
-        return { ...newEditor, modified: false, uri: pickedFilePath }
+        return { ...savedEditor, modified: false, uri: pickedFilePath, ...(shouldFormat && !formatBeforeSave && { postSaveFormat: true }) }
       }
-      return newEditor
+      return editorToSave
     }
     await saveNormalFile(uri, content, applicationId)
-    if (newEditor.modified) {
+    if (editor.modified || editorToSave.modified) {
       await TabModifiedStatusChange.notifyTabModifiedStatusChange(uri, false, applicationId)
     }
-    return { ...newEditor, modified: false }
+    return { ...editorToSave, modified: false, ...(shouldFormat && !formatBeforeSave && { postSaveFormat: true }) }
   } catch (error) {
     // @ts-ignore
     const betterError = new VError(error, `Failed to save file "${editor.uri}"`)

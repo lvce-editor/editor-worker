@@ -11,6 +11,10 @@ const getSelectedTextOccurrenceMatching = (value: unknown): string => {
   return value === 'caseInsensitive' ? value : DEFAULT_SELECTED_TEXT_OCCURRENCE_MATCHING
 }
 
+const getFormatActions = (value: unknown): 'pre-save' | 'post-save' => {
+  return value === 'pre-save' ? 'pre-save' : 'post-save'
+}
+
 const getHoverDelay = (value: unknown): number => {
   const delay = typeof value === 'number' ? value : Number(value)
   if (!Number.isFinite(delay) || delay < 0) {
@@ -42,6 +46,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     fontSize,
     fontWeight,
     formatOnSave,
+    formatActions,
     hoverEnabled,
     hoverDelay,
     horizontalVirtualizationThreshold,
@@ -70,6 +75,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     EditorPreferences.getFontSize(applicationId),
     EditorPreferences.getFontWeight(applicationId),
     Preferences.get('editor.formatOnSave', applicationId),
+    Preferences.get('editor.formatActions', applicationId),
     Preferences.get('editor.hover', applicationId),
     Preferences.get('editor.hoverDelay', applicationId),
     Preferences.get('editor.horizontalVirtualizationThreshold', applicationId),
@@ -102,6 +108,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     fontFamily,
     fontSize,
     fontWeight,
+    formatActions: getFormatActions(formatActions),
     formatOnSave: formatOnSave ?? false,
     highlightActiveLineNumber,
     horizontalVirtualizationThreshold: getHorizontalVirtualizationThreshold(horizontalVirtualizationThreshold),

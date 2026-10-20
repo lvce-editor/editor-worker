@@ -5,11 +5,9 @@ import * as EditorShowMessage from './EditorCommandShowMessage.ts'
 
 const expectedErrorMessage = 'Failed to execute formatting provider: FormattingError:'
 
-// TODO also format with cursor
-export const format = async (editor: any) => {
+export const getFormattingEdits = async (editor: any) => {
   try {
-    const edits = await GetFormattingEdits.getFormattingEdits(editor)
-    return ApplyDocumentEdits.applyDocumentEdits(editor, edits)
+    return await GetFormattingEdits.getFormattingEdits(editor)
   } catch (error) {
     if (IsFormattingError.isFormattingError(error)) {
       console.error(
@@ -17,13 +15,22 @@ export const format = async (editor: any) => {
         // @ts-ignore
         error.message.slice(expectedErrorMessage.length),
       )
-      return editor
+      return undefined
     }
     console.error(error)
 
     // TODO configure editor message as widget
     const displayErrorMessage = String(error)
     await EditorShowMessage.editorShowMessage(editor, 0, 0, displayErrorMessage, true)
+    return undefined
+  }
+}
+
+// TODO also format with cursor
+export const format = async (editor: any) => {
+  const edits = await getFormattingEdits(editor)
+  if (!edits) {
     return editor
   }
+  return ApplyDocumentEdits.applyDocumentEdits(editor, edits)
 }

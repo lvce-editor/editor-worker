@@ -8,6 +8,7 @@ export interface EditorCreateOptions {
   readonly fontFamily: string
   readonly fontSize: number
   readonly fontWeight: number
+  readonly formatActions?: 'pre-save' | 'post-save'
   readonly formatOnSave: boolean
   readonly height: number
   readonly highlightActiveLineNumber?: boolean
