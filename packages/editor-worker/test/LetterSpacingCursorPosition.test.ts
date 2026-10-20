@@ -6,11 +6,12 @@ import * as MeasureCharacterWidth from '../src/parts/MeasureCharacterWidth/Measu
 test('clicking uses the configured editor letter spacing', async () => {
   using _mockRpc = TextMeasurementWorker.registerMockRpc({
     'TextMeasurement.measureTextWidth'(text: string, _fontWeight: number, _fontSize: number, _fontFamily: string, letterSpacing: number) {
-      return text.length * 8 + Math.max(0, text.length - 1) * letterSpacing
+      return text.length * (8 + letterSpacing)
     },
   })
   const letterSpacing = 1.5
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(400, 14, 'Fira Code', letterSpacing)
+  expect(charWidth).toBe(9.5)
   const editor = {
     charWidth,
     columnWidth: charWidth,
