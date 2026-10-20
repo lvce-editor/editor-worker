@@ -166,6 +166,16 @@ test('loadContent returns error state when reading file fails', async () => {
   expect(readFileMock).toHaveBeenCalledWith('file:///test.txt')
 })
 
+test('loadContent requests binary encoding when explicitly opened as text', async () => {
+  readFileMock.mockResolvedValue('decoded file content')
+  const state = { ...createState(), forceText: true }
+
+  const result = await LoadContent.loadContent(state, undefined)
+
+  expect(result.loadError).toBe('')
+  expect(readFileMock).toHaveBeenCalledWith('file:///test.txt', 'binary')
+})
+
 test('loadContent does not focus the editor when focus is false and reading file fails', async () => {
   readFileMock.mockRejectedValue(new Error('Failed to read file'))
 

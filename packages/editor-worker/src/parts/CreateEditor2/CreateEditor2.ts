@@ -19,6 +19,7 @@ export const createEditor2 = (
   _useCache?: boolean,
   applicationId?: string,
   editorFileCacheEnabled = false,
+  forceText = false,
 ): void => {
   Assert.number(id)
   const editor: EditorState = {
@@ -57,6 +58,7 @@ export const createEditor2 = (
     fontFamily: '',
     fontSize: 0,
     fontWeight: 0,
+    forceText,
     gutterDecorations: [],
     gutterWidth: 0,
     handleOffset: 0,
