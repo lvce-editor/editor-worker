@@ -4,6 +4,7 @@ import type { EditorState } from '../State/State.ts'
 import * as AddWidget from '../AddWidget/AddWidget.ts'
 import { createFns } from '../CreateFns/CreateFns.ts'
 import * as FindWidgetRender from '../FindWidgetRender/FindWidgetRender.ts'
+import * as FocusKey from '../FocusKey/FocusKey.ts'
 import * as Names from '../Names/Names.ts'
 import * as RenderMethod from '../RenderMethod/RenderMethod.ts'
 import * as UpdateWidget from '../UpdateWidget/UpdateWidget.ts'
@@ -52,9 +53,12 @@ export const focusFindInput = <T extends Pick<EditorState, 'widgets'>>(editor: T
   const { uid } = widget.newState
   const newState = {
     ...widget.newState,
-    commands: [[RenderMethod.FocusSelector, uid, `[name="${Names.SearchValue}"]`]],
+    commands: [
+      [RenderMethod.SetFocusContext, FocusKey.FindWidget],
+      [RenderMethod.FocusSelector, uid, `[name="${Names.SearchValue}"]`],
+    ],
   }
-  return UpdateWidget.updateWidget(editor, WidgetId.Find, newState)
+  return UpdateWidget.updateWidget({ ...editor, additionalFocus: 0, focus: FocusKey.FindWidget, focused: false }, WidgetId.Find, newState)
 }
 
 export const {

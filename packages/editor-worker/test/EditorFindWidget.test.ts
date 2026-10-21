@@ -20,7 +20,11 @@ test('focusFindInput - focuses the existing find input', () => {
 
   const result = EditorFindWidget.focusFindInput(editor)
 
-  expect(result.widgets[0].newState.commands).toEqual([[RenderMethod.FocusSelector, 7, '[name="search-value"]']])
+  expect(result).toMatchObject({ additionalFocus: 0, focus: 16, focused: false })
+  expect(result.widgets[0].newState.commands).toEqual([
+    [RenderMethod.SetFocusContext, 16],
+    [RenderMethod.FocusSelector, 7, '[name="search-value"]'],
+  ])
 })
 
 test('focusFindInput - returns the editor unchanged when find is closed', () => {
