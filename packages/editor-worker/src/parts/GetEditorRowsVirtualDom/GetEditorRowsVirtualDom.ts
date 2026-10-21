@@ -1,4 +1,5 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as Bidi from '../Bidi/Bidi.ts'
 import * as ClassNames from '../ClassNames/ClassNames.ts'
 import { DiagnosticTag } from '../Diagnostic/Diagnostic.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
@@ -132,6 +133,7 @@ export const getEditorRowsVirtualDom = (
     readonly segments?: readonly number[]
     readonly start: number
   }[] = [],
+  rtl = false,
 ): readonly VirtualDomNode[] => {
   const dom: VirtualDomNode[] = []
   const actualViewRows =
@@ -178,22 +180,46 @@ export const getEditorRowsVirtualDom = (
     if (rowIndex === problemsHighlightedRow) {
       className = MergeClassNames.mergeClassNames(className, 'EditorProblemsHighlightedRow')
     }
+    const bidiText = rtl && Bidi.isBidi(line || tokenParts.map((part) => part.text).join(''), rtl) ? tokenParts.map((part) => part.text).join('') : ''
+    const runs = bidiText ? Bidi.getRuns(bidiText) : undefined
     dom.push({
-      childCount: tokenParts.length + rowDecorations.length,
+      childCount: (runs?.length ?? tokenParts.length) + rowDecorations.length,
       className,
       translate: difference === 0 ? '' : Px.px(difference),
       type: VirtualDomElements.Div,
     })
-    for (const { className, text: tokenText } of tokenParts) {
-      dom.push(
-        {
-          childCount: 1,
-          className,
+    if (runs) {
+      for (const run of runs) {
+        let offset = 0
+        const parts = []
+        for (const part of tokenParts) {
+          const start = Math.max(run.start, offset)
+          const end = Math.min(run.end, offset + part.text.length)
+          if (start < end) {
+            parts.push({ className: part.className, text: part.text.slice(start - offset, end - offset) })
+          }
+          offset += part.text.length
+        }
+        dom.push({
+          childCount: parts.length,
+          className: run.level % 2 ? 'EditorBidiRun EditorBidiRunRtl' : 'EditorBidiRun',
           type: VirtualDomElements.Span,
-        },
-        text(tokenText),
-      )
-    }
+        })
+        for (const part of parts) {
+          dom.push({ childCount: 1, className: part.className, type: VirtualDomElements.Span }, text(part.text))
+        }
+      }
+    } else
+      for (const { className, text: tokenText } of tokenParts) {
+        dom.push(
+          {
+            childCount: 1,
+            className,
+            type: VirtualDomElements.Span,
+          },
+          text(tokenText),
+        )
+      }
     for (const decoration of rowDecorations) {
       dom.push(editorLineDecorationNode, text(decoration.text))
     }

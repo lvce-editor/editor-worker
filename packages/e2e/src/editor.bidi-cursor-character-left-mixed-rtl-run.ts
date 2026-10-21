@@ -2,9 +2,8 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.editor-bidi-cursor-character-left-mixed-rtl-run'
 
-export const skip = 1
-
-export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
+export const test: Test = async ({ Editor, FileSystem, Main, Settings, Workspace }) => {
+  await Settings.update({ 'editor.rtl': true })
   const tmpDir = await FileSystem.getTmpDir()
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'abcאבגdef')
   await Workspace.setPath(tmpDir)

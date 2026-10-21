@@ -1,5 +1,6 @@
 import type { EditorState } from '../State/State.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as Bidi from '../Bidi/Bidi.ts'
 import * as GetScrollBarSize from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
@@ -81,6 +82,9 @@ export const canRenderPlainTextAppend = (oldState: EditorState, newState: Editor
   }
   const oldLine = oldLines[0]
   const newLine = newLines[0]
+  if (oldState.rtl !== newState.rtl || Bidi.isBidi(oldLine, oldState.rtl) || Bidi.isBidi(newLine, newState.rtl)) {
+    return false
+  }
   if (newLine.length <= oldLine.length || !newLine.startsWith(oldLine) || /[\r\n]/.test(newLine.slice(oldLine.length))) {
     return false
   }

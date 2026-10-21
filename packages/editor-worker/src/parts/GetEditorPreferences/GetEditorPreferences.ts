@@ -63,6 +63,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     completionTriggerCharacters,
     minimapEnabled,
     mergeConflictActionsEnabled,
+    rtl,
     breadcrumbsEnabled,
     insertSpaces,
     dragAndDropEnabled,
@@ -92,6 +93,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     EditorPreferences.getCompletionTriggerCharacters(),
     EditorPreferences.getMinimapEnabled(applicationId),
     EditorPreferences.getMergeConflictActionsEnabled(applicationId),
+    Preferences.get('editor.rtl', applicationId),
     Preferences.get('breadcrumbs.enabled', applicationId),
     Preferences.get('editor.insertSpaces', applicationId),
     Preferences.get('editor.dragAndDrop', applicationId),
@@ -126,6 +128,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     minimapEnabled,
     roundedSelection: roundedSelection === true,
     rowHeight,
+    rtl: rtl === true,
     selectedTextOccurrenceMatching: getSelectedTextOccurrenceMatching(selectedTextOccurrenceMatching),
     tabSize,
   }

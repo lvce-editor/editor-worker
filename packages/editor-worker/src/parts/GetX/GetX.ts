@@ -1,5 +1,7 @@
 import * as Assert from '../Assert/Assert.ts'
+import * as Bidi from '../Bidi/Bidi.ts'
 import * as GetTabCount from '../GetTabCount/GetTabCount.ts'
+import * as MeasureBidi from '../MeasureBidi/MeasureBidi.ts'
 import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
 
@@ -17,6 +19,7 @@ export const getX = async (
   averageCharWidth: number,
   difference = 0,
   measuredLineWidth?: number,
+  rtl = false,
 ): Promise<number> => {
   if (!line) {
     return 0
@@ -28,6 +31,11 @@ export const getX = async (
   Assert.boolean(isMonospaceFont)
   Assert.number(averageCharWidth)
   Assert.number(difference)
+  if (Bidi.isBidi(line, rtl)) {
+    const measure = MeasureBidi.createMeasure(fontWeight, fontSize, fontFamily, letterSpacing, tabSize, averageCharWidth)
+    const x = await Bidi.getPosition(line, column, measure)
+    return Math.min(width, x - halfCursorWidth + difference)
+  }
   if (column === 0) {
     return difference === 0 ? 0 : Math.min(width, difference)
   }

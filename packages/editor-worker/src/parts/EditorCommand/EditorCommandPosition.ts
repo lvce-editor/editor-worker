@@ -50,6 +50,7 @@ export const at = async (editor: any, eventX: number, eventY: number) => {
     charWidth,
     tabSize,
     relativeX,
+    editor.rtl,
   )
   return {
     columnIndex,
@@ -79,6 +80,9 @@ export const getCursorX = async (editor: any, rowIndex: number, columnIndex: num
     0,
     width,
     charWidth,
+    0,
+    undefined,
+    editor.rtl,
   )
   return x + gutterWidth + textX - deltaX
 }

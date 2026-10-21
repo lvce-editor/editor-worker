@@ -21,6 +21,7 @@ export const getEditorRowsVirtualDom = (
   }[] = [],
   lines: readonly string[] = [],
   tabSize = 2,
+  rtl = false,
 ): readonly VirtualDomNode[] => {
   const rowsDom = GetEditorRowsVirtualDom.getEditorRowsVirtualDom(
     textInfos,
@@ -39,6 +40,7 @@ export const getEditorRowsVirtualDom = (
     lines,
     500,
     horizontalVisibleRanges,
+    rtl,
   )
   return [
     {

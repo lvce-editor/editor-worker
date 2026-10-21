@@ -27,6 +27,8 @@ test('renderCss', () => {
   --ScrollBarWidth: 40px;
   --ScrollBarLeft: 20px;
 }
+.EditorBidiRun { display: inline-block; direction: ltr; unicode-bidi: bidi-override; }
+.EditorBidiRunRtl { direction: rtl; }
 .EditorRow { contain: var(--EditorRowContain, strict); }
 .Editor[data-uid="1"] .SelectionTopLeft { border-top-left-radius: 3px; }
 .Editor[data-uid="1"] .SelectionTopRight { border-top-right-radius: 3px; }

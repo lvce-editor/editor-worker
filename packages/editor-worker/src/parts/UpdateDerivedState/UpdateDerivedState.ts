@@ -28,6 +28,7 @@ const shouldUpdateDiagnosticData = (oldState: EditorState, newState: EditorState
         oldState.letterSpacing !== newState.letterSpacing ||
         oldState.lines !== newState.lines ||
         oldState.rowHeight !== newState.rowHeight ||
+        oldState.rtl !== newState.rtl ||
         oldState.tabSize !== newState.tabSize ||
         oldState.width !== newState.width))
   )
@@ -52,6 +53,7 @@ const shouldUpdateSelectionData = (oldState: EditorState, newState: EditorState)
     oldState.letterSpacing !== newState.letterSpacing ||
     oldState.lines !== newState.lines ||
     oldState.rowHeight !== newState.rowHeight ||
+    oldState.rtl !== newState.rtl ||
     oldState.tabSize !== newState.tabSize ||
     oldState.width !== newState.width
   )
@@ -77,6 +79,7 @@ const shouldUpdateBracketMatchData = (oldState: EditorState, newState: EditorSta
     oldState.isMonospaceFont !== newState.isMonospaceFont ||
     oldState.letterSpacing !== newState.letterSpacing ||
     oldState.rowHeight !== newState.rowHeight ||
+    oldState.rtl !== newState.rtl ||
     oldState.tabSize !== newState.tabSize ||
     oldState.width !== newState.width
   )
@@ -105,6 +108,7 @@ const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorStat
     oldState.deltaX !== newState.deltaX ||
     oldState.width !== newState.width ||
     oldState.charWidth !== newState.charWidth ||
+    oldState.rtl !== newState.rtl ||
     oldState.tabSize !== newState.tabSize ||
     oldState.horizontalVirtualizationThreshold !== newState.horizontalVirtualizationThreshold ||
     oldState.fontFamily !== newState.fontFamily ||
@@ -145,6 +149,7 @@ export const updateDerivedState = async (oldState: EditorState, newState: Editor
     oldState.fontWeight !== newState.fontWeight ||
     oldState.isMonospaceFont !== newState.isMonospaceFont ||
     oldState.letterSpacing !== newState.letterSpacing ||
+    oldState.rtl !== newState.rtl ||
     oldState.tabSize !== newState.tabSize ||
     oldState.lineNumbers !== newState.lineNumbers ||
     oldState.breakPoints !== newState.breakPoints ||

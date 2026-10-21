@@ -7,7 +7,8 @@
     "test:hover-pointer": "node src/testHoverPointer.ts",
     "measure": "node --experimental-strip-types src/measureMemory.ts",
     "measure:visible": "node --experimental-strip-types src/measureMemory.ts --no-headless",
-    "test:native-paste": "node src/testNativePaste.ts"
+    "test:native-paste": "node src/testNativePaste.ts",
+    "test:bidi": "node src/testBidi.ts"
   },
   "keywords": [],
   "author": "",
@@ -18,8 +19,8 @@
     "@lvce-editor/extension-management-worker": "4.83.0",
     "@lvce-editor/find-widget-worker": "3.17.0",
     "@lvce-editor/measure-memory": "^3.11.0",
-    "@lvce-editor/shared-process": "0.120.6",
-    "@lvce-editor/static-server": "0.120.6",
+    "@lvce-editor/shared-process": "0.124.21",
+    "@lvce-editor/static-server": "0.124.21",
     "@rollup/plugin-babel": "^7.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@types/node": "^24.2.1",

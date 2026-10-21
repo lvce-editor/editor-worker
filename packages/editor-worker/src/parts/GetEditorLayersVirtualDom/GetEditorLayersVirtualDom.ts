@@ -36,6 +36,7 @@ export const getEditorLayersVirtualDom = (
   lines: readonly string[] = [],
   tabSize = 2,
   textDecorationDom: readonly VirtualDomNode[] = [],
+  rtl = false,
 ): readonly VirtualDomNode[] => {
   return [
     editorLayersNode,
@@ -53,6 +54,7 @@ export const getEditorLayersVirtualDom = (
       horizontalVisibleRanges,
       lines,
       tabSize,
+      rtl,
     ),
     ...GetEditorCursorsVirtualDom.getEditorCursorsVirtualDom(cursorInfos, focused),
     ...GetEditorDiagnosticsVirtualDom.getEditorDiagnosticsVirtualDom(diagnostics, bracketMatchInfos, textDecorationDom),

@@ -1,8 +1,10 @@
 import * as Assert from '../Assert/Assert.ts'
+import * as Bidi from '../Bidi/Bidi.ts'
 import * as Character from '../Character/Character.ts'
 import * as GetAccurateColumnIndexAscii from '../GetAccurateColumnIndexAscii/GetAccurateColumnIndexAscii.ts'
 import * as GetAccurateColumnIndexUnicode from '../GetAccurateColumnIndexUnicode/GetAccurateColumnIndexUnicode.ts'
 import * as IsAscii from '../IsAscii/IsAscii.ts'
+import * as MeasureBidi from '../MeasureBidi/MeasureBidi.ts'
 import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 import * as NormalizeText from '../NormalizeText/NormalizeText.ts'
 
@@ -31,6 +33,7 @@ export const getAccurateColumnIndex = async (
   charWidth: number,
   tabSize: number,
   eventX: number,
+  rtl = false,
 ): Promise<number> => {
   Assert.string(line)
   Assert.number(fontWeight)
@@ -42,6 +45,10 @@ export const getAccurateColumnIndex = async (
   Assert.number(tabSize)
   Assert.number(eventX)
   // Assert.greaterZero(charWidth)
+  if (Bidi.isBidi(line, rtl)) {
+    const measure = MeasureBidi.createMeasure(fontWeight, fontSize, fontFamily, letterSpacing, tabSize, charWidth)
+    return Bidi.getColumn(line, eventX, measure)
+  }
   const guess = guessOffset(eventX, charWidth)
   const normalize = NormalizeText.shouldNormalizeText(line)
   const normalizedGuess = normalizeGuess(line, guess, tabSize)

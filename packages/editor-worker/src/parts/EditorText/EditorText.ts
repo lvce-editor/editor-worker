@@ -1,4 +1,5 @@
 import { TextMeasurementWorker } from '@lvce-editor/rpc-registry'
+import * as Bidi from '../Bidi/Bidi.ts'
 import * as GetDecorationClassName from '../GetDecorationClassName/GetDecorationClassName.ts'
 import { getHorizontalScrollDimensions } from '../GetHorizontalScrollDimensions/GetHorizontalScrollDimensions.ts'
 import * as GetHorizontalVisibleRange from '../GetHorizontalVisibleRange/GetHorizontalVisibleRange.ts'
@@ -530,7 +531,7 @@ const getLineInfosViewport = async (
       line,
       segments: graphemeSegments?.[index],
       tabSize,
-      threshold: horizontalVirtualizationThreshold,
+      threshold: Bidi.isBidi(line, editor.rtl) ? Infinity : horizontalVirtualizationThreshold,
       width,
     })),
     (texts) =>

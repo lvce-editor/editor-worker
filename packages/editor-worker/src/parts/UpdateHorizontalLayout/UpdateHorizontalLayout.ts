@@ -1,4 +1,5 @@
 import type { EditorState } from '../State/State.ts'
+import * as Bidi from '../Bidi/Bidi.ts'
 import { clamp } from '../Clamp/Clamp.ts'
 import { measureTextWidths } from '../MeasureTextWidth/MeasureTextWidth.ts'
 
@@ -10,8 +11,8 @@ interface WidthCache {
 // Owned by the editor lifecycle, with only the current document's distinct lines retained.
 const caches = new WeakMap<object, WidthCache>()
 
-const getFontKey = ({ charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, tabSize }: EditorState): string =>
-  JSON.stringify([charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, tabSize])
+const getFontKey = ({ charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, rtl, tabSize }: EditorState): string =>
+  JSON.stringify([charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, rtl, tabSize])
 
 export const getCachedLineWidth = (state: EditorState, line: string): number | undefined => {
   const { largeFile, lifecycle, lines } = state
@@ -27,7 +28,7 @@ export const updateHorizontalLayout = async (state: EditorState): Promise<Editor
   if (largeFile || lifecycle?.disposed) {
     return state
   }
-  const { charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, lines, tabSize, width } = state
+  const { charWidth, fontFamily, fontSize, fontWeight, isMonospaceFont, letterSpacing, lines, rtl, tabSize, width } = state
   const font = getFontKey(state)
   const owner = lifecycle || lines
   const previous = caches.get(owner)
@@ -56,9 +57,16 @@ export const updateHorizontalLayout = async (state: EditorState): Promise<Editor
     }
   }
   const texts = [...textsToMeasure]
-  const measuredWidths =
-    texts.length > 0 ? await measureTextWidths(texts, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth) : []
-  const measuredByText = new Map(texts.map((text, index) => [text, measuredWidths[index]]))
+  const regularTexts = texts.filter((text) => !Bidi.isBidi(text, rtl))
+  const bidiTexts = texts.filter((text) => Bidi.isBidi(text, rtl))
+  const [regularWidths, bidiWidths] = await Promise.all([
+    regularTexts.length > 0 ? measureTextWidths(regularTexts, fontWeight, fontSize, fontFamily, letterSpacing, isMonospaceFont, charWidth) : [],
+    bidiTexts.length > 0 ? measureTextWidths(bidiTexts, fontWeight, fontSize, fontFamily, letterSpacing, false, charWidth) : [],
+  ])
+  const measuredByText = new Map([
+    ...regularTexts.map((text, index) => [text, regularWidths[index]] as const),
+    ...bidiTexts.map((text, index) => [text, bidiWidths[index]] as const),
+  ])
   for (const [line, text] of textByLine) {
     widths.set(line, measuredByText.get(text)!)
   }
