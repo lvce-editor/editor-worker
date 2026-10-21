@@ -12,5 +12,6 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Se
   await Editor.cursorCharacterRight()
   await Editor.shouldHaveSelections(new Uint32Array([0, 1, 0, 1]))
 
-  await expect(Locator('.EditorBidiRun')).toHaveCount(0)
+  const bidiRuns = Locator('.EditorBidiRun')
+  await expect(bidiRuns).toHaveCount(0)
 }
