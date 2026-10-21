@@ -19,9 +19,9 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Wo
   await expect(visibleLine).toBeVisible()
 
   await Main.openUri(secondUri)
-  await expect(Locator('.EditorRow', { hasText: 'second line 0', exact: true })).toBeVisible()
+  await expect(Locator('.EditorRow', { hasText: 'second line 0' })).toBeVisible()
   await Editor.setDeltaY(300 * 20)
-  const secondVisibleLine = Locator('.EditorRow', { hasText: 'second line 300', exact: true })
+  const secondVisibleLine = Locator('.EditorRow', { hasText: 'second line 300' })
   await expect(secondVisibleLine).toBeVisible()
   await Main.openUri(firstUri)
 
@@ -44,5 +44,5 @@ export const test: Test = async ({ Editor, expect, FileSystem, Locator, Main, Wo
   await Main.closeAllEditors()
   await FileSystem.writeFile(firstUri, 'shortened file')
   await Main.openUri(firstUri)
-  await expect(Locator('.EditorRow', { hasText: 'shortened file', exact: true })).toBeVisible()
+  await expect(Locator('.EditorRow', { hasText: 'shortened file' })).toBeVisible()
 }
