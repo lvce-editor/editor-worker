@@ -25,8 +25,9 @@ export const moveToPositionRight = (selections: any, i: number, rowIndex: number
   }
   const line = lines[rowIndex]
   if (columnIndex >= GetLineLength.getLineLength(line)) {
-    selections[i] = selections[i + 2] = rowIndex + 1
-    selections[i + 1] = selections[i + 3] = 0
+    const isLastRow = rowIndex === lines.length - 1
+    selections[i] = selections[i + 2] = isLastRow ? rowIndex : rowIndex + 1
+    selections[i + 1] = selections[i + 3] = isLastRow ? GetLineLength.getLineLength(line) : 0
   } else {
     const delta = getDelta(line, columnIndex)
     selections[i] = selections[i + 2] = rowIndex

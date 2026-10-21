@@ -11,5 +11,10 @@ export const test: Test = async ({ Editor, FileSystem, Main, Workspace }) => {
 
   await Editor.cursorCharacterRight()
 
-  await Editor.shouldHaveSelections(new Uint32Array([1, 0, 1, 0]))
+  await Editor.shouldHaveSelections(new Uint32Array([0, 3, 0, 3]))
+  await Editor.cursorCharacterRight()
+  await Editor.shouldHaveSelections(new Uint32Array([0, 3, 0, 3]))
+  await Editor.type('!')
+  await Editor.shouldHaveText('abc!')
+  await Editor.shouldHaveSelections(new Uint32Array([0, 4, 0, 4]))
 }
