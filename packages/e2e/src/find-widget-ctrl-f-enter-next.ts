@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'find-widget.ctrl-f-enter-next'
 
-export const test: Test = async ({ Editor, expect, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
+export const test: Test = async ({ Command, Editor, expect, FileSystem, KeyBoard, Locator, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
   const text = `eventX one
 eventX two
@@ -48,6 +48,8 @@ eventX five`
   // eslint-disable-next-line e2e/no-direct-click
   await editorRow.click()
   await expect(editorInput).toBeFocused()
+  // Native focus precedes the asynchronous editor focus/keybinding update.
+  await Command.execute('Editor.handleFocus')
   await KeyBoard.press('Control+f')
   await expect(findWidgetInput).toBeFocused()
   await expect(findWidgetInput).toHaveValue('eventX')
