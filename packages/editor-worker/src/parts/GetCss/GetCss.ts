@@ -20,6 +20,8 @@ export const getCss = (
   --ScrollBarWidth: ${scrollBarWidth}px;
   --ScrollBarLeft: ${scrollBarLeft}px;
 }
+.EditorBidiRun { display: inline-block; direction: ltr; unicode-bidi: bidi-override; }
+.EditorBidiRunRtl { direction: rtl; }
 .EditorRow { contain: var(--EditorRowContain, strict); }
 ${editorSelector} .SelectionTopLeft { border-top-left-radius: 3px; }
 ${editorSelector} .SelectionTopRight { border-top-right-radius: 3px; }

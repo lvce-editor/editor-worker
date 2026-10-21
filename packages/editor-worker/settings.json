@@ -1,6 +1,14 @@
 [
   {
     "category": "text-editor",
+    "description": "Enable basic bidirectional text rendering and visual character movement. Source code keeps a left-to-right paragraph direction.",
+    "heading": "Right-to-left Text",
+    "id": "editor.rtl",
+    "type": "boolean",
+    "value": false
+  },
+  {
+    "category": "text-editor",
     "description": "Combine space and tab tokens with the preceding token when rendering to reduce DOM nodes",
     "heading": "Combine Whitespace Tokens",
     "id": "editor.combineWhitespaceTokens",

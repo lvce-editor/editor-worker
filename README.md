@@ -172,3 +172,11 @@ Accepted commands run in order and retain normal-editor undo, selection, and
 same-document synchronization behavior. Read state after awaiting a command.
 Treat returned state as read-only. Await `dispose()` before reusing an ID;
 disposal rejects new commands and drains commands already accepted.
+
+### Bidirectional text
+
+Enable `editor.rtl` to render right-to-left text and move the caret visually with
+left/right arrows (including Shift selections). Source-code paragraphs remain
+left-to-right. At a mixed-direction boundary the caret uses the higher embedding
+level, so each logical column has one visual position. The setting defaults to
+`false`; ASCII lines keep the existing fast path.

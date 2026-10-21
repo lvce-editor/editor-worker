@@ -1,4 +1,5 @@
 import type { EditorState } from '../State/State.ts'
+import * as Bidi from '../Bidi/Bidi.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
 import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
@@ -22,6 +23,9 @@ export const getIncrementalEdits = async (oldState: EditorState, newState: Edito
         return emptyIncrementalEdits
       }
       const newLine = lines[rowIndex]
+      if (Bidi.isBidi(oldLine, oldState.rtl) || Bidi.isBidi(newLine, newState.rtl)) {
+        return emptyIncrementalEdits
+      }
       // Renderer edit offsets address full lines, so clipped rows need a fresh visible window.
       const threshold = newState.horizontalVirtualizationThreshold ?? 500
       if (newState.deltaX !== 0 || oldLine.length > threshold || newLine.length > threshold) {

@@ -225,6 +225,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     minimapEnabled,
     roundedSelection,
     rowHeight,
+    rtl,
     selectedTextOccurrenceMatching,
     tabSize,
   } = await getEditorPreferences(state.applicationId)
@@ -265,6 +266,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     minimapEnabled,
     roundedSelection,
     rowHeight,
+    rtl,
     selectedTextOccurrenceMatching,
     tabSize,
     tokenizerId: state.tokenizerId,

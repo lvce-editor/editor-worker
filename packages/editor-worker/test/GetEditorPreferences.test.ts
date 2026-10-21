@@ -105,3 +105,10 @@ test('normalizes the message delay and falls back for invalid values', async () 
     expect((await getEditorPreferences()).messageDelay).toBe(3000)
   }
 })
+
+test('RTL defaults off and accepts only the boolean true', async () => {
+  for (const value of [undefined, false, 'true', 1, true]) {
+    getPreference.mockImplementation(async (key) => (key === 'editor.rtl' ? value : undefined))
+    expect((await getEditorPreferences()).rtl).toBe(value === true)
+  }
+})

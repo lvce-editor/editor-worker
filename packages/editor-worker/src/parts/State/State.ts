@@ -116,6 +116,7 @@ export interface EditorState {
   readonly redoStack: readonly any[]
   readonly roundedSelection: boolean
   readonly rowHeight: number
+  readonly rtl?: boolean
   readonly savedSelections: readonly any[]
   readonly scrollBarHeight: number
   readonly scrollBarWidth: number

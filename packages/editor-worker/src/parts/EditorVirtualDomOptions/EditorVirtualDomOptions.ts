@@ -38,6 +38,7 @@ export interface EditorVirtualDomOptions {
   readonly primarySelectionIndex?: number
   readonly problemsHighlightedRow?: number
   readonly roundedSelection?: boolean
+  readonly rtl?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
   readonly scrollBarWidth?: number

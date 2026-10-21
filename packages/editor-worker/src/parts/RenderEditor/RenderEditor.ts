@@ -43,6 +43,7 @@ const renderLines = {
       newState.lines,
       newState.horizontalVirtualizationThreshold,
       newState.horizontalVisibleRanges,
+      newState.rtl,
     )
     return [/* method */ 'setText', dom]
   },
@@ -59,6 +60,7 @@ const renderLines = {
     oldState.deltaX === newState.deltaX &&
     oldState.charWidth === newState.charWidth &&
     oldState.tabSize === newState.tabSize &&
+    oldState.rtl === newState.rtl &&
     oldState.gutterWidth === newState.gutterWidth &&
     oldState.horizontalVirtualizationThreshold === newState.horizontalVirtualizationThreshold &&
     oldState.fontFamily === newState.fontFamily &&

@@ -1,7 +1,9 @@
+import * as Bidi from '../Bidi/Bidi.ts'
 import * as EditorFolding from '../EditorFolding/EditorFolding.ts'
 import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
 import * as GetSelectionPairs from '../GetSelectionPairs/GetSelectionPairs.ts'
 import * as GetX from '../GetX/GetX.ts'
+import * as MeasureBidi from '../MeasureBidi/MeasureBidi.ts'
 import * as MeasureTextWidth from '../MeasureTextWidth/MeasureTextWidth.ts'
 import * as Px from '../Px/Px.ts'
 import { getCachedLineWidth } from '../UpdateHorizontalLayout/UpdateHorizontalLayout.ts'
@@ -157,6 +159,9 @@ export const getVisible = async (editor: any) => {
     width,
   } = editor
 
+  if (editor.rtl && actualSelectionHasBidi(editor)) {
+    return getBidiVisible(editor)
+  }
   const averageCharWidth = charWidth
   const halfCursorWidth = cursorWidth / 2
   const actualVisibleLineIndices = visibleLineIndices || Array.from({ length: maxLineY - minLineY }, (_, index) => minLineY + index)
@@ -351,4 +356,71 @@ export const getVisible = async (editor: any) => {
     cursorInfos: getCursorArray(visibleCursors, focused),
     selectionInfos: getSelectionArray(visibleSelections),
   }
+}
+
+const actualSelectionHasBidi = (editor: any): boolean => {
+  for (let i = 0; i < editor.selections.length; i += 4) {
+    const [startRow, , endRow] = GetSelectionPairs.getSelectionPairs(editor.selections, i)
+    for (let row = Math.max(startRow, editor.minLineY); row <= Math.min(endRow, editor.maxLineY - 1); row++) {
+      if (Bidi.isBidi(editor.lines[row], true)) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
+const getBidiVisible = async (editor: any) => {
+  const {
+    charWidth,
+    cursorWidth,
+    deltaX = 0,
+    deltaY,
+    focused,
+    foldingRanges = [],
+    fontFamily,
+    fontSize,
+    fontWeight,
+    itemHeight,
+    letterSpacing,
+    lines,
+    maxLineY,
+    minLineY,
+    rowHeight,
+    selections,
+    tabSize,
+    viewLineIndices,
+  } = editor
+  const measure = MeasureBidi.createMeasure(fontWeight, fontSize, fontFamily, letterSpacing, tabSize, charWidth)
+  const visibleRows: readonly number[] = editor.visibleLineIndices || Array.from({ length: maxLineY - minLineY }, (_, index) => minLineY + index)
+  const visualRow = (row: number) =>
+    viewLineIndices ? EditorViewRows.getVisualRowForDocumentRow(row, viewLineIndices) : EditorFolding.getVisualRowForDocumentRow(row, foldingRanges)
+  const top = itemHeight ? Math.floor(deltaY / itemHeight) : visualRow(minLineY)
+  const cursors: number[] = []
+  const rectangles: number[] = []
+  for (let i = 0; i < selections.length; i += 4) {
+    const activeRow = selections[i + 2]
+    const activeColumn = selections[i + 3]
+    if (visibleRows.includes(activeRow)) {
+      const line = lines[activeRow]
+      const x = Bidi.isBidi(line, true) ? await Bidi.getPosition(line, activeColumn, measure) : await measure(line.slice(0, activeColumn))
+      cursors.push(x - deltaX - cursorWidth / 2, (visualRow(activeRow) - top) * rowHeight)
+    }
+    const [startRow, startColumn, endRow, endColumn] = GetSelectionPairs.getSelectionPairs(selections, i)
+    const selectedRows = visibleRows.filter((row) => row >= startRow && row <= endRow)
+    for (const row of selectedRows) {
+      const line = lines[row]
+      const start = row === startRow ? startColumn : 0
+      const end = row === endRow ? endColumn : line.length
+      const ranges = Bidi.isBidi(line, true)
+        ? await Bidi.getSelectionRanges(line, start, end, measure)
+        : [{ width: await measure(line.slice(start, end)), x: await measure(line.slice(0, start)) }]
+      for (const range of ranges) {
+        if (range.width > 0) {
+          rectangles.push(range.x - deltaX - cursorWidth / 2, (visualRow(row) - top) * rowHeight, range.width, rowHeight)
+        }
+      }
+    }
+  }
+  return { cursorInfos: getCursorArray(cursors, focused), selectionInfos: getSelectionArray(rectangles) }
 }
