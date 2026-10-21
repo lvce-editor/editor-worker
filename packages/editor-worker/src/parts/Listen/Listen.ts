@@ -8,6 +8,7 @@ import { initializeExtensionManagementWorker } from '../InitializeExtensionManag
 import { initializeOpenerWorker } from '../InitializeOpenerWorker/InitializeOpenerWorker.ts'
 import { initializeRendererWorker } from '../InitializeRendererWorker/InitializeRendererWorker.ts'
 import { initializeTextMeasurementWorker } from '../InitializeTextMeasurementWorker/InitializeTextMeasurementWorker.ts'
+import { initializeCacheWorker } from '../InitializeCacheWorker/InitializeCacheWorker.ts'
 
 export const listen = async () => {
   registerCommands(CommandMap.commandMap)
@@ -17,6 +18,7 @@ export const listen = async () => {
     initializeErrorWorker(),
     initializeExtensionManagementWorker(),
     initializeTextMeasurementWorker(),
+    initializeCacheWorker(),
     initializeOpenerWorker(),
   ])
   const dialogRpc = await LazyTransferMessagePortRpcParent.create({
