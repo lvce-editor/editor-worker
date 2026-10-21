@@ -88,7 +88,7 @@ export const getSelections2 = (editorUid: number): Uint32Array => {
   return selections
 }
 
-export const setSelections2 = async (editorUid: number, selections: Uint32Array): Promise<void> => {
+export const setSelections2 = async (editorUid: number, selections: Uint32Array, reveal = true): Promise<void> => {
   const requested = Editors.get(editorUid)
   if (!requested || requested.newState.lifecycle?.disposed) {
     return
@@ -101,7 +101,7 @@ export const setSelections2 = async (editorUid: number, selections: Uint32Array)
     }
     const editor = instance.newState
     const { lifecycle } = editor
-    const newEditor = EditorSelection.setSelections(editor, selections)
+    const newEditor = reveal ? EditorSelection.setSelections(editor, selections) : { ...editor, selections }
     const newEditorWithDerivedState = await UpdateDerivedState.updateDerivedState(editor, newEditor)
     const current = Editors.get(editorUid)
     if (!current || lifecycle?.disposed || current.newState.lifecycle !== lifecycle) {
