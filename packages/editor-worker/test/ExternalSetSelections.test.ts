@@ -51,6 +51,27 @@ const createEditor = (uid: number) => ({
   uri: `memfs:///selection-${uid}`,
 })
 
+test('restoring an offscreen selection can preserve the saved viewport', async () => {
+  const editor = {
+    ...createEditor(28),
+    deltaY: 12000,
+    finalDeltaY: 19900,
+    lines: Array.from({ length: 1000 }, (_, index) => `line ${index}`),
+    maxLineY: 605,
+    minLineY: 600,
+  }
+  EditorStates.set(28, editor as any, editor as any)
+
+  await ExternalGetPositionAtCursor.setSelections2(28, new Uint32Array([0, 0, 0, 0]), false)
+
+  expect(EditorStates.get(28).newState).toMatchObject({
+    deltaY: 12000,
+    maxLineY: 605,
+    minLineY: 600,
+    selections: new Uint32Array([0, 0, 0, 0]),
+  })
+})
+
 test('selection restore keeps content changes pending until render', async () => {
   const editor = createEditor(21)
   const rendered = { ...editor, initial: true, lines: [] }
