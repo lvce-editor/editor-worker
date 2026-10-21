@@ -118,9 +118,17 @@ try {
   await page.mouse.move(200, longRow.y + 8)
   await page.mouse.wheel(100_000, 0)
   await page.waitForFunction(() => document.querySelectorAll('.EditorRow')[4].getBoundingClientRect().x < 0)
-  const scrolled = await nativePosition(4, 1, 1)
+  // Keep the click inside the visible text, clear of the overlay scrollbar.
+  const scrolled = await nativePosition(4, 1, 2)
+  assert.equal(
+    await page.evaluate(
+      ({ x, y }) => document.elementFromPoint(x, y)?.closest('.EditorRow') === document.querySelectorAll('.EditorRow')[4],
+      scrolled,
+    ),
+    true,
+  )
   await page.mouse.click(scrolled.x, scrolled.y)
-  await checkCursor(4, 1, 1)
+  await checkCursor(4, 1, 2)
 
   await page.screenshot({ path: join(root, '.tmp/bidi-interaction.png') })
   process.stdout.write('Bidi caret, selection, tokenized text, tabs, and native mouse regression passed\n')
