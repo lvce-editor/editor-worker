@@ -63,6 +63,9 @@ jobs:
         shell: bash
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-language-mode-persistence
+      - name: Test editor scroll position persistence
+        working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
+        run: npm run e2e:headless -- --test-name-prefix=viewlet.editor-scroll-position-persistence
       - name: Test Bash syntax highlighting in YAML workflows
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=editor.syntax-highlighting-yaml

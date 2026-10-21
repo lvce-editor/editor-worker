@@ -328,11 +328,16 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
   const newEditor1 = Editor.setBounds({ ...effectiveEditor, endOfLine }, x, y, width, height, 9)
   const newEditor2 = Editor.setText(newEditor1, content)
   const newEditor3 = await updateHorizontalLayout(newEditor2)
+  const savedDeltaY = (savedState as { deltaY?: unknown } | undefined)?.deltaY
+  const newEditor3WithScroll =
+    typeof savedDeltaY === 'number' && Number.isFinite(savedDeltaY) && savedDeltaY >= 0
+      ? await Editor.setDeltaYFixedValue(newEditor3, savedDeltaY)
+      : newEditor3
 
   // Detect links and initialize decorations
-  const linkDecorations = LinkDetection.detectAllLinksAsDecorations(newEditor3)
+  const linkDecorations = LinkDetection.detectAllLinksAsDecorations(newEditor3WithScroll)
   const newEditor3WithLinks = {
-    ...newEditor3,
+    ...newEditor3WithScroll,
     decorations: linkDecorations,
   }
 

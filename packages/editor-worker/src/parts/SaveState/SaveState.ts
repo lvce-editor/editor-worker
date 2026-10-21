@@ -20,6 +20,7 @@ export const saveState = async (state: EditorState, hotReload: unknown): Promise
   const savedState = {
     ...(explicitLanguageId && { explicitLanguageId }),
     ...(largeFile && { largeFile: true }),
+    deltaY,
     ...(widgets.length > 0 && { widgets }),
     ...((redoStack.length > 0 || undoStack.length > 0) && { lines, redoStack, undoStack }),
   }
