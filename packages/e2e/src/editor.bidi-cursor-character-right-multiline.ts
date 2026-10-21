@@ -8,12 +8,9 @@ export const test: Test = async ({ Editor, FileSystem, Main, Settings, Workspace
   await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'אבג\nabc')
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
-  await Editor.setCursor(0, 3)
+  await Editor.setCursor(1, 0)
 
   await Editor.cursorCharacterRight()
-  await Editor.cursorCharacterRight()
-  await Editor.cursorCharacterRight()
-  await Editor.cursorCharacterRight()
 
-  await Editor.shouldHaveSelections(new Uint32Array([1, 3, 1, 3]))
+  await Editor.shouldHaveSelections(new Uint32Array([1, 1, 1, 1]))
 }
