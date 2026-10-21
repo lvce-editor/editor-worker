@@ -78,7 +78,8 @@ export const getVisualColumns = (line: string): readonly number[] => {
   const columns: number[] = []
   for (const run of runs) {
     const part = columnsByRun.get(run)!
-    for (const column of run.level % 2 ? part.toReversed() : part) {
+    const orderedColumns = run.level % 2 ? part.toReversed() : part
+    for (const column of orderedColumns) {
       columns.push(column)
     }
   }
