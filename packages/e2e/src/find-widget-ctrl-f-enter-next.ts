@@ -43,9 +43,11 @@ eventX five`
   await Editor.shouldHaveText(text)
 
   const editorRow = Locator('.EditorRow').first()
+  const editorInput = Locator('.EditorInput textarea')
   // No test page object exposes editor DOM focus without changing the document.
   // eslint-disable-next-line e2e/no-direct-click
   await editorRow.click()
+  await expect(editorInput).toBeFocused()
   await KeyBoard.press('Control+f')
   await expect(findWidgetInput).toBeFocused()
   await expect(findWidgetInput).toHaveValue('eventX')
