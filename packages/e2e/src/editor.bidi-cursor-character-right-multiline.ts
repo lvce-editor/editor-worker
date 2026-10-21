@@ -11,6 +11,9 @@ export const test: Test = async ({ Editor, FileSystem, Main, Settings, Workspace
   await Editor.setCursor(0, 3)
 
   await Editor.cursorCharacterRight()
+  await Editor.cursorCharacterRight()
+  await Editor.cursorCharacterRight()
+  await Editor.cursorCharacterRight()
 
-  await Editor.shouldHaveSelections(new Uint32Array([1, 0, 1, 0]))
+  await Editor.shouldHaveSelections(new Uint32Array([1, 3, 1, 3]))
 }
