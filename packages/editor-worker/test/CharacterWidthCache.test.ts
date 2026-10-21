@@ -23,7 +23,7 @@ test('get returns a valid cached width', async () => {
 })
 
 test('get rejects malformed cached widths', async () => {
-  getCacheStorageJsonItem.mockResolvedValue({ value: Number.NaN })
+  getCacheStorageJsonItem.mockResolvedValue({ value: NaN })
   await expect(CharacterWidthCache.get(400, 15, 'Fira Code', 0.5)).resolves.toBeUndefined()
 })
 

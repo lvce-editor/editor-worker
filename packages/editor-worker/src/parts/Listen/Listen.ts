@@ -2,13 +2,13 @@ import { LazyTransferMessagePortRpcParent } from '@lvce-editor/rpc'
 import { DialogWorker, RendererWorker } from '@lvce-editor/rpc-registry'
 import * as CommandMap from '../CommandMap/CommandMap.ts'
 import { registerCommands } from '../EditorStates/EditorStates.ts'
+import { initializeCacheWorker } from '../InitializeCacheWorker/InitializeCacheWorker.ts'
 import { initializeDragAndDropWorker } from '../InitializeDragAndDropWorker/InitializeDragAndDropWorker.ts'
 import { initializeErrorWorker } from '../InitializeErrorWorker/InitializeErrorWorker.ts'
 import { initializeExtensionManagementWorker } from '../InitializeExtensionManagementWorker/InitializeExtensionManagementWorker.ts'
 import { initializeOpenerWorker } from '../InitializeOpenerWorker/InitializeOpenerWorker.ts'
 import { initializeRendererWorker } from '../InitializeRendererWorker/InitializeRendererWorker.ts'
 import { initializeTextMeasurementWorker } from '../InitializeTextMeasurementWorker/InitializeTextMeasurementWorker.ts'
-import { initializeCacheWorker } from '../InitializeCacheWorker/InitializeCacheWorker.ts'
 
 export const listen = async () => {
   registerCommands(CommandMap.commandMap)
