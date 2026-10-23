@@ -9,12 +9,18 @@ export const getEditorScrollBarDiagnosticsVirtualDom = (scrollBarDiagnostics: re
       className: 'ScrollBarDiagnostics',
       type: VirtualDomElements.Div,
     },
-    ...scrollBarDiagnostics.map(({ height, top, type }) => ({
-      childCount: 0,
-      className: type === 'warning' ? 'ScrollBarDiagnostic ScrollBarDiagnosticWarning' : 'ScrollBarDiagnostic ScrollBarDiagnosticError',
-      height,
-      top,
-      type: VirtualDomElements.Div,
-    })),
+    ...scrollBarDiagnostics
+      .toSorted(
+        (left, right) =>
+          left.top - right.top ||
+          (left.type === 'warning' && right.type !== 'warning' ? -1 : right.type === 'warning' && left.type !== 'warning' ? 1 : 0),
+      )
+      .map(({ height, top, type }) => ({
+        childCount: 0,
+        className: type === 'warning' ? 'ScrollBarDiagnostic ScrollBarDiagnosticWarning' : 'ScrollBarDiagnostic ScrollBarDiagnosticError',
+        height,
+        top,
+        type: VirtualDomElements.Div,
+      })),
   ]
 }
