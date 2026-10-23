@@ -231,7 +231,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
   } = await getEditorPreferences(state.applicationId)
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
-  const languages = await getLanguages(platform, assetDir)
+  const languages = await getLanguages(platform, assetDir, state.applicationId)
   TokenizerState.setTokenizePaths(languages)
   const explicitLanguageId = getSavedLanguageId(savedState, languages)
   const computedLanguageId = explicitLanguageId || getLanguageId(uri, languages)
