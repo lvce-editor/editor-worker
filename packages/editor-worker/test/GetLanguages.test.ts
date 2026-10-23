@@ -4,7 +4,7 @@ import { getLanguages } from '../src/parts/GetLanguages/GetLanguages.ts'
 
 test('language lookup includes the requested application context', async () => {
   const source = [{ id: 'typescript' }]
-  const preview = [{ id: 'sprout', extensions: ['.sprout'], tokenize: 'https://example.com/tokenize.js' }]
+  const preview = [{ extensions: ['.sprout'], id: 'sprout', tokenize: 'https://example.com/tokenize.js' }]
   using rpc = ExtensionManagementWorker.registerMockRpc({
     'Extensions.invokeForApplication': (applicationId: string, method: string, platform: number, assetDir: string) => {
       expect(method).toBe('Extensions.getLanguages')
