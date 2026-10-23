@@ -1,9 +1,8 @@
 import * as Assert from '@lvce-editor/assert'
-import { ExtensionManagementWorker } from '@lvce-editor/rpc-registry'
+import * as ApplicationExtensionRpc from '../ApplicationExtensionRpc/ApplicationExtensionRpc.ts'
 
-export const getLanguages = async (platform: number, assetDir: string): Promise<readonly any[]> => {
+export const getLanguages = async (platform: number, assetDir: string, applicationId?: string): Promise<readonly any[]> => {
   Assert.number(platform)
   Assert.string(assetDir)
-  const languages = await ExtensionManagementWorker.getLanguages(platform, assetDir)
-  return languages
+  return ApplicationExtensionRpc.invoke(applicationId, 'Extensions.getLanguages', platform, assetDir)
 }

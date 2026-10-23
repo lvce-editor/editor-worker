@@ -60,7 +60,7 @@ export const createEditor = async ({
   Assert.string(content)
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
-  const languages = await getLanguages(platform, assetDir)
+  const languages = await getLanguages(platform, assetDir, applicationId)
   const computedlanguageId = getLanguageId(uri, languages)
   const editor = {
     ...(applicationId !== undefined && { applicationId }),
