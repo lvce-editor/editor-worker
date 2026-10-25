@@ -154,12 +154,9 @@ test('schedule post-save formatting edits without notifying the tab while keepin
     uri: 'file:///test.txt',
   }
 
-  const formattedEditor = await Editor.scheduleDocumentAndCursorsSelections(
-    editor,
-    [createChange('formatted', 0)],
-    undefined,
-    { notifyModifiedStatusChange: false },
-  )
+  const formattedEditor = await Editor.scheduleDocumentAndCursorsSelections(editor, [createChange('formatted', 0)], undefined, {
+    notifyModifiedStatusChange: false,
+  })
 
   expect(formattedEditor.lines).toEqual(['formatted'])
   expect(formattedEditor.modified).toBe(true)
