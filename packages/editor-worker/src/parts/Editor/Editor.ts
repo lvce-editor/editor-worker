@@ -92,7 +92,12 @@ const updateLines = (editor: any, lines: readonly string[]) => {
  * @param {Uint32Array|undefined} selectionChanges
  * @returns
  */
-export const scheduleDocumentAndCursorsSelections = async (editor: any, changes: any, selectionChanges: any = undefined) => {
+export const scheduleDocumentAndCursorsSelections = async (
+  editor: any,
+  changes: any,
+  selectionChanges: any = undefined,
+  options: { notifyModifiedStatusChange?: boolean } = {},
+) => {
   Assert.object(editor)
   Assert.array(changes)
   if (changes.length === 0) {
@@ -161,7 +166,7 @@ export const scheduleDocumentAndCursorsSelections = async (editor: any, changes:
   EditorStates.set(editor.uid, editor, newEditorWithDecorations)
 
   // Notify main-area-worker about modified status change
-  if (!editor.modified) {
+  if (!editor.modified && options.notifyModifiedStatusChange !== false) {
     await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri, true, editor.applicationId)
   }
 

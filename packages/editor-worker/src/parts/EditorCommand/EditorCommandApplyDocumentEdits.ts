@@ -5,7 +5,11 @@ import { getFormattingSelections } from '../GetFormattingSelections/GetFormattin
 import * as Logger from '../Logger/Logger.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 
-export const applyDocumentEdits = (editor: any, edits: readonly OffsetBasedEdit[]): any => {
+interface ApplyDocumentEditsOptions {
+  notifyModifiedStatusChange?: boolean
+}
+
+export const applyDocumentEdits = (editor: any, edits: readonly OffsetBasedEdit[], options: ApplyDocumentEditsOptions = {}): any => {
   if (!Array.isArray(edits)) {
     Logger.warn('something is wrong with format on save', edits)
     return editor
@@ -16,5 +20,5 @@ export const applyDocumentEdits = (editor: any, edits: readonly OffsetBasedEdit[
   const documentEdits = GetDocumentEdits.getDocumentEdits(editor, edits)
   const newLines = TextDocument.applyEdits({ ...editor }, documentEdits)
   const selections = getFormattingSelections(editor.lines, newLines, editor.selections)
-  return Editor.scheduleDocumentAndCursorsSelections(editor, documentEdits, selections)
+  return Editor.scheduleDocumentAndCursorsSelections(editor, documentEdits, selections, options)
 }
