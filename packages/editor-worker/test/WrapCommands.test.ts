@@ -14,6 +14,7 @@ const getPreferenceMock = jest.fn<(key: string) => Promise<string>>()
 const rendererInvokeMock = jest.fn()
 const getFormattingEditsMock = jest.fn<() => Promise<readonly unknown[]>>()
 const applyDocumentEditsMock = jest.fn()
+const notifyTabModifiedStatusChangeMock = jest.fn()
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   RendererWorker: {
@@ -38,6 +39,10 @@ jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandFormat.ts', ()
 
 jest.unstable_mockModule('../src/parts/EditorCommand/EditorCommandApplyDocumentEdits.ts', () => ({
   applyDocumentEdits: applyDocumentEditsMock,
+}))
+
+jest.unstable_mockModule('../src/parts/TabModifiedStatusChange/TabModifiedStatusChange.ts', () => ({
+  notifyTabModifiedStatusChange: notifyTabModifiedStatusChangeMock,
 }))
 
 jest.unstable_mockModule('../src/parts/Preferences/Preferences.ts', () => ({
@@ -93,6 +98,7 @@ beforeEach(() => {
   getFormattingEditsMock.mockReset()
   getFormattingEditsMock.mockResolvedValue([])
   applyDocumentEditsMock.mockReset()
+  notifyTabModifiedStatusChangeMock.mockReset()
 })
 
 afterEach(() => {
@@ -168,6 +174,9 @@ test('persists changed post-save formatting and does not save when formatting is
   await new Promise((resolveTask) => setTimeout(resolveTask, 0))
   expect(saveMock).toHaveBeenCalledTimes(1)
   expect((saveMock.mock.calls[0][0] as any).lines).toEqual(['after'])
+  expect(applyDocumentEditsMock).toHaveBeenCalledWith(state, [{ endOffset: 6, inserted: 'after', startOffset: 0 }], {
+    notifyModifiedStatusChange: false,
+  })
 
   EditorStates.set(1, state as any, { ...state, postSaveFormat: true } as any)
   getFormattingEditsMock.mockResolvedValue([])
@@ -175,6 +184,33 @@ test('persists changed post-save formatting and does not save when formatting is
   await save(1)
   await new Promise((resolveTask) => setTimeout(resolveTask, 0))
   expect(saveMock).not.toHaveBeenCalled()
+})
+
+test('shows the tab as modified when saving post-save formatting fails', async () => {
+  const lifecycle = {}
+  const state = {
+    applicationId: 'source',
+    initial: false,
+    lifecycle,
+    lines: ['before'],
+    modified: false,
+    redoStack: [],
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    undoStack: [],
+    uri: 'file:///sample.ts',
+  }
+  EditorStates.set(1, state as any, state as any)
+  getFormattingEditsMock.mockResolvedValue([{ endOffset: 6, inserted: 'after', startOffset: 0 }])
+  applyDocumentEditsMock.mockImplementation((editor: any) => ({ ...editor, lines: ['after'], modified: true }))
+  saveMock.mockImplementation(async (editor: any) => editor)
+  const save = WrapCommands.wrapCommand((editor: any) => ({ ...editor, postSaveFormat: true }))
+
+  await save(1)
+  await new Promise((resolveTask) => setTimeout(resolveTask, 0))
+
+  expect(saveMock).toHaveBeenCalledTimes(1)
+  expect(notifyTabModifiedStatusChangeMock).toHaveBeenCalledWith('file:///sample.ts', true, 'source')
 })
 
 test('mouse moves skip superseded queued work and never commit an obsolete result', async () => {

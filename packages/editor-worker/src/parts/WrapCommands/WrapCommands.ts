@@ -15,6 +15,7 @@ import { notifyEditorStatusChange } from '../NotifyEditorStatusChange/NotifyEdit
 import * as Preferences from '../Preferences/Preferences.ts'
 import * as RenameWorker from '../RenameWorker/RenameWorker.ts'
 import * as ScheduleGutterDecorations from '../ScheduleGutterDecorations/ScheduleGutterDecorations.ts'
+import * as TabModifiedStatusChange from '../TabModifiedStatusChange/TabModifiedStatusChange.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import { trackStateCommands } from '../TrackStateCommands/TrackStateCommands.ts'
 import * as UpdateDerivedState from '../UpdateDerivedState/UpdateDerivedState.ts'
@@ -50,11 +51,15 @@ export const formatAfterSave = async (uid: number, snapshot: EditorState): Promi
     if (staleReason) {
       return editor
     }
-    const formattedEditor = await ApplyDocumentEdits.applyDocumentEdits(editor, edits)
+    const formattedEditor = await ApplyDocumentEdits.applyDocumentEdits(editor, edits, { notifyModifiedStatusChange: false })
     if (formattedEditor === editor || TextDocument.getText(formattedEditor) === originalText) {
       return editor
     }
-    return EditorCommandSave.save(formattedEditor, true)
+    const savedEditor = await EditorCommandSave.save(formattedEditor, true)
+    if (savedEditor === formattedEditor) {
+      await TabModifiedStatusChange.notifyTabModifiedStatusChange(editor.uri, true, editor.applicationId)
+    }
+    return savedEditor
   })
   await applyFormatting(uid)
 }

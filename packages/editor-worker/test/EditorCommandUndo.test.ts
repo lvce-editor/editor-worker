@@ -142,6 +142,44 @@ test('schedule document edits - coalesces contiguous typing', async () => {
   expect(editor.undoStack).toEqual([[{ ...createChange('a', 0), inserted: ['ab'] }]])
 })
 
+test('schedule post-save formatting edits without notifying the tab while keeping the editor modified', async () => {
+  using rendererWorkerRpc = RendererWorker.registerMockRpc({ 'Main.handleModifiedStatusChange': () => {} })
+  const editor = {
+    ...emptyEditor,
+    invalidStartIndex: 0,
+    lines: [''],
+    modified: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    uri: 'file:///test.txt',
+  }
+
+  const formattedEditor = await Editor.scheduleDocumentAndCursorsSelections(editor, [createChange('formatted', 0)], undefined, {
+    notifyModifiedStatusChange: false,
+  })
+
+  expect(formattedEditor.lines).toEqual(['formatted'])
+  expect(formattedEditor.modified).toBe(true)
+  expect(rendererWorkerRpc.invocations).not.toContainEqual(['Main.handleModifiedStatusChange', 'file:///test.txt', true])
+})
+
+test('schedule ordinary document edits and notify the tab about modified status', async () => {
+  using rendererWorkerRpc = RendererWorker.registerMockRpc({ 'Main.handleModifiedStatusChange': () => {} })
+  const editor = {
+    ...emptyEditor,
+    invalidStartIndex: 0,
+    lines: [''],
+    modified: false,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+    uri: 'file:///test.txt',
+  }
+
+  await Editor.scheduleDocumentAndCursorsSelections(editor, [createChange('typed', 0)])
+
+  expect(rendererWorkerRpc.invocations).toContainEqual(['Main.handleModifiedStatusChange', 'file:///test.txt', true])
+})
+
 test('beforeinput coalesces contiguous typing into one undo', async () => {
   const uid = 1
   const editor = {
