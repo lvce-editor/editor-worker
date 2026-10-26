@@ -1,0 +1,11 @@
+{
+  "id": "test.editor-insert-line-break-c-indent",
+  "name": "C Indentation Test",
+  "languages": [
+    {
+      "id": "c",
+      "extensions": [".c"],
+      "configuration": "./languageConfiguration.json"
+    }
+  ]
+}
