@@ -117,6 +117,26 @@ test('serializes concurrent commands for the same editor', async () => {
   expect((EditorStates.get(1).newState as any).text).toBe('abc')
 })
 
+test('keeps the current editor when a command returns undefined', async () => {
+  const editor = EditorStates.get(1)?.newState
+  const command = WrapCommands.wrapCommand(() => undefined)
+
+  const result = await command(1)
+
+  expect(result).toBe(editor)
+  expect(EditorStates.get(1)?.newState).toBe(editor)
+})
+
+test('keeps the current editor internally when a command result is not returned', async () => {
+  const editor = EditorStates.get(1)?.newState
+  const command = WrapCommands.wrapCommand(() => undefined, false, false)
+
+  const result = await command(1)
+
+  expect(result).toBeUndefined()
+  expect(EditorStates.get(1)?.newState).toBe(editor)
+})
+
 test('formats a saved snapshot without blocking edits and skips stale formatter results', async () => {
   const started = Promise.withResolvers<void>()
   const { promise, resolve } = Promise.withResolvers<readonly unknown[]>()
