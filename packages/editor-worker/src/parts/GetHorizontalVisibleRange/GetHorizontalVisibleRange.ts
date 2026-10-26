@@ -33,12 +33,7 @@ const getCharacterWidth = (line: string, start: number, end: number, tabSize: nu
   return 1
 }
 
-export const getHorizontalDisplayColumn = (
-  line: string,
-  sourceColumn: number,
-  tabSize: number,
-  suppliedSegments?: readonly number[],
-): number => {
+export const getHorizontalDisplayColumn = (line: string, sourceColumn: number, tabSize: number, suppliedSegments?: readonly number[]): number => {
   if (sourceColumn <= 0) {
     return 0
   }
