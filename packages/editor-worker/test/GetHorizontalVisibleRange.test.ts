@@ -1,6 +1,20 @@
 import { expect, jest, test } from '@jest/globals'
 import * as GetHorizontalVisibleRange from '../src/parts/GetHorizontalVisibleRange/GetHorizontalVisibleRange.ts'
 
+test('does not segment short rows or the start of a line while rendering selections', () => {
+  const segmenter = jest.spyOn(Intl, 'Segmenter').mockImplementation(() => {
+    throw new Error('unexpected grapheme segmentation')
+  })
+  try {
+    const line = 'tàste füße 👩‍💻'
+    expect(GetHorizontalVisibleRange.getHorizontalDisplayColumn(line, 0, 2)).toBe(0)
+    expect(GetHorizontalVisibleRange.getHorizontalVisibleRange(line, 0, 10, 1, 2)).toEqual({ end: line.length, start: 0 })
+    expect(segmenter).not.toHaveBeenCalled()
+  } finally {
+    segmenter.mockRestore()
+  }
+})
+
 test('keeps lines at or below the configured threshold on the normal rendering path', () => {
   expect(GetHorizontalVisibleRange.getHorizontalVisibleRange('short', 0, 2, 1, 2, 5)).toEqual({
     end: 5,

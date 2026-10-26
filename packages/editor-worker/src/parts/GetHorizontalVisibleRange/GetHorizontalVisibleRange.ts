@@ -37,8 +37,12 @@ export const getHorizontalDisplayColumn = (
   line: string,
   sourceColumn: number,
   tabSize: number,
-  segments: readonly number[] = getSegments(line),
+  suppliedSegments?: readonly number[],
 ): number => {
+  if (sourceColumn <= 0) {
+    return 0
+  }
+  const segments = suppliedSegments ?? getSegments(line)
   let displayColumn = 0
   for (let i = 0; i < segments.length - 1; i++) {
     const start = segments[i]
@@ -58,11 +62,12 @@ export const getHorizontalVisibleRange = (
   averageCharWidth: number,
   tabSize: number,
   threshold = defaultThreshold,
-  segments: readonly number[] = getSegments(line),
+  suppliedSegments?: readonly number[],
 ): HorizontalVisibleRange => {
   if (line.length <= threshold) {
     return { end: line.length, start: 0 }
   }
+  const segments = suppliedSegments ?? getSegments(line)
   const charWidth = averageCharWidth > 0 ? averageCharWidth : 1
   const scrollOffset = Math.max(0, Number.isFinite(deltaX) ? deltaX : 0)
   const viewportWidth = Number.isFinite(width) ? Math.max(0, width) : Infinity
