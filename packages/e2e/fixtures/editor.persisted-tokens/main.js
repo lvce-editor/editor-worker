@@ -12,8 +12,8 @@ export const tokenizeLine = (line, previous) => {
     tokens: [comment ? commentToken : 1, line.length],
     ...(line.startsWith('@') && {
       embeddedLanguage: 'cache-embedded',
-      embeddedLanguageStart: 0,
-      embeddedLanguageEnd: line.length,
+      embeddedLanguageStart: line === '@empty' ? line.length : 0,
+      embeddedLanguageEnd: line === '@empty' ? 0 : line.length,
     }),
   }
 }
