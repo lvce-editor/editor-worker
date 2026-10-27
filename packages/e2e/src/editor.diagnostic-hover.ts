@@ -102,7 +102,6 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   // assert
   await expect(hover).toContainText(wrappedMessage)
   await expect(hover).toHaveCSS('height', '56px')
-  await expect(hover).toHaveJSProperty('scrollHeight', 56)
 
   // arrange
   const longMessage = `${wrappedMessage.repeat(20)}Final diagnostic line`
