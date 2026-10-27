@@ -38,3 +38,27 @@ test('unsupported token values cannot be persisted', () => {
   }
   expect(encode({ ...viewport, tokenizersToLoad: ['javascript'] }, now + 1000)).toBeUndefined()
 })
+
+test('empty embedded opening range from the built-in HTML tokenizer can be reused', () => {
+  const result: CachedViewport = {
+    embeddedResults: [{ isFull: false, result: { tokens: [] }, TokenMap: {} }],
+    tokenizersToLoad: [],
+    tokens: [{ embeddedLanguageEnd: 0, embeddedLanguageStart: 8, embeddedResultIndex: 0, tokens: [228, 1, 118, 6, 228, 1] }],
+  }
+  expect(decode(encode(result, now + 1000)!, [8], now)).toEqual(result)
+})
+
+test('reversed embedded ranges with content or outside the line remain invalid', () => {
+  for (const [start, embeddedTokens, isFull] of [
+    [9, [], false],
+    [8, [60, 1], false],
+    [8, [], true],
+  ] as const) {
+    const result: CachedViewport = {
+      embeddedResults: [{ isFull, result: { tokens: embeddedTokens }, TokenMap: {} }],
+      tokenizersToLoad: [],
+      tokens: [{ embeddedLanguageEnd: 0, embeddedLanguageStart: start, embeddedResultIndex: 0, tokens: [228, 8] }],
+    }
+    expect(decode(encode(result, now + 1000)!, [8], now)).toBeUndefined()
+  }
+})

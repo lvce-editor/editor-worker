@@ -146,7 +146,9 @@ export const decode = (buffer: ArrayBuffer, lineLengths: readonly number[], now:
         (!embeddedResults[line.embeddedResultIndex] ||
           line.embeddedLanguageStart === undefined ||
           line.embeddedLanguageEnd === undefined ||
-          line.embeddedLanguageStart > line.embeddedLanguageEnd ||
+          line.embeddedLanguageStart > lineLengths[i] ||
+          (line.embeddedLanguageStart > line.embeddedLanguageEnd &&
+            (embeddedResults[line.embeddedResultIndex].isFull || embeddedResults[line.embeddedResultIndex].result.tokens.length > 0)) ||
           line.embeddedLanguageEnd > lineLengths[i])
       ) {
         return undefined

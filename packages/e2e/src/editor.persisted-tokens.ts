@@ -8,7 +8,7 @@ export const test: Test = async ({ expect, Extension, FileSystem, Locator, Main,
     await Extension.addWebExtension(import.meta.resolve('../fixtures/editor.persisted-tokens'))
     const tmpDir = await FileSystem.getTmpDir()
     const uri = `${tmpDir}/tokens.cachetest`
-    await FileSystem.writeFile(uri, '/*\ninside comment\n*/\ncode\n@embedded')
+    await FileSystem.writeFile(uri, '/*\ninside comment\n*/\ncode\n@embedded\n@empty')
     await Workspace.setPath(tmpDir)
     await Main.openUri(uri)
     const comment = Locator('.Token.CacheComment', { hasText: 'inside comment' })
