@@ -163,6 +163,7 @@ import * as EditorSourceActionWidget from '../EditorSourceActionWidget/EditorSou
 import { getCommandIds, wrapGetter } from '../EditorStates/EditorStates.ts'
 import * as Editors from '../EditorStates/EditorStates.ts'
 import * as ErrorHandling from '../ErrorHandling/ErrorHandling.ts'
+import { executeAndRender } from '../ExecuteAndRender/ExecuteAndRender.ts'
 import * as ExecuteViewletCommand from '../ExecuteViewletCommand/ExecuteViewletCommand.ts'
 import * as ExecuteWidgetCommand from '../ExecuteWidgetCommand/ExecuteWidgetCommand.ts'
 import * as ExternalGetPositionAtCursor from '../ExternalGetPositionAtCursor/ExternalGetPositionAtCursor.ts'
@@ -219,6 +220,10 @@ import * as UpdateDiagnostics from '../UpdateDiagnostics/UpdateDiagnostics.ts'
 import * as WidgetRevision from '../WidgetRevision/WidgetRevision.ts'
 import { registerStateCommand } from '../WrapCommands/WrapCommands.ts'
 import { wrapCommand, wrapDeferredCommand, wrapFocusCommand, wrapLatestCommand } from '../WrapRpcCommands/WrapRpcCommands.ts'
+
+const handleMouseDownAndRender = (uid: number, ...args: readonly any[]): Promise<readonly any[]> => {
+  return executeAndRender(commandMap['Editor.handleMouseDown'], uid, args)
+}
 
 const executeViewletCommand = (uid: number, commandId: string, ...args: readonly any[]): Promise<void> => {
   return ExecuteViewletCommand.executeViewletCommand(commandMap, uid, commandId, ...args)
@@ -411,6 +416,7 @@ export const commandMap = {
   'Editor.handleKeyUp': wrapCommand(HandleKeyUp.handleKeyUp, true),
   'Editor.handleMergeConflictActionsMouseDown': wrapCommand(EditorCommandAcceptMergeConflict.handleMergeConflictActionsMouseDown),
   'Editor.handleMouseDown': wrapCommand(HandleMouseDown.handleMouseDown),
+  'Editor.handleMouseDownAndRender': handleMouseDownAndRender,
   'Editor.handleMouseEnter': HandleMouseLeave.handleMouseEnter,
   'Editor.handleMouseLeave': HandleMouseLeave.handleMouseLeave,
   'Editor.handleMouseMove': wrapLatestCommand(HandleMouseMove.handleMouseMove),
