@@ -49,6 +49,10 @@ export const getTokensViewport2 = async (editor: any, start: number, end: number
   if (editor.lifecycle?.disposed) {
     return { embeddedResults: [], tokenizersToLoad: [], tokens: [] }
   }
+  // Preserve the original request/disposal ordering when caching is disabled.
+  if (editor.syntaxHighlightingCacheEnabled !== true) {
+    return getFreshTokensViewport(editor, start, end, syncIncremental)
+  }
   const key = await SyntaxHighlightingCache.getKey(editor, start, end)
   if (editor.lifecycle?.disposed) {
     return { embeddedResults: [], tokenizersToLoad: [], tokens: [] }
