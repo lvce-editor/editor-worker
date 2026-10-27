@@ -70,6 +70,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     roundedSelection,
     combineWhitespaceTokens,
     selectedTextOccurrenceMatching,
+    disableMonospaceOptimizations,
   ] = await Promise.all([
     Preferences.get('editor.diagnostics', applicationId),
     EditorPreferences.getFontFamily(applicationId),
@@ -100,12 +101,14 @@ export const getEditorPreferences = async (applicationId?: string) => {
     Preferences.get('editor.roundedSelection', applicationId),
     Preferences.get('editor.combineWhitespaceTokens', applicationId),
     Preferences.get('editor.selectedTextOccurrenceMatching', applicationId),
+    Preferences.get('editor.disableMonospaceOptimizations', applicationId),
   ])
   return {
     breadcrumbsEnabled: breadcrumbsEnabled ?? false,
     combineWhitespaceTokens: combineWhitespaceTokens ?? true,
     completionTriggerCharacters,
     diagnosticsEnabled: diagnosticsEnabled ?? false,
+    disableMonospaceOptimizations: disableMonospaceOptimizations === true,
     dragAndDropEnabled: dragAndDropEnabled ?? true,
     fontFamily,
     fontSize,

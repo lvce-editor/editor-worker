@@ -24,10 +24,11 @@ jest.unstable_mockModule('../src/parts/GetEditorGutterDecorations/GetEditorGutte
 
 const { handleSettingsChanged } = await import('../src/parts/HandleSettingsChanged/HandleSettingsChanged.ts')
 
-test('handleSettingsChanged reloads editor preferences and geometry', async () => {
+test.each([false, true])('handleSettingsChanged reloads editor preferences and geometry (monospace disabled %s)', async (disabled) => {
   getEditorPreferences.mockResolvedValue({
     completionTriggerCharacters: ['.'],
     diagnosticsEnabled: false,
+    disableMonospaceOptimizations: disabled,
     fontFamily: 'Fira Code',
     fontSize: 16,
     fontWeight: 500,
@@ -79,7 +80,7 @@ test('handleSettingsChanged reloads editor preferences and geometry', async () =
       gutterDecorations: [{ rowIndex: 1, type: 'modified' }],
       highlightActiveLineNumber: false,
       hoverEnabled: true,
-      isMonospaceFont: true,
+      isMonospaceFont: !disabled,
       itemHeight: 24,
       letterSpacing: 1,
       lineNumbers: false,

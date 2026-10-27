@@ -45,7 +45,7 @@ export const handleSettingsChanged = async (state: EditorState): Promise<EditorS
       ? Preferences.get('editor.completionsOnType')
       : Preferences.get('editor.completionsOnType', state.applicationId),
   ])
-  const isMonospaceFont = fontFamily === 'Fira Code' || fontFamily === "'Fira Code'"
+  const isMonospaceFont = !editorPreferences.disableMonospaceOptimizations && (fontFamily === 'Fira Code' || fontFamily === "'Fira Code'")
   const editorWithUpdatedSettings: EditorState = {
     ...state,
     ...editorPreferences,
