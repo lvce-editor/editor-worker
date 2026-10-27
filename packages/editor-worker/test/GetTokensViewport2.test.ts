@@ -8,10 +8,12 @@ const setCacheStorageItem = jest.fn(async (key: string, body: ArrayBuffer) => {
 })
 const removeCacheStorageItem = jest.fn(async (key: string) => storage.delete(key))
 const invoke = jest.fn<(...args: any[]) => Promise<any>>()
-const fingerprint = jest.fn(async () => 'implementation-v1')
+const fingerprint = jest.fn<(...args: any[]) => Promise<string>>(async () => 'implementation-v1')
+const rendererInvoke = jest.fn<(...args: any[]) => Promise<any>>()
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   CacheWorker: { getCacheStorageItem, removeCacheStorageItem, setCacheStorageItem },
+  RendererWorker: { invoke: rendererInvoke },
   SyntaxHighlightingWorker: { invoke },
 }))
 jest.unstable_mockModule('../src/parts/TokenizerFingerprint/TokenizerFingerprint.ts', () => ({ getFingerprint: fingerprint }))
@@ -118,4 +120,18 @@ test('disposal while a cache read is pending prevents further highlighting and w
   expect(await getTokensViewport2(editor, 0, 2, false)).toEqual({ embeddedResults: [], tokenizersToLoad: [], tokens: [] })
   expect(tokenizeLine).not.toHaveBeenCalled()
   expect(setCacheStorageItem).not.toHaveBeenCalled()
+})
+
+test('application source reads use the owning renderer RPC without transferring an AbortSignal', async () => {
+  rendererInvoke.mockResolvedValue('export const tokenizeLine = () => 1')
+  fingerprint.mockImplementationOnce(async (_paths, readSource) => {
+    expect(await readSource('lvce-oss://-/tokenize.js')).toContain('tokenizeLine')
+    return 'native-source'
+  })
+  await getTokensViewport2(createEditor({ applicationId: 'native-window' }), 0, 2, false)
+  expect(rendererInvoke).toHaveBeenCalledWith('Application.execute', 'native-window', 'Ajax.getText', 'lvce-oss://-/tokenize.js', {
+    cache: 'no-cache',
+    retry: 0,
+    timeout: 5000,
+  })
 })

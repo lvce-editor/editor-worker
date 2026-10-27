@@ -5,6 +5,7 @@ const fetchSource = jest.fn<typeof fetch>()
 const sources = new Map<string, string>()
 beforeEach(() => {
   sources.clear()
+  fetchSource.mockClear()
   jest.spyOn(globalThis, 'fetch').mockImplementation(fetchSource)
   Object.defineProperty(globalThis, 'location', { configurable: true, value: { href: 'https://example.test/app/' } })
   fetchSource.mockImplementation(async (input) => {
@@ -44,4 +45,23 @@ test('unavailable sources, unknown dynamic dependencies, import maps and resourc
     sources.set('https://example.test/a.js', source)
     await expect(getFingerprint(['/a.js'])).rejects.toThrow()
   }
+})
+
+test('application-scheme graphs use the renderer reader and include imported helper changes', async () => {
+  Object.defineProperty(globalThis, 'location', { configurable: true, value: { href: 'lvce-oss://-/worker.js' } })
+  const files = new Map([
+    ['lvce-oss://-/tokenize.js', "export { tokenizeLine } from './helper.js'"],
+    ['lvce-oss://-/helper.js', 'export const tokenizeLine = () => 1'],
+  ])
+  const reader = jest.fn(async (url: string) => {
+    const source = files.get(url)
+    if (source === undefined) throw new Error('Missing source')
+    return source
+  })
+  const original = await getFingerprint(['/tokenize.js'], reader)
+  files.set('lvce-oss://-/helper.js', 'export const tokenizeLine = () => 2')
+  expect(await getFingerprint(['/tokenize.js'], reader)).not.toBe(original)
+  expect(reader).toHaveBeenCalledWith('lvce-oss://-/helper.js')
+  expect(fetchSource).not.toHaveBeenCalled()
+  await expect(getFingerprint(['/tokenize.js'])).rejects.toThrow('No application source reader')
 })
