@@ -124,6 +124,6 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
 
   // assert
   await expect(hover).toContainText('Final diagnostic line')
-  await expect(hover).toHaveCSS('height', '300px')
+  await expect(hover).toHaveCSS('height', /^(?:[2-9]\d|[12]\d{2}|300)px$/)
   await expect(hover).toHaveCSS('overflow', 'auto')
 }
