@@ -36,5 +36,21 @@ test('font settings are part of the cache key', async () => {
 
 test('set persists a width', async () => {
   await CharacterWidthCache.set(400, 15, 'Fira Code', 0.5, 8.5)
-  expect(setCacheStorageJsonItem).toHaveBeenCalledWith(expect.any(String), 8.5, 'lvce-editor-character-widths-v1')
+  expect(setCacheStorageJsonItem).toHaveBeenCalledWith(
+    `https://cache.invalid/character-width/${encodeURIComponent(JSON.stringify(['a', 400, 15, 'Fira Code', 0.5]))}`,
+    8.5,
+    'lvce-editor-character-widths-v1',
+  )
+})
+
+test('has returns true when a valid cached width exists', async () => {
+  getCacheStorageJsonItem.mockResolvedValue({ value: 8.5 })
+  await expect(CharacterWidthCache.has(400, 15, 'Fira Code', 0.5)).resolves.toBe(true)
+})
+
+test('has returns false when the width is missing or cache access fails', async () => {
+  getCacheStorageJsonItem.mockResolvedValue(undefined)
+  await expect(CharacterWidthCache.has(400, 15, 'Fira Code', 0.5)).resolves.toBe(false)
+  getCacheStorageJsonItem.mockRejectedValue(new Error('cache unavailable'))
+  await expect(CharacterWidthCache.has(400, 15, 'Fira Code', 0.5)).resolves.toBe(false)
 })

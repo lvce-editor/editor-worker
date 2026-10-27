@@ -2,6 +2,7 @@ import { WhenExpression, WidgetId } from '@lvce-editor/constants'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import { terminate } from '@lvce-editor/viewlet-registry'
 import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
+import * as CharacterWidthCache from '../CharacterWidthCache/CharacterWidthCache.ts'
 import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
 import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
 import { createEditor2 } from '../CreateEditor2/CreateEditor2.ts'
@@ -438,6 +439,7 @@ export const commandMap = {
   'Editor.handleTripleClick': wrapCommand(HandleTripleClick.handleTripleClick),
   'Editor.handleUriChange': wrapCommand(handleUriChange),
   'Editor.handleWheel': wrapCommand(HandleWheel.handleWheel),
+  'Editor.hasCachedCharacterWidth': CharacterWidthCache.has,
   'Editor.hotReload': hotReload,
   'Editor.incrementSelection': wrapCommand(ChangeSelectedValue.incrementSelection),
   'Editor.indendLess': wrapCommand(IndentLess.indentLess),
