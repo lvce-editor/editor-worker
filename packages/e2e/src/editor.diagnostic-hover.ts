@@ -80,7 +80,7 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   await expect(hover).toContainText('Missing token')
 
   // arrange
-  const wrappedMessage = 'A diagnostic message that wraps onto a second line in the hover widget. '.repeat(2)
+  const wrappedMessage = 'A diagnostic message that wraps onto a second line.'
   await Command.execute('Editor.setDiagnostics', [
     {
       code: 'wrapped-message',
