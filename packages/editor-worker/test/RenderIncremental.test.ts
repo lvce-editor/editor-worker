@@ -42,6 +42,33 @@ beforeEach(() => {
   RenderedDoms.clear()
 })
 
+test('selection updates do not navigate unchanged document rows', () => {
+  const line = 'selectiontarget '.repeat(8)
+  const lines = Array.from({ length: 60 }, () => line)
+  const oldState = createPlainTextState(line, 0, {
+    differences: lines.map(() => 0),
+    lines,
+    maxLineY: lines.length,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    textInfos: lines.map((text) => [text, 'Token PlainText']),
+  })
+  RenderIncremental.renderIncremental({ ...oldState, initial: true }, oldState)
+  const selectedState = {
+    ...oldState,
+    cursorInfos: ['135px 0px'],
+    selectionInfos: ['0px', '0px', '135px', '20px'],
+    selections: new Uint32Array([0, 0, 0, 15]),
+  }
+
+  const command = RenderIncremental.renderIncremental(oldState, selectedState)
+
+  expect(command[0]).toBe(ViewletCommand.SetPatches)
+  expect(command[2].length).toBeLessThan(12)
+  expect(RenderedDoms.get(3)?.filter((node: any) => node.text === line)).toHaveLength(60)
+  expect(RenderedDoms.get(3)).toContainEqual(expect.objectContaining({ className: 'EditorSelection', width: '135px' }))
+  expect(RenderedDoms.get(3)).toContainEqual(expect.objectContaining({ className: 'EditorCursor', translate: '135px 0px' }))
+})
+
 test('renderIncremental preserves surrounding dom when visible rows jump during fast scroll', () => {
   const oldState = createState(0, [
     [
