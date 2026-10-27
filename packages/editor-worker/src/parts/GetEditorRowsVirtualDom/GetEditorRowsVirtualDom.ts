@@ -57,6 +57,14 @@ const getTokenParts = (
   ranges: readonly { readonly start: number; readonly end: number }[],
 ): readonly { readonly className: string; readonly text: string }[] => {
   const parts: { className: string; text: string }[] = []
+  if (ranges.length === 0) {
+    for (let index = 0; index < textInfos.length; index += 2) {
+      if (textInfos[index].length > 0) {
+        parts.push({ className: textInfos[index + 1], text: textInfos[index] })
+      }
+    }
+    return parts
+  }
   let offset = 0
   for (let index = 0; index < textInfos.length; index += 2) {
     const tokenText = textInfos[index]

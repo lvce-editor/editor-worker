@@ -3,6 +3,14 @@ import * as DomEventListenerFunctions from '../src/parts/DomEventListenerFunctio
 import { getEditorRowsVirtualDom } from '../src/parts/GetEditorRowsVirtualDom/GetEditorRowsVirtualDom.ts'
 import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomElements.ts'
 
+test('ordinary tokens preserve text and classes without emitting empty token spans', () => {
+  const dom = getEditorRowsVirtualDom([['', 'Token Empty', 'selectiontarget', 'Token PlainText', ' ', 'Token Whitespace']], [0])
+
+  expect(dom[0].childCount).toBe(2)
+  expect(dom.filter((node) => node.type === VirtualDomElements.Span).map((node) => node.className)).toEqual(['Token PlainText', 'Token Whitespace'])
+  expect(dom.filter((node) => node.type === VirtualDomElements.Text).map((node) => node.text)).toEqual(['selectiontarget', ' '])
+})
+
 test('renders merge conflict actions as a dedicated view row', () => {
   const dom = getEditorRowsVirtualDom(
     [
