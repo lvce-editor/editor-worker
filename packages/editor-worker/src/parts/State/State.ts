@@ -38,7 +38,6 @@ export interface EditorState {
   differences: any[]
   readonly documentSymbols?: readonly DocumentSymbol[]
   readonly dragAndDropEnabled: boolean
-  readonly syntaxHighlightingCacheEnabled?: boolean
   readonly editorFileCacheEnabled?: boolean
   readonly embeds: any
   readonly endOfLine: EndOfLine
@@ -127,6 +126,7 @@ export interface EditorState {
   readonly selectionAutoMovePosition: { readonly x: number; readonly y: number }
   readonly selectionInfos: readonly any[]
   readonly selections: Uint32Array
+  readonly syntaxHighlightingCacheEnabled?: boolean
   readonly tabSize: number
   readonly textDecorationDom?: readonly VirtualDomNode[]
   readonly textDecorations?: readonly EditorTextDecoration[]
