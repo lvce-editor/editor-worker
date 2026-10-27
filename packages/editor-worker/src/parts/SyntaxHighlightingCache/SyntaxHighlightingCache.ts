@@ -1,5 +1,6 @@
 import { CacheWorker } from '@lvce-editor/rpc-registry'
 import type { CachedViewport } from '../SyntaxHighlightingCacheCodec/SyntaxHighlightingCacheCodec.ts'
+import * as ApplicationRpc from '../ApplicationRpc/ApplicationRpc.ts'
 import * as SyntaxHighlightingCacheCodec from '../SyntaxHighlightingCacheCodec/SyntaxHighlightingCacheCodec.ts'
 import * as SyntaxHighlightingState from '../SyntaxHighlightingState/SyntaxHighlightingState.ts'
 import * as TokenizerFingerprint from '../TokenizerFingerprint/TokenizerFingerprint.ts'
@@ -23,12 +24,14 @@ export const getKey = async (editor: any, start: number, end: number): Promise<s
   }
   try {
     const paths = TokenizerState.getTokenizePaths()
-    const catalog = JSON.stringify(paths)
+    const catalog = JSON.stringify([editor.applicationId, paths])
     let fingerprint = fingerprints.get(catalog)
     if (!fingerprint) {
       fingerprint = (async () => {
         try {
-          return await TokenizerFingerprint.getFingerprint(paths)
+          return await TokenizerFingerprint.getFingerprint(paths, (url) =>
+            ApplicationRpc.invoke(editor.applicationId, 'Ajax.getText', url, { cache: 'no-cache', retry: 0, timeout: 5000 }),
+          )
         } catch {
           return ''
         }
