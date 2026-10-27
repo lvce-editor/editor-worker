@@ -4,6 +4,7 @@ import * as ClassNames from '../ClassNames/ClassNames.ts'
 import { DiagnosticTag } from '../Diagnostic/Diagnostic.ts'
 import * as DomEventListenerFunctions from '../DomEventListenerFunctions/DomEventListenerFunctions.ts'
 import * as EditorViewRows from '../EditorViewRows/EditorViewRows.ts'
+import { getCachedEditorRowVirtualDom } from '../GetCachedEditorRowVirtualDom/GetCachedEditorRowVirtualDom.ts'
 import * as GetHorizontalVisibleRange from '../GetHorizontalVisibleRange/GetHorizontalVisibleRange.ts'
 import * as MergeClassNames from '../MergeClassNames/MergeClassNames.ts'
 import * as Px from '../Px/Px.ts'
@@ -157,6 +158,18 @@ export const getEditorRowsVirtualDom = (
     const textInfo = textInfos[textInfoIndex]
     const difference = differences[textInfoIndex]
     const rowIndex = viewRow
+    let className = ClassNames.EditorRow
+    if (rowIndex === highlightedLine) {
+      className = MergeClassNames.mergeClassNames(className, ClassNames.EditorRowHighlighted)
+    }
+    if (rowIndex === problemsHighlightedRow) {
+      className = MergeClassNames.mergeClassNames(className, 'EditorProblemsHighlightedRow')
+    }
+    if (!rtl && diagnostics.length === 0 && endOfLineDecorations.length === 0) {
+      dom.push(...getCachedEditorRowVirtualDom(textInfo, difference, className))
+      textInfoIndex++
+      continue
+    }
     const line = lines[rowIndex] || ''
     const visibleRange =
       horizontalVisibleRanges.find((range) => range.rowIndex === rowIndex) ||
@@ -181,13 +194,6 @@ export const getEditorRowsVirtualDom = (
         visibleRange.segments,
       ),
     )
-    let className = ClassNames.EditorRow
-    if (rowIndex === highlightedLine) {
-      className = MergeClassNames.mergeClassNames(className, ClassNames.EditorRowHighlighted)
-    }
-    if (rowIndex === problemsHighlightedRow) {
-      className = MergeClassNames.mergeClassNames(className, 'EditorProblemsHighlightedRow')
-    }
     const bidiText = rtl && Bidi.isBidi(line || tokenParts.map((part) => part.text).join(''), rtl) ? tokenParts.map((part) => part.text).join('') : ''
     const runs = bidiText ? Bidi.getRuns(bidiText) : undefined
     dom.push({
