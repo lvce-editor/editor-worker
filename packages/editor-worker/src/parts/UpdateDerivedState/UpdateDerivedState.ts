@@ -99,6 +99,7 @@ const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorStat
   return (
     oldState.lines !== newState.lines ||
     oldState.tokenizerId !== newState.tokenizerId ||
+    oldState.languageId !== newState.languageId ||
     oldState.minLineY !== newState.minLineY ||
     oldState.maxLineY !== newState.maxLineY ||
     oldState.visibleLineIndices !== newState.visibleLineIndices ||
@@ -123,7 +124,13 @@ const shouldUpdateVisibleTextData = (oldState: EditorState, newState: EditorStat
 }
 
 const shouldUpdateMinimapData = (oldState: EditorState, newState: EditorState): boolean => {
-  return newState.minimapEnabled && (!oldState.minimapEnabled || oldState.lines !== newState.lines || oldState.tokenizerId !== newState.tokenizerId)
+  return (
+    newState.minimapEnabled &&
+    (!oldState.minimapEnabled ||
+      oldState.lines !== newState.lines ||
+      oldState.tokenizerId !== newState.tokenizerId ||
+      oldState.languageId !== newState.languageId)
+  )
 }
 
 const mergeConflictsEqual = (oldState: EditorState, newState: EditorState): boolean => {
