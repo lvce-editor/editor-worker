@@ -71,6 +71,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     combineWhitespaceTokens,
     selectedTextOccurrenceMatching,
     disableMonospaceOptimizations,
+    syntaxHighlightingCacheEnabled,
   ] = await Promise.all([
     Preferences.get('editor.diagnostics', applicationId),
     EditorPreferences.getFontFamily(applicationId),
@@ -102,6 +103,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     Preferences.get('editor.combineWhitespaceTokens', applicationId),
     Preferences.get('editor.selectedTextOccurrenceMatching', applicationId),
     Preferences.get('editor.disableMonospaceOptimizations', applicationId),
+    Preferences.get('editor.syntaxHighlightingCache', applicationId),
   ])
   return {
     breadcrumbsEnabled: breadcrumbsEnabled ?? false,
@@ -133,6 +135,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     rowHeight,
     rtl: rtl === true,
     selectedTextOccurrenceMatching: getSelectedTextOccurrenceMatching(selectedTextOccurrenceMatching),
+    syntaxHighlightingCacheEnabled: syntaxHighlightingCacheEnabled === true,
     tabSize,
   }
 }

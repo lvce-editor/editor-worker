@@ -333,3 +333,20 @@ test('horizontal scrolling refreshes diagnostics even when their source data is 
   const result = await UpdateDerivedState.updateDerivedState(oldState, { ...oldState, deltaX: 501 })
   expect(result.visualDecorations).toEqual([{ height: 20, type: 'error', width: 24, x: 59, y: 0 }])
 })
+
+test('language changes refresh visible tokens even when the syntax worker shares one tokenizer id', async () => {
+  const oldState: any = {
+    differences: [],
+    languageId: 'html',
+    lines: ['code'],
+    selections: new Uint32Array(),
+    textInfos: [['embedded tokens']],
+    tokenizerId: 0,
+  }
+  const newState = { ...oldState, languageId: 'plaintext' }
+  getVisibleTextMock.mockResolvedValue({ differences: [], textInfos: [['plain text']] })
+  getVisibleSelectionsMock.mockResolvedValue({ cursorInfos: [], selectionInfos: [] })
+  const result = await UpdateDerivedState.updateDerivedState(oldState, newState)
+  expect(getVisibleTextMock).toHaveBeenCalledWith(newState, false)
+  expect(result.textInfos).toEqual([['plain text']])
+})

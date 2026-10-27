@@ -126,6 +126,7 @@ export interface EditorState {
   readonly selectionAutoMovePosition: { readonly x: number; readonly y: number }
   readonly selectionInfos: readonly any[]
   readonly selections: Uint32Array
+  readonly syntaxHighlightingCacheEnabled?: boolean
   readonly tabSize: number
   readonly textDecorationDom?: readonly VirtualDomNode[]
   readonly textDecorations?: readonly EditorTextDecoration[]
