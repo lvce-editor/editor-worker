@@ -50,6 +50,7 @@ test('selection updates do not navigate unchanged document rows', () => {
     lines.push(line)
   }
   const oldState = createPlainTextState(line, 0, {
+    combineWhitespaceTokens: true,
     differences: lines.map(() => 0),
     lines,
     maxLineY: lines.length,
@@ -57,6 +58,7 @@ test('selection updates do not navigate unchanged document rows', () => {
     textInfos: lines.map((text) => [text, 'Token PlainText']),
   })
   RenderIncremental.renderIncremental({ ...oldState, initial: true }, oldState)
+  const oldRows = RenderedDoms.get(3)?.filter((node) => node.className === 'EditorRow')
   const selectedState = {
     ...oldState,
     cursorInfos: ['135px 0px'],
@@ -69,6 +71,8 @@ test('selection updates do not navigate unchanged document rows', () => {
   expect(command[0]).toBe(ViewletCommand.SetPatches)
   expect(command[2].length).toBeLessThan(12)
   expect(RenderedDoms.get(3)?.filter((node: any) => node.text === line)).toHaveLength(60)
+  const newRows = RenderedDoms.get(3)?.filter((node) => node.className === 'EditorRow')
+  expect(newRows?.every((node, index) => node === oldRows?.[index])).toBe(true)
   expect(RenderedDoms.get(3)).toContainEqual(expect.objectContaining({ className: 'EditorSelection', width: '135px' }))
   expect(RenderedDoms.get(3)).toContainEqual(expect.objectContaining({ className: 'EditorCursor', translate: '135px 0px' }))
 })
