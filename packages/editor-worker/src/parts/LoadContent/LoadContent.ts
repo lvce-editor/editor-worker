@@ -227,6 +227,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     rowHeight,
     rtl,
     selectedTextOccurrenceMatching,
+    syntaxHighlightingCacheEnabled,
     tabSize,
   } = await getEditorPreferences(state.applicationId)
   // TODO support overwriting language id by setting it explicitly or via settings
@@ -268,6 +269,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     rowHeight,
     rtl,
     selectedTextOccurrenceMatching,
+    syntaxHighlightingCacheEnabled,
     tabSize,
     tokenizerId: state.tokenizerId,
   }
