@@ -176,6 +176,20 @@ test('loadContent requests binary encoding when explicitly opened as text', asyn
   expect(readFileMock).toHaveBeenCalledWith('file:///test.txt', 'binary')
 })
 
+test('loadContent identifies Fira Code as monospace before the first render', async () => {
+  getEditorPreferencesMock.mockResolvedValue({
+    fontFamily: "'Fira Code'",
+    fontSize: 15,
+    fontWeight: 400,
+    letterSpacing: 0.5,
+  })
+  readFileMock.mockResolvedValue('{"name":"acceptance"}')
+
+  const result = await LoadContent.loadContent(createState(), undefined)
+
+  expect(result.isMonospaceFont).toBe(true)
+})
+
 test('loadContent does not focus the editor when focus is false and reading file fails', async () => {
   readFileMock.mockRejectedValue(new Error('Failed to read file'))
 

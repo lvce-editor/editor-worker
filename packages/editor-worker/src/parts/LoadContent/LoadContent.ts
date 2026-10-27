@@ -230,6 +230,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     syntaxHighlightingCacheEnabled,
     tabSize,
   } = await getEditorPreferences(state.applicationId)
+  const isMonospaceFont = fontFamily === 'Fira Code' || fontFamily === "'Fira Code'"
   // TODO support overwriting language id by setting it explicitly or via settings
   const charWidth = await MeasureCharacterWidth.measureCharacterWidth(fontWeight, fontSize, fontFamily, letterSpacing)
   const languages = await getLanguages(platform, assetDir, state.applicationId)
@@ -258,6 +259,7 @@ export const loadContent = async (state: EditorState, savedState: unknown, large
     isAutoClosingBracketsEnabled,
     isAutoClosingQuotesEnabled,
     isAutoClosingTagsEnabled,
+    isMonospaceFont,
     isQuickSuggestionsEnabled,
     languageId: computedLanguageId,
     letterSpacing,
