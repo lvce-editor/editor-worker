@@ -9,7 +9,7 @@
       "ignoreDependencies": ["esbuild", "playwright"]
     },
     "packages/e2e": {
-      "entry": ["src/**/*.ts", "fixtures/**/main.js"],
+      "entry": ["src/**/*.ts", "fixtures/**/main.js", "fixtures/editor.persisted-tokens/embedded.js"],
       "project": ["src/**/*.ts", "fixtures/**/*.js"],
       "ignoreFiles": [
         "fixtures/editor.syntax-highlighting-html-style-inline/src/*.js",
