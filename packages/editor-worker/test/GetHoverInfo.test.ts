@@ -98,6 +98,19 @@ test('sizes a wrapped diagnostic hover to its measured content height', async ()
   )
 })
 
+test('clamps a long diagnostic hover to the maximum height', async () => {
+  getHover.mockRejectedValue(new Error('No hover provider found'))
+  measureTextBlockHeight.mockResolvedValueOnce(400)
+  Editors.set(editor.uid, editor as any, editor as any)
+
+  const result = await GetHoverInfo.getEditorHoverInfo(editor.uid, {
+    columnIndex: 8,
+    rowIndex: 0,
+  })
+
+  expect(result).toEqual(expect.objectContaining({ height: 300 }))
+})
+
 test('allows for a line of wrapping variance in language hover height', async () => {
   const displayString =
     '(alias) new OrbitControls<THREE.PerspectiveCamera>(object: THREE.PerspectiveCamera, domElement?: HTMLElement | SVGElement | null): OrbitControls<THREE.PerspectiveCamera>'
