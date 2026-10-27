@@ -4,7 +4,7 @@ const cacheName = 'lvce-editor-character-widths-v1'
 const character = 'a'
 
 const getKey = (fontWeight: number, fontSize: number, fontFamily: string, letterSpacing: number): string => {
-  return `/character-width/${encodeURIComponent(JSON.stringify([character, fontWeight, fontSize, fontFamily, letterSpacing]))}`
+  return `https://cache.invalid/character-width/${encodeURIComponent(JSON.stringify([character, fontWeight, fontSize, fontFamily, letterSpacing]))}`
 }
 
 export const get = async (fontWeight: number, fontSize: number, fontFamily: string, letterSpacing: number): Promise<number | undefined> => {
@@ -18,4 +18,12 @@ export const get = async (fontWeight: number, fontSize: number, fontFamily: stri
 
 export const set = async (fontWeight: number, fontSize: number, fontFamily: string, letterSpacing: number, width: number): Promise<void> => {
   await CacheWorker.setCacheStorageJsonItem(getKey(fontWeight, fontSize, fontFamily, letterSpacing), width, cacheName)
+}
+
+export const has = async (fontWeight: number, fontSize: number, fontFamily: string, letterSpacing: number): Promise<boolean> => {
+  try {
+    return (await get(fontWeight, fontSize, fontFamily, letterSpacing)) !== undefined
+  } catch {
+    return false
+  }
 }
