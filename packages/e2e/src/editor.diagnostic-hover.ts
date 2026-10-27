@@ -78,4 +78,51 @@ export const test: Test = async ({ Command, Editor, expect, FileSystem, Locator,
   // assert
   await expect(hover).toBeVisible()
   await expect(hover).toContainText('Missing token')
+
+  // arrange
+  const wrappedMessage = 'A diagnostic message that wraps onto a second line.'
+  await Command.execute('Editor.setDiagnostics', [
+    {
+      code: 'wrapped-message',
+      columnIndex: 0,
+      endColumnIndex: 8,
+      endRowIndex: 0,
+      message: wrappedMessage,
+      rowIndex: 0,
+      source: 'diagnostic-test',
+      type: 'error',
+      uri,
+    },
+  ])
+
+  // act
+  await Editor.setCursor(0, 2)
+  await Command.execute('Editor.showHover')
+
+  // assert
+  await expect(hover).toContainText(wrappedMessage)
+  await expect(hover).toHaveCSS('height', '56px')
+
+  // arrange
+  const longMessage = `${wrappedMessage.repeat(20)}Final diagnostic line`
+  await Command.execute('Editor.setDiagnostics', [
+    {
+      code: 'long-message',
+      columnIndex: 0,
+      endColumnIndex: 8,
+      endRowIndex: 0,
+      message: longMessage,
+      rowIndex: 0,
+      source: 'diagnostic-test',
+      type: 'error',
+      uri,
+    },
+  ])
+
+  // act
+  await Command.execute('Editor.showHover')
+
+  // assert
+  await expect(hover).toContainText('Final diagnostic line')
+  await expect(hover).toHaveCSS('overflow', 'auto')
 }

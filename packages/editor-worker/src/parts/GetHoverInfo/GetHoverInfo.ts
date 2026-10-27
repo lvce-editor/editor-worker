@@ -25,6 +25,7 @@ const hoverDocumentationFontSize = 15
 const hoverDocumentationFontFamily = 'Fira Code'
 const hoverDocumentationLineHeight = '1.33333'
 const hoverWidth = 600
+const maximumHeight = 300
 const hoverDocumentationWidth = hoverWidth - 18
 
 export const getEditorHoverInfo = async (editorUid: number, position: any) => {
@@ -88,7 +89,11 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
         hoverDocumentationWidth,
       )) + 10
     : 0
-  const height = Math.min(diagnosticsHeight + displayStringHeight + (documentation ? documentationHeight + 11 : 0) || 20, editor.height)
+  const height = Math.min(
+    diagnosticsHeight + displayStringHeight + (documentation ? documentationHeight + 11 : 0) || 20,
+    maximumHeight,
+    editor.height,
+  )
   const x = Math.max(editor.x, Math.min(EditorPosition.x(editor, rowIndex, wordStart), editor.x + editor.width - hoverWidth))
   const rowBottom = EditorPosition.y(editor, rowIndex)
   const y = rowBottom + height <= editor.y + editor.height ? rowBottom : Math.max(editor.y, rowBottom - editor.rowHeight - height)
