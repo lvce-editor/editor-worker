@@ -118,6 +118,10 @@ export const wrapCommand = (fn: any, preservesTypingCoalescing = false, returnSt
       const { cursorUndoStack, endOfLine, initial, insertSpaces, isSelecting, lifecycle, lines, modified, redoStack, selections, undoStack, uri } =
         state
       const commandResult = await fn(state, ...args)
+      // A command with no update must leave the current editor state intact.
+      if (commandResult === undefined) {
+        return returnState ? state : undefined
+      }
       const shouldFormatAfterSave = commandResult?.postSaveFormat === true
       let newEditor = !preservesTypingCoalescing && commandResult.canCoalesceTyping ? { ...commandResult, canCoalesceTyping: false } : commandResult
       if (shouldFormatAfterSave) {
