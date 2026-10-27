@@ -1,0 +1,8 @@
+{
+  "id": "test.persisted-tokens",
+  "name": "Persistent syntax token fixture",
+  "languages": [
+    { "id": "cache-main", "extensions": [".cachetest"], "tokenize": "main.js" },
+    { "id": "cache-embedded", "extensions": [], "tokenize": "embedded.js" }
+  ]
+}

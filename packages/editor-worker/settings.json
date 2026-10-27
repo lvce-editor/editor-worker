@@ -1,6 +1,14 @@
 [
   {
     "category": "text-editor",
+    "description": "Persist syntax highlighting tokens for 90 days and reuse them when document contents and tokenizer code match.",
+    "heading": "Syntax Highlighting Cache",
+    "id": "editor.syntaxHighlightingCache",
+    "type": "boolean",
+    "value": false
+  },
+  {
+    "category": "text-editor",
     "description": "Enable basic bidirectional text rendering and visual character movement. Source code keeps a left-to-right paragraph direction.",
     "heading": "Right-to-left Text",
     "id": "editor.rtl",

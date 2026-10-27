@@ -70,6 +70,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     roundedSelection,
     combineWhitespaceTokens,
     selectedTextOccurrenceMatching,
+    syntaxHighlightingCacheEnabled,
   ] = await Promise.all([
     Preferences.get('editor.diagnostics', applicationId),
     EditorPreferences.getFontFamily(applicationId),
@@ -100,6 +101,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     Preferences.get('editor.roundedSelection', applicationId),
     Preferences.get('editor.combineWhitespaceTokens', applicationId),
     Preferences.get('editor.selectedTextOccurrenceMatching', applicationId),
+    Preferences.get('editor.syntaxHighlightingCache', applicationId),
   ])
   return {
     breadcrumbsEnabled: breadcrumbsEnabled ?? false,
@@ -130,6 +132,7 @@ export const getEditorPreferences = async (applicationId?: string) => {
     rowHeight,
     rtl: rtl === true,
     selectedTextOccurrenceMatching: getSelectedTextOccurrenceMatching(selectedTextOccurrenceMatching),
+    syntaxHighlightingCacheEnabled: syntaxHighlightingCacheEnabled === true,
     tabSize,
   }
 }

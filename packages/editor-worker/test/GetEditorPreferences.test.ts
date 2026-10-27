@@ -112,3 +112,10 @@ test('RTL defaults off and accepts only the boolean true', async () => {
     expect((await getEditorPreferences()).rtl).toBe(value === true)
   }
 })
+
+test('persistent syntax cache is disabled by default and requires explicit true', async () => {
+  for (const value of [undefined, false, 'true', 1, true]) {
+    getPreference.mockImplementation(async (key) => (key === 'editor.syntaxHighlightingCache' ? value : undefined))
+    expect((await getEditorPreferences()).syntaxHighlightingCacheEnabled).toBe(value === true)
+  }
+})

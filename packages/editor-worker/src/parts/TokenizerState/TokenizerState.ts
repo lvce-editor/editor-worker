@@ -40,3 +40,6 @@ export const setTokenizePaths = (languages: readonly any[]) => {
 export const isPending = (languageId: any) => {
   return Object.hasOwn(state.pending, languageId)
 }
+
+export const getTokenizePaths = (): readonly string[] =>
+  [...new Set<string>(Object.values(state.tokenizePaths))].toSorted((a, b) => a.localeCompare(b))
