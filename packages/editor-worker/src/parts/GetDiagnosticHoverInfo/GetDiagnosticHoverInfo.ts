@@ -3,6 +3,7 @@ import * as GetDiagnosticHoverDetail from '../GetDiagnosticHoverDetail/GetDiagno
 import * as MeasureTextHeight from '../MeasureTextHeight/MeasureTextHeight.ts'
 
 const maximumWidth = 600
+const maximumHeight = 300
 const horizontalPadding = 18
 
 export const getDiagnosticHoverInfo = async (editor: any, diagnostic: Diagnostic) => {
@@ -17,7 +18,7 @@ export const getDiagnosticHoverInfo = async (editor: any, diagnostic: Diagnostic
     `${editor.rowHeight}px`,
     width - horizontalPadding,
   )
-  const height = Math.min(measuredHeight + 10, editor.height)
+  const height = Math.min(measuredHeight + 10, maximumHeight, editor.height)
   const positionX = editor.x + columnIndex * editor.columnWidth - (editor.deltaX || 0)
   const x = Math.max(editor.x, Math.min(positionX, editor.x + editor.width - width))
   const rowBottom = editor.y + (rowIndex + 1) * editor.rowHeight - (editor.deltaY || 0)

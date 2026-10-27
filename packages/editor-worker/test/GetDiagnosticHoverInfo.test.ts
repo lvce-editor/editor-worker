@@ -49,3 +49,39 @@ test('creates a diagnostic-only popup positioned from the current editor layout'
   })
   expect(measureTextBlockHeight).toHaveBeenCalledWith("Type 'number' is not assignable to type 'string'. ts (2322)", 'Fira Code', 15, '20px', 582)
 })
+
+test('clamps diagnostic hover height when measured content exceeds the maximum', async () => {
+  measureTextBlockHeight.mockResolvedValueOnce(400)
+
+  await expect(GetDiagnosticHoverInfo.getDiagnosticHoverInfo(editor, diagnostic)).resolves.toEqual(
+    expect.objectContaining({
+      height: 300,
+    }),
+  )
+})
+
+test('measures diagnostic messages with explicit newlines intact', async () => {
+  measureTextBlockHeight.mockResolvedValueOnce(60)
+
+  await expect(
+    GetDiagnosticHoverInfo.getDiagnosticHoverInfo(editor, {
+      ...diagnostic,
+      message: 'First diagnostic line\nSecond diagnostic line',
+    }),
+  ).resolves.toEqual(
+    expect.objectContaining({
+      height: 70,
+    }),
+  )
+  expect(measureTextBlockHeight).toHaveBeenCalledWith('First diagnostic line\nSecond diagnostic line ts (2322)', 'Fira Code', 15, '20px', 582)
+})
+
+test('constrains diagnostic hover height to the editor viewport', async () => {
+  measureTextBlockHeight.mockResolvedValueOnce(400)
+
+  await expect(GetDiagnosticHoverInfo.getDiagnosticHoverInfo({ ...editor, height: 250 }, diagnostic)).resolves.toEqual(
+    expect.objectContaining({
+      height: 250,
+    }),
+  )
+})
