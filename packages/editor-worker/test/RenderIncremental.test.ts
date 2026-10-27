@@ -44,7 +44,10 @@ beforeEach(() => {
 
 test('selection updates do not navigate unchanged document rows', () => {
   const line = 'selectiontarget '.repeat(8)
-  const lines = Array.from({ length: 60 }).fill(line)
+  const lines: string[] = []
+  for (let i = 0; i < 60; i++) {
+    lines.push(line)
+  }
   const oldState = createPlainTextState(line, 0, {
     differences: lines.map(() => 0),
     lines,
