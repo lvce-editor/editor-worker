@@ -416,3 +416,27 @@ test('combining whitespace reduces row children without changing original tokens
   expect(combinedDom.some((node) => node.className === 'Token Whitespace')).toBe(false)
   expect(GetEditorVirtualDom.getEditorVirtualDom(options)).toEqual(originalDom)
 })
+
+test('derived render data overrides state diagnostics and scrollbars without changing the state', () => {
+  const state = {
+    diagnostics: [{ height: 3, type: 'error', width: 4, x: 1, y: 2 }],
+    differences: [0],
+    lineNumbers: false,
+    scrollBarDiagnostics: [{ height: 3, top: 1, type: 'error' }],
+    scrollBarWidth: 18,
+    textInfos: [['selectiontarget', 'Token PlainText']],
+    uid: 42,
+    unnecessaryDiagnostics: [],
+  }
+  const derived = {
+    diagnostics: [{ height: 6, type: 'warning', width: 8, x: 4, y: 5 }],
+    scrollBarDiagnostics: [{ height: 5, top: 9, type: 'warning' }],
+    scrollBarWidth: 30,
+    unnecessaryDiagnostics: [],
+  }
+  const before = structuredClone(state)
+  const expected = GetEditorVirtualDom.getEditorVirtualDom({ ...state, ...derived })
+  const actual = GetEditorVirtualDom.getEditorVirtualDom(state, derived)
+  expect(actual).toEqual(expected)
+  expect(state).toEqual(before)
+})

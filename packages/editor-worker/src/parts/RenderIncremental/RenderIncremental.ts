@@ -15,8 +15,7 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
   }
 
   const { width } = getHorizontalScrollDimensions(state)
-  return getEditorVirtualDom({
-    ...state,
+  return getEditorVirtualDom(state, {
     diagnostics: visualDecorations,
     scrollBarDiagnostics: getScrollBarDiagnostics(state, diagnostics),
     scrollBarWidth: ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize),
