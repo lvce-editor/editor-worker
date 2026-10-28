@@ -8,6 +8,9 @@ import * as Markdown from '../Markdown/Markdown.ts'
 import * as MeasureTextHeight from '../MeasureTextHeight/MeasureTextHeight.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as TokenizeCodeBlock from '../TokenizeCodeBlock/TokenizeCodeBlock.ts'
+import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
+import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
 const getMatchingDiagnostics = (diagnostics: any, rowIndex: number, columnIndex: number) => {
   const matching: any[] = []
@@ -28,6 +31,17 @@ const hoverWidth = 600
 const maximumHeight = 300
 const hoverDocumentationWidth = hoverWidth - 18
 
+const getPlainTextVirtualDom = (documentation: string) => {
+  const lines = documentation.split(/\r?\n/)
+  return lines.flatMap((line, index) => {
+    const nodes: VirtualDomNode[] = index === 0 ? [] : [{ childCount: 0, type: VirtualDomElements.Br }]
+    if (line) {
+      nodes.push(text(line))
+    }
+    return nodes
+  })
+}
+
 export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   Assert.number(editorUid)
   const instance = Editors.get(editorUid)
@@ -44,7 +58,7 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   if (!hover && matchingDiagnostics.length === 0) {
     return undefined
   }
-  const { displayString = '', displayStringLanguageId = '', documentation = '' } = hover || {}
+  const { displayString = '', displayStringLanguageId = '', documentation = '', documentationFormat } = hover || {}
   if (!displayString.trim() && !documentation.trim() && matchingDiagnostics.length === 0) {
     return undefined
   }
@@ -52,7 +66,11 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   const lineInfos = displayString
     ? await TokenizeCodeBlock.tokenizeCodeBlock(displayString, displayStringLanguageId || fallbackDisplayStringLanguageId, tokenizerPath)
     : []
-  const documentationVirtualDom = documentation ? await Markdown.getVirtualDomFromMarkdown(documentation) : []
+  const documentationVirtualDom = documentation
+    ? documentationFormat === 'plaintext'
+      ? getPlainTextVirtualDom(documentation)
+      : await Markdown.getVirtualDomFromMarkdown(documentation)
+    : []
   const wordPart = GetWordAt.getWordBefore(editor, rowIndex, columnIndex)
   const wordStart = columnIndex - wordPart.length
   const documentationHeight = documentation
@@ -100,6 +118,7 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   return {
     documentation,
     documentationVirtualDom,
+    ...(documentationFormat ? { documentationFormat } : {}),
     height,
     lineInfos,
     matchingDiagnostics,
