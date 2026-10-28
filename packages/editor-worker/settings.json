@@ -134,6 +134,17 @@
     "description": "Controls the display of line numbers",
     "heading": "Line Numbers",
     "id": "editor.lineNumbers",
+    "jsonSchema": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": ["on", "off"]
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
     "options": [
       {
         "id": "on",
