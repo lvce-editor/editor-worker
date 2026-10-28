@@ -7,6 +7,7 @@ interface EventMap {
   'Editor.create': (options: any) => Promise<void>
   'Editor.dispose': (editorUid: number) => Promise<readonly any[]>
   'Editor.getQuickPickMenuEntries': () => Promise<readonly any[]>
+  'Editor.hasCachedCharacterWidth': (fontWeight: number, fontSize: number, fontFamily: string, letterSpacing: number) => Promise<boolean>
   'Editor.offsetAt': (textDocument: any, positionRowIndex: number, positionColumnIndex: number) => Promise<any>
   'Editor.render': (editorUid: number) => Promise<any>
   'EditorCompletion.closeDetails': (editorUid: number, state: any) => Promise<any>
