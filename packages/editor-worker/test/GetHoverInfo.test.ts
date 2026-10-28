@@ -286,3 +286,23 @@ test('converts documentation while preserving signatures and matching diagnostic
     expect.objectContaining({ documentation, documentationVirtualDom, lineInfos: [['signature']], matchingDiagnostics: [diagnostic] }),
   )
 })
+
+test('renders plaintext documentation literally without Markdown conversion', async () => {
+  const documentation = 'Use **literal** text: http://localhost:3001\n<example>'
+  getHover.mockResolvedValue({ documentation, documentationFormat: 'plaintext' })
+  Editors.set(editor.uid, editor as any, editor as any)
+
+  const result = await GetHoverInfo.getEditorHoverInfo(editor.uid, { columnIndex: 8, rowIndex: 0 })
+
+  expect(getVirtualDomFromMarkdown).not.toHaveBeenCalled()
+  expect(result).toEqual(
+    expect.objectContaining({
+      documentation,
+      documentationVirtualDom: [
+        { childCount: 0, text: 'Use **literal** text: http://localhost:3001', type: 12 },
+        { childCount: 0, type: 55 },
+        { childCount: 0, text: '<example>', type: 12 },
+      ],
+    }),
+  )
+})
