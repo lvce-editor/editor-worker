@@ -1,7 +1,5 @@
 import type { EditorGutterDecoration } from '../EditorGutterDecoration/EditorGutterDecoration.ts'
 
-const emptyDecorations: readonly EditorGutterDecoration[] = []
-
 export const getGutterInfos = (
   minLineY: number,
   maxLineY: number,
@@ -21,8 +19,7 @@ export const getGutterInfos = (
     const lineNumber = rowIndex + 1
     const isBreakpoint = breakPoints.includes(rowIndex)
     const isLightBulb = rowIndex === lightBulbRowIndex
-    const rowDecorations =
-      gutterDecorations.length === 0 ? emptyDecorations : gutterDecorations.filter((decoration) => decoration.rowIndex === rowIndex)
+    const rowDecorations = gutterDecorations.filter((decoration) => decoration.rowIndex === rowIndex)
     if (isLightBulb) {
       gutterInfos.push({ ...(rowDecorations.length > 0 && { gutterDecorations: rowDecorations }), isBreakpoint, isLightBulb: true, lineNumber })
     } else if (isBreakpoint) {
