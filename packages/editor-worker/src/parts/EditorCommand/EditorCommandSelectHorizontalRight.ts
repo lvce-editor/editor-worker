@@ -13,8 +13,9 @@ const getNewSelections = (selections, lines, getDelta) => {
     newSelections[i] = selectionStartRow
     newSelections[i + 1] = selectionStartColumn
     if (selectionEndColumn >= GetLineLength.getLineLength(line)) {
-      newSelections[i + 2] = selectionEndRow + 1
-      newSelections[i + 3] = 0
+      const isLastRow = selectionEndRow === lines.length - 1
+      newSelections[i + 2] = isLastRow ? selectionEndRow : selectionEndRow + 1
+      newSelections[i + 3] = isLastRow ? GetLineLength.getLineLength(line) : 0
     } else {
       const delta = getDelta(line, selectionEndColumn)
       newSelections[i + 2] = selectionEndRow
