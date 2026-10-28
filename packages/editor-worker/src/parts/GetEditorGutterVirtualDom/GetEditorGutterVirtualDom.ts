@@ -6,6 +6,16 @@ import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts
 import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 const getGutterInfoVirtualDom = (gutterInfo: any, activeLineNumber: number) => {
+  if (typeof gutterInfo === 'number' || gutterInfo === '') {
+    return [
+      {
+        childCount: 1,
+        className: gutterInfo === activeLineNumber ? 'LineNumber LineNumberActive' : 'LineNumber',
+        type: VirtualDomElements.Span,
+      },
+      text(gutterInfo),
+    ]
+  }
   const isBreakpoint = typeof gutterInfo === 'object' && gutterInfo.isBreakpoint
   const isLightBulb = typeof gutterInfo === 'object' && gutterInfo.isLightBulb
   const isMergeConflictActions = typeof gutterInfo === 'object' && gutterInfo.isMergeConflictActions
