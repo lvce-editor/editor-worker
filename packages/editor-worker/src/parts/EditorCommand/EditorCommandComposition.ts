@@ -45,8 +45,8 @@ export const compositionUpdate = (editor: any, data: any) => {
 
 export const compositionEnd = (editor: any, data: any) => {
   const { selections } = editor
-  const changes = getCompositionChanges(selections, data)
+  const changes = data === state.compositionText ? undefined : getCompositionChanges(selections, data)
   state.isComposing = false
   state.compositionText = ''
-  return Editor.scheduleDocumentAndCursorsSelections(editor, changes)
+  return changes ? Editor.scheduleDocumentAndCursorsSelections(editor, changes) : editor
 }
