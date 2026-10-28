@@ -1,3 +1,4 @@
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as Assert from '../Assert/Assert.ts'
 import { diagnosticContainsPosition } from '../DiagnosticContainsPosition/DiagnosticContainsPosition.ts'
 import * as GetWordAt from '../EditorCommand/EditorCommandGetWordAt.ts'
@@ -8,9 +9,8 @@ import * as Markdown from '../Markdown/Markdown.ts'
 import * as MeasureTextHeight from '../MeasureTextHeight/MeasureTextHeight.ts'
 import * as TextDocument from '../TextDocument/TextDocument.ts'
 import * as TokenizeCodeBlock from '../TokenizeCodeBlock/TokenizeCodeBlock.ts'
-import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
-import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import { text } from '../VirtualDomHelpers/VirtualDomHelpers.ts'
 
 const getMatchingDiagnostics = (diagnostics: any, rowIndex: number, columnIndex: number) => {
   const matching: any[] = []
@@ -30,11 +30,15 @@ const hoverDocumentationLineHeight = '1.33333'
 const hoverWidth = 600
 const maximumHeight = 300
 const hoverDocumentationWidth = hoverWidth - 18
+const plainTextLineBreak: VirtualDomNode = {
+  childCount: 0,
+  type: VirtualDomElements.Br,
+}
 
 const getPlainTextVirtualDom = (documentation: string) => {
   const lines = documentation.split(/\r?\n/)
   return lines.flatMap((line, index) => {
-    const nodes: VirtualDomNode[] = index === 0 ? [] : [{ childCount: 0, type: VirtualDomElements.Br }]
+    const nodes: VirtualDomNode[] = index === 0 ? [] : [plainTextLineBreak]
     if (line) {
       nodes.push(text(line))
     }
@@ -118,7 +122,6 @@ export const getEditorHoverInfo = async (editorUid: number, position: any) => {
   return {
     documentation,
     documentationVirtualDom,
-    ...(documentationFormat ? { documentationFormat } : {}),
     height,
     lineInfos,
     matchingDiagnostics,

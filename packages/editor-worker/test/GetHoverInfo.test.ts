@@ -298,7 +298,6 @@ test('renders plaintext documentation literally without Markdown conversion', as
   expect(result).toEqual(
     expect.objectContaining({
       documentation,
-      documentationFormat: 'plaintext',
       documentationVirtualDom: [
         { childCount: 0, text: 'Use **literal** text: http://localhost:3001', type: 12 },
         { childCount: 0, type: 55 },
