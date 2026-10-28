@@ -1,5 +1,6 @@
 import { beforeEach, expect, test } from '@jest/globals'
 import { ViewletCommand } from '@lvce-editor/constants'
+import * as ClassNames from '../src/parts/ClassNames/ClassNames.ts'
 import * as DiffItems from '../src/parts/DiffItems/DiffItems.ts'
 import * as RenderedDoms from '../src/parts/RenderedDoms/RenderedDoms.ts'
 import * as RenderIncremental from '../src/parts/RenderIncremental/RenderIncremental.ts'
@@ -40,6 +41,55 @@ const createPlainTextState = (line: string, cursorX: number, overrides: any = {}
 
 beforeEach(() => {
   RenderedDoms.clear()
+})
+
+test('selection updates do not navigate unchanged document rows', () => {
+  const line = 'selectiontarget '.repeat(8)
+  const lines: string[] = []
+  for (let i = 0; i < 60; i++) {
+    lines.push(line)
+  }
+  const oldState = createPlainTextState(line, 0, {
+    combineWhitespaceTokens: true,
+    differences: lines.map(() => 0),
+    lines,
+    maxLineY: lines.length,
+    selections: new Uint32Array([0, 0, 0, 0]),
+    textInfos: lines.map((text) => [text, 'Token PlainText']),
+  })
+  RenderIncremental.renderIncremental({ ...oldState, initial: true }, oldState)
+  const oldRows = RenderedDoms.get(3)?.filter((node) => node.className === 'EditorRow')
+  const selectedState = {
+    ...oldState,
+    cursorInfos: ['135px 0px'],
+    selectionInfos: ['0px', '0px', '135px', '20px'],
+    selections: new Uint32Array([0, 0, 0, 15]),
+  }
+
+  const command = RenderIncremental.renderIncremental(oldState, selectedState)
+
+  expect(command[0]).toBe(ViewletCommand.SetPatches)
+  expect(command[2].length).toBeLessThan(12)
+  expect(RenderedDoms.get(3)?.filter((node: any) => node.text === line)).toHaveLength(60)
+  const newRows = RenderedDoms.get(3)?.filter((node) => node.className === 'EditorRow')
+  expect(newRows?.every((node, index) => node === oldRows?.[index])).toBe(true)
+  expect(RenderedDoms.get(3)).toContainEqual(expect.objectContaining({ className: 'EditorSelection', width: '135px' }))
+  expect(RenderedDoms.get(3)).toContainEqual(expect.objectContaining({ className: 'EditorCursor', translate: '135px 0px' }))
+})
+
+test('adding a minimap uses tree patches instead of replacing the editor with a lone Add', () => {
+  const oldState = createPlainTextState('selectiontarget', 0, { minimapEnabled: false })
+  RenderIncremental.renderIncremental({ ...oldState, initial: true }, oldState)
+  const newState = { ...oldState, minimapEnabled: true, minimapLines: [['selectiontarget', 'Token PlainText']] }
+
+  const command = RenderIncremental.renderIncremental(oldState, newState)
+
+  expect(command[0]).toBe(ViewletCommand.SetPatches)
+  expect(command[2]).toEqual([
+    { navigations: [], type: 18 },
+    { nodes: [expect.objectContaining({ className: 'EditorMinimap' })], type: 6 },
+  ])
+  expect(RenderedDoms.get(3)?.[0].className).toBe(ClassNames.Editor)
 })
 
 test('renderIncremental preserves surrounding dom when visible rows jump during fast scroll', () => {

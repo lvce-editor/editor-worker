@@ -20,6 +20,7 @@ test('preserves leading whitespace and whitespace-only lines', () => {
 test('does not combine tokens containing visible characters or line breaks', () => {
   const tokens = ['x', 'Token Variable', ' y', 'Token String', '\n', 'Token Whitespace']
   expect(combineWhitespaceTokens(tokens)).toEqual(tokens)
+  expect(combineWhitespaceTokens(tokens)).toBe(tokens)
 })
 
 test('preserves decoration boundaries on both sides of whitespace', () => {

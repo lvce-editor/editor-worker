@@ -15,6 +15,11 @@ const rendererInvokeMock = jest.fn()
 const getFormattingEditsMock = jest.fn<() => Promise<readonly unknown[]>>()
 const applyDocumentEditsMock = jest.fn()
 const notifyTabModifiedStatusChangeMock = jest.fn()
+const notifyStatusMock = jest.fn<(...args: readonly unknown[]) => Promise<void>>()
+
+jest.unstable_mockModule('../src/parts/NotifyEditorStatusChange/NotifyEditorStatusChange.ts', () => ({
+  notifyEditorStatusChange: notifyStatusMock,
+}))
 
 jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
   RendererWorker: {
@@ -68,6 +73,8 @@ const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
 const WrapCommands = await import('../src/parts/WrapCommands/WrapCommands.ts')
 
 beforeEach(() => {
+  notifyStatusMock.mockReset()
+  notifyStatusMock.mockResolvedValue(undefined)
   scheduleGutterMock.mockReset()
   const state = {
     text: '',
@@ -1087,4 +1094,51 @@ test('latest mouse commands leave other editors and ordinary edits independent',
   await Promise.all([first, edit, latest])
   expect((EditorStates.get(1).newState as any).text).toBe('editlatest')
   expect((EditorStates.get(2).newState as any).text).toBe('other')
+})
+
+test('a pending status render does not hold the edit queue', async () => {
+  const { promise, resolve } = Promise.withResolvers<void>()
+  notifyStatusMock.mockReturnValue(promise)
+  const state = {
+    focused: true,
+    initial: false,
+    lifecycle: { disposed: false },
+    lines: ['hello'],
+    selections: new Uint32Array([0, 0, 0, 0]),
+    uid: 1,
+  } as any
+  EditorStates.set(1, state, state)
+  const firstEdit = WrapCommands.wrapCommand(async (editor: any) => ({ ...editor, isSelecting: true }), false, false)
+  const secondEdit = WrapCommands.wrapCommand(async (editor: any) => ({ ...editor, isSelecting: false }), false, false)
+  let firstCompleted = false
+  let secondCompleted = false
+  const first = (async () => {
+    await firstEdit(1)
+    firstCompleted = true
+  })()
+  const second = (async () => {
+    await secondEdit(1)
+    secondCompleted = true
+  })()
+  // Advance microtasks without waiting for the held status RPC.
+  for (let index = 0; index < 100; index++) await Promise.resolve()
+  const result = [firstCompleted, secondCompleted, notifyStatusMock.mock.calls.length]
+  resolve()
+  await Promise.all([first, second])
+  expect(result).toEqual([true, true, 2])
+})
+
+test('failed status delivery does not reject the editing command', async () => {
+  const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+  notifyStatusMock.mockRejectedValue(new Error('status disconnected'))
+  try {
+    const state = { initial: false, lines: ['hello'], selections: new Uint32Array([0, 0, 0, 0]), uid: 1 } as any
+    EditorStates.set(1, state, state)
+    const edit = WrapCommands.wrapCommand(async (editor: any) => ({ ...editor, isSelecting: true }), false, false)
+    await expect(edit(1)).resolves.toBeUndefined()
+    for (let index = 0; index < 10; index++) await Promise.resolve()
+    expect(warn).toHaveBeenCalledWith('Failed to notify editor status:', expect.any(Error))
+  } finally {
+    warn.mockRestore()
+  }
 })

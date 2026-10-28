@@ -70,6 +70,8 @@ jest.unstable_mockModule('../src/parts/Tokenizer/Tokenizer.ts', () => ({
 
 const LoadContent = await import('../src/parts/LoadContent/LoadContent.ts')
 const EditorStates = await import('../src/parts/EditorStates/EditorStates.ts')
+const { getAccurateColumnIndex } = await import('../src/parts/GetAccurateColumnIndex/GetAccurateColumnIndex.ts')
+const { TextMeasurementWorker } = await import('@lvce-editor/rpc-registry')
 
 const createState = () =>
   ({
@@ -151,6 +153,35 @@ beforeEach(() => {
 
 afterEach(() => {
   EditorStates.dispose(2)
+})
+
+test.each<[string, boolean, boolean]>([
+  ['Fira Code', true, false],
+  ["'Fira Code'", true, false],
+  ['Arial', false, false],
+  ['Fira Code', false, true],
+])('loadContent initializes monospace geometry for %s (optimized %s, disabled %s)', async (fontFamily, expectedMonospace, disabled) => {
+  const preferences = await getEditorPreferencesMock()
+  getEditorPreferencesMock.mockResolvedValue({ ...preferences, disableMonospaceOptimizations: disabled, fontFamily })
+  readFileMock.mockResolvedValue('selectiontarget')
+
+  const editor = await LoadContent.loadContent(createState(), undefined)
+
+  expect(editor.isMonospaceFont).toBe(expectedMonospace)
+  jest.mocked(TextMeasurementWorker.invoke).mockClear()
+  const column = await getAccurateColumnIndex(
+    editor.lines[0],
+    editor.fontWeight,
+    editor.fontSize,
+    editor.fontFamily,
+    editor.letterSpacing,
+    editor.isMonospaceFont,
+    editor.charWidth,
+    editor.tabSize,
+    24,
+  )
+  expect(column).toBe(3)
+  expect(TextMeasurementWorker.invoke).toHaveBeenCalledTimes(expectedMonospace ? 0 : 1)
 })
 
 test('loadContent returns error state when reading file fails', async () => {

@@ -29,6 +29,7 @@ test('boolean preferences retain their defaults and explicit values', async () =
   expect(await getEditorPreferences()).toMatchObject({
     breadcrumbsEnabled: false,
     diagnosticsEnabled: false,
+    disableMonospaceOptimizations: false,
     dragAndDropEnabled: true,
     formatActions: 'post-save',
     formatOnSave: false,
@@ -44,6 +45,7 @@ test('boolean preferences retain their defaults and explicit values', async () =
     expect(await getEditorPreferences()).toMatchObject({
       breadcrumbsEnabled: value,
       diagnosticsEnabled: value,
+      disableMonospaceOptimizations: value,
       dragAndDropEnabled: value,
       formatOnSave: value,
       hoverEnabled: value,

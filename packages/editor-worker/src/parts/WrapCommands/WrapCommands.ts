@@ -163,7 +163,11 @@ export const wrapCommand = (fn: any, preservesTypingCoalescing = false, returnSt
       if (deferGutterDecorations) {
         ScheduleGutterDecorations.schedule(finalEditor)
       }
-      await notifyEditorStatusChange(state, finalEditor)
+      // Status delivery serializes/coalesces its own snapshots. Its renderer
+      // acknowledgement must not delay the next edit or the selection render.
+      void notifyEditorStatusChange(state, finalEditor).catch((error) => {
+        console.warn('Failed to notify editor status:', error)
+      })
       if (
         !initial &&
         uri === finalEditor.uri &&

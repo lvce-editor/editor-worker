@@ -15,8 +15,7 @@ const getDom = (state: EditorState): readonly VirtualDomNode[] => {
   }
 
   const { width } = getHorizontalScrollDimensions(state)
-  return getEditorVirtualDom({
-    ...state,
+  return getEditorVirtualDom(state, {
     diagnostics: visualDecorations,
     scrollBarDiagnostics: getScrollBarDiagnostics(state, diagnostics),
     scrollBarWidth: ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize),
@@ -55,6 +54,12 @@ export const renderIncremental = (oldState: EditorState, newState: EditorState):
   RenderedDoms.set(newState.uid, newDom, newTextAppendPaths)
   if (patches.length === 0) {
     return []
+  }
+  // The renderer bridge interprets a lone Add as a legacy initial render.
+  // An empty navigation batch keeps this incremental append on its tree path
+  // without moving the current element or requiring a newer bridge command.
+  if (oldDom.length > 0 && patches.length === 1 && patches[0].type === 6) {
+    return [ViewletCommand.SetPatches, newState.uid, [{ navigations: [], type: 18 }, ...patches]]
   }
   return [ViewletCommand.SetPatches, newState.uid, patches]
 }
