@@ -4,7 +4,7 @@ export const name = 'editor.double-click-selects-word'
 
 export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace }) => {
   const tmpDir = await FileSystem.getTmpDir()
-  await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'second line with words')
+  await FileSystem.writeFile(`${tmpDir}/file1.txt`, 'second line with words\n"AUTH_PROCESS_OAUTH_SERVER_DISPOSED!"')
   await Workspace.setPath(tmpDir)
   await Main.openUri(`${tmpDir}/file1.txt`)
   await Command.execute('Editor.resize', { height: 200, width: 800, x: 0, y: 0 }, 10)
@@ -13,4 +13,7 @@ export const test: Test = async ({ Command, Editor, FileSystem, Main, Workspace 
   await Command.execute('Editor.handleMouseDown', 0, false, false, 94, 1, 2)
 
   await Editor.shouldHaveSelections(new Uint32Array([0, 7, 0, 11]))
+
+  await Command.execute('Editor.handleMouseDown', 0, false, false, 110, 20, 2)
+  await Editor.shouldHaveSelections(new Uint32Array([1, 1, 1, 35]))
 }
