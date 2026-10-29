@@ -49,6 +49,30 @@ test('editorSelectWord - with accent', () => {
   })
 })
 
+test.each([1, 5, 6, 12, 13, 19, 20, 26, 27, 33])('editorSelectWord - with underscores at column %i', (columnIndex) => {
+  const editor = {
+    lineCache: [],
+    lines: ['"AUTH_PROCESS_OAUTH_SERVER_DISPOSED!"'],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, columnIndex, 0, columnIndex),
+  }
+  expect(EditorSelectWord.selectWord(editor, 0, columnIndex)).toMatchObject({
+    selections: EditorSelection.fromRange(0, 1, 0, 35),
+  })
+})
+
+test('editorSelectWord - with repeated, leading and trailing underscores', () => {
+  const editor = {
+    lineCache: [],
+    lines: ['__foo__'],
+    primarySelectionIndex: 0,
+    selections: EditorSelection.fromRange(0, 3, 0, 3),
+  }
+  expect(EditorSelectWord.selectWord(editor, 0, 3)).toMatchObject({
+    selections: EditorSelection.fromRange(0, 0, 0, 7),
+  })
+})
+
 test('editorSelectWord - with word before', () => {
   const cursor = {
     columnIndex: 3,
