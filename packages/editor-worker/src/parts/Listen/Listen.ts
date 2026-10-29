@@ -6,20 +6,17 @@ import { initializeCacheWorker } from '../InitializeCacheWorker/InitializeCacheW
 import { initializeDragAndDropWorker } from '../InitializeDragAndDropWorker/InitializeDragAndDropWorker.ts'
 import { initializeErrorWorker } from '../InitializeErrorWorker/InitializeErrorWorker.ts'
 import { initializeExtensionManagementWorker } from '../InitializeExtensionManagementWorker/InitializeExtensionManagementWorker.ts'
-import { initializeOpenerWorker } from '../InitializeOpenerWorker/InitializeOpenerWorker.ts'
-import { initializeRendererWorker } from '../InitializeRendererWorker/InitializeRendererWorker.ts'
-import { initializeTextMeasurementWorker } from '../InitializeTextMeasurementWorker/InitializeTextMeasurementWorker.ts'
 
 export const listen = async () => {
   registerCommands(CommandMap.commandMap)
   await Promise.all([
-    initializeRendererWorker(),
+    RendererWorker.initializeRendererWorkerForWorker(CommandMap.commandMap),
     initializeDragAndDropWorker(),
     initializeErrorWorker(),
     initializeExtensionManagementWorker(),
-    initializeTextMeasurementWorker(),
+    RendererWorker.initializeTextMeasurementWorker(),
     initializeCacheWorker(),
-    initializeOpenerWorker(),
+    RendererWorker.initializeOpenerWorker(),
   ])
   const dialogRpc = await LazyTransferMessagePortRpcParent.create({
     commandMap: {},
