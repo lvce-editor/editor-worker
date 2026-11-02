@@ -14,16 +14,20 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, W
   await Command.execute('Editor.resize', { height: 800, width: 400, x: 0, y: 0 }, 10)
 
   const verticalThumb = Locator('.ScrollBarThumbVertical')
-  const horizontalThumb = Locator('.ScrollBarThumbHorizontal')
+  const horizontalThumb = Locator('.ScrollBarThumbHorizontal[style]')
+  // Attribute and CSS matchers in this test driver do not apply negation.
+  const translatedHorizontalThumb = Locator(
+    '.ScrollBarThumbHorizontal[style*="translate:"]:not([style*="translate: 0px"]):not([style*="translate:0px"])',
+  )
 
   await expect(verticalThumb).toBeVisible()
   await expect(horizontalThumb).toBeVisible()
-  await expect(horizontalThumb).not.toHaveAttribute('style', null)
   await expect(horizontalThumb).toHaveCSS('translate', '0px')
   await expect(verticalThumb).toHaveAttribute('style', null)
 
   await Command.execute('Editor.handleWheel', 0, 100, 0)
-  await expect(horizontalThumb).not.toHaveCSS('translate', '0px')
+  await expect(translatedHorizontalThumb).toBeVisible()
   await Command.execute('Editor.handleWheel', 0, -100_000, 0)
+  await expect(translatedHorizontalThumb).toHaveCount(0)
   await expect(horizontalThumb).toHaveCSS('translate', '0px')
 }
