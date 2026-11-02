@@ -35,6 +35,7 @@ test('Ctrl/Cmd+[ is bound to a registered indent-less command', () => {
     when: WhenExpression.FocusEditorText,
   })
   expect(commandMap['Editor.indentLess']).toBeDefined()
+  expect(commandMap['Editor.unindent']).toBeDefined()
   expect('Editor.indendLess' in commandMap).toBe(false)
 })
 
