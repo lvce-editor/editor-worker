@@ -448,7 +448,7 @@ export const commandMap = {
   'Editor.hasCachedCharacterWidth': CharacterWidthCache.has,
   'Editor.hotReload': hotReload,
   'Editor.incrementSelection': wrapCommand(ChangeSelectedValue.incrementSelection),
-  'Editor.indendLess': wrapCommand(IndentLess.indentLess),
+  'Editor.indentLess': wrapCommand(IndentLess.indentLess),
   'Editor.indentMore': wrapCommand(IndentMore.indentMore),
   'Editor.insertLineBreak': wrapCommand(InsertLineBreak.insertLineBreak),
   'Editor.loadContent': wrapCommand(loadContent),

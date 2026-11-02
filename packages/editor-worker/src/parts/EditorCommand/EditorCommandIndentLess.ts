@@ -1,22 +1,28 @@
 import * as Editor from '../Editor/Editor.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 
-// @ts-ignore
-const getChanges = (selections) => {
+const getChanges = (editor: any) => {
+  const { lines, selections } = editor
   const changes: any[] = []
-  const rowsToIndentLess: number[] = []
+  const rowsToIndentLess = new Set<number>()
   for (let i = 0; i < selections.length; i += 4) {
     const selectionStartRow = selections[i]
     const selectionEndRow = selections[i + 2]
     for (let i = selectionStartRow; i <= selectionEndRow; i++) {
-      rowsToIndentLess.push(i)
+      rowsToIndentLess.add(i)
     }
   }
   for (const rowToIndent of rowsToIndentLess) {
+    const line = lines[rowToIndent]
+    const leadingWhitespace = line.match(/^[\t ]+/)?.[0] ?? ''
+    const whitespaceToRemove = leadingWhitespace.startsWith('\t') ? '\t' : leadingWhitespace.slice(0, editor.tabSize || 2)
+    if (!whitespaceToRemove) {
+      continue
+    }
     changes.push({
-      deleted: ['  '],
+      deleted: [whitespaceToRemove],
       end: {
-        columnIndex: 2,
+        columnIndex: whitespaceToRemove.length,
         rowIndex: rowToIndent,
       },
       inserted: [''],
@@ -32,7 +38,6 @@ const getChanges = (selections) => {
 
 // @ts-ignore
 export const indentLess = (editor) => {
-  const { selections } = editor
-  const changes = getChanges(selections)
+  const changes = getChanges(editor)
   return Editor.scheduleDocumentAndCursorsSelections(editor, changes)
 }
