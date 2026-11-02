@@ -29,10 +29,10 @@ test('isEqual - returns false when scrollbar height changes', () => {
   expect(DiffCss.isEqual(state as any, { ...state, scrollBarHeight: 20 } as any)).toBe(false)
 })
 
-test('isEqual - returns false when horizontal scrollbar left changes', () => {
-  expect(DiffCss.isEqual(state as any, { ...state, deltaX: 40 } as any)).toBe(false)
+test('isEqual - ignores horizontal scrollbar left changes', () => {
+  expect(DiffCss.isEqual(state as any, { ...state, deltaX: 40 } as any)).toBe(true)
 })
 
-test('isEqual - returns false when horizontal scrollbar width changes', () => {
-  expect(DiffCss.isEqual(state as any, { ...state, longestLineWidth: 320 } as any)).toBe(false)
+test('isEqual - ignores horizontal scrollbar width changes', () => {
+  expect(DiffCss.isEqual(state as any, { ...state, longestLineWidth: 320 } as any)).toBe(true)
 })

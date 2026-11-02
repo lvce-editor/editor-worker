@@ -396,3 +396,26 @@ test('renderIncremental falls back from plain text fast patches for replacement,
   expect(RenderPlainTextAppend.canRenderPlainTextAppend(oldState, createPlainTextState('abc', 27, { minLineY: 1 }))).toBe(false)
   expect(RenderPlainTextAppend.canRenderPlainTextAppend(oldState, createPlainTextState('abc', 27, { languageId: 'html' }))).toBe(false)
 })
+
+test('growing an overflowing line updates horizontal thumb geometry in its DOM patch', () => {
+  const line = 'a'.repeat(100)
+  const state = createPlainTextState(line, 900, { width: 200, deltaX: 0, deltaY: 0, finalDeltaY: 0, rowHeight: 20 })
+  RenderIncremental.renderIncremental({ ...state, initial: true }, state)
+  const previous = RenderedDoms.get(3)?.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbHorizontal')
+  const next = createPlainTextState(line + 'b', 909, { width: 200, deltaX: 10, deltaY: 0, finalDeltaY: 0, rowHeight: 20 })
+  const command = RenderIncremental.renderIncremental(state, next)
+  const thumb = RenderedDoms.get(3)?.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbHorizontal')
+  expect(typeof thumb?.style).toBe('string')
+  expect(thumb?.style).not.toBe(previous?.style)
+  expect(command[0]).toBe(ViewletCommand.SetPatches)
+  expect(command[2]).toEqual(expect.arrayContaining([expect.objectContaining({ key: 'style', value: thumb?.style })]))
+})
+
+test('horizontal-only movement schedules a thumb DOM patch', () => {
+  const state = createPlainTextState('a'.repeat(100), 900, { width: 200, deltaX: 0, deltaY: 0, finalDeltaY: 0, rowHeight: 20 })
+  RenderIncremental.renderIncremental({ ...state, initial: true }, state)
+  const next = { ...state, deltaX: 50 }
+  expect(DiffItems.isEqual(state, next)).toBe(false)
+  const command = RenderIncremental.renderIncremental(state, next)
+  expect(command[2]).toEqual(expect.arrayContaining([expect.objectContaining({ key: 'style' })]))
+})

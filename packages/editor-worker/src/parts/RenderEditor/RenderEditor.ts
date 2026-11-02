@@ -89,8 +89,13 @@ const renderSelections = {
 }
 
 const renderCss = {
-  apply: renderCssCommand,
-  isEqual: DiffCss.isEqual,
+  apply: (oldState: EditorState, newState: EditorState) => renderCssCommand(oldState, newState, false),
+  isEqual: (oldState: EditorState, newState: EditorState) =>
+    DiffCss.isEqual(oldState, newState) &&
+    oldState.deltaX === newState.deltaX &&
+    oldState.longestLineWidth === newState.longestLineWidth &&
+    oldState.minimumSliderSize === newState.minimumSliderSize &&
+    oldState.width === newState.width,
 }
 
 const renderFocus = {

@@ -18,6 +18,11 @@ export const test: Test = async ({ Command, expect, FileSystem, Locator, Main, W
 
   await expect(verticalThumb).toBeVisible()
   await expect(horizontalThumb).toBeVisible()
-  await expect(horizontalThumb).toHaveAttribute('style', null)
+  await expect(horizontalThumb).toHaveAttribute('style', /^width:\s*[\d.]+px;\s*translate:\s*0px(?: 0px)?;?$/)
   await expect(verticalThumb).toHaveAttribute('style', null)
+
+  await Command.execute('Editor.handleWheel', 0, 100, 0)
+  await expect(horizontalThumb).toHaveAttribute('style', /^width:\s*[\d.]+px;\s*translate:\s*[1-9][\d.]*px(?: 0px)?;?$/)
+  await Command.execute('Editor.handleWheel', 0, -100_000, 0)
+  await expect(horizontalThumb).toHaveAttribute('style', /^width:\s*[\d.]+px;\s*translate:\s*0px(?: 0px)?;?$/)
 }

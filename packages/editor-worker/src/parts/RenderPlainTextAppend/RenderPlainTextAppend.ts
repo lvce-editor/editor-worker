@@ -123,6 +123,9 @@ export const canRenderPlainTextAppend = (oldState: EditorState, newState: Editor
     oldState.problemsHighlightedRow !== newState.problemsHighlightedRow ||
     oldState.focused !== newState.focused ||
     oldState.roundedSelection !== newState.roundedSelection ||
+    oldState.deltaX !== newState.deltaX ||
+    oldState.gutterWidth !== newState.gutterWidth ||
+    ((newState.deltaX ?? 0) !== 0 && oldState.longestLineWidth !== newState.longestLineWidth) ||
     oldState.width !== newState.width ||
     oldState.height !== newState.height ||
     oldState.minimumSliderSize !== newState.minimumSliderSize ||

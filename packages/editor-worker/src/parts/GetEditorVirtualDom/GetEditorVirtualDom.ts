@@ -94,9 +94,10 @@ export const getEditorVirtualDom = (
   {
     diagnostics = fallbackDiagnostics,
     scrollBarDiagnostics = fallbackScrollBarDiagnostics,
+    scrollBarLeft = 0,
     scrollBarWidth = fallbackScrollBarWidth,
     unnecessaryDiagnostics = fallbackUnnecessaryDiagnostics,
-  }: Pick<EditorVirtualDomOptions, 'diagnostics' | 'scrollBarDiagnostics' | 'scrollBarWidth' | 'unnecessaryDiagnostics'> = {},
+  }: Pick<EditorVirtualDomOptions, 'diagnostics' | 'scrollBarDiagnostics' | 'scrollBarLeft' | 'scrollBarWidth' | 'unnecessaryDiagnostics'> = {},
 ): readonly VirtualDomNode[] => {
   if (loadError) {
     return [
@@ -166,6 +167,7 @@ export const getEditorVirtualDom = (
       rtl,
       scrollBarDiagnostics,
       scrollBarHeight,
+      scrollBarLeft,
       scrollBarWidth,
       selectionInfos,
       tabSize,

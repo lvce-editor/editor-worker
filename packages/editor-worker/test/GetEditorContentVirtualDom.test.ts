@@ -35,6 +35,7 @@ test('getEditorContentVirtualDom', () => {
   expect(dom.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbHorizontal')).toEqual({
     childCount: 0,
     className: 'ScrollBarThumb ScrollBarThumbHorizontal',
+    style: 'width:24px;translate:0px 0px',
     type: VirtualDomElements.Div,
   })
   expect(dom).toContainEqual({
