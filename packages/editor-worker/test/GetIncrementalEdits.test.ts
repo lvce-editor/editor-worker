@@ -53,3 +53,12 @@ test('contributed plaintext tokenizers keep incremental tokenization', async () 
   expect(await getIncrementalEdits(oldState, newState)).toBe(edits)
   expect(invoke).toHaveBeenCalledWith('TokenizeIncremental.tokenizeIncremental', 1, 'plaintext', 'x', 'xx', 0, 0)
 })
+
+test('bundled plaintext also avoids incremental worker requests', async () => {
+  TokenizerState.setTokenizePath('plaintext', '/assets/extensions/builtin.language-basics-plaintext/src/tokenizePlaintext.js')
+  const [oldState, newState] = states('x', 'xx')
+  newState.languageId = 'plaintext'
+  newState.assetDir = '/assets'
+  expect(await getIncrementalEdits(oldState, newState)).toBe(emptyIncrementalEdits)
+  expect(invoke).not.toHaveBeenCalled()
+})

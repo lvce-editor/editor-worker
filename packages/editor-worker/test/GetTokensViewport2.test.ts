@@ -191,3 +191,23 @@ test('disposed plaintext does no rendering or worker invalidation', async () => 
   expect(editor.lifecycle.sentLines).toEqual(['sent'])
   expect(invoke).not.toHaveBeenCalled()
 })
+
+test('the exact bundled plaintext tokenizer uses local tokens', async () => {
+  SyntaxHighlightingState.setEnabled(true)
+  TokenizerState.setTokenizePath('plaintext', '/build-a/extensions/builtin.language-basics-plaintext/src/tokenizePlaintext.js')
+  const editor = createEditor({ languageId: 'plaintext', lines: ['text'], tokenizerId: 0 })
+  expect((await getTokensViewport2(editor, 0, 1, true)).tokens[0].tokens).toEqual([1, 4])
+  expect(invoke).not.toHaveBeenCalled()
+})
+
+test('a similarly named external plaintext tokenizer is never treated as bundled', async () => {
+  SyntaxHighlightingState.setEnabled(true)
+  const response = { embeddedResults: [], tokenizersToLoad: [], tokens: [{ tokens: [42, 4] }] }
+  invoke.mockResolvedValue(response)
+  for (const assetDir of ['/different-build', undefined]) {
+    TokenizerState.setTokenizePath('plaintext', '/build-a/extensions/builtin.language-basics-plaintext/src/tokenizePlaintext.js')
+    const editor = createEditor({ assetDir, languageId: 'plaintext', syntaxHighlightingCacheEnabled: false, tokenizerId: 0 })
+    expect(await getTokensViewport2(editor, 0, 1, true)).toBe(response)
+  }
+  expect(invoke).toHaveBeenCalledTimes(2)
+})
