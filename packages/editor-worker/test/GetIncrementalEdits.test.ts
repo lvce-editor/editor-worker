@@ -37,10 +37,10 @@ test('nonempty line keeps incremental token updates', async () => {
   expect(invoke).toHaveBeenCalledWith('TokenizeIncremental.tokenizeIncremental', 1, 'javascript', 'x', 'xx', 0, 0)
 })
 
-test('built-in plain text avoids the redundant incremental worker request', async () => {
+test('built-in plain text matches the incremental worker result without a request', async () => {
   const [oldState, newState] = states('x', 'xx')
   newState.languageId = 'plaintext'
-  expect(await getIncrementalEdits(oldState, newState)).toBe(emptyIncrementalEdits)
+  expect(await getIncrementalEdits(oldState, newState)).toEqual([{ columnIndex: 0, rowIndex: 0, text: 'xx' }])
   expect(invoke).not.toHaveBeenCalled()
 })
 
@@ -59,6 +59,33 @@ test('bundled plaintext also avoids incremental worker requests', async () => {
   const [oldState, newState] = states('x', 'xx')
   newState.languageId = 'plaintext'
   newState.assetDir = '/assets'
-  expect(await getIncrementalEdits(oldState, newState)).toBe(emptyIncrementalEdits)
+  expect(await getIncrementalEdits(oldState, newState)).toEqual([{ columnIndex: 0, rowIndex: 0, text: 'xx' }])
+  expect(invoke).not.toHaveBeenCalled()
+})
+
+test('local incremental tokens retain bidi, viewport and unchanged-length guards', async () => {
+  for (const [oldLine, newLine, deltaX] of [
+    ['א', 'אב', 0],
+    ['x', 'xx', 1],
+    ['x'.repeat(500), 'x'.repeat(501), 0],
+    ['x', 'y', 0],
+  ] as const) {
+    const [oldState, newState] = states(oldLine, newLine)
+    newState.languageId = 'plaintext'
+    newState.deltaX = deltaX
+    newState.rtl = true
+    expect(await getIncrementalEdits(oldState, newState)).toBe(emptyIncrementalEdits)
+  }
+  expect(invoke).not.toHaveBeenCalled()
+})
+
+test('local incremental edit rows use viewport-relative indices', async () => {
+  const [oldState, newState] = states('x', 'xx')
+  newState.languageId = 'plaintext'
+  oldState.lines = ['outside', 'x']
+  newState.lines = ['outside', 'xx']
+  newState.undoStack[0][0].start.rowIndex = 1
+  newState.minLineY = 1
+  expect(await getIncrementalEdits(oldState, newState)).toEqual([{ columnIndex: 0, rowIndex: 0, text: 'xx' }])
   expect(invoke).not.toHaveBeenCalled()
 })
