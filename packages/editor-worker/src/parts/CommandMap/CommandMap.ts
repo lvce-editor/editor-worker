@@ -536,6 +536,7 @@ export const commandMap = {
   'Editor.typeWithAutoClosing': typeWithAutoClosingCommand,
   'Editor.undo': wrapCommand(EditorUndo.undo),
   'Editor.unfold': wrapCommand(unfold),
+  'Editor.unindent': wrapCommand(IndentLess.indentLess),
   'Editor.unIndent': wrapCommand(Unindent.editorUnindent),
   'Editor.updateColorPickerValue': wrapCommand(EditorOpenColorPicker.updateColorPickerValue),
   'Editor.updateDebugInfo': UpdateDebugInfo.updateDebugInfo,
