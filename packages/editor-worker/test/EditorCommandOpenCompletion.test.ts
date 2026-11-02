@@ -136,3 +136,26 @@ test('keeps completion state when diagnostics arrive while results are pending',
   expect(result.widgets).toHaveLength(1)
   expect(invoke).not.toHaveBeenCalledWith('Completions.dispose', 99)
 })
+
+test('keeps pending completion when a diagnostic commit closes the typing undo group', async () => {
+  const started = Promise.withResolvers<void>()
+  const loaded = Promise.withResolvers<void>()
+  invoke.mockClear()
+  invoke.mockImplementation(async (command: unknown) => {
+    if (command === 'Completions.loadContent') {
+      started.resolve()
+      await loaded.promise
+    }
+    return []
+  })
+  const editor = { ...emptyEditor, canCoalesceTyping: true, languageId: 'typescript', uid: 51, widgets: [] }
+  EditorStates.set(51, editor, editor)
+  const pending = openCompletion(editor)
+  await started.promise
+  const current = { ...editor, canCoalesceTyping: false, diagnostics: [{ message: 'fresh diagnostic' }] }
+  EditorStates.set(51, editor, current)
+  loaded.resolve()
+  const result = await pending
+  expect(result.widgets).toHaveLength(1)
+  expect(invoke).not.toHaveBeenCalledWith('Completions.dispose', 99)
+})

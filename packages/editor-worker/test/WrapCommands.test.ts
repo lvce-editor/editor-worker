@@ -1142,3 +1142,23 @@ test('failed status delivery does not reject the editing command', async () => {
     warn.mockRestore()
   }
 })
+
+test('applies deferred completion without reopening the typing undo group', async () => {
+  const started = Promise.withResolvers<void>()
+  const ready = Promise.withResolvers<void>()
+  const initial = { canCoalesceTyping: true, diagnostics: [], widgets: [] }
+  EditorStates.set(1, initial as any, initial as any)
+  const widgets = [{ id: WidgetId.Completion }]
+  const completion = WrapCommands.wrapDeferredCommand(async (editor: any) => {
+    started.resolve()
+    await ready.promise
+    return { ...editor, widgets }
+  })
+  const pending = completion(1)
+  await started.promise
+  const current = { ...initial, canCoalesceTyping: false, diagnostics: [{ message: 'fresh diagnostic' }] }
+  EditorStates.set(1, initial as any, current as any)
+  ready.resolve()
+  await pending
+  expect(EditorStates.get(1).newState).toMatchObject({ ...current, widgets })
+})

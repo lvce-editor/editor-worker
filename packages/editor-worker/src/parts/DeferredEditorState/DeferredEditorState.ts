@@ -1,7 +1,7 @@
 import type { EditorState } from '../State/State.ts'
 
-// These commits preserve the document, selection, layout, widgets and lifecycle.
-const diagnosticFields = new Set(['decorations', 'diagnostics', 'lightBulbRowIndex', 'visualDecorations'])
+// Diagnostic updates and undo grouping preserve the document, selection, layout, widgets and lifecycle.
+const independentFields = new Set(['canCoalesceTyping', 'decorations', 'diagnostics', 'lightBulbRowIndex', 'visualDecorations'])
 
 export const isCurrent = (snapshot: EditorState, current: EditorState | undefined): boolean => {
   if (!current || current.lifecycle?.disposed) {
@@ -12,7 +12,7 @@ export const isCurrent = (snapshot: EditorState, current: EditorState | undefine
   }
   const keys = new Set([...Object.keys(snapshot), ...Object.keys(current)])
   for (const key of keys) {
-    if (diagnosticFields.has(key)) {
+    if (independentFields.has(key)) {
       continue
     }
 
@@ -33,6 +33,7 @@ export const merge = (current: EditorState, snapshot: EditorState, result: Edito
   }
   return {
     ...result,
+    canCoalesceTyping: current.canCoalesceTyping ?? false,
     decorations: current.decorations,
     diagnostics: current.diagnostics,
     lightBulbRowIndex: current.lightBulbRowIndex,
