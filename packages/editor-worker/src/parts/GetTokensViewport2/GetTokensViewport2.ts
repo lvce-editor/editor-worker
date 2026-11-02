@@ -1,7 +1,9 @@
 import * as GetTokensViewport from '../GetTokensViewport/GetTokensViewport.ts'
+import { isDefaultPlainText } from '../IsDefaultPlainText/IsDefaultPlainText.ts'
 import * as SyntaxHighlightingCache from '../SyntaxHighlightingCache/SyntaxHighlightingCache.ts'
 import * as SyntaxHighlightingState from '../SyntaxHighlightingState/SyntaxHighlightingState.ts'
 import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
+import * as TokenizePlainText from '../TokenizePlainText/TokenizePlainText.ts'
 
 // TODO only send changed lines to renderer process instead of all lines in viewport
 const getFreshTokensViewport = async (editor: any, startLineIndex: any, endLineIndex: any, syncIncremental: boolean) => {
@@ -48,6 +50,20 @@ const getFreshTokensViewport = async (editor: any, startLineIndex: any, endLineI
 export const getTokensViewport2 = async (editor: any, start: number, end: number, syncIncremental: boolean) => {
   if (editor.lifecycle?.disposed) {
     return { embeddedResults: [], tokenizersToLoad: [], tokens: [] }
+  }
+  if (isDefaultPlainText(editor)) {
+    // Plain text has no continuation state. If a contributed tokenizer is loaded
+    // later, it must receive all lines and rebuild its own state from the start.
+    editor.invalidStartIndex = 0
+    editor.lineCache = []
+    if (editor.lifecycle) {
+      delete editor.lifecycle.sentLines
+    }
+    return {
+      embeddedResults: [],
+      tokenizersToLoad: [],
+      tokens: editor.lines.slice(start, end).map((line: string) => TokenizePlainText.tokenizeLine(line, TokenizePlainText.initialLineState)),
+    }
   }
   // Preserve the original request/disposal ordering when caching is disabled.
   if (editor.syntaxHighlightingCacheEnabled !== true) {

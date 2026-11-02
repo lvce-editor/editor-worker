@@ -2,10 +2,11 @@ import type { EditorState } from '../State/State.ts'
 import * as Bidi from '../Bidi/Bidi.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
+import { isDefaultPlainText } from '../IsDefaultPlainText/IsDefaultPlainText.ts'
 import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
 
 export const getIncrementalEdits = async (oldState: EditorState, newState: EditorState) => {
-  if (newState.lifecycle?.disposed || !newState.undoStack) {
+  if (newState.lifecycle?.disposed || !newState.undoStack || isDefaultPlainText(newState)) {
     return emptyIncrementalEdits
   }
   if (oldState.undoStack === newState.undoStack) {

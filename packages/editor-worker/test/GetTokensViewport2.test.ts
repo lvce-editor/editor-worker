@@ -20,6 +20,7 @@ jest.unstable_mockModule('../src/parts/TokenizerFingerprint/TokenizerFingerprint
 const { getTokensViewport2 } = await import('../src/parts/GetTokensViewport2/GetTokensViewport2.ts')
 const TokenizerMap = await import('../src/parts/TokenizerMap/TokenizerMap.ts')
 const TokenizerState = await import('../src/parts/TokenizerState/TokenizerState.ts')
+const TokenizePlainText = await import('../src/parts/TokenizePlainText/TokenizePlainText.ts')
 const SyntaxHighlightingState = await import('../src/parts/SyntaxHighlightingState/SyntaxHighlightingState.ts')
 
 const tokenizeLine = jest.fn((line: string, previous: any) => ({
@@ -41,6 +42,7 @@ const createEditor = (overrides: any = {}) => ({
 })
 
 beforeEach(() => {
+  TokenizerState.setTokenizePath('plaintext', '')
   storage.clear()
   jest.clearAllMocks()
   SyntaxHighlightingState.setEnabled(false)
@@ -134,4 +136,58 @@ test('application source reads use the owning renderer RPC without transferring 
     retry: 0,
     timeout: 5000,
   })
+})
+
+for (const syncIncremental of [false, true]) {
+  test(`built-in plain text renders only the viewport without syntax RPC or cache work (sync=${syncIncremental})`, async () => {
+    SyntaxHighlightingState.setEnabled(true)
+    const editor = createEditor({ languageId: 'plaintext', lines: ['before', '', 'é🙂\t', 'after'], tokenizerId: 0 })
+    editor.lifecycle.sentLines = editor.lines
+    const result = await getTokensViewport2(editor, 1, 3, syncIncremental)
+    expect(result).toEqual({
+      embeddedResults: [],
+      tokenizersToLoad: [],
+      tokens: ['', 'é🙂\t'].map((line) => TokenizePlainText.tokenizeLine(line, TokenizePlainText.initialLineState)),
+    })
+    expect(invoke).not.toHaveBeenCalled()
+    expect(getCacheStorageItem).not.toHaveBeenCalled()
+    expect(setCacheStorageItem).not.toHaveBeenCalled()
+    expect(fingerprint).not.toHaveBeenCalled()
+    expect(editor.lifecycle.sentLines).toBeUndefined()
+    expect(editor.invalidStartIndex).toBe(0)
+    expect(editor.lineCache).toEqual([])
+  })
+}
+
+test('a contributed plaintext tokenizer receives all lines after local plain rendering', async () => {
+  SyntaxHighlightingState.setEnabled(true)
+  const editor = createEditor({ languageId: 'plaintext', syntaxHighlightingCacheEnabled: false, tokenizerId: 0 })
+  await getTokensViewport2(editor, 0, 2, true)
+  TokenizerState.setTokenizePath('plaintext', '/custom-plaintext.js')
+  const response = { embeddedResults: [], tokenizersToLoad: [], tokens: [{ tokens: [42, 2] }] }
+  invoke.mockResolvedValue(response)
+  expect(await getTokensViewport2(editor, 0, 1, true)).toBe(response)
+  expect(invoke).toHaveBeenCalledTimes(1)
+  expect(invoke).toHaveBeenCalledWith(
+    'GetTokensViewport.getTokensViewport',
+    { invalidStartIndex: 0, languageId: 'plaintext' },
+    0,
+    1,
+    true,
+    1,
+    editor.lines,
+  )
+})
+
+test('a locally registered custom plaintext tokenizer is preserved', async () => {
+  const editor = createEditor({ languageId: 'plaintext', syntaxHighlightingCacheEnabled: false })
+  expect((await getTokensViewport2(editor, 0, 2, false)).tokens[1].tokens[0]).toBe(60)
+  expect(tokenizeLine).toHaveBeenCalledTimes(2)
+})
+
+test('disposed plaintext does no rendering or worker invalidation', async () => {
+  const editor = createEditor({ languageId: 'plaintext', lifecycle: { disposed: true, sentLines: ['sent'] }, tokenizerId: 0 })
+  expect(await getTokensViewport2(editor, 0, 2, true)).toEqual({ embeddedResults: [], tokenizersToLoad: [], tokens: [] })
+  expect(editor.lifecycle.sentLines).toEqual(['sent'])
+  expect(invoke).not.toHaveBeenCalled()
 })
