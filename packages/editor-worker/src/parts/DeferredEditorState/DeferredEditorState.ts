@@ -33,7 +33,7 @@ export const merge = (current: EditorState, snapshot: EditorState, result: Edito
   }
   return {
     ...result,
-    canCoalesceTyping: current.canCoalesceTyping,
+    canCoalesceTyping: current.canCoalesceTyping ?? false,
     decorations: current.decorations,
     diagnostics: current.diagnostics,
     lightBulbRowIndex: current.lightBulbRowIndex,
