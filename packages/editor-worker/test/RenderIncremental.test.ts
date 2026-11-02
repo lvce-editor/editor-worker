@@ -399,10 +399,10 @@ test('renderIncremental falls back from plain text fast patches for replacement,
 
 test('growing an overflowing line updates horizontal thumb geometry in its DOM patch', () => {
   const line = 'a'.repeat(100)
-  const state = createPlainTextState(line, 900, { width: 200, deltaX: 0, deltaY: 0, finalDeltaY: 0, rowHeight: 20 })
+  const state = createPlainTextState(line, 900, { deltaX: 0, deltaY: 0, finalDeltaY: 0, rowHeight: 20, width: 200 })
   RenderIncremental.renderIncremental({ ...state, initial: true }, state)
   const previous = RenderedDoms.get(3)?.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbHorizontal')
-  const next = createPlainTextState(line + 'b'.repeat(100), 1800, { width: 200, deltaX: 10, deltaY: 0, finalDeltaY: 0, rowHeight: 20 })
+  const next = createPlainTextState(line + 'b'.repeat(100), 1800, { deltaX: 10, deltaY: 0, finalDeltaY: 0, rowHeight: 20, width: 200 })
   const command = RenderIncremental.renderIncremental(state, next)
   const thumb = RenderedDoms.get(3)?.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbHorizontal')
   expect(thumb?.style).toBe('width:22px;translate:1.1125px 0px')
@@ -412,7 +412,7 @@ test('growing an overflowing line updates horizontal thumb geometry in its DOM p
 })
 
 test('horizontal-only movement schedules a thumb DOM patch', () => {
-  const state = createPlainTextState('a'.repeat(100), 900, { width: 200, deltaX: 0, deltaY: 0, finalDeltaY: 0, rowHeight: 20 })
+  const state = createPlainTextState('a'.repeat(100), 900, { deltaX: 0, deltaY: 0, finalDeltaY: 0, rowHeight: 20, width: 200 })
   RenderIncremental.renderIncremental({ ...state, initial: true }, state)
   const next = { ...state, deltaX: 50 }
   expect(DiffItems.isEqual(state, next)).toBe(false)
@@ -422,9 +422,9 @@ test('horizontal-only movement schedules a thumb DOM patch', () => {
 
 test('gutter-adjusted viewport growth updates the horizontal thumb instead of using cached text patches', () => {
   const line = 'a'.repeat(40)
-  const state = createPlainTextState(line, 360, { width: 400, gutterWidth: 100, deltaX: 0, lineNumbers: true })
+  const state = createPlainTextState(line, 360, { deltaX: 0, gutterWidth: 100, lineNumbers: true, width: 400 })
   RenderIncremental.renderIncremental({ ...state, initial: true }, state)
-  const next = createPlainTextState(line + 'b', 369, { width: 400, gutterWidth: 100, deltaX: 0, lineNumbers: true })
+  const next = createPlainTextState(line + 'b', 369, { deltaX: 0, gutterWidth: 100, lineNumbers: true, width: 400 })
   expect(RenderPlainTextAppend.canRenderPlainTextAppend(state, next)).toBe(false)
   RenderIncremental.renderIncremental(state, next)
   expect(RenderedDoms.get(3)?.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbHorizontal')?.style).toBe(

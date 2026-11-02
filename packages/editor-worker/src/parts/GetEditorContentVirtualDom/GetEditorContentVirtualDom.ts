@@ -39,8 +39,8 @@ interface EditorContentVirtualDomOptions {
   readonly roundedSelection?: boolean
   readonly rtl?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
-  readonly scrollBarLeft?: number
   readonly scrollBarHeight?: number
+  readonly scrollBarLeft?: number
   readonly scrollBarWidth?: number
   readonly selectionInfos?: readonly any[]
   readonly tabSize?: number
@@ -67,8 +67,8 @@ export const getEditorContentVirtualDom = ({
   roundedSelection = false,
   rtl = false,
   scrollBarDiagnostics = [],
-  scrollBarLeft = 0,
   scrollBarHeight = 0,
+  scrollBarLeft = 0,
   scrollBarWidth = 0,
   selectionInfos = [],
   tabSize = 2,

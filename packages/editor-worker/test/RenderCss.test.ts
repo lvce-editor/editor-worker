@@ -133,36 +133,36 @@ test('renderCss', () => {
 
 test('horizontal thumb geometry does not rewrite the editor stylesheet', () => {
   const state = {
-    uid: 1,
-    width: 200,
-    height: 400,
-    rowHeight: 20,
     deltaX: 0,
     deltaY: 0,
     finalDeltaY: 0,
     gutterWidth: 0,
+    height: 400,
     longestLineWidth: 500,
     minimumSliderSize: 24,
+    rowHeight: 20,
     scrollBarHeight: 0,
+    uid: 1,
+    width: 200,
   }
-  const next = { ...state, longestLineWidth: 600, deltaX: 10 }
+  const next = { ...state, deltaX: 10, longestLineWidth: 600 }
   expect(renderCss(state as any, next as any)[2]).toBe(renderCss({} as any, state as any)[2])
 })
 
 test('legacy renderer keeps stylesheet-based horizontal geometry', () => {
   const state = {
-    uid: 1,
-    width: 200,
-    height: 400,
-    rowHeight: 20,
     deltaX: 0,
     deltaY: 0,
     finalDeltaY: 0,
     gutterWidth: 0,
+    height: 400,
     longestLineWidth: 500,
     minimumSliderSize: 24,
+    rowHeight: 20,
     scrollBarHeight: 0,
+    uid: 1,
+    width: 200,
   }
-  const next = { ...state, longestLineWidth: 600, deltaX: 10 }
+  const next = { ...state, deltaX: 10, longestLineWidth: 600 }
   expect(renderCss(state as any, next as any, false)[2]).not.toBe(renderCss({} as any, state as any, false)[2])
 })
