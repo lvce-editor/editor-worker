@@ -419,3 +419,15 @@ test('horizontal-only movement schedules a thumb DOM patch', () => {
   const command = RenderIncremental.renderIncremental(state, next)
   expect(command[2]).toEqual(expect.arrayContaining([expect.objectContaining({ key: 'style' })]))
 })
+
+test('gutter-adjusted viewport growth updates the horizontal thumb instead of using cached text patches', () => {
+  const line = 'a'.repeat(40)
+  const state = createPlainTextState(line, 360, { width: 400, gutterWidth: 100, deltaX: 0, lineNumbers: true })
+  RenderIncremental.renderIncremental({ ...state, initial: true }, state)
+  const next = createPlainTextState(line + 'b', 369, { width: 400, gutterWidth: 100, deltaX: 0, lineNumbers: true })
+  expect(RenderPlainTextAppend.canRenderPlainTextAppend(state, next)).toBe(false)
+  RenderIncremental.renderIncremental(state, next)
+  expect(RenderedDoms.get(3)?.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbHorizontal')?.style).toBe(
+    'width:244px;translate:0px 0px',
+  )
+})
