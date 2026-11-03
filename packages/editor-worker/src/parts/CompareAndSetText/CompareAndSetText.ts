@@ -10,9 +10,9 @@ export const compareAndSetText = async (
   uri: string,
   expectedText: string,
   text: string,
-  applicationId: string,
+  applicationId: string | undefined,
 ): Promise<EditorState> => {
-  if (!applicationId || editor.applicationId !== applicationId || editor.uri !== uri) {
+  if (applicationId === '' || editor.applicationId !== applicationId || editor.uri !== uri) {
     throw new Error('The editor document no longer belongs to this application and URI')
   }
   if (typeof expectedText !== 'string' || typeof text !== 'string') {
