@@ -24,8 +24,8 @@ test('renderCss', () => {
   --EditorRowHeight: 20px;
   --ScrollBarHeight: 24px;
   --ScrollBarTop: 8px;
-  --ScrollBarWidth: 40px;
-  --ScrollBarLeft: 20px;
+  --ScrollBarWidth: 0px;
+  --ScrollBarLeft: 0px;
 }
 .EditorBidiRun { display: inline-block; direction: ltr; unicode-bidi: bidi-override; }
 .EditorBidiRunRtl { direction: rtl; }
@@ -129,4 +129,40 @@ test('renderCss', () => {
 }
 `,
   ])
+})
+
+test('horizontal thumb geometry does not rewrite the editor stylesheet', () => {
+  const state = {
+    deltaX: 0,
+    deltaY: 0,
+    finalDeltaY: 0,
+    gutterWidth: 0,
+    height: 400,
+    longestLineWidth: 500,
+    minimumSliderSize: 24,
+    rowHeight: 20,
+    scrollBarHeight: 0,
+    uid: 1,
+    width: 200,
+  }
+  const next = { ...state, deltaX: 10, longestLineWidth: 600 }
+  expect(renderCss(state as any, next as any)[2]).toBe(renderCss({} as any, state as any)[2])
+})
+
+test('legacy renderer keeps stylesheet-based horizontal geometry', () => {
+  const state = {
+    deltaX: 0,
+    deltaY: 0,
+    finalDeltaY: 0,
+    gutterWidth: 0,
+    height: 400,
+    longestLineWidth: 500,
+    minimumSliderSize: 24,
+    rowHeight: 20,
+    scrollBarHeight: 0,
+    uid: 1,
+    width: 200,
+  }
+  const next = { ...state, deltaX: 10, longestLineWidth: 600 }
+  expect(renderCss(state as any, next as any, false)[2]).not.toBe(renderCss({} as any, state as any, false)[2])
 })

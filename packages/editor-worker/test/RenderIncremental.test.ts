@@ -396,3 +396,38 @@ test('renderIncremental falls back from plain text fast patches for replacement,
   expect(RenderPlainTextAppend.canRenderPlainTextAppend(oldState, createPlainTextState('abc', 27, { minLineY: 1 }))).toBe(false)
   expect(RenderPlainTextAppend.canRenderPlainTextAppend(oldState, createPlainTextState('abc', 27, { languageId: 'html' }))).toBe(false)
 })
+
+test('growing an overflowing line updates horizontal thumb geometry in its DOM patch', () => {
+  const line = 'a'.repeat(100)
+  const state = createPlainTextState(line, 900, { deltaX: 0, deltaY: 0, finalDeltaY: 0, rowHeight: 20, width: 200 })
+  RenderIncremental.renderIncremental({ ...state, initial: true }, state)
+  const previous = RenderedDoms.get(3)?.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbHorizontal')
+  const next = createPlainTextState(line + 'b'.repeat(100), 1800, { deltaX: 10, deltaY: 0, finalDeltaY: 0, rowHeight: 20, width: 200 })
+  const command = RenderIncremental.renderIncremental(state, next)
+  const thumb = RenderedDoms.get(3)?.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbHorizontal')
+  expect(thumb?.style).toBe('width:22px;translate:1.1125px 0px')
+  expect(thumb?.style).not.toBe(previous?.style)
+  expect(command[0]).toBe(ViewletCommand.SetPatches)
+  expect(command[2]).toEqual(expect.arrayContaining([expect.objectContaining({ key: 'style', value: thumb?.style })]))
+})
+
+test('horizontal-only movement schedules a thumb DOM patch', () => {
+  const state = createPlainTextState('a'.repeat(100), 900, { deltaX: 0, deltaY: 0, finalDeltaY: 0, rowHeight: 20, width: 200 })
+  RenderIncremental.renderIncremental({ ...state, initial: true }, state)
+  const next = { ...state, deltaX: 50 }
+  expect(DiffItems.isEqual(state, next)).toBe(false)
+  const command = RenderIncremental.renderIncremental(state, next)
+  expect(command[2]).toEqual(expect.arrayContaining([expect.objectContaining({ key: 'style' })]))
+})
+
+test('gutter-adjusted viewport growth updates the horizontal thumb instead of using cached text patches', () => {
+  const line = 'a'.repeat(40)
+  const state = createPlainTextState(line, 360, { deltaX: 0, gutterWidth: 100, lineNumbers: true, width: 400 })
+  RenderIncremental.renderIncremental({ ...state, initial: true }, state)
+  const next = createPlainTextState(line + 'b', 369, { deltaX: 0, gutterWidth: 100, lineNumbers: true, width: 400 })
+  expect(RenderPlainTextAppend.canRenderPlainTextAppend(state, next)).toBe(false)
+  RenderIncremental.renderIncremental(state, next)
+  expect(RenderedDoms.get(3)?.find((node) => node.className === 'ScrollBarThumb ScrollBarThumbHorizontal')?.style).toBe(
+    'width:244px;translate:0px 0px',
+  )
+})

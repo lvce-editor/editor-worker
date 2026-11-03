@@ -9,16 +9,19 @@ import * as RenderPlainTextAppend from '../RenderPlainTextAppend/RenderPlainText
 import * as ScrollBarFunctions from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 
 const getDom = (state: EditorState): readonly VirtualDomNode[] => {
-  const { diagnostics = [], initial, longestLineWidth, minimumSliderSize, textInfos, visualDecorations = [] } = state
+  const { deltaX = 0, diagnostics = [], initial, longestLineWidth, minimumSliderSize, textInfos, visualDecorations = [] } = state
   if (initial && textInfos.length === 0) {
     return []
   }
 
   const { width } = getHorizontalScrollDimensions(state)
+  const scrollBarWidth = ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize)
+  const scrollBarLeft = ScrollBarFunctions.getScrollBarOffset(deltaX, Math.max(0, longestLineWidth - width), width, scrollBarWidth)
   return getEditorVirtualDom(state, {
     diagnostics: visualDecorations,
     scrollBarDiagnostics: getScrollBarDiagnostics(state, diagnostics),
-    scrollBarWidth: ScrollBarFunctions.getScrollBarSize(width, longestLineWidth, minimumSliderSize),
+    scrollBarLeft,
+    scrollBarWidth,
     unnecessaryDiagnostics: diagnostics,
   })
 }

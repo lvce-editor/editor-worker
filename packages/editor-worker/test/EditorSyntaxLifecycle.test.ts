@@ -16,7 +16,7 @@ beforeEach(() => {
 
 const create = (id: number) => {
   createEditor2(id, 'memfs:///large.ts', 0, 0, 100, 100, 1, '')
-  return { ...EditorStates.get(id).newState, languageId: 'plaintext', lines: ['large file'] }
+  return { ...EditorStates.get(id).newState, languageId: 'typescript', lines: ['large file'] }
 }
 
 test('closing releases sent lines and syntax document while another editor remains usable', async () => {
@@ -53,4 +53,16 @@ test('a late tokenization continuation cannot recreate a closed document', async
   await getTokensViewport2({ ...editor }, 0, 1, true)
   expect(invoke).not.toHaveBeenCalled()
   expect(editor.lifecycle?.sentLines).toBeUndefined()
+})
+
+test('local plain text does not send lines and remains inert after disposal', async () => {
+  const editor = { ...create(8104), languageId: 'plaintext' }
+  expect((await getTokensViewport2(editor, 0, 1, true)).tokens[0].tokens).toEqual([1, 10])
+  expect(editor.lifecycle?.sentLines).toBeUndefined()
+  expect(invoke).not.toHaveBeenCalled()
+  await disposeEditor(editor.id)
+  expect(invoke).toHaveBeenCalledWith('TextDocument.dispose', editor.id)
+  invoke.mockClear()
+  expect(await getTokensViewport2(editor, 0, 1, true)).toEqual({ embeddedResults: [], tokenizersToLoad: [], tokens: [] })
+  expect(invoke).not.toHaveBeenCalled()
 })

@@ -2,6 +2,7 @@ import type { EditorState } from '../State/State.ts'
 import * as Bidi from '../Bidi/Bidi.ts'
 import * as EditOrigin from '../EditOrigin/EditOrigin.ts'
 import { emptyIncrementalEdits } from '../EmptyIncrementalEdits/EmptyIncrementalEdits.ts'
+import { isDefaultPlainText } from '../IsDefaultPlainText/IsDefaultPlainText.ts'
 import * as SyntaxHighlightingWorker from '../SyntaxHighlightingWorker/SyntaxHighlightingWorker.ts'
 
 export const getIncrementalEdits = async (oldState: EditorState, newState: EditorState) => {
@@ -30,6 +31,11 @@ export const getIncrementalEdits = async (oldState: EditorState, newState: Edito
       const threshold = newState.horizontalVirtualizationThreshold ?? 500
       if (newState.deltaX !== 0 || oldLine.length > threshold || newLine.length > threshold) {
         return emptyIncrementalEdits
+      }
+      if (isDefaultPlainText(newState)) {
+        // Match the worker's single Text-token edit, keeping visible-text work
+        // in the same phase as syntax-worker incremental responses.
+        return oldLine.length === newLine.length ? emptyIncrementalEdits : [{ columnIndex: 0, rowIndex: rowIndex - newState.minLineY, text: newLine }]
       }
       // @ts-ignore
       const incrementalEdits = await SyntaxHighlightingWorker.invoke(

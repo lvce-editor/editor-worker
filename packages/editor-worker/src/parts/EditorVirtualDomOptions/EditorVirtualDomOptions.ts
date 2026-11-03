@@ -41,6 +41,7 @@ export interface EditorVirtualDomOptions {
   readonly rtl?: boolean
   readonly scrollBarDiagnostics?: readonly any[]
   readonly scrollBarHeight?: number
+  readonly scrollBarLeft?: number
   readonly scrollBarWidth?: number
   readonly selectionInfos?: readonly any[]
   readonly selections?: any

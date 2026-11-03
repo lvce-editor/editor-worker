@@ -1,6 +1,7 @@
 import type { EditorState } from '../State/State.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as Bidi from '../Bidi/Bidi.ts'
+import { getHorizontalScrollDimensions } from '../GetHorizontalScrollDimensions/GetHorizontalScrollDimensions.ts'
 import * as GetScrollBarSize from '../ScrollBarFunctions/ScrollBarFunctions.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
@@ -123,11 +124,14 @@ export const canRenderPlainTextAppend = (oldState: EditorState, newState: Editor
     oldState.problemsHighlightedRow !== newState.problemsHighlightedRow ||
     oldState.focused !== newState.focused ||
     oldState.roundedSelection !== newState.roundedSelection ||
+    oldState.deltaX !== newState.deltaX ||
+    oldState.gutterWidth !== newState.gutterWidth ||
+    ((newState.deltaX ?? 0) !== 0 && oldState.longestLineWidth !== newState.longestLineWidth) ||
     oldState.width !== newState.width ||
     oldState.height !== newState.height ||
     oldState.minimumSliderSize !== newState.minimumSliderSize ||
-    GetScrollBarSize.getScrollBarSize(oldState.width, oldState.longestLineWidth, oldState.minimumSliderSize) !==
-      GetScrollBarSize.getScrollBarSize(newState.width, newState.longestLineWidth, newState.minimumSliderSize) ||
+    GetScrollBarSize.getScrollBarSize(getHorizontalScrollDimensions(oldState).width, oldState.longestLineWidth, oldState.minimumSliderSize) !==
+      GetScrollBarSize.getScrollBarSize(getHorizontalScrollDimensions(newState).width, newState.longestLineWidth, newState.minimumSliderSize) ||
     oldState.minLineY !== newState.minLineY ||
     oldState.maxLineY !== newState.maxLineY ||
     !sameValues(oldState.visibleLineIndices, newState.visibleLineIndices) ||

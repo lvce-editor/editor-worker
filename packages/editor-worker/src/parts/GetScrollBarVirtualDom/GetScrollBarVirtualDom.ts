@@ -30,7 +30,7 @@ const horizontalScrollBarThumbNode: VirtualDomNode = {
   type: VirtualDomElements.Div,
 }
 
-export const getScrollBarVirtualDom = (scrollBarHeight: number, scrollBarWidth: number): readonly VirtualDomNode[] => {
+export const getScrollBarVirtualDom = (scrollBarHeight: number, scrollBarWidth: number, scrollBarLeft = 0): readonly VirtualDomNode[] => {
   const hasVerticalThumb = scrollBarHeight > 0
   const hasHorizontalThumb = scrollBarWidth > 0
   return [
@@ -43,6 +43,6 @@ export const getScrollBarVirtualDom = (scrollBarHeight: number, scrollBarWidth: 
       ...horizontalScrollBarNode,
       childCount: hasHorizontalThumb ? 1 : 0,
     },
-    ...(hasHorizontalThumb ? [horizontalScrollBarThumbNode] : []),
+    ...(hasHorizontalThumb ? [{ ...horizontalScrollBarThumbNode, style: `width:${scrollBarWidth}px;translate:${scrollBarLeft}px 0px` }] : []),
   ]
 }
