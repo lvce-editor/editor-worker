@@ -5,6 +5,7 @@ import * as ActivateByEvent from '../ActivateByEvent/ActivateByEvent.ts'
 import * as CharacterWidthCache from '../CharacterWidthCache/CharacterWidthCache.ts'
 import * as CodeGeneratorAccept from '../CodeGeneratorAccept/CodeGeneratorAccept.ts'
 import * as ColorPicker from '../ColorPicker/ColorPicker.ts'
+import { compareAndSetText } from '../CompareAndSetText/CompareAndSetText.ts'
 import { createEditor2 } from '../CreateEditor2/CreateEditor2.ts'
 import * as CreateEditor from '../CreateEditor/CreateEditor.ts'
 import { createStandaloneEditor } from '../CreateStandaloneEditor/CreateStandaloneEditor.ts'
@@ -327,6 +328,7 @@ export const commandMap = {
   'Editor.closeRename': wrapCommand(CloseRename.closeRename),
   'Editor.closeSourceAction': wrapCommand(EditorCommandCloseSourceAction.closeSourceAction),
   'Editor.closeWidget2': ExternalGetPositionAtCursor.closeWidget2,
+  'Editor.compareAndSetText': wrapCommand(compareAndSetText),
   'Editor.compositionEnd': wrapCommand(Composition.compositionEnd),
   'Editor.compositionStart': wrapCommand(Composition.compositionStart),
   'Editor.compositionUpdate': wrapCommand(Composition.compositionUpdate),
