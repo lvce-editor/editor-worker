@@ -24,3 +24,12 @@ test('getLanguageId - Windows file name', () => {
 
   expect(GetLanguageId.getLanguageId('C:\\workspace\\.env.sample', languages)).toBe('dotenv')
 })
+
+test.each(['remote-ssh://host/workspace/Dockerfile', 'file:///workspace/Dockerfile', 'C:\\workspace\\dockerfile'])(
+  'getLanguageId - matches a mixed-case filename contribution for %s',
+  (uri) => {
+    const languages = [{ fileNames: ['Dockerfile'], id: 'dockerfile' }]
+
+    expect(GetLanguageId.getLanguageId(uri, languages)).toBe('dockerfile')
+  },
+)

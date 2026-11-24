@@ -14,7 +14,10 @@ const getLanguageByExtension = (languages: readonly any[], extensionLower: strin
 
 const getLanguageByFileName = (languages: readonly any[], fileNameLower: string): string => {
   for (const language of languages) {
-    if (language && language.fileNames && Array.isArray(language.fileNames) && language.fileNames.includes(fileNameLower)) {
+    if (
+      Array.isArray(language?.fileNames) &&
+      language.fileNames.some((fileName: unknown) => typeof fileName === 'string' && fileName.toLowerCase() === fileNameLower)
+    ) {
       return language.id
     }
   }

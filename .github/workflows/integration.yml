@@ -69,6 +69,9 @@ jobs:
       - name: Test Bash syntax highlighting in YAML workflows
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=editor.syntax-highlighting-yaml
+      - name: Test Dockerfile syntax highlighting
+        working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
+        run: npm run e2e:headless -- --test-name-prefix=editor.syntax-highlighting-dockerfile
       - name: Test Find widget persistence across application reload
         working-directory: .tmp/lvce-integration/packages/extension-host-worker-tests
         run: npm run e2e:headless -- --test-name-prefix=find-widget-persistence --browser-test=scripts/test-find-widget-persistence.mjs
